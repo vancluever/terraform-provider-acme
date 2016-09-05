@@ -7,11 +7,11 @@ and submitted in [Terraform PR #7058][1].
 ## Why a Plugin?
 
 As documented in the thread in the PR, making use of [`xenolf/lego`][2], while
-making the task a little less daunting, nontheless created some coupling of the
-authorization and certificate generation process that (rightfully) did not sit
-well with the core TF team. Further to that, as the authorization process allows
-the use of DNS provdiers that Terraform has support for, the potential to cross
-provider boundaries exists.
+being very helpful in creating this feature, nontheless created some coupling
+of the authorization and certificate generation process that (rightfully) did
+not sit well with the core TF team. Further to that, as the authorization
+process allows the use of DNS provdiers that Terraform has support for, the
+potential to cross provider boundaries exists.
 
 Hence it was determined that it might not be the best fit for upstream for the
 time being.
