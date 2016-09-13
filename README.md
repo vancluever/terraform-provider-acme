@@ -342,7 +342,7 @@ perform the following:
  * Set your `http_challenge_port` or `tls_challenge_port` to non-standard
    ports, or leave them if you can assign the Terraform binary the
    `cap_net_bind_service=+ep` - (Linux hosts only).
-   [Example configuration here.](#above-example-with-http-tls-validation)
+   [Example configuration here.](#above-example-with-httptls-validation)
  * Proxy the following to the host running Terraform, on the respective ports:
   * All requests on port 80 under the `/.well-known/acme-challenge/` URI
     namespace for HTTP challenges, or:
