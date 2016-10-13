@@ -47,7 +47,7 @@ old PR itself, and can be found in their original form [here][6].
 **NOTE:** Note that usage examples use the
 [Let's Encrypt staging environment][7]. If you are using Let's Encrypt, make
 sure you change the URL to the correct endpoint (currently
-`https://acme-v01.api.letsencrypt.org`).
+`https://acme-v01.api.letsencrypt.org/directory`).
 
 ### Example Usage
 
