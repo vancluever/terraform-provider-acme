@@ -265,7 +265,7 @@ resource "tls_private_key" "cert_private_key" {
   algorithm = "RSA"
 }
 
-data "tls_cert_request" "req" {
+resource "tls_cert_request" "req" {
   key_algorithm   = "RSA"
   private_key_pem = "${tls_private_key.cert_private_key.private_key_pem}"
   dns_names       = ["www.example.com", "www2.example.com"]
@@ -278,7 +278,7 @@ data "tls_cert_request" "req" {
 resource "acme_certificate" "certificate" {
   server_url       = "https://acme-staging.api.letsencrypt.org/directory"
   account_key_pem  = "${tls_private_key.reg_private_key.private_key_pem}"
-  certificate_request_pem = "${data.tls_cert_request.req.cert_request_pem}"
+  certificate_request_pem = "${tls_cert_request.req.cert_request_pem}"
 
   dns_challenge {
     provider = "route53"
@@ -427,7 +427,7 @@ limitations under the License.
 [6]: website/source/docs/providers/acme
 [7]: https://letsencrypt.org/docs/staging-environment/
 [8]: https://www.terraform.io/docs/providers/tls/r/private_key.html
-[9]: https://www.terraform.io/docs/providers/tls/d/cert_request.html
+[9]: https://www.terraform.io/docs/providers/tls/r/cert_request.html
 [10]: https://letsencrypt.org/docs/integration-guide/#implement-ocsp-stapling
 [11]: https://github.com/ietf-wg-acme/acme/blob/master/draft-ietf-acme-acme.md#dns
 [12]: https://github.com/xenolf/lego
