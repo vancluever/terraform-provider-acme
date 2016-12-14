@@ -58,7 +58,7 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 			}
 		}
 
-		cert, errs = client.ObtainCertificate(domains, true, nil)
+		cert, errs = client.ObtainCertificate(domains, true, nil, d.Get("must_staple").(bool))
 	}
 
 	if len(errs) > 0 {
@@ -103,7 +103,7 @@ func resourceACMECertificateRead(d *schema.ResourceData, meta interface{}) error
 			client.SetHTTPAddress(":" + strconv.Itoa(d.Get("http_challenge_port").(int)))
 			client.SetTLSAddress(":" + strconv.Itoa(d.Get("tls_challenge_port").(int)))
 		}
-		newCert, err := client.RenewCertificate(cert, true)
+		newCert, err := client.RenewCertificate(cert, true, d.Get("must_staple").(bool))
 		if err != nil {
 			return err
 		}

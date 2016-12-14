@@ -4,6 +4,7 @@ import (
 	"crypto"
 	"crypto/ecdsa"
 	"crypto/rsa"
+	"encoding/asn1"
 	"fmt"
 	"log"
 	"os"
@@ -17,6 +18,12 @@ import (
 	"github.com/xenolf/lego/acme"
 )
 
+// Constants for OCSP must staple
+var (
+	tlsFeatureExtensionOID = asn1.ObjectIdentifier{1, 3, 6, 1, 5, 5, 7, 1, 24}
+	ocspMustStapleFeature  = []byte{0x30, 0x03, 0x02, 0x01, 0x05}
+)
+
 func TestAccACMECertificate_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheckCert(t) },
@@ -26,7 +33,7 @@ func TestAccACMECertificate_basic(t *testing.T) {
 			resource.TestStep{
 				Config: testAccACMECertificateConfig(),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckACMECertificateValid("acme_certificate.certificate", "www", "www2"),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www", "www2", false),
 				),
 			},
 		},
@@ -42,7 +49,7 @@ func TestAccACMECertificate_CSR(t *testing.T) {
 			resource.TestStep{
 				Config: testAccACMECertificateCSRConfig(),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckACMECertificateValid("acme_certificate.certificate", "www3", "www4"),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www3", "www4", false),
 				),
 			},
 		},
@@ -58,7 +65,7 @@ func TestAccACMECertificate_withDNSProviderConfig(t *testing.T) {
 			resource.TestStep{
 				Config: testAccACMECertificateWithDNSProviderConfig(),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckACMECertificateValid("acme_certificate.certificate", "www5", ""),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www5", "", false),
 				),
 			},
 		},
@@ -74,7 +81,7 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 			resource.TestStep{
 				Config: testAccACMECertificateForceRenewalConfig(),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckACMECertificateValid("acme_certificate.certificate", "www6", ""),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www6", "", false),
 				),
 			},
 		},
@@ -96,14 +103,30 @@ func TestAccACMECertificate_httpChallenge(t *testing.T) {
 			resource.TestStep{
 				Config: testAccACMECertificateHTTPChallengeConfig(),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckACMECertificateValid("acme_certificate.certificate", "www7", ""),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www7", "", false),
 				),
 			},
 		},
 	})
 }
 
-func testAccCheckACMECertificateValid(n, cn, san string) resource.TestCheckFunc {
+func TestAccACMECertificate_mustStaple(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheckCert(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckACMECertificateDestroy,
+		Steps: []resource.TestStep{
+			resource.TestStep{
+				Config: testAccACMECertificateMustStapleConfig(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www8", "www9", true),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckACMECertificateValid(n, cn, san string, mustStaple bool) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
 		if !ok {
@@ -177,6 +200,17 @@ func testAccCheckACMECertificateValid(n, cn, san string) resource.TestCheckFunc 
 		if reflect.DeepEqual(expectedSANs, actualSANs) != true {
 			return fmt.Errorf("Expected SANs to be %#v, got %#v", expectedSANs, actualSANs)
 		}
+
+		if mustStaple {
+			for _, v := range x509Cert.Extensions {
+				if reflect.DeepEqual(v.Id, tlsFeatureExtensionOID) && reflect.DeepEqual(v.Value, ocspMustStapleFeature) {
+					goto stapleOK
+				}
+			}
+			return fmt.Errorf("Did not find OCSP Stapling Required extension when expected")
+		}
+
+	stapleOK:
 
 		return nil
 	}
@@ -455,4 +489,40 @@ resource "aws_route53_record" "www7" {
 	records = ["%s"]
 }
 `, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"), os.Getenv("ACME_HTTP_R53_ZONE_ID"), os.Getenv("ACME_HTTP_HOST_IP"))
+}
+
+func testAccACMECertificateMustStapleConfig() string {
+	return fmt.Sprintf(`
+variable "email_address" {
+  default = "%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  server_url      = "https://acme-staging.api.letsencrypt.org/directory"
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  server_url                = "https://acme-staging.api.letsencrypt.org/directory"
+  account_key_pem           = "${tls_private_key.private_key.private_key_pem}"
+  common_name               = "www8.${var.domain}"
+  subject_alternative_names = ["www9.${var.domain}"]
+	must_staple               = true
+
+  dns_challenge {
+    provider = "route53"
+  }
+
+  registration_url = "${acme_registration.reg.id}"
+}
+`, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"))
 }

@@ -185,6 +185,7 @@ func TestACME_certificateSchema(t *testing.T) {
 		"http_challenge_port",
 		"tls_challenge_port",
 		"registration_url",
+		"must_staple",
 		"certificate_domain",
 		"certificate_url",
 		"account_ref",

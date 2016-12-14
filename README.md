@@ -186,6 +186,39 @@ resource "acme_certificate" "certificate" {
 }
 ```
 
+##### Above example with OCSP Stapling Required
+
+```
+# Create the private key for the registration (not the certificate)
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+# Set up a registration using a private key from tls_private_key
+resource "acme_registration" "reg" {
+  server_url      = "https://acme-staging.api.letsencrypt.org/directory"
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "nobody@example.com"
+}
+
+# Create a certificate.
+# This certificate must include an OCSP Staple in the TLS handshake for the
+# connection to succeed.
+resource "acme_certificate" "certificate" {
+  server_url                = "https://acme-staging.api.letsencrypt.org/directory"
+  account_key_pem           = "${tls_private_key.private_key.private_key_pem}"
+  common_name               = "www.example.com"
+  subject_alternative_names = ["www2.example.com"]
+  must_staple               = true
+
+  dns_challenge {
+    provider = "route53"
+  }
+
+  registration_url = "${acme_registration.reg.id}"
+}
+```
+
 ##### Above example with HTTP/TLS validation
 
 ```
@@ -263,7 +296,7 @@ The resource takes the following arguments:
  * `account_key_pem` (Required) - The private key used to sign requests. This
     will be the private key that will be registered to the account.
  * `registration_url` (Required) - The URL that will be used to fetch the
-   registrations's link to perform authorizations.
+   registration's link to perform authorizations.
  * `common_name` - The certificate's common name, the primary domain that the 
    certificate will be recognized for. Required when not specifying a CSR.
  * `subject_alternative_names` - The certificate's subject alternative names,
@@ -287,15 +320,20 @@ The resource takes the following arguments:
    [HTTP challenge](#using-http-and-tls-challenges). Defaults to `80`.
  * `tls_challenge_port` (Optional) The port to use in the
    [TLS challenge](#using-http-and-tls-challenges). Defaults to `443`.
+ * `must_staple` (Optional) Enables the [OCSP Stapling Required][10] TLS
+   Security Policy extension. Certificates with this extension must include a
+   valid OCSP Staple in the TLS handshake for the connection to succeed.
+   Defaults to `false`. **Note that this option has no effect when using an
+   external CSR - it must be enabled in the CSR itself.**
 
 ##### Using DNS challenges
 
-ACME and ACME CAs such as Let's Encrypt may support [DNS challenges][10], which
+ACME and ACME CAs such as Let's Encrypt may support [DNS challenges][11], which
 allows operators to respond to authorization challenges by provisioning a TXT
 record on a specific domain.
 
-Terraform, making use of [lego][11], responds to DNS challenges automatically
-by utilizing one of lego's supported [DNS challenge providers][12]. Most
+Terraform, making use of [lego][12], responds to DNS challenges automatically
+by utilizing one of lego's supported [DNS challenge providers][13]. Most
 providers take credentials as environment variables, but if you would rather
 use configuration for this purpose, you can through specifying `config` blocks
 within a `dns_challenge` block, along with the `provider` parameter.
@@ -330,7 +368,7 @@ resource "acme_certificate" "certificate" {
 
 ##### Using HTTP and TLS challenges
 
-[HTTP challenges][13] and [TLS challenges][14] work via provisioning a response
+[HTTP challenges][14] and [TLS challenges][15] work via provisioning a response
 message at a specific URL within a well known URI namespace on the hosts
 being requested within a certificate.
 
@@ -390,8 +428,9 @@ limitations under the License.
 [7]: https://letsencrypt.org/docs/staging-environment/
 [8]: https://www.terraform.io/docs/providers/tls/r/private_key.html
 [9]: https://www.terraform.io/docs/providers/tls/d/cert_request.html
-[10]: https://github.com/ietf-wg-acme/acme/blob/master/draft-ietf-acme-acme.md#dns
-[11]: https://github.com/xenolf/lego
-[12]: https://godoc.org/github.com/xenolf/lego/providers/dns
-[13]: https://github.com/ietf-wg-acme/acme/blob/master/draft-ietf-acme-acme.md#http
-[14]: https://github.com/ietf-wg-acme/acme/blob/master/draft-ietf-acme-acme.md#tls-with-server-name-indication-tls-sni
+[10]: https://letsencrypt.org/docs/integration-guide/#implement-ocsp-stapling
+[11]: https://github.com/ietf-wg-acme/acme/blob/master/draft-ietf-acme-acme.md#dns
+[12]: https://github.com/xenolf/lego
+[13]: https://godoc.org/github.com/xenolf/lego/providers/dns
+[14]: https://github.com/ietf-wg-acme/acme/blob/master/draft-ietf-acme-acme.md#http
+[15]: https://github.com/ietf-wg-acme/acme/blob/master/draft-ietf-acme-acme.md#tls-with-server-name-indication-tls-sni

@@ -157,6 +157,12 @@ func certificateSchema() map[string]*schema.Schema {
 			Required: true,
 			ForceNew: true,
 		},
+		"must_staple": &schema.Schema{
+			Type:     schema.TypeBool,
+			Optional: true,
+			Default:  false,
+			ForceNew: true,
+		},
 		"certificate_domain": &schema.Schema{
 			Type:     schema.TypeString,
 			Computed: true,
