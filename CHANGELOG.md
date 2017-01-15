@@ -1,3 +1,10 @@
+## v0.2.1
+
+This is a bugfix to correct #6 and ensure that TF will abort if a DNS challenge
+is improperly configured (example: missing credentials). Previous to this
+release if the DNS challenge could not be properly set up, the plugin would have
+proceeded with an HTTP or TLS challenge.
+
 ## v0.2.0
 
 Note that this release is built for Terraform v0.8.0 and higher - using with
