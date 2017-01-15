@@ -31,7 +31,9 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 	}
 
 	if v, ok := d.GetOk("dns_challenge"); ok {
-		setDNSChallenge(client, v.(*schema.Set).List()[0].(map[string]interface{}))
+		if err := setDNSChallenge(client, v.(*schema.Set).List()[0].(map[string]interface{})); err != nil {
+			return err
+		}
 	} else {
 		client.SetHTTPAddress(":" + strconv.Itoa(d.Get("http_challenge_port").(int)))
 		client.SetTLSAddress(":" + strconv.Itoa(d.Get("tls_challenge_port").(int)))
@@ -98,7 +100,9 @@ func resourceACMECertificateRead(d *schema.ResourceData, meta interface{}) error
 
 	if int64(mindays) >= remaining {
 		if v, ok := d.GetOk("dns_challenge"); ok {
-			setDNSChallenge(client, v.(*schema.Set).List()[0].(map[string]interface{}))
+			if err := setDNSChallenge(client, v.(*schema.Set).List()[0].(map[string]interface{})); err != nil {
+				return err
+			}
 		} else {
 			client.SetHTTPAddress(":" + strconv.Itoa(d.Get("http_challenge_port").(int)))
 			client.SetTLSAddress(":" + strconv.Itoa(d.Get("tls_challenge_port").(int)))
