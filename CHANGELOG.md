@@ -1,4 +1,4 @@
-## v0.3.0-beta1
+## v0.3.0-beta2
 
 This beta version tracks Terraform `v0.9.0`, which as of this writing (Feb 28th,
 2017) is currently in beta. All that has changed so far on this side is that we
