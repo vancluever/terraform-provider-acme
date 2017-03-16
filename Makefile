@@ -1,5 +1,5 @@
 test:
-	go test -v ./plugin/providers/acme 
+	go test -v . ./plugin/providers/acme 
 
 testacc:
 	TF_ACC=1 go test -v ./plugin/providers/acme -run="TestAcc"

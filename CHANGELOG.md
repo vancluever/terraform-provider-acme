@@ -1,3 +1,9 @@
+## v0.3.0-beta2
+
+This beta version tracks Terraform `v0.9.0`, which as of this writing (Feb 28th,
+2017) is currently in beta. All that has changed so far on this side is that we
+need to rebuild as the plugin API has again changed.
+
 ## v0.2.1
 
 This is a bugfix to correct #6 and ensure that TF will abort if a DNS challenge
