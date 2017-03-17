@@ -1,3 +1,10 @@
+## v0.3.0
+
+Fully updated version, supporting v0.9.0. Make sure you use this version for the
+full v0.9.0 release, as v0.3.0-beta2 will not work (the plugin API version has
+been incremented again). People still on versions of TF before v0.9.0 should use
+a v0.2.x version.
+
 ## v0.3.0-beta2
 
 This beta version tracks Terraform `v0.9.0`, which as of this writing (Feb 28th,
