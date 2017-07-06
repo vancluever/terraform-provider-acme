@@ -46,25 +46,25 @@ type Provisioner struct {
 	stopOnce      sync.Once
 }
 
-// These constants are the keys that can be used to access data in
-// the context parameters for Provisioners.
-const (
-	connDataInvalid int = iota
+// Keys that can be used to access data in the context parameters for
+// Provisioners.
+var (
+	connDataInvalid = contextKey("data invalid")
 
 	// This returns a *ResourceData for the connection information.
 	// Guaranteed to never be nil.
-	ProvConnDataKey
+	ProvConnDataKey = contextKey("provider conn data")
 
 	// This returns a *ResourceData for the config information.
 	// Guaranteed to never be nil.
-	ProvConfigDataKey
+	ProvConfigDataKey = contextKey("provider config data")
 
 	// This returns a terraform.UIOutput. Guaranteed to never be nil.
-	ProvOutputKey
+	ProvOutputKey = contextKey("provider output")
 
 	// This returns the raw InstanceState passed to Apply. Guaranteed to
 	// be set, but may be nil.
-	ProvRawStateKey
+	ProvRawStateKey = contextKey("provider raw state")
 )
 
 // InternalValidate should be called to validate the structure
@@ -146,7 +146,7 @@ func (p *Provisioner) Apply(
 		}
 
 		sm := schemaMap(p.ConnSchema)
-		diff, err := sm.Diff(nil, terraform.NewResourceConfig(c))
+		diff, err := sm.Diff(nil, terraform.NewResourceConfig(c), nil, nil)
 		if err != nil {
 			return err
 		}
@@ -160,7 +160,7 @@ func (p *Provisioner) Apply(
 		// Build the configuration data. Doing this requires making a "diff"
 		// even though that's never used. We use that just to get the correct types.
 		configMap := schemaMap(p.Schema)
-		diff, err := configMap.Diff(nil, c)
+		diff, err := configMap.Diff(nil, c, nil, nil)
 		if err != nil {
 			return err
 		}
