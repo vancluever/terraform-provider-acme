@@ -131,10 +131,9 @@ type ResourceDiff struct {
 	// A writer that writes overridden new fields.
 	newWriter *newValueWriter
 
-	// Tracks which keys have been updated by SetNew, SetNewComputed, and SetDiff
-	// to ensure that the diff does not get re-run on keys that were not touched,
-	// or diffs that were just removed (re-running on the latter would just roll
-	// back the removal).
+	// Tracks which keys have been updated by ResourceDiff to ensure that the
+	// diff does not get re-run on keys that were not touched, or diffs that were
+	// just removed (re-running on the latter would just roll back the removal).
 	updatedKeys map[string]bool
 }
 
@@ -198,8 +197,8 @@ func newResourceDiff(schema map[string]*Schema, config *terraform.ResourceConfig
 	return d
 }
 
-// UpdatedKeys returns the keys that were updated by SetNew, SetNewComputed, or
-// SetDiff. These are the only keys that a diff should be re-calculated for.
+// UpdatedKeys returns the keys that were updated by this ResourceDiff run.
+// These are the only keys that a diff should be re-calculated for.
 func (d *ResourceDiff) UpdatedKeys() []string {
 	var s []string
 	for k := range d.updatedKeys {
@@ -208,15 +207,15 @@ func (d *ResourceDiff) UpdatedKeys() []string {
 	return s
 }
 
-// Clear wipes the diff for a particular key. It is called by SetDiff to remove
-// any possibility of conflicts, but can be called on its own to just remove a
-// specific key from the diff completely.
+// Clear wipes the diff for a particular key. It is called by ResourceDiff's
+// functionality to remove any possibility of conflicts, but can be called on
+// its own to just remove a specific key from the diff completely.
 //
 // Note that this does not wipe an override. This function is only allowed on
 // computed keys.
 func (d *ResourceDiff) Clear(key string) error {
-	if !d.schema[key].Computed {
-		return fmt.Errorf("Clear is allowed on computed attributes only - %s is not one", key)
+	if err := d.checkKey(key, "Clear"); err != nil {
+		return err
 	}
 
 	return d.clear(key)
@@ -256,10 +255,11 @@ func (d *ResourceDiff) diffChange(key string) (interface{}, interface{}, bool, b
 //
 // This function is only allowed on computed attributes.
 func (d *ResourceDiff) SetNew(key string, value interface{}) error {
-	if !d.schema[key].Computed {
-		return fmt.Errorf("SetNew only operates on computed keys - %s is not one", key)
+	if err := d.checkKey(key, "SetNew"); err != nil {
+		return err
 	}
-	return d.setDiff(key, d.get(strings.Split(key, "."), "state").Value, value, false)
+
+	return d.setDiff(key, value, false)
 }
 
 // SetNewComputed functions like SetNew, except that it blanks out a new value
@@ -267,14 +267,15 @@ func (d *ResourceDiff) SetNew(key string, value interface{}) error {
 //
 // This function is only allowed on computed attributes.
 func (d *ResourceDiff) SetNewComputed(key string) error {
-	if !d.schema[key].Computed {
-		return fmt.Errorf("SetNewComputed only operates on computed keys - %s is not one", key)
+	if err := d.checkKey(key, "SetNewComputed"); err != nil {
+		return err
 	}
-	return d.setDiff(key, d.get(strings.Split(key, "."), "state").Value, nil, true)
+
+	return d.setDiff(key, nil, true)
 }
 
 // setDiff performs common diff setting behaviour.
-func (d *ResourceDiff) setDiff(key string, old, new interface{}, computed bool) error {
+func (d *ResourceDiff) setDiff(key string, new interface{}, computed bool) error {
 	if err := d.clear(key); err != nil {
 		return err
 	}
@@ -289,18 +290,28 @@ func (d *ResourceDiff) setDiff(key string, old, new interface{}, computed bool) 
 }
 
 // ForceNew force-flags ForceNew in the schema for a specific key, and
-// re-calculates its diff. This function is a no-op/error if there is no diff.
+// re-calculates its diff, effectively causing this attribute to force a new
+// resource.
+//
+// Keep in mind that forcing a new resource will force a second run of the
+// resource's CustomizeDiff function (with a new ResourceDiff) once the current
+// one has completed. This second run is performed without state. This behavior
+// will be the same as if a new resource is being created and is performed to
+// ensure that the diff looks like the diff for a new resource as much as
+// possible. CustomizeDiff should expect such a scenario and act correctly.
+//
+// This function is a no-op/error if there is no diff.
 //
 // Note that the change to schema is permanent for the lifecycle of this
 // specific ResourceDiff instance.
 func (d *ResourceDiff) ForceNew(key string) error {
 	if !d.HasChange(key) {
-		return fmt.Errorf("ResourceDiff.ForceNew: No changes for %s", key)
+		return fmt.Errorf("ForceNew: No changes for %s", key)
 	}
 
-	old, new := d.GetChange(key)
+	_, new := d.GetChange(key)
 	d.schema[key].ForceNew = true
-	return d.setDiff(key, old, new, false)
+	return d.setDiff(key, new, false)
 }
 
 // Get hands off to ResourceData.Get.
@@ -443,4 +454,16 @@ func childAddrOf(child, parent string) bool {
 		return false
 	}
 	return reflect.DeepEqual(ps, cs[:len(ps)])
+}
+
+// checkKey checks the key to make sure it exists and is computed.
+func (d *ResourceDiff) checkKey(key, caller string) error {
+	s, ok := d.schema[key]
+	if !ok {
+		return fmt.Errorf("%s: invalid key: %s", caller, key)
+	}
+	if !s.Computed {
+		return fmt.Errorf("%s only operates on computed keys - %s is not one", caller, key)
+	}
+	return nil
 }
