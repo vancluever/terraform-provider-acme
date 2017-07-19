@@ -210,7 +210,7 @@ func (p *Provider) Configure(c *terraform.ResourceConfig) error {
 
 	// Get a ResourceData for this configuration. To do this, we actually
 	// generate an intermediary "diff" although that is never exposed.
-	diff, err := sm.Diff(nil, c)
+	diff, err := sm.Diff(nil, c, nil, p.meta)
 	if err != nil {
 		return err
 	}
@@ -252,7 +252,7 @@ func (p *Provider) Diff(
 		return nil, fmt.Errorf("unknown resource type: %s", info.Type)
 	}
 
-	return r.Diff(s, c)
+	return r.Diff(s, c, p.meta)
 }
 
 // Refresh implementation of terraform.ResourceProvider interface.
@@ -365,7 +365,7 @@ func (p *Provider) ReadDataDiff(
 		return nil, fmt.Errorf("unknown data source: %s", info.Type)
 	}
 
-	return r.Diff(nil, c)
+	return r.Diff(nil, c, p.meta)
 }
 
 // RefreshData implementation of terraform.ResourceProvider interface.

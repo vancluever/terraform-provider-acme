@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/hil"
 	"github.com/hashicorp/hil/ast"
 	"github.com/hashicorp/terraform/helper/hilmapstructure"
+	"github.com/hashicorp/terraform/plugin/discovery"
 	"github.com/mitchellh/reflectwalk"
 )
 
@@ -64,6 +65,7 @@ type Module struct {
 type ProviderConfig struct {
 	Name      string
 	Alias     string
+	Version   string
 	RawConfig *RawConfig
 }
 
@@ -238,6 +240,33 @@ func (r *Resource) Id() string {
 	}
 }
 
+// ProviderFullName returns the full name of the provider for this resource,
+// which may either be specified explicitly using the "provider" meta-argument
+// or implied by the prefix on the resource type name.
+func (r *Resource) ProviderFullName() string {
+	return ResourceProviderFullName(r.Type, r.Provider)
+}
+
+// ResourceProviderFullName returns the full (dependable) name of the
+// provider for a hypothetical resource with the given resource type and
+// explicit provider string. If the explicit provider string is empty then
+// the provider name is inferred from the resource type name.
+func ResourceProviderFullName(resourceType, explicitProvider string) string {
+	if explicitProvider != "" {
+		return explicitProvider
+	}
+
+	idx := strings.IndexRune(resourceType, '_')
+	if idx == -1 {
+		// If no underscores, the resource name is assumed to be
+		// also the provider name, e.g. if the provider exposes
+		// only a single resource of each type.
+		return resourceType
+	}
+
+	return resourceType[:idx]
+}
+
 // Validate does some basic semantic checking of the configuration.
 func (c *Config) Validate() error {
 	if c == nil {
@@ -285,8 +314,15 @@ func (c *Config) Validate() error {
 		}
 
 		interp := false
-		fn := func(ast.Node) (interface{}, error) {
-			interp = true
+		fn := func(n ast.Node) (interface{}, error) {
+			// LiteralNode is a literal string (outside of a ${ ... } sequence).
+			// interpolationWalker skips most of these. but in particular it
+			// visits those that have escaped sequences (like $${foo}) as a
+			// signal that *some* processing is required on this string. For
+			// our purposes here though, this is fine and not an interpolation.
+			if _, ok := n.(*ast.LiteralNode); !ok {
+				interp = true
+			}
 			return "", nil
 		}
 
@@ -342,7 +378,8 @@ func (c *Config) Validate() error {
 		}
 	}
 
-	// Check that providers aren't declared multiple times.
+	// Check that providers aren't declared multiple times and that their
+	// version constraints, where present, are syntactically valid.
 	providerSet := make(map[string]struct{})
 	for _, p := range c.ProviderConfigs {
 		name := p.FullName()
@@ -351,6 +388,16 @@ func (c *Config) Validate() error {
 				"provider.%s: declared multiple times, you can only declare a provider once",
 				name))
 			continue
+		}
+
+		if p.Version != "" {
+			_, err := discovery.ConstraintStr(p.Version).Parse()
+			if err != nil {
+				errs = append(errs, fmt.Errorf(
+					"provider.%s: invalid version constraint %q: %s",
+					name, p.Version, err,
+				))
+			}
 		}
 
 		providerSet[name] = struct{}{}
@@ -538,7 +585,7 @@ func (c *Config) Validate() error {
 
 		// Verify provisioners
 		for _, p := range r.Provisioners {
-			// This validation checks that there are now splat variables
+			// This validation checks that there are no splat variables
 			// referencing ourself. This currently is not allowed.
 
 			for _, v := range p.ConnInfo.Variables {
@@ -698,17 +745,6 @@ func (c *Config) Validate() error {
 		}
 	}
 
-	// Check that all variables are in the proper context
-	for source, rc := range c.rawConfigs() {
-		walker := &interpolationWalker{
-			ContextF: c.validateVarContextFn(source, &errs),
-		}
-		if err := reflectwalk.Walk(rc.Raw, walker); err != nil {
-			errs = append(errs, fmt.Errorf(
-				"%s: error reading config: %s", source, err))
-		}
-	}
-
 	// Validate the self variable
 	for source, rc := range c.rawConfigs() {
 		// Ignore provisioners. This is a pretty brittle way to do this,
@@ -778,57 +814,6 @@ func (c *Config) rawConfigs() map[string]*RawConfig {
 	}
 
 	return result
-}
-
-func (c *Config) validateVarContextFn(
-	source string, errs *[]error) interpolationWalkerContextFunc {
-	return func(loc reflectwalk.Location, node ast.Node) {
-		// If we're in a slice element, then its fine, since you can do
-		// anything in there.
-		if loc == reflectwalk.SliceElem {
-			return
-		}
-
-		// Otherwise, let's check if there is a splat resource variable
-		// at the top level in here. We do this by doing a transform that
-		// replaces everything with a noop node unless its a variable
-		// access or concat. This should turn the AST into a flat tree
-		// of Concat(Noop, ...). If there are any variables left that are
-		// multi-access, then its still broken.
-		node = node.Accept(func(n ast.Node) ast.Node {
-			// If it is a concat or variable access, we allow it.
-			switch n.(type) {
-			case *ast.Output:
-				return n
-			case *ast.VariableAccess:
-				return n
-			}
-
-			// Otherwise, noop
-			return &noopNode{}
-		})
-
-		vars, err := DetectVariables(node)
-		if err != nil {
-			// Ignore it since this will be caught during parse. This
-			// actually probably should never happen by the time this
-			// is called, but its okay.
-			return
-		}
-
-		for _, v := range vars {
-			rv, ok := v.(*ResourceVariable)
-			if !ok {
-				return
-			}
-
-			if rv.Multi && rv.Index == -1 {
-				*errs = append(*errs, fmt.Errorf(
-					"%s: use of the splat ('*') operator must be wrapped in a list declaration",
-					source))
-			}
-		}
-	}
 }
 
 func (c *Config) validateDependsOn(
@@ -1010,7 +995,16 @@ func (v *Variable) ValidateTypeAndDefault() error {
 	// If an explicit type is declared, ensure it is valid
 	if v.DeclaredType != "" {
 		if _, ok := typeStringMap[v.DeclaredType]; !ok {
-			return fmt.Errorf("Variable '%s' must be of type string or map - '%s' is not a valid type", v.Name, v.DeclaredType)
+			validTypes := []string{}
+			for k := range typeStringMap {
+				validTypes = append(validTypes, k)
+			}
+			return fmt.Errorf(
+				"Variable '%s' type must be one of [%s] - '%s' is not a valid type",
+				v.Name,
+				strings.Join(validTypes, ", "),
+				v.DeclaredType,
+			)
 		}
 	}
 

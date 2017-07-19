@@ -3,10 +3,10 @@ package acme
 import (
 	"testing"
 
-	"github.com/hashicorp/terraform/builtin/providers/aws"
-	"github.com/hashicorp/terraform/builtin/providers/tls"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/terraform-providers/terraform-provider-aws/aws"
+	"github.com/terraform-providers/terraform-provider-tls/tls"
 )
 
 var testAccProvider *schema.Provider

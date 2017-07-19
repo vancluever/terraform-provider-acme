@@ -25,7 +25,10 @@ const (
 	DiffDestroyCreate
 )
 
-// Diff trackes the changes that are necessary to apply a configuration
+// multiVal matches the index key to a flatmapped set, list or map
+var multiVal = regexp.MustCompile(`\.(#|%)$`)
+
+// Diff tracks the changes that are necessary to apply a configuration
 // to an existing infrastructure.
 type Diff struct {
 	// Modules contains all the modules that have a diff
@@ -367,7 +370,7 @@ type InstanceDiff struct {
 
 	// Meta is a simple K/V map that is stored in a diff and persisted to
 	// plans but otherwise is completely ignored by Terraform core. It is
-	// mean to be used for additional data a resource may want to pass through.
+	// meant to be used for additional data a resource may want to pass through.
 	// The value here must only contain Go primitives and collections.
 	Meta map[string]interface{}
 }
@@ -548,7 +551,7 @@ func (d *InstanceDiff) SetDestroyDeposed(b bool) {
 }
 
 // These methods are properly locked, for use outside other InstanceDiff
-// methods but everywhere else within in the terraform package.
+// methods but everywhere else within the terraform package.
 // TODO refactor the locking scheme
 func (d *InstanceDiff) SetTainted(b bool) {
 	d.mu.Lock()
@@ -739,7 +742,7 @@ func (d *InstanceDiff) Same(d2 *InstanceDiff) (bool, string) {
 		delete(checkOld, k)
 		delete(checkNew, k)
 
-		_, ok := d2.GetAttribute(k)
+		diffNew, ok := d2.GetAttribute(k)
 		if !ok {
 			// If there's no new attribute, and the old diff expected the attribute
 			// to be removed, that's just fine.
@@ -808,7 +811,6 @@ func (d *InstanceDiff) Same(d2 *InstanceDiff) (bool, string) {
 		}
 
 		// search for the suffix of the base of a [computed] map, list or set.
-		multiVal := regexp.MustCompile(`\.(#|~#|%)$`)
 		match := multiVal.FindStringSubmatch(k)
 
 		if diffOld.NewComputed && len(match) == 2 {
@@ -829,7 +831,31 @@ func (d *InstanceDiff) Same(d2 *InstanceDiff) (bool, string) {
 			}
 		}
 
-		// TODO: check for the same value if not computed
+		// If our attributes are not computed, then there is no reason why we can't
+		// check to make sure the diff values are the same. Do that now.
+		//
+		// There are several conditions that we need to pass here as they are
+		// allowed cases even if values don't match, so let's check those first.
+		switch {
+		case diffOld.NewComputed:
+			// NewComputed values pass
+		case strings.Contains(k, "~"):
+			// Computed keys for sets and lists
+		case strings.HasSuffix(k, "#"):
+			// Counts for sets need to be skipped as well as we have determined that
+			// we may not know the full value due to interpolation
+		case strings.HasSuffix(k, "%") && diffOld.New == "0" && diffOld.Old != "0":
+			// Lists can be skipped if they are being removed (going from n > 0 to 0)
+		case d.DestroyTainted && d2.GetDestroyTainted() && diffOld.New == diffNew.New:
+			// Same for DestoryTainted
+		case d.requiresNew() && d2.RequiresNew() && diffOld.New == diffNew.New:
+			// Same for RequiresNew
+		default:
+			// Anything that gets here should be able to be checked for deep equality.
+			if !reflect.DeepEqual(diffOld, diffNew) {
+				return false, fmt.Sprintf("value mismatch: %s", k)
+			}
+		}
 	}
 
 	// Check for leftover attributes

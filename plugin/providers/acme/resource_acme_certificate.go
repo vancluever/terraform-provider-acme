@@ -16,15 +16,20 @@ import (
 
 func resourceACMECertificate() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceACMECertificateCreate,
-		Read:   resourceACMECertificateRead,
-		Delete: resourceACMECertificateDelete,
+		Create:        resourceACMECertificateCreate,
+		Read:          resourceACMECertificateRead,
+		CustomizeDiff: resourceACMECertificateCustomizeDiff,
+		Update:        resourceACMECertificateUpdate,
+		Delete:        resourceACMECertificateDelete,
 
 		Schema: certificateSchemaFull(),
 	}
 }
 
 func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) error {
+	// Turn on partial state to ensure that nothing is recorded until we want it to be.
+	d.Partial(true)
+
 	client, _, err := expandACMEClient(d, d.Get("registration_url").(string))
 	if err != nil {
 		return err
@@ -71,25 +76,32 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		return fmt.Errorf("Errors were encountered creating the certificate:\n    %s", strings.Join(messages, "\n    "))
 	}
 
-	// done! save the cert
+	// Done! save the cert
+	d.Partial(false)
 	saveCertificateResource(d, cert)
 
 	return nil
 }
 
-// resourceACMECertificateRead renews the certificate if it is close to expiry.
-// This value is controlled by the min_days_remaining attribute - if this value
-// less than zero, the certificate is never renewed.
+// resourceACMECertificateRead is a noop. See
+// resourceACMECertificateCustomizeDiff for most of the renewal check logic.
 func resourceACMECertificateRead(d *schema.ResourceData, meta interface{}) error {
+	return nil
+}
+
+// resourceACMECertificateCustomizeDiff checks the certificate for renewal and
+// flags it as NewComputed if it needs a renewal.
+func resourceACMECertificateCustomizeDiff(d *schema.ResourceDiff, meta interface{}) error {
+	// There's nothing for us to do in a Create diff, so if there's no ID yet,
+	// just pass this part.
+	if d.Id() == "" {
+		return nil
+	}
+
 	mindays := d.Get("min_days_remaining").(int)
 	if mindays < 0 {
 		log.Printf("[WARN] min_days_remaining is set to less than 0, certificate will never be renewed")
 		return nil
-	}
-
-	client, _, err := expandACMEClient(d, d.Get("registration_url").(string))
-	if err != nil {
-		return err
 	}
 
 	cert := expandCertificateResource(d)
@@ -99,20 +111,47 @@ func resourceACMECertificateRead(d *schema.ResourceData, meta interface{}) error
 	}
 
 	if int64(mindays) >= remaining {
-		if v, ok := d.GetOk("dns_challenge"); ok {
-			if err := setDNSChallenge(client, v.(*schema.Set).List()[0].(map[string]interface{})); err != nil {
-				return err
-			}
-		} else {
-			client.SetHTTPAddress(":" + strconv.Itoa(d.Get("http_challenge_port").(int)))
-			client.SetTLSAddress(":" + strconv.Itoa(d.Get("tls_challenge_port").(int)))
-		}
-		newCert, err := client.RenewCertificate(cert, true, d.Get("must_staple").(bool))
-		if err != nil {
+		d.SetNewComputed("certificate_pem")
+	}
+
+	return nil
+}
+
+// resourceACMECertificateUpdate renews a certificate if it has been flagged as changed.
+func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) error {
+	// We use partial state to protect against losing the certificate during bad
+	// renewal. min_days_remaining is a safe change to record in the state
+	// however, so we allow that to be set even on error.
+	d.Partial(true)
+	d.SetPartial("min_days_remaining")
+
+	// We don't need to do anything else here if the certificate hasn't been diffed
+	if !d.HasChange("certificate_pem") {
+		return nil
+	}
+
+	client, _, err := expandACMEClient(d, d.Get("registration_url").(string))
+	if err != nil {
+		return err
+	}
+
+	cert := expandCertificateResource(d)
+	if v, ok := d.GetOk("dns_challenge"); ok {
+		if err := setDNSChallenge(client, v.(*schema.Set).List()[0].(map[string]interface{})); err != nil {
 			return err
 		}
-		saveCertificateResource(d, newCert)
+	} else {
+		client.SetHTTPAddress(":" + strconv.Itoa(d.Get("http_challenge_port").(int)))
+		client.SetTLSAddress(":" + strconv.Itoa(d.Get("tls_challenge_port").(int)))
 	}
+	newCert, err := client.RenewCertificate(cert, true, d.Get("must_staple").(bool))
+	if err != nil {
+		return err
+	}
+
+	// Now safe to record state
+	d.Partial(false)
+	saveCertificateResource(d, newCert)
 
 	return nil
 }

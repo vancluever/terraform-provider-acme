@@ -20,8 +20,12 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/mitchellh/copystructure"
 	"github.com/mitchellh/mapstructure"
 )
+
+// type used for schema package context keys
+type contextKey string
 
 // Schema is used to describe the structure of a value.
 //
@@ -62,10 +66,20 @@ type Schema struct {
 	DiffSuppressFunc SchemaDiffSuppressFunc
 
 	// If this is non-nil, then this will be a default value that is used
-	// when this item is not set in the configuration/state.
+	// when this item is not set in the configuration.
 	//
-	// DefaultFunc can be specified if you want a dynamic default value.
-	// Only one of Default or DefaultFunc can be set.
+	// DefaultFunc can be specified to compute a dynamic default.
+	// Only one of Default or DefaultFunc can be set. If DefaultFunc is
+	// used then its return value should be stable to avoid generating
+	// confusing/perpetual diffs.
+	//
+	// Changing either Default or the return value of DefaultFunc can be
+	// a breaking change, especially if the attribute in question has
+	// ForceNew set. If a default needs to change to align with changing
+	// assumptions in an upstream API then it may be necessary to also use
+	// the MigrateState function on the resource to change the state to match,
+	// or have the Read function adjust the state value to align with the
+	// new default.
 	//
 	// If Required is true above, then Default cannot be set. DefaultFunc
 	// can be set with Required. If the DefaultFunc returns nil, then there
@@ -316,7 +330,7 @@ func (s *Schema) finalizeDiff(
 		return d
 	}
 
-	if s.Computed {
+	if s.Computed && !d.NewComputed {
 		if d.Old != "" && d.New == "" {
 			// This is a computed value with an old value set already,
 			// just let it go.
@@ -353,11 +367,23 @@ func (m schemaMap) Data(
 	}, nil
 }
 
+// DeepCopy returns a copy of this schemaMap. The copy can be safely modified
+// without affecting the original.
+func (m *schemaMap) DeepCopy() schemaMap {
+	copy, err := copystructure.Config{Lock: true}.Copy(m)
+	if err != nil {
+		panic(err)
+	}
+	return copy.(schemaMap)
+}
+
 // Diff returns the diff for a resource given the schema map,
 // state, and configuration.
 func (m schemaMap) Diff(
 	s *terraform.InstanceState,
-	c *terraform.ResourceConfig) (*terraform.InstanceDiff, error) {
+	c *terraform.ResourceConfig,
+	customizeDiff CustomizeDiffFunc,
+	meta interface{}) (*terraform.InstanceDiff, error) {
 	result := new(terraform.InstanceDiff)
 	result.Attributes = make(map[string]*terraform.ResourceAttrDiff)
 
@@ -376,6 +402,22 @@ func (m schemaMap) Diff(
 		err := m.diff(k, schema, result, d, false)
 		if err != nil {
 			return nil, err
+		}
+	}
+
+	// If this is a non-destroy diff, call any custom diff logic that has been
+	// defined.
+	if !result.DestroyTainted && customizeDiff != nil {
+		mc := m.DeepCopy()
+		rd := newResourceDiff(mc, c, s, result)
+		if err := customizeDiff(rd, meta); err != nil {
+			return nil, err
+		}
+		for _, k := range rd.UpdatedKeys() {
+			err := m.diff(k, mc[k], result, rd, false)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
@@ -401,6 +443,21 @@ func (m schemaMap) Diff(
 			err := m.diff(k, schema, result2, d, false)
 			if err != nil {
 				return nil, err
+			}
+		}
+
+		// Re-run customization
+		if !result2.DestroyTainted && customizeDiff != nil {
+			mc := m.DeepCopy()
+			rd := newResourceDiff(mc, c, d.state, result2)
+			if err := customizeDiff(rd, meta); err != nil {
+				return nil, err
+			}
+			for _, k := range rd.UpdatedKeys() {
+				err := m.diff(k, mc[k], result2, rd, false)
+				if err != nil {
+					return nil, err
+				}
 			}
 		}
 
@@ -477,7 +534,9 @@ func (m schemaMap) Input(
 
 		// Skip things that don't require config, if that is even valid
 		// for a provider schema.
-		if !v.Required && !v.Optional {
+		// Required XOR Optional must always be true to validate, so we only
+		// need to check one.
+		if v.Optional {
 			continue
 		}
 
@@ -630,6 +689,19 @@ func (m schemaMap) InternalValidate(topSchemaMap schemaMap) error {
 			}
 		}
 
+		// Computed-only field
+		if v.Computed && !v.Optional {
+			if v.ValidateFunc != nil {
+				return fmt.Errorf("%s: ValidateFunc is for validating user input, "+
+					"there's nothing to validate on computed-only field", k)
+			}
+			if v.DiffSuppressFunc != nil {
+				return fmt.Errorf("%s: DiffSuppressFunc is for suppressing differences"+
+					" between config and state representation. "+
+					"There is no config for computed-only field, nothing to compare.", k)
+			}
+		}
+
 		if v.ValidateFunc != nil {
 			switch v.Type {
 			case TypeList, TypeSet:
@@ -641,24 +713,23 @@ func (m schemaMap) InternalValidate(topSchemaMap schemaMap) error {
 	return nil
 }
 
-func (m schemaMap) markAsRemoved(k string, schema *Schema, diff *terraform.InstanceDiff) {
-	existingDiff, ok := diff.Attributes[k]
-	if ok {
-		existingDiff.NewRemoved = true
-		diff.Attributes[k] = schema.finalizeDiff(existingDiff)
-		return
-	}
-
-	diff.Attributes[k] = schema.finalizeDiff(&terraform.ResourceAttrDiff{
-		NewRemoved: true,
-	})
+// resourceDiffer is an interface that is used by the private diff functions.
+// This helps facilitate diff logic for both ResourceData and ResoureDiff with
+// minimal divergence in code.
+type resourceDiffer interface {
+	diffChange(string) (interface{}, interface{}, bool, bool)
+	Get(string) interface{}
+	GetChange(string) (interface{}, interface{})
+	GetOk(string) (interface{}, bool)
+	HasChange(string) bool
+	Id() string
 }
 
 func (m schemaMap) diff(
 	k string,
 	schema *Schema,
 	diff *terraform.InstanceDiff,
-	d *ResourceData,
+	d resourceDiffer,
 	all bool) error {
 
 	unsupressedDiff := new(terraform.InstanceDiff)
@@ -679,12 +750,14 @@ func (m schemaMap) diff(
 	}
 
 	for attrK, attrV := range unsupressedDiff.Attributes {
-		if schema.DiffSuppressFunc != nil &&
-			attrV != nil &&
-			schema.DiffSuppressFunc(attrK, attrV.Old, attrV.New, d) {
-			continue
+		switch rd := d.(type) {
+		case *ResourceData:
+			if schema.DiffSuppressFunc != nil &&
+				attrV != nil &&
+				schema.DiffSuppressFunc(attrK, attrV.Old, attrV.New, rd) {
+				continue
+			}
 		}
-
 		diff.Attributes[attrK] = attrV
 	}
 
@@ -695,7 +768,7 @@ func (m schemaMap) diffList(
 	k string,
 	schema *Schema,
 	diff *terraform.InstanceDiff,
-	d *ResourceData,
+	d resourceDiffer,
 	all bool) error {
 	o, n, _, computedList := d.diffChange(k)
 	if computedList {
@@ -742,6 +815,7 @@ func (m schemaMap) diffList(
 		diff.Attributes[k+".#"] = &terraform.ResourceAttrDiff{
 			Old:         oldStr,
 			NewComputed: true,
+			RequiresNew: schema.ForceNew,
 		}
 		return nil
 	}
@@ -777,7 +851,6 @@ func (m schemaMap) diffList(
 
 	switch t := schema.Elem.(type) {
 	case *Resource:
-		countDiff, cOk := diff.GetAttribute(k + ".#")
 		// This is a complex resource
 		for i := 0; i < maxLen; i++ {
 			for k2, schema := range t.Schema {
@@ -785,15 +858,6 @@ func (m schemaMap) diffList(
 				err := m.diff(subK, schema, diff, d, all)
 				if err != nil {
 					return err
-				}
-
-				// If parent list is being removed
-				// remove all subfields which were missed by the diff func
-				// We process these separately because type-specific diff functions
-				// lack the context (hierarchy of fields)
-				subKeyIsCount := strings.HasSuffix(subK, ".#")
-				if cOk && countDiff.New == "0" && !subKeyIsCount {
-					m.markAsRemoved(subK, schema, diff)
 				}
 			}
 		}
@@ -823,7 +887,7 @@ func (m schemaMap) diffMap(
 	k string,
 	schema *Schema,
 	diff *terraform.InstanceDiff,
-	d *ResourceData,
+	d resourceDiffer,
 	all bool) error {
 	prefix := k + "."
 
@@ -917,7 +981,7 @@ func (m schemaMap) diffSet(
 	k string,
 	schema *Schema,
 	diff *terraform.InstanceDiff,
-	d *ResourceData,
+	d resourceDiffer,
 	all bool) error {
 
 	o, n, _, computedSet := d.diffChange(k)
@@ -1004,7 +1068,6 @@ func (m schemaMap) diffSet(
 		for _, code := range list {
 			switch t := schema.Elem.(type) {
 			case *Resource:
-				countDiff, cOk := diff.GetAttribute(k + ".#")
 				// This is a complex resource
 				for k2, schema := range t.Schema {
 					subK := fmt.Sprintf("%s.%s.%s", k, code, k2)
@@ -1012,17 +1075,7 @@ func (m schemaMap) diffSet(
 					if err != nil {
 						return err
 					}
-
-					// If parent set is being removed
-					// remove all subfields which were missed by the diff func
-					// We process these separately because type-specific diff functions
-					// lack the context (hierarchy of fields)
-					subKeyIsCount := strings.HasSuffix(subK, ".#")
-					if cOk && countDiff.New == "0" && !subKeyIsCount {
-						m.markAsRemoved(subK, schema, diff)
-					}
 				}
-
 			case *Schema:
 				// Copy the schema so that we can set Computed/ForceNew from
 				// the parent schema (the TypeSet).
@@ -1049,7 +1102,7 @@ func (m schemaMap) diffString(
 	k string,
 	schema *Schema,
 	diff *terraform.InstanceDiff,
-	d *ResourceData,
+	d resourceDiffer,
 	all bool) error {
 	var originalN interface{}
 	var os, ns string
@@ -1083,7 +1136,7 @@ func (m schemaMap) diffString(
 	}
 
 	removed := false
-	if o != nil && n == nil {
+	if o != nil && n == nil && !computed {
 		removed = true
 	}
 	if removed && schema.Computed {
@@ -1216,6 +1269,13 @@ func (m schemaMap) validateList(
 	var es []error
 	for i, raw := range raws {
 		key := fmt.Sprintf("%s.%d", k, i)
+
+		// Reify the key value from the ResourceConfig.
+		// If the list was computed we have all raw values, but some of these
+		// may be known in the config, and aren't individually marked as Computed.
+		if r, ok := c.Get(key); ok {
+			raw = r
+		}
 
 		var ws2 []string
 		var es2 []error
@@ -1371,8 +1431,8 @@ func (m schemaMap) validateObject(
 	k string,
 	schema map[string]*Schema,
 	c *terraform.ResourceConfig) ([]string, []error) {
-	raw, _ := c.GetRaw(k)
-	if _, ok := raw.(map[string]interface{}); !ok {
+	raw, _ := c.Get(k)
+	if _, ok := raw.(map[string]interface{}); !ok && !c.IsComputed(k) {
 		return nil, []error{fmt.Errorf(
 			"%s: expected object, got %s",
 			k, reflect.ValueOf(raw).Kind())}

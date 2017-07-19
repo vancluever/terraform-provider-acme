@@ -118,7 +118,6 @@ func certificateSchema() map[string]*schema.Schema {
 			Type:     schema.TypeInt,
 			Optional: true,
 			Default:  7,
-			ForceNew: true,
 		},
 		"dns_challenge": &schema.Schema{
 			Type:     schema.TypeSet,
@@ -355,16 +354,31 @@ func expandACMEClient(d *schema.ResourceData, regURL string) (*acme.Client, *acm
 	return client, user, nil
 }
 
+// certificateResourceExpander is a simple interface to allow us to use the Get
+// function that is in ResourceData and ResourceDiff under the same function.
+type certificateResourceExpander interface {
+	Get(string) interface{}
+	GetChange(string) (interface{}, interface{})
+}
+
 // expandCertificateResource takes saved state in the certificate resource
 // and returns an acme.CertificateResource.
-func expandCertificateResource(d *schema.ResourceData) acme.CertificateResource {
+func expandCertificateResource(d certificateResourceExpander) acme.CertificateResource {
 	cert := acme.CertificateResource{
-		Domain:      d.Get("certificate_domain").(string),
-		CertURL:     d.Get("certificate_url").(string),
-		AccountRef:  d.Get("account_ref").(string),
-		PrivateKey:  []byte(d.Get("private_key_pem").(string)),
-		Certificate: []byte(d.Get("certificate_pem").(string)),
-		CSR:         []byte(d.Get("certificate_request_pem").(string)),
+		Domain:     d.Get("certificate_domain").(string),
+		CertURL:    d.Get("certificate_url").(string),
+		AccountRef: d.Get("account_ref").(string),
+		PrivateKey: []byte(d.Get("private_key_pem").(string)),
+		CSR:        []byte(d.Get("certificate_request_pem").(string)),
+	}
+	// There are situations now where the new certificate may be blank, which
+	// signifies that the certificate needs to be renewed. In this case, we need
+	// the old value here, versus the new one.
+	oldCertPEM, newCertPEM := d.GetChange("certificate_pem")
+	if newCertPEM.(string) != "" {
+		cert.Certificate = []byte(newCertPEM.(string))
+	} else {
+		cert.Certificate = []byte(oldCertPEM.(string))
 	}
 	return cert
 }
@@ -455,7 +469,7 @@ func parsePEMBundle(bundle []byte) ([]*x509.Certificate, error) {
 	}
 
 	if len(certificates) == 0 {
-		return nil, errors.New("No certificates were found while parsing the bundle.")
+		return nil, errors.New("no certificates were found while parsing the bundle")
 	}
 
 	return certificates, nil

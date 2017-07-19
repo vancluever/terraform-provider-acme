@@ -57,11 +57,16 @@ type ContextOpts struct {
 	Parallelism        int
 	State              *State
 	StateFutureAllowed bool
-	Providers          map[string]ResourceProviderFactory
+	ProviderResolver   ResourceProviderResolver
 	Provisioners       map[string]ResourceProvisionerFactory
 	Shadow             bool
 	Targets            []string
 	Variables          map[string]interface{}
+
+	// If non-nil, will apply as additional constraints on the provider
+	// plugins that will be requested from the provider resolver.
+	ProviderSHA256s    map[string][]byte
+	SkipProviderVerify bool
 
 	UIInput UIInput
 }
@@ -102,6 +107,7 @@ type Context struct {
 	l                   sync.Mutex // Lock acquired during any task
 	parallelSem         Semaphore
 	providerInputConfig map[string]map[string]interface{}
+	providerSHA256s     map[string][]byte
 	runLock             sync.Mutex
 	runCond             *sync.Cond
 	runContext          context.Context
@@ -166,13 +172,29 @@ func NewContext(opts *ContextOpts) (*Context, error) {
 	//        set by environment variables if necessary. This includes
 	//        values taken from -var-file in addition.
 	variables := make(map[string]interface{})
-
 	if opts.Module != nil {
 		var err error
 		variables, err = Variables(opts.Module, opts.Variables)
 		if err != nil {
 			return nil, err
 		}
+	}
+
+	// Bind available provider plugins to the constraints in config
+	var providers map[string]ResourceProviderFactory
+	if opts.ProviderResolver != nil {
+		var err error
+		deps := ModuleTreeDependencies(opts.Module, state)
+		reqd := deps.AllPluginRequirements()
+		if opts.ProviderSHA256s != nil && !opts.SkipProviderVerify {
+			reqd.LockExecutables(opts.ProviderSHA256s)
+		}
+		providers, err = resourceProviderFactories(opts.ProviderResolver, reqd)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		providers = make(map[string]ResourceProviderFactory)
 	}
 
 	diff := opts.Diff
@@ -182,7 +204,7 @@ func NewContext(opts *ContextOpts) (*Context, error) {
 
 	return &Context{
 		components: &basicComponentFactory{
-			providers:    opts.Providers,
+			providers:    providers,
 			provisioners: opts.Provisioners,
 		},
 		destroy:   opts.Destroy,
@@ -198,6 +220,7 @@ func NewContext(opts *ContextOpts) (*Context, error) {
 
 		parallelSem:         NewSemaphore(par),
 		providerInputConfig: make(map[string]map[string]interface{}),
+		providerSHA256s:     opts.ProviderSHA256s,
 		sh:                  sh,
 	}, nil
 }
@@ -453,8 +476,17 @@ func (c *Context) Input(mode InputMode) error {
 // Apply applies the changes represented by this context and returns
 // the resulting state.
 //
-// In addition to returning the resulting state, this context is updated
-// with the latest state.
+// Even in the case an error is returned, the state may be returned and will
+// potentially be partially updated.  In addition to returning the resulting
+// state, this context is updated with the latest state.
+//
+// If the state is required after an error, the caller should call
+// Context.State, rather than rely on the return value.
+//
+// TODO: Apply and Refresh should either always return a state, or rely on the
+//       State() method. Currently the helper/resource testing framework relies
+//       on the absence of a returned state to determine if Destroy can be
+//       called, so that will need to be refactored before this can be changed.
 func (c *Context) Apply() (*State, error) {
 	defer c.acquireRun("apply")()
 
@@ -500,6 +532,9 @@ func (c *Context) Plan() (*Plan, error) {
 		Vars:    c.variables,
 		State:   c.state,
 		Targets: c.targets,
+
+		TerraformVersion: VersionString(),
+		ProviderSHA256s:  c.providerSHA256s,
 	}
 
 	var operation walkOperation
@@ -580,7 +615,7 @@ func (c *Context) Plan() (*Plan, error) {
 // to their latest state. This will update the state that this context
 // works with, along with returning it.
 //
-// Even in the case an error is returned, the state will be returned and
+// Even in the case an error is returned, the state may be returned and
 // will potentially be partially updated.
 func (c *Context) Refresh() (*State, error) {
 	defer c.acquireRun("refresh")()
