@@ -1,3 +1,51 @@
+## v0.4.0
+
+### General Information
+
+ * Releases are no longer signed. SHA256SUMS are still published, however, and
+   signing may come back under a more general signing key. Keep this in mind if
+   you need earlier releases as well.
+ * Built against Terraform v0.10.0-beta2 with the experimental [custom diff
+   patch](https://github.com/hashicorp/terraform/pull/14887). Although the
+   plugin API version has not yet changed, YMMV with using this on Terraform
+   versions below v0.10.0-beta2. See below for details on why we are using the
+   custom diff patch.
+
+### New Diff Behaviour for Certificate Renewals
+
+The correctness of the certificate renewal behaviour in this resource has been a
+long-running problem, due to the fact that certificates were renewed during the
+refresh cycle. This caused silent updates and empty diffs unless you had
+resources in the same stack that depended on the certificates. In addition to
+this, this has led to issues with implementing settings like
+`min_days_remaining` in a way that made its setting effective on the present run
+without `ForceNew`. These issues are articulated in #13 and #15.
+
+As of this version, these issues are no longer a problem. Using the
+aforementioned custom diff patch, the certificate's expiry is now checked during
+the diff phase of a `terraform plan`, articulated below:
+
+```
+The Terraform execution plan has been generated and is shown below.
+Resources are shown in alphabetical order for quick scanning. Green resources
+will be created (or destroyed and then created if an existing resource
+exists), yellow resources are being changed in-place, and red resources
+will be destroyed. Cyan entries are data sources to be read.
+
+Note: You didn't specify an "-out" parameter to save this plan, so when
+"apply" is called, Terraform can't guarantee this is what will execute.
+
+  ~ acme_certificate.certificate
+      certificate_pem: "-----BEGIN CERTIFICATE-----\nxxxxxxx\n-----END CERTIFICATE-----\n" => "<computed>"
+```
+
+If the certificate requires renewal, `certificate_pem` is set to `<computed>`
+and correctly renewed during the next `terraform apply` run.
+
+This also means that setting `min_days_remaining` no longer forces a new
+resource and also works immediately - if you adjust it, its settings will work
+during your next plan.
+
 ## v0.3.0
 
 Fully updated version, supporting v0.9.0. Make sure you use this version for the
