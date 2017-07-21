@@ -5,7 +5,7 @@
  * Releases are no longer signed. SHA256SUMS are still published, however, and
    signing may come back under a more general signing key. Keep this in mind if
    you need earlier releases as well.
- * Built against Terraform v0.10.0-beta2 with the experimental [custom diff
+ * Built against Terraform v0.10.0-beta2 with the [custom diff
    patch](https://github.com/hashicorp/terraform/pull/14887). Although the
    plugin API version has not yet changed, YMMV with using this on Terraform
    versions below v0.10.0-beta2. See below for details on why we are using the
