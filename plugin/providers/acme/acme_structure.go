@@ -29,6 +29,7 @@ import (
 	"github.com/xenolf/lego/providers/dns/rfc2136"
 	"github.com/xenolf/lego/providers/dns/route53"
 	"github.com/xenolf/lego/providers/dns/vultr"
+	"github.com/xenolf/lego/providers/dns/godaddy"
 )
 
 // baseACMESchema returns a map[string]*schema.Schema with all the elements
@@ -529,6 +530,8 @@ func setDNSChallenge(client *acme.Client, m map[string]interface{}) error {
 		provider, err = ovh.NewDNSProvider()
 	case "pdns":
 		provider, err = pdns.NewDNSProvider()
+	case "godaddy":
+		provider, err = godaddy.NewDNSProvider()
 	default:
 		return fmt.Errorf("%s: unsupported DNS challenge provider", providerName)
 	}
