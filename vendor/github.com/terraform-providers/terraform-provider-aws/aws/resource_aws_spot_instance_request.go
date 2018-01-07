@@ -56,6 +56,11 @@ func resourceAwsSpotInstanceRequest() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			}
+			s["launch_group"] = &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+				ForceNew: true,
+			}
 			s["spot_bid_status"] = &schema.Schema{
 				Type:     schema.TypeString,
 				Computed: true,
@@ -73,7 +78,12 @@ func resourceAwsSpotInstanceRequest() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 			}
-
+			s["instance_interruption_behaviour"] = &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "terminate",
+				ForceNew: true,
+			}
 			return s
 		}(),
 	}
@@ -90,6 +100,7 @@ func resourceAwsSpotInstanceRequestCreate(d *schema.ResourceData, meta interface
 	spotOpts := &ec2.RequestSpotInstancesInput{
 		SpotPrice: aws.String(d.Get("spot_price").(string)),
 		Type:      aws.String(d.Get("spot_type").(string)),
+		InstanceInterruptionBehavior: aws.String(d.Get("instance_interruption_behaviour").(string)),
 
 		// Though the AWS API supports creating spot instance requests for multiple
 		// instances, for TF purposes we fix this to one instance per request.
@@ -115,6 +126,10 @@ func resourceAwsSpotInstanceRequestCreate(d *schema.ResourceData, meta interface
 
 	if v, ok := d.GetOk("block_duration_minutes"); ok {
 		spotOpts.BlockDurationMinutes = aws.Int64(int64(v.(int)))
+	}
+
+	if v, ok := d.GetOk("launch_group"); ok {
+		spotOpts.LaunchGroup = aws.String(v.(string))
 	}
 
 	// Make the spot instance request
@@ -200,8 +215,8 @@ func resourceAwsSpotInstanceRequestRead(d *schema.ResourceData, meta interface{}
 
 	request := resp.SpotInstanceRequests[0]
 
-	// if the request is cancelled, then it is gone
-	if *request.State == "cancelled" {
+	// if the request is cancelled or closed, then it is gone
+	if *request.State == "cancelled" || *request.State == "closed" {
 		d.SetId("")
 		return nil
 	}
@@ -217,8 +232,10 @@ func resourceAwsSpotInstanceRequestRead(d *schema.ResourceData, meta interface{}
 	}
 
 	d.Set("spot_request_state", request.State)
+	d.Set("launch_group", request.LaunchGroup)
 	d.Set("block_duration_minutes", request.BlockDurationMinutes)
 	d.Set("tags", tagsToMap(request.Tags))
+	d.Set("instance_interruption_behaviour", request.InstanceInterruptionBehavior)
 
 	return nil
 }

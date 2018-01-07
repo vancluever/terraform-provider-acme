@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"sort"
 	"strconv"
+	"strings"
 )
 
 // Server (virtual machine) on Vultr account
@@ -36,6 +38,9 @@ type Server struct {
 	KVMUrl           string      `json:"kvm_url"`
 	AutoBackups      string      `json:"auto_backups"`
 	Tag              string      `json:"tag"`
+	OSID             string      `json:"OSID"`
+	AppID            string      `json:"APPID"`
+	FirewallGroupID  string      `json:"FIREWALLGROUPID"`
 }
 
 // ServerOptions are optional parameters to be used during server creation
@@ -46,12 +51,29 @@ type ServerOptions struct {
 	UserData             string
 	Snapshot             string
 	SSHKey               string
+	ReservedIP           string
 	IPV6                 bool
 	PrivateNetworking    bool
 	AutoBackups          bool
 	DontNotifyOnActivate bool
 	Hostname             string
 	Tag                  string
+	AppID                string
+	FirewallGroupID      string
+}
+
+type servers []Server
+
+func (s servers) Len() int      { return len(s) }
+func (s servers) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
+func (s servers) Less(i, j int) bool {
+	// sort order: name, ip
+	if strings.ToLower(s[i].Name) < strings.ToLower(s[j].Name) {
+		return true
+	} else if strings.ToLower(s[i].Name) > strings.ToLower(s[j].Name) {
+		return false
+	}
+	return s[i].MainIP < s[j].MainIP
 }
 
 // V6Network represents a IPv6 network of a Vultr server
@@ -140,6 +162,24 @@ func (s *Server) UnmarshalJSON(data []byte) (err error) {
 	}
 	s.AllowedBandwidth = ab
 
+	value = fmt.Sprintf("%v", fields["OSID"])
+	if value == "<nil>" {
+		value = ""
+	}
+	s.OSID = value
+
+	value = fmt.Sprintf("%v", fields["APPID"])
+	if value == "<nil>" || value == "0" {
+		value = ""
+	}
+	s.AppID = value
+
+	value = fmt.Sprintf("%v", fields["FIREWALLGROUPID"])
+	if value == "<nil>" || value == "0" {
+		value = ""
+	}
+	s.FirewallGroupID = value
+
 	s.ID = fmt.Sprintf("%v", fields["SUBID"])
 	s.Name = fmt.Sprintf("%v", fields["label"])
 	s.OS = fmt.Sprintf("%v", fields["os"])
@@ -180,29 +220,31 @@ func (s *Server) UnmarshalJSON(data []byte) (err error) {
 }
 
 // GetServers returns a list of current virtual machines on Vultr account
-func (c *Client) GetServers() (servers []Server, err error) {
+func (c *Client) GetServers() (serverList []Server, err error) {
 	var serverMap map[string]Server
 	if err := c.get(`server/list`, &serverMap); err != nil {
 		return nil, err
 	}
 
 	for _, server := range serverMap {
-		servers = append(servers, server)
+		serverList = append(serverList, server)
 	}
-	return servers, nil
+	sort.Sort(servers(serverList))
+	return serverList, nil
 }
 
 // GetServersByTag returns a list of all virtual machines matching by tag
-func (c *Client) GetServersByTag(tag string) (servers []Server, err error) {
+func (c *Client) GetServersByTag(tag string) (serverList []Server, err error) {
 	var serverMap map[string]Server
 	if err := c.get(`server/list?tag=`+tag, &serverMap); err != nil {
 		return nil, err
 	}
 
 	for _, server := range serverMap {
-		servers = append(servers, server)
+		serverList = append(serverList, server)
 	}
-	return servers, nil
+	sort.Sort(servers(serverList))
+	return serverList, nil
 }
 
 // GetServer returns the virtual machine with the given ID
@@ -247,6 +289,10 @@ func (c *Client) CreateServer(name string, regionID, planID, osID int, options *
 			values.Add("SSHKEYID", options.SSHKey)
 		}
 
+		if options.ReservedIP != "" {
+			values.Add("reserved_ip_v4", options.ReservedIP)
+		}
+
 		values.Add("enable_ipv6", "no")
 		if options.IPV6 {
 			values.Set("enable_ipv6", "yes")
@@ -274,6 +320,14 @@ func (c *Client) CreateServer(name string, regionID, planID, osID int, options *
 		if options.Tag != "" {
 			values.Add("tag", options.Tag)
 		}
+
+		if options.AppID != "" {
+			values.Add("APPID", options.AppID)
+		}
+
+		if options.FirewallGroupID != "" {
+			values.Add("FIREWALLGROUPID", options.FirewallGroupID)
+		}
 	}
 
 	var server Server
@@ -295,6 +349,19 @@ func (c *Client) RenameServer(id, name string) error {
 	}
 
 	if err := c.post(`server/label_set`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+// TagServer replaces the tag on an existing virtual machine
+func (c *Client) TagServer(id, tag string) error {
+	values := url.Values{
+		"SUBID": {id},
+		"tag":   {tag},
+	}
+
+	if err := c.post(`server/tag_set`, values, nil); err != nil {
 		return err
 	}
 	return nil
@@ -371,6 +438,7 @@ func (c *Client) ListOSforServer(id string) (os []OS, err error) {
 	for _, o := range osMap {
 		os = append(os, o)
 	}
+	sort.Sort(oses(os))
 	return os, nil
 }
 
@@ -419,6 +487,24 @@ func (c *Client) DeleteServer(id string) error {
 	return nil
 }
 
+// SetFirewallGroup adds a virtual machine to a firewall group
+func (c *Client) SetFirewallGroup(id, firewallgroup string) error {
+	values := url.Values{
+		"SUBID":           {id},
+		"FIREWALLGROUPID": {firewallgroup},
+	}
+
+	if err := c.post(`server/firewall_group_set`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+// UnsetFirewallGroup removes a virtual machine from a firewall group
+func (c *Client) UnsetFirewallGroup(id string) error {
+	return c.SetFirewallGroup(id, "0")
+}
+
 // BandwidthOfServer retrieves the bandwidth used by a virtual machine
 func (c *Client) BandwidthOfServer(id string) (bandwidth []map[string]string, err error) {
 	var bandwidthMap map[string][][]string
@@ -445,4 +531,31 @@ func (c *Client) BandwidthOfServer(id string) (bandwidth []map[string]string, er
 	}
 
 	return bandwidth, nil
+}
+
+// ChangeApplicationofServer changes the virtual machine to a different application
+func (c *Client) ChangeApplicationofServer(id string, appID string) error {
+	values := url.Values{
+		"SUBID": {id},
+		"APPID": {appID},
+	}
+
+	if err := c.post(`server/app_change`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+// ListApplicationsforServer lists all available operating systems to which an existing virtual machine can be changed
+func (c *Client) ListApplicationsforServer(id string) (apps []Application, err error) {
+	var appMap map[string]Application
+	if err := c.get(`server/app_change_list?SUBID=`+id, &appMap); err != nil {
+		return nil, err
+	}
+
+	for _, app := range appMap {
+		apps = append(apps, app)
+	}
+	sort.Sort(applications(apps))
+	return apps, nil
 }

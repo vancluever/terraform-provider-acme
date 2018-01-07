@@ -1,0 +1,19 @@
+[[constraint]]
+  name = "github.com/hashicorp/terraform"
+  version = "0.11.1"
+
+[[constraint]]
+  name = "github.com/terraform-providers/terraform-provider-aws"
+  version = "1.6.0"
+
+[[constraint]]
+  name = "github.com/terraform-providers/terraform-provider-tls"
+  version = "1.0.1"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/xenolf/lego"
+
+[[constraint]]
+  branch = "master"
+  name = "golang.org/x/crypto"

@@ -392,6 +392,43 @@ func resourceAwsS3Bucket() *schema.Resource {
 				},
 			},
 
+			"server_side_encryption_configuration": {
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"rule": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Required: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"apply_server_side_encryption_by_default": {
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Required: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"kms_master_key_id": {
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+												"sse_algorithm": {
+													Type:         schema.TypeString,
+													Required:     true,
+													ValidateFunc: validateS3BucketServerSideEncryptionAlgorithm,
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+
 			"tags": tagsSchema(),
 		},
 	}
@@ -463,7 +500,6 @@ func resourceAwsS3BucketCreate(d *schema.ResourceData, meta interface{}) error {
 
 	// Assign the bucket name as the resource ID
 	d.SetId(bucket)
-
 	return resourceAwsS3BucketUpdate(d, meta)
 }
 
@@ -532,6 +568,12 @@ func resourceAwsS3BucketUpdate(d *schema.ResourceData, meta interface{}) error {
 		}
 	}
 
+	if d.HasChange("server_side_encryption_configuration") {
+		if err := resourceAwsS3BucketServerSideEncryptionConfigurationUpdate(s3conn, d); err != nil {
+			return err
+		}
+	}
+
 	return resourceAwsS3BucketRead(d, meta)
 }
 
@@ -539,8 +581,11 @@ func resourceAwsS3BucketRead(d *schema.ResourceData, meta interface{}) error {
 	s3conn := meta.(*AWSClient).s3conn
 
 	var err error
-	_, err = s3conn.HeadBucket(&s3.HeadBucketInput{
-		Bucket: aws.String(d.Id()),
+
+	_, err = retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.HeadBucket(&s3.HeadBucketInput{
+			Bucket: aws.String(d.Id()),
+		})
 	})
 	if err != nil {
 		if awsError, ok := err.(awserr.RequestFailure); ok && awsError.StatusCode() == 404 {
@@ -563,8 +608,11 @@ func resourceAwsS3BucketRead(d *schema.ResourceData, meta interface{}) error {
 
 	// Read the policy
 	if _, ok := d.GetOk("policy"); ok {
-		pol, err := s3conn.GetBucketPolicy(&s3.GetBucketPolicyInput{
-			Bucket: aws.String(d.Id()),
+
+		pol, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+			return s3conn.GetBucketPolicy(&s3.GetBucketPolicyInput{
+				Bucket: aws.String(d.Id()),
+			})
 		})
 		log.Printf("[DEBUG] S3 bucket: %s, read policy: %v", d.Id(), pol)
 		if err != nil {
@@ -572,7 +620,7 @@ func resourceAwsS3BucketRead(d *schema.ResourceData, meta interface{}) error {
 				return err
 			}
 		} else {
-			if v := pol.Policy; v == nil {
+			if v := pol.(*s3.GetBucketPolicyOutput).Policy; v == nil {
 				if err := d.Set("policy", ""); err != nil {
 					return err
 				}
@@ -587,9 +635,12 @@ func resourceAwsS3BucketRead(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	// Read the CORS
-	cors, err := s3conn.GetBucketCors(&s3.GetBucketCorsInput{
-		Bucket: aws.String(d.Id()),
+	corsResponse, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.GetBucketCors(&s3.GetBucketCorsInput{
+			Bucket: aws.String(d.Id()),
+		})
 	})
+	cors := corsResponse.(*s3.GetBucketCorsOutput)
 	if err != nil {
 		// An S3 Bucket might not have CORS configuration set.
 		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() != "NoSuchCORSConfiguration" {
@@ -620,9 +671,12 @@ func resourceAwsS3BucketRead(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	// Read the website configuration
-	ws, err := s3conn.GetBucketWebsite(&s3.GetBucketWebsiteInput{
-		Bucket: aws.String(d.Id()),
+	wsResponse, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.GetBucketWebsite(&s3.GetBucketWebsiteInput{
+			Bucket: aws.String(d.Id()),
+		})
 	})
+	ws := wsResponse.(*s3.GetBucketWebsiteOutput)
 	var websites []map[string]interface{}
 	if err == nil {
 		w := make(map[string]interface{})
@@ -641,19 +695,22 @@ func resourceAwsS3BucketRead(d *schema.ResourceData, meta interface{}) error {
 			} else {
 				var host string
 				var path string
+				var query string
 				parsedHostName, err := url.Parse(*v.HostName)
 				if err == nil {
 					host = parsedHostName.Host
 					path = parsedHostName.Path
+					query = parsedHostName.RawQuery
 				} else {
 					host = *v.HostName
 					path = ""
 				}
 
 				w["redirect_all_requests_to"] = (&url.URL{
-					Host:   host,
-					Path:   path,
-					Scheme: *v.Protocol,
+					Host:     host,
+					Path:     path,
+					Scheme:   *v.Protocol,
+					RawQuery: query,
 				}).String()
 			}
 		}
@@ -673,9 +730,13 @@ func resourceAwsS3BucketRead(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	// Read the versioning configuration
-	versioning, err := s3conn.GetBucketVersioning(&s3.GetBucketVersioningInput{
-		Bucket: aws.String(d.Id()),
+
+	versioningResponse, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.GetBucketVersioning(&s3.GetBucketVersioningInput{
+			Bucket: aws.String(d.Id()),
+		})
 	})
+	versioning := versioningResponse.(*s3.GetBucketVersioningOutput)
 	if err != nil {
 		return err
 	}
@@ -701,9 +762,13 @@ func resourceAwsS3BucketRead(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	// Read the acceleration status
-	accelerate, err := s3conn.GetBucketAccelerateConfiguration(&s3.GetBucketAccelerateConfigurationInput{
-		Bucket: aws.String(d.Id()),
+
+	accelerateResponse, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.GetBucketAccelerateConfiguration(&s3.GetBucketAccelerateConfigurationInput{
+			Bucket: aws.String(d.Id()),
+		})
 	})
+	accelerate := accelerateResponse.(*s3.GetBucketAccelerateConfigurationOutput)
 	if err != nil {
 		// Amazon S3 Transfer Acceleration might not be supported in the
 		// given region, for example, China (Beijing) and the Government
@@ -726,9 +791,13 @@ func resourceAwsS3BucketRead(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	// Read the request payer configuration.
-	payer, err := s3conn.GetBucketRequestPayment(&s3.GetBucketRequestPaymentInput{
-		Bucket: aws.String(d.Id()),
+
+	payerResponse, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.GetBucketRequestPayment(&s3.GetBucketRequestPaymentInput{
+			Bucket: aws.String(d.Id()),
+		})
 	})
+	payer := payerResponse.(*s3.GetBucketRequestPaymentOutput)
 	if err != nil {
 		return err
 	}
@@ -740,9 +809,12 @@ func resourceAwsS3BucketRead(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	// Read the logging configuration
-	logging, err := s3conn.GetBucketLogging(&s3.GetBucketLoggingInput{
-		Bucket: aws.String(d.Id()),
+	loggingResponse, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.GetBucketLogging(&s3.GetBucketLoggingInput{
+			Bucket: aws.String(d.Id()),
+		})
 	})
+	logging := loggingResponse.(*s3.GetBucketLoggingOutput)
 	if err != nil {
 		return err
 	}
@@ -764,9 +836,13 @@ func resourceAwsS3BucketRead(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	// Read the lifecycle configuration
-	lifecycle, err := s3conn.GetBucketLifecycleConfiguration(&s3.GetBucketLifecycleConfigurationInput{
-		Bucket: aws.String(d.Id()),
+
+	lifecycleResponse, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.GetBucketLifecycleConfiguration(&s3.GetBucketLifecycleConfigurationInput{
+			Bucket: aws.String(d.Id()),
+		})
 	})
+	lifecycle := lifecycleResponse.(*s3.GetBucketLifecycleConfigurationOutput)
 	if err != nil {
 		if awsError, ok := err.(awserr.RequestFailure); ok && awsError.StatusCode() != 404 {
 			return err
@@ -784,21 +860,28 @@ func resourceAwsS3BucketRead(d *schema.ResourceData, meta interface{}) error {
 				rule["id"] = *lifecycleRule.ID
 			}
 			filter := lifecycleRule.Filter
-			if filter.And != nil {
-				// Prefix
-				if filter.And.Prefix != nil && *filter.And.Prefix != "" {
-					rule["prefix"] = *filter.And.Prefix
-				}
-				// Tag
-				if len(filter.And.Tags) > 0 {
-					rule["tags"] = tagsToMapS3(filter.And.Tags)
+			if filter != nil {
+				if filter.And != nil {
+					// Prefix
+					if filter.And.Prefix != nil && *filter.And.Prefix != "" {
+						rule["prefix"] = *filter.And.Prefix
+					}
+					// Tag
+					if len(filter.And.Tags) > 0 {
+						rule["tags"] = tagsToMapS3(filter.And.Tags)
+					}
+				} else {
+					// Prefix
+					if filter.Prefix != nil && *filter.Prefix != "" {
+						rule["prefix"] = *filter.Prefix
+					}
 				}
 			} else {
-				// Prefix
-				if filter.Prefix != nil && *filter.Prefix != "" {
-					rule["prefix"] = *filter.Prefix
+				if lifecycleRule.Prefix != nil {
+					rule["prefix"] = *lifecycleRule.Prefix
 				}
 			}
+
 			// Enabled
 			if lifecycleRule.Status != nil {
 				if *lifecycleRule.Status == s3.ExpirationStatusEnabled {
@@ -880,9 +963,13 @@ func resourceAwsS3BucketRead(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	// Read the bucket replication configuration
-	replication, err := s3conn.GetBucketReplication(&s3.GetBucketReplicationInput{
-		Bucket: aws.String(d.Id()),
+
+	replicationResponse, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.GetBucketReplication(&s3.GetBucketReplicationInput{
+			Bucket: aws.String(d.Id()),
+		})
 	})
+	replication := replicationResponse.(*s3.GetBucketReplicationOutput)
 	if err != nil {
 		if awsError, ok := err.(awserr.RequestFailure); ok && awsError.StatusCode() != 404 {
 			return err
@@ -897,12 +984,41 @@ func resourceAwsS3BucketRead(d *schema.ResourceData, meta interface{}) error {
 		}
 	}
 
-	// Add the region as an attribute
-	location, err := s3conn.GetBucketLocation(
-		&s3.GetBucketLocationInput{
+	// Read the bucket server side encryption configuration
+
+	encryptionResponse, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.GetBucketEncryption(&s3.GetBucketEncryptionInput{
 			Bucket: aws.String(d.Id()),
-		},
-	)
+		})
+	})
+	if err != nil {
+		if isAWSErr(err, "ServerSideEncryptionConfigurationNotFoundError", "encryption configuration was not found") {
+			log.Printf("[DEBUG] Default encryption is not enabled for %s", d.Id())
+			d.Set("server_side_encryption_configuration", []map[string]interface{}{})
+		} else {
+			return err
+		}
+	} else {
+		encryption := encryptionResponse.(*s3.GetBucketEncryptionOutput)
+		log.Printf("[DEBUG] S3 Bucket: %s, read encryption configuration: %v", d.Id(), encryption)
+		if c := encryption.ServerSideEncryptionConfiguration; c != nil {
+			if err := d.Set("server_side_encryption_configuration", flattenAwsS3ServerSideEncryptionConfiguration(c)); err != nil {
+				log.Printf("[DEBUG] Error setting server side encryption configuration: %s", err)
+				return err
+			}
+		}
+	}
+
+	// Add the region as an attribute
+
+	locationResponse, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.GetBucketLocation(
+			&s3.GetBucketLocationInput{
+				Bucket: aws.String(d.Id()),
+			},
+		)
+	})
+	location := locationResponse.(*s3.GetBucketLocationOutput)
 	if err != nil {
 		return err
 	}
@@ -1032,7 +1148,7 @@ func resourceAwsS3BucketPolicyUpdate(s3conn *s3.S3, d *schema.ResourceData) erro
 		err := resource.Retry(1*time.Minute, func() *resource.RetryError {
 			if _, err := s3conn.PutBucketPolicy(params); err != nil {
 				if awserr, ok := err.(awserr.Error); ok {
-					if awserr.Code() == "MalformedPolicy" {
+					if awserr.Code() == "MalformedPolicy" || awserr.Code() == "NoSuchBucket" {
 						return resource.RetryableError(awserr)
 					}
 				}
@@ -1046,8 +1162,10 @@ func resourceAwsS3BucketPolicyUpdate(s3conn *s3.S3, d *schema.ResourceData) erro
 		}
 	} else {
 		log.Printf("[DEBUG] S3 bucket: %s, delete policy: %s", bucket, policy)
-		_, err := s3conn.DeleteBucketPolicy(&s3.DeleteBucketPolicyInput{
-			Bucket: aws.String(bucket),
+		_, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+			return s3conn.DeleteBucketPolicy(&s3.DeleteBucketPolicyInput{
+				Bucket: aws.String(bucket),
+			})
 		})
 
 		if err != nil {
@@ -1065,8 +1183,11 @@ func resourceAwsS3BucketCorsUpdate(s3conn *s3.S3, d *schema.ResourceData) error 
 	if len(rawCors) == 0 {
 		// Delete CORS
 		log.Printf("[DEBUG] S3 bucket: %s, delete CORS", bucket)
-		_, err := s3conn.DeleteBucketCors(&s3.DeleteBucketCorsInput{
-			Bucket: aws.String(bucket),
+
+		_, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+			return s3conn.DeleteBucketCors(&s3.DeleteBucketCorsInput{
+				Bucket: aws.String(bucket),
+			})
 		})
 		if err != nil {
 			return fmt.Errorf("Error deleting S3 CORS: %s", err)
@@ -1108,7 +1229,10 @@ func resourceAwsS3BucketCorsUpdate(s3conn *s3.S3, d *schema.ResourceData) error 
 			},
 		}
 		log.Printf("[DEBUG] S3 bucket: %s, put CORS: %#v", bucket, corsInput)
-		_, err := s3conn.PutBucketCors(corsInput)
+
+		_, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+			return s3conn.PutBucketCors(corsInput)
+		})
 		if err != nil {
 			return fmt.Errorf("Error putting S3 CORS: %s", err)
 		}
@@ -1174,6 +1298,10 @@ func resourceAwsS3BucketWebsitePut(s3conn *s3.S3, d *schema.ResourceData, websit
 			if redirect.Path != "" {
 				redirectHostBuf.WriteString(redirect.Path)
 			}
+			if redirect.RawQuery != "" {
+				redirectHostBuf.WriteString("?")
+				redirectHostBuf.WriteString(redirect.RawQuery)
+			}
 			websiteConfiguration.RedirectAllRequestsTo = &s3.RedirectAllRequestsTo{HostName: aws.String(redirectHostBuf.String()), Protocol: aws.String(redirect.Scheme)}
 		} else {
 			websiteConfiguration.RedirectAllRequestsTo = &s3.RedirectAllRequestsTo{HostName: aws.String(redirectAllRequestsTo)}
@@ -1195,7 +1323,9 @@ func resourceAwsS3BucketWebsitePut(s3conn *s3.S3, d *schema.ResourceData, websit
 
 	log.Printf("[DEBUG] S3 put bucket website: %#v", putInput)
 
-	_, err := s3conn.PutBucketWebsite(putInput)
+	_, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.PutBucketWebsite(putInput)
+	})
 	if err != nil {
 		return fmt.Errorf("Error putting S3 website: %s", err)
 	}
@@ -1209,7 +1339,9 @@ func resourceAwsS3BucketWebsiteDelete(s3conn *s3.S3, d *schema.ResourceData) err
 
 	log.Printf("[DEBUG] S3 delete bucket website: %#v", deleteInput)
 
-	_, err := s3conn.DeleteBucketWebsite(deleteInput)
+	_, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.DeleteBucketWebsite(deleteInput)
+	})
 	if err != nil {
 		return fmt.Errorf("Error deleting S3 website: %s", err)
 	}
@@ -1230,11 +1362,15 @@ func websiteEndpoint(s3conn *s3.S3, d *schema.ResourceData) (*S3Website, error) 
 	bucket := d.Get("bucket").(string)
 
 	// Lookup the region for this bucket
-	location, err := s3conn.GetBucketLocation(
-		&s3.GetBucketLocationInput{
-			Bucket: aws.String(bucket),
-		},
-	)
+
+	locationResponse, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.GetBucketLocation(
+			&s3.GetBucketLocationInput{
+				Bucket: aws.String(bucket),
+			},
+		)
+	})
+	location := locationResponse.(*s3.GetBucketLocationOutput)
 	if err != nil {
 		return nil, err
 	}
@@ -1296,7 +1432,9 @@ func resourceAwsS3BucketAclUpdate(s3conn *s3.S3, d *schema.ResourceData) error {
 	}
 	log.Printf("[DEBUG] S3 put bucket ACL: %#v", i)
 
-	_, err := s3conn.PutBucketAcl(i)
+	_, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.PutBucketAcl(i)
+	})
 	if err != nil {
 		return fmt.Errorf("Error putting S3 ACL: %s", err)
 	}
@@ -1334,7 +1472,9 @@ func resourceAwsS3BucketVersioningUpdate(s3conn *s3.S3, d *schema.ResourceData) 
 	}
 	log.Printf("[DEBUG] S3 put bucket versioning: %#v", i)
 
-	_, err := s3conn.PutBucketVersioning(i)
+	_, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.PutBucketVersioning(i)
+	})
 	if err != nil {
 		return fmt.Errorf("Error putting S3 versioning: %s", err)
 	}
@@ -1367,7 +1507,9 @@ func resourceAwsS3BucketLoggingUpdate(s3conn *s3.S3, d *schema.ResourceData) err
 	}
 	log.Printf("[DEBUG] S3 put bucket logging: %#v", i)
 
-	_, err := s3conn.PutBucketLogging(i)
+	_, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.PutBucketLogging(i)
+	})
 	if err != nil {
 		return fmt.Errorf("Error putting S3 logging: %s", err)
 	}
@@ -1387,7 +1529,9 @@ func resourceAwsS3BucketAccelerationUpdate(s3conn *s3.S3, d *schema.ResourceData
 	}
 	log.Printf("[DEBUG] S3 put bucket acceleration: %#v", i)
 
-	_, err := s3conn.PutBucketAccelerateConfiguration(i)
+	_, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.PutBucketAccelerateConfiguration(i)
+	})
 	if err != nil {
 		return fmt.Errorf("Error putting S3 acceleration: %s", err)
 	}
@@ -1407,9 +1551,73 @@ func resourceAwsS3BucketRequestPayerUpdate(s3conn *s3.S3, d *schema.ResourceData
 	}
 	log.Printf("[DEBUG] S3 put bucket request payer: %#v", i)
 
-	_, err := s3conn.PutBucketRequestPayment(i)
+	_, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.PutBucketRequestPayment(i)
+	})
 	if err != nil {
 		return fmt.Errorf("Error putting S3 request payer: %s", err)
+	}
+
+	return nil
+}
+
+func resourceAwsS3BucketServerSideEncryptionConfigurationUpdate(s3conn *s3.S3, d *schema.ResourceData) error {
+	bucket := d.Get("bucket").(string)
+	serverSideEncryptionConfiguration := d.Get("server_side_encryption_configuration").([]interface{})
+	if len(serverSideEncryptionConfiguration) == 0 {
+		log.Printf("[DEBUG] Delete server side encryption configuration: %#v", serverSideEncryptionConfiguration)
+		i := &s3.DeleteBucketEncryptionInput{
+			Bucket: aws.String(bucket),
+		}
+
+		err := resource.Retry(1*time.Minute, func() *resource.RetryError {
+			if _, err := s3conn.DeleteBucketEncryption(i); err != nil {
+				return resource.NonRetryableError(err)
+			}
+			return nil
+		})
+		if err != nil {
+			return fmt.Errorf("error removing S3 bucket server side encryption: %s", err)
+		}
+		return nil
+	}
+
+	c := serverSideEncryptionConfiguration[0].(map[string]interface{})
+
+	rc := &s3.ServerSideEncryptionConfiguration{}
+
+	rcRules := c["rule"].([]interface{})
+	var rules []*s3.ServerSideEncryptionRule
+	for _, v := range rcRules {
+		rr := v.(map[string]interface{})
+		rrDefault := rr["apply_server_side_encryption_by_default"].([]interface{})
+		sseAlgorithm := rrDefault[0].(map[string]interface{})["sse_algorithm"].(string)
+		kmsMasterKeyId := rrDefault[0].(map[string]interface{})["kms_master_key_id"].(string)
+		rcDefaultRule := &s3.ServerSideEncryptionByDefault{
+			SSEAlgorithm: aws.String(sseAlgorithm),
+		}
+		if kmsMasterKeyId != "" {
+			rcDefaultRule.KMSMasterKeyID = aws.String(kmsMasterKeyId)
+		}
+		rcRule := &s3.ServerSideEncryptionRule{
+			ApplyServerSideEncryptionByDefault: rcDefaultRule,
+		}
+
+		rules = append(rules, rcRule)
+	}
+
+	rc.Rules = rules
+	i := &s3.PutBucketEncryptionInput{
+		Bucket: aws.String(bucket),
+		ServerSideEncryptionConfiguration: rc,
+	}
+	log.Printf("[DEBUG] S3 put bucket replication configuration: %#v", i)
+
+	_, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.PutBucketEncryption(i)
+	})
+	if err != nil {
+		return fmt.Errorf("error putting S3 server side encryption configuration: %s", err)
 	}
 
 	return nil
@@ -1492,7 +1700,9 @@ func resourceAwsS3BucketReplicationConfigurationUpdate(s3conn *s3.S3, d *schema.
 	}
 	log.Printf("[DEBUG] S3 put bucket replication configuration: %#v", i)
 
-	_, err := s3conn.PutBucketReplication(i)
+	_, err := retryOnAwsCode("NoSuchBucket", func() (interface{}, error) {
+		return s3conn.PutBucketReplication(i)
+	})
 	if err != nil {
 		return fmt.Errorf("Error putting S3 replication configuration: %s", err)
 	}
@@ -1657,6 +1867,25 @@ func resourceAwsS3BucketLifecycleUpdate(s3conn *s3.S3, d *schema.ResourceData) e
 	}
 
 	return nil
+}
+
+func flattenAwsS3ServerSideEncryptionConfiguration(c *s3.ServerSideEncryptionConfiguration) []map[string]interface{} {
+	var encryptionConfiguration []map[string]interface{}
+	rules := make([]interface{}, 0, len(c.Rules))
+	for _, v := range c.Rules {
+		if v.ApplyServerSideEncryptionByDefault != nil {
+			r := make(map[string]interface{})
+			d := make(map[string]interface{})
+			d["kms_master_key_id"] = aws.StringValue(v.ApplyServerSideEncryptionByDefault.KMSMasterKeyID)
+			d["sse_algorithm"] = aws.StringValue(v.ApplyServerSideEncryptionByDefault.SSEAlgorithm)
+			r["apply_server_side_encryption_by_default"] = []map[string]interface{}{d}
+			rules = append(rules, r)
+		}
+	}
+	encryptionConfiguration = append(encryptionConfiguration, map[string]interface{}{
+		"rule": rules,
+	})
+	return encryptionConfiguration
 }
 
 func flattenAwsS3BucketReplicationConfiguration(r *s3.ReplicationConfiguration) []map[string]interface{} {

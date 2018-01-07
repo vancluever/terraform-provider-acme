@@ -113,11 +113,12 @@ func resourceAwsAutoscalingGroup() *schema.Resource {
 			},
 
 			"availability_zones": {
-				Type:     schema.TypeSet,
-				Optional: true,
-				Computed: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
-				Set:      schema.HashString,
+				Type:             schema.TypeSet,
+				Optional:         true,
+				Computed:         true,
+				Elem:             &schema.Schema{Type: schema.TypeString},
+				Set:              schema.HashString,
+				DiffSuppressFunc: suppressAutoscalingGroupAvailabilityZoneDiffs,
 			},
 
 			"placement_group": {
@@ -458,7 +459,7 @@ func resourceAwsAutoscalingGroupRead(d *schema.ResourceData, meta interface{}) e
 		return err
 	}
 	if g == nil {
-		log.Printf("[INFO] Autoscaling Group %q not found", d.Id())
+		log.Printf("[WARN] Autoscaling Group (%s) not found, removing from state", d.Id())
 		d.SetId("")
 		return nil
 	}
@@ -525,7 +526,12 @@ func resourceAwsAutoscalingGroupRead(d *schema.ResourceData, meta interface{}) e
 		d.Set("tag", autoscalingTagDescriptionsToSlice(g.Tags))
 	}
 
-	d.Set("vpc_zone_identifier", strings.Split(*g.VPCZoneIdentifier, ","))
+	if len(*g.VPCZoneIdentifier) > 0 {
+		d.Set("vpc_zone_identifier", strings.Split(*g.VPCZoneIdentifier, ","))
+	} else {
+		d.Set("vpc_zone_identifier", []string{})
+	}
+
 	d.Set("protect_from_scale_in", g.NewInstancesProtectedFromScaleIn)
 
 	// If no termination polices are explicitly configured and the upstream state
@@ -737,7 +743,7 @@ func resourceAwsAutoscalingGroupDelete(d *schema.ResourceData, meta interface{})
 		return err
 	}
 	if g == nil {
-		log.Printf("[INFO] Autoscaling Group %q not found", d.Id())
+		log.Printf("[WARN] Autoscaling Group (%s) not found, removing from state", d.Id())
 		d.SetId("")
 		return nil
 	}
@@ -844,7 +850,7 @@ func resourceAwsAutoscalingGroupDrain(d *schema.ResourceData, meta interface{}) 
 			return resource.NonRetryableError(err)
 		}
 		if g == nil {
-			log.Printf("[INFO] Autoscaling Group %q not found", d.Id())
+			log.Printf("[WARN] Autoscaling Group (%s) not found, removing from state", d.Id())
 			d.SetId("")
 			return nil
 		}

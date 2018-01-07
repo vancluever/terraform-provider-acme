@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"bytes"
 	"crypto/tls"
 	"encoding/json"
 	"errors"
@@ -18,7 +19,7 @@ import (
 
 const (
 	// Version of this libary
-	Version = "1.12.0"
+	Version = "1.15.0"
 
 	// APIVersion of Vultr
 	APIVersion = "v1"
@@ -55,7 +56,13 @@ type Client struct {
 
 	// Throttling struct
 	bucket *ratelimit.Bucket
+
+	// Optional function called after every successful request made to the API
+	onRequestCompleted RequestCompletionCallback
 }
+
+// RequestCompletionCallback defines the type of the request callback function
+type RequestCompletionCallback func(*http.Request, *http.Response)
 
 // Options represents optional settings and flags that can be passed to NewClient
 type Options struct {
@@ -119,13 +126,6 @@ func apiPath(path string) string {
 	return fmt.Sprintf("/%s/%s", APIVersion, path)
 }
 
-func apiKeyPath(path, apiKey string) string {
-	if strings.Contains(path, "?") {
-		return path + "&api_key=" + apiKey
-	}
-	return path + "?api_key=" + apiKey
-}
-
 func (c *Client) get(path string, data interface{}) error {
 	req, err := c.newRequest("GET", apiPath(path), nil)
 	if err != nil {
@@ -142,8 +142,13 @@ func (c *Client) post(path string, values url.Values, data interface{}) error {
 	return c.do(req, data)
 }
 
+// OnRequestCompleted sets the API request completion callback
+func (c *Client) OnRequestCompleted(rc RequestCompletionCallback) {
+	c.onRequestCompleted = rc
+}
+
 func (c *Client) newRequest(method string, path string, body io.Reader) (*http.Request, error) {
-	relPath, err := url.Parse(apiKeyPath(path, c.APIKey))
+	relPath, err := url.Parse(path)
 	if err != nil {
 		return nil, err
 	}
@@ -155,6 +160,7 @@ func (c *Client) newRequest(method string, path string, body io.Reader) (*http.R
 		return nil, err
 	}
 
+	req.Header.Add("API-Key", c.APIKey)
 	req.Header.Add("User-Agent", c.UserAgent)
 	req.Header.Add("Accept", mediaType)
 
@@ -168,11 +174,32 @@ func (c *Client) do(req *http.Request, data interface{}) error {
 	// Throttle http requests to avoid hitting Vultr's API rate-limit
 	c.bucket.Wait(1)
 
+	// Request body gets drained on each read so we
+	// need to save it's content for retrying requests
+	var err error
+	var requestBody []byte
+	if req.Body != nil {
+		requestBody, err = ioutil.ReadAll(req.Body)
+		if err != nil {
+			return fmt.Errorf("Error reading request body: %v", err)
+		}
+		req.Body.Close()
+	}
+
 	var apiError error
 	for tryCount := 1; tryCount <= c.MaxAttempts; tryCount++ {
+		// Restore request body to the original state
+		if requestBody != nil {
+			req.Body = ioutil.NopCloser(bytes.NewBuffer(requestBody))
+		}
+
 		resp, err := c.client.Do(req)
 		if err != nil {
 			return err
+		}
+
+		if c.onRequestCompleted != nil {
+			c.onRequestCompleted(req, resp)
 		}
 
 		body, err := ioutil.ReadAll(resp.Body)
