@@ -7,16 +7,8 @@ brings the new features amongst others:
  * You can now supply `AWS_HOSTED_ZONE_ID` to the route53 DNS challenge to
    directly specify the zone ID for the DNS challenge, instead of getting the
    provider to try and detect it.
- * New DNS challenge providers:
-  * `azure`
-  * `auroradns`
-  * `dnspod`
-  * `exoscale`
-  * `godaddy`
-  * `linode`
-  * `rackspace`
-  * `ns1`
-  * `otc`
+ * New DNS challenge providers: `azure`, `auroradns`, `dnspod`, `exoscale`,
+   `godaddy`, `linode`, `rackspace`, `ns1`, and `otc`.
 
 ## v0.4.0
 
