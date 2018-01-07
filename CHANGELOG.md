@@ -1,6 +1,6 @@
 ## v0.5.0 (Unreleased)
 
-Most of the items in this release are a result of a refresh of lego, which
+Most of the items in this release are the result of a refresh of lego, which
 brings the following new features, amongst others:
 
  * DNSimple API now supports V2.
