@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -23,6 +24,9 @@ import (
 	"github.com/mitchellh/copystructure"
 	"github.com/mitchellh/mapstructure"
 )
+
+// Name of ENV variable which (if not empty) prefers panic over error
+const PanicOnErr = "TF_SCHEMA_PANIC_ON_ERROR"
 
 // type used for schema package context keys
 type contextKey string
@@ -116,12 +120,16 @@ type Schema struct {
 	ForceNew  bool
 	StateFunc SchemaStateFunc
 
-	// The following fields are only set for a TypeList or TypeSet Type.
+	// The following fields are only set for a TypeList, TypeSet, or TypeMap.
 	//
-	// Elem must be either a *Schema or a *Resource only if the Type is
-	// TypeList, and represents what the element type is. If it is *Schema,
-	// the element type is just a simple value. If it is *Resource, the
-	// element type is a complex structure, potentially with its own lifecycle.
+	// Elem represents the element type. For a TypeMap, it must be a *Schema
+	// with a Type of TypeString, otherwise it may be either a *Schema or a
+	// *Resource. If it is *Schema, the element type is just a simple value.
+	// If it is *Resource, the element type is a complex structure,
+	// potentially with its own lifecycle.
+	Elem interface{}
+
+	// The following fields are only set for a TypeList or TypeSet.
 	//
 	// MaxItems defines a maximum amount of items that can exist within a
 	// TypeSet or TypeList. Specific use cases would be if a TypeSet is being
@@ -138,7 +146,6 @@ type Schema struct {
 	// ["foo"] automatically. This is primarily for legacy reasons and the
 	// ambiguity is not recommended for new usage. Promotion is only allowed
 	// for primitive element types.
-	Elem          interface{}
 	MaxItems      int
 	MinItems      int
 	PromoteSingle bool
@@ -354,6 +361,13 @@ func (s *Schema) finalizeDiff(
 // schemaMap is a wrapper that adds nice functions on top of schemas.
 type schemaMap map[string]*Schema
 
+func (m schemaMap) panicOnError() bool {
+	if os.Getenv(PanicOnErr) != "" {
+		return true
+	}
+	return false
+}
+
 // Data returns a ResourceData for the given schema, state, and diff.
 //
 // The diff is optional.
@@ -361,9 +375,10 @@ func (m schemaMap) Data(
 	s *terraform.InstanceState,
 	d *terraform.InstanceDiff) (*ResourceData, error) {
 	return &ResourceData{
-		schema: m,
-		state:  s,
-		diff:   d,
+		schema:       m,
+		state:        s,
+		diff:         d,
+		panicOnError: m.panicOnError(),
 	}, nil
 }
 
@@ -393,9 +408,10 @@ func (m schemaMap) Diff(
 	}
 
 	d := &ResourceData{
-		schema: m,
-		state:  s,
-		config: c,
+		schema:       m,
+		state:        s,
+		config:       c,
+		panicOnError: m.panicOnError(),
 	}
 
 	for k, schema := range m {
@@ -705,12 +721,23 @@ func (m schemaMap) InternalValidate(topSchemaMap schemaMap) error {
 		if v.ValidateFunc != nil {
 			switch v.Type {
 			case TypeList, TypeSet:
-				return fmt.Errorf("ValidateFunc is not yet supported on lists or sets.")
+				return fmt.Errorf("%s: ValidateFunc is not yet supported on lists or sets.", k)
+			}
+		}
+
+		if v.Deprecated == "" && v.Removed == "" {
+			if !isValidFieldName(k) {
+				return fmt.Errorf("%s: Field name may only contain lowercase alphanumeric characters & underscores.", k)
 			}
 		}
 	}
 
 	return nil
+}
+
+func isValidFieldName(name string) bool {
+	re := regexp.MustCompile("^[a-z0-9_]+$")
+	return re.MatchString(name)
 }
 
 // resourceDiffer is an interface that is used by the private diff functions.
