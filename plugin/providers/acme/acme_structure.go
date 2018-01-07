@@ -16,20 +16,28 @@ import (
 	"github.com/hashicorp/terraform/helper/hashcode"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/xenolf/lego/acme"
+	"github.com/xenolf/lego/providers/dns/auroradns"
+	"github.com/xenolf/lego/providers/dns/azure"
 	"github.com/xenolf/lego/providers/dns/cloudflare"
 	"github.com/xenolf/lego/providers/dns/digitalocean"
 	"github.com/xenolf/lego/providers/dns/dnsimple"
 	"github.com/xenolf/lego/providers/dns/dnsmadeeasy"
+	"github.com/xenolf/lego/providers/dns/dnspod"
 	"github.com/xenolf/lego/providers/dns/dyn"
+	"github.com/xenolf/lego/providers/dns/exoscale"
 	"github.com/xenolf/lego/providers/dns/gandi"
+	"github.com/xenolf/lego/providers/dns/godaddy"
 	"github.com/xenolf/lego/providers/dns/googlecloud"
+	"github.com/xenolf/lego/providers/dns/linode"
 	"github.com/xenolf/lego/providers/dns/namecheap"
+	"github.com/xenolf/lego/providers/dns/ns1"
+	"github.com/xenolf/lego/providers/dns/otc"
 	"github.com/xenolf/lego/providers/dns/ovh"
 	"github.com/xenolf/lego/providers/dns/pdns"
+	"github.com/xenolf/lego/providers/dns/rackspace"
 	"github.com/xenolf/lego/providers/dns/rfc2136"
 	"github.com/xenolf/lego/providers/dns/route53"
 	"github.com/xenolf/lego/providers/dns/vultr"
-	"github.com/xenolf/lego/providers/dns/godaddy"
 )
 
 // baseACMESchema returns a map[string]*schema.Schema with all the elements
@@ -497,11 +505,13 @@ func setDNSChallenge(client *acme.Client, m map[string]interface{}) error {
 		}
 	}
 
-	// The below list was taken from lego's cli_handlers.go from this writing
-	// (Sept 2016). As such, this might not be a full list of supported
-	// providers. If a specific provider is wanted, check lego first, and then
-	// write the provider for lego and put in a PR.
+	// The below list is manually kept in sync with
+	// lego/providers/dns/dns_providers.go
 	switch providerName {
+	case "azure":
+		provider, err = azure.NewDNSProvider()
+	case "auroradns":
+		provider, err = auroradns.NewDNSProvider()
 	case "cloudflare":
 		provider, err = cloudflare.NewDNSProvider()
 	case "digitalocean":
@@ -510,16 +520,26 @@ func setDNSChallenge(client *acme.Client, m map[string]interface{}) error {
 		provider, err = dnsimple.NewDNSProvider()
 	case "dnsmadeeasy":
 		provider, err = dnsmadeeasy.NewDNSProvider()
+	case "dnspod":
+		provider, err = dnspod.NewDNSProvider()
 	case "dyn":
 		provider, err = dyn.NewDNSProvider()
+	case "exoscale":
+		provider, err = exoscale.NewDNSProvider()
 	case "gandi":
 		provider, err = gandi.NewDNSProvider()
 	case "gcloud":
 		provider, err = googlecloud.NewDNSProvider()
+	case "godaddy":
+		provider, err = godaddy.NewDNSProvider()
+	case "linode":
+		provider, err = linode.NewDNSProvider()
 	case "manual":
 		provider, err = acme.NewDNSProviderManual()
 	case "namecheap":
 		provider, err = namecheap.NewDNSProvider()
+	case "rackspace":
+		provider, err = rackspace.NewDNSProvider()
 	case "route53":
 		provider, err = route53.NewDNSProvider()
 	case "rfc2136":
@@ -530,8 +550,10 @@ func setDNSChallenge(client *acme.Client, m map[string]interface{}) error {
 		provider, err = ovh.NewDNSProvider()
 	case "pdns":
 		provider, err = pdns.NewDNSProvider()
-	case "godaddy":
-		provider, err = godaddy.NewDNSProvider()
+	case "ns1":
+		provider, err = ns1.NewDNSProvider()
+	case "otc":
+		provider, err = otc.NewDNSProvider()
 	default:
 		return fmt.Errorf("%s: unsupported DNS challenge provider", providerName)
 	}
