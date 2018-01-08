@@ -107,6 +107,7 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www6", "", false),
 				),
+				ExpectNonEmptyPlan: true,
 			},
 		},
 	})
