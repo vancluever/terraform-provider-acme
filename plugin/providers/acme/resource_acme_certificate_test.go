@@ -22,6 +22,12 @@ import (
 var (
 	tlsFeatureExtensionOID = asn1.ObjectIdentifier{1, 3, 6, 1, 5, 5, 7, 1, 24}
 	ocspMustStapleFeature  = []byte{0x30, 0x03, 0x02, 0x01, 0x05}
+	envKeys                = []string{
+		"AWS_PROFILE",
+		"AWS_ACCESS_KEY_ID",
+		"AWS_SECRET_ACCESS_KEY",
+		"AWS_SESSION_TOKEN",
+	}
 )
 
 func TestAccACMECertificate_basic(t *testing.T) {
@@ -57,13 +63,31 @@ func TestAccACMECertificate_CSR(t *testing.T) {
 }
 
 func TestAccACMECertificate_withDNSProviderConfig(t *testing.T) {
+	// Cache credentials first and then restore them after the function ends. We
+	// actually clear them after our pre-check so don't worry about that here.
+	envCache := make(map[string]string)
+	for _, k := range envKeys {
+		envCache[k] = os.Getenv(k)
+	}
+	defer func() {
+		for _, k := range envKeys {
+			os.Setenv(k, envCache[k])
+		}
+	}()
+
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheckCert(t) },
+		PreCheck: func() {
+			testAccPreCheckCert(t)
+			testAccPreCheckCertZoneID(t)
+			for _, k := range envKeys {
+				os.Unsetenv(k)
+			}
+		},
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckACMECertificateDestroy,
 		Steps: []resource.TestStep{
 			resource.TestStep{
-				Config: testAccACMECertificateWithDNSProviderConfig(),
+				Config: testAccACMECertificateWithDNSProviderConfig(envCache),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www5", "", false),
 				),
@@ -89,8 +113,8 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 }
 
 func TestAccACMECertificate_httpChallenge(t *testing.T) {
-	if v := os.Getenv("ACME_HTTP_R53_ZONE_ID"); v == "" {
-		t.Skip("ACME_HTTP_R53_ZONE_ID not set - skipping")
+	if v := os.Getenv("ACME_R53_ZONE_ID"); v == "" {
+		t.Skip("ACME_R53_ZONE_ID not set - skipping")
 	}
 	if v := os.Getenv("ACME_HTTP_HOST_IP"); v == "" {
 		t.Skip("ACME_HTTP_HOST_IP not set - skipping")
@@ -258,6 +282,12 @@ func testAccPreCheckCert(t *testing.T) {
 	}
 }
 
+func testAccPreCheckCertZoneID(t *testing.T) {
+	if v := os.Getenv("ACME_R53_ZONE_ID"); v == "" {
+		t.Fatal("ACME_R53_ZONE_ID must be set for the static configuration certificate acceptance test")
+	}
+}
+
 func testAccACMECertificateConfig() string {
 	return fmt.Sprintf(`
 variable "email_address" {
@@ -341,7 +371,7 @@ resource "acme_certificate" "certificate" {
 `, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"))
 }
 
-func testAccACMECertificateWithDNSProviderConfig() string {
+func testAccACMECertificateWithDNSProviderConfig(params map[string]string) string {
 	return fmt.Sprintf(`
 variable "email_address" {
   default = "%s"
@@ -373,12 +403,21 @@ resource "acme_certificate" "certificate" {
 			AWS_ACCESS_KEY_ID     = "%s"
 			AWS_SECRET_ACCESS_KEY = "%s"
 			AWS_SESSION_TOKEN     = "%s"
+			AWS_HOSTED_ZONE_ID    = "%s"
 		}
   }
 
   registration_url = "${acme_registration.reg.id}"
 }
-`, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"), os.Getenv("AWS_PROFILE"), os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"), os.Getenv("AWS_SESSION_TOKEN"))
+`,
+		os.Getenv("ACME_EMAIL_ADDRESS"),
+		os.Getenv("ACME_CERT_DOMAIN"),
+		params["AWS_PROFILE"],
+		params["AWS_ACCESS_KEY_ID"],
+		params["AWS_SECRET_ACCESS_KEY"],
+		params["AWS_SESSION_TOKEN"],
+		os.Getenv("ACME_R53_ZONE_ID"),
+	)
 }
 
 func testAccACMECertificateForceRenewalConfig() string {
