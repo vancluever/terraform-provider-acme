@@ -348,6 +348,7 @@
   revision = "0dc08b1671f34c4250ce212759ebd880f743d883"
 
 [[projects]]
+  branch = "master"
   name = "github.com/hashicorp/terraform"
   packages = [
     "config",
@@ -369,6 +370,7 @@
     "moduledeps",
     "plugin",
     "plugin/discovery",
+    "registry",
     "registry/regsrc",
     "registry/response",
     "svchost",
@@ -378,8 +380,7 @@
     "tfdiags",
     "version"
   ]
-  revision = "a42fdb08a43c7fabb8898fe8c286b793bbaa4835"
-  version = "v0.11.1"
+  revision = "bf5944a92c3ad3ecf1af45ffc8427d4865a6e1a2"
 
 [[projects]]
   name = "github.com/hashicorp/vault"
@@ -453,10 +454,9 @@
   revision = "33edc47170b5df54d2588696d590c5e20ee583fe"
 
 [[projects]]
-  branch = "master"
   name = "github.com/mitchellh/copystructure"
   packages = ["."]
-  revision = "d23ffcb85de31694d6ccaa23ccb4a03e55c1303f"
+  revision = "5af94aef99f597e6a9e1f6ac6be6ce0f3c96b49d"
 
 [[projects]]
   branch = "master"
@@ -489,10 +489,9 @@
   revision = "06020f85339e21b2478f756a78e295255ffa4d6a"
 
 [[projects]]
-  branch = "master"
   name = "github.com/mitchellh/reflectwalk"
   packages = ["."]
-  revision = "63d60e9d0dbc60cf9164e6510889b0db6683d98c"
+  revision = "92573fe8d000a145bfebc03a16bc22b34945867f"
 
 [[projects]]
   branch = "master"
@@ -536,16 +535,16 @@
   version = "v1.2.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/terraform-providers/terraform-provider-aws"
   packages = ["aws"]
-  revision = "ddd2205c6b6cc547ce5a940f9a16bf66f3276c3a"
-  version = "v1.6.0"
+  revision = "386f46d7e1acb010c9715f301cf3ffa170918637"
 
 [[projects]]
+  branch = "master"
   name = "github.com/terraform-providers/terraform-provider-tls"
   packages = ["tls"]
-  revision = "1be2f9e9eaa91e915c8972476fcd51ee2796288c"
-  version = "v1.0.1"
+  revision = "4ec89d28961f292df2ed6541ae20c8f854198532"
 
 [[projects]]
   branch = "master"
@@ -674,7 +673,7 @@
     "unix",
     "windows"
   ]
-  revision = "dd9ec17814d5b1de388ebe438ec013d57d8b3779"
+  revision = "1792d66dc88e503d3cb2400578221cdf1f7fe26f"
 
 [[projects]]
   branch = "master"
@@ -706,7 +705,7 @@
     "googleapi",
     "googleapi/internal/uritemplates"
   ]
-  revision = "b1c0f9b3aa8fac163224fab909402d49c6dce50a"
+  revision = "af40bece8f577b6beb316373ad9d96e4720a567a"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -795,11 +794,11 @@
   branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "0e4404da71227dcc02fb1deee803d93e86d08f72"
+  revision = "c4a9fb418357aceb801272d73efd518f183700fa"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "005052fabd86c2ca1b1aecd3bf580356b34df87fd936cf50f3571a450986af4e"
+  inputs-digest = "53a7d770dc3fb38a5f1325481f030dcf32850edf1cc041ef0c0dedeed669da1d"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -11,8 +11,6 @@ const (
 	MapValue
 	Slice
 	SliceElem
-	Array
-	ArrayElem
 	Struct
 	StructField
 	WalkLoc
