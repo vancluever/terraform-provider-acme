@@ -1,3 +1,7 @@
+## 0.5.1-pre
+
+Bumped version for dev.
+
 ## 0.5.0
 
 Most of the items in this release are the result of a refresh of lego, which
@@ -48,7 +52,10 @@ Note: You didn't specify an "-out" parameter to save this plan, so when
 "apply" is called, Terraform can't guarantee this is what will execute.
 
   ~ acme_certificate.certificate
-      certificate_pem: "-----BEGIN CERTIFICATE-----\nxxxxxxx\n-----END CERTIFICATE-----\n" => "<computed>"
+      certificate_pem: "-----BEGIN CERTIFICATE-----
+xxxxxxx
+-----END CERTIFICATE-----
+" => "<computed>"
 ```
 
 If the certificate requires renewal, `certificate_pem` is set to `<computed>`
@@ -94,4 +101,3 @@ v0.7.x and lower may not work. Use the v0.1.0 release instead.
 ## v0.1.0
 
 Initial release.
-
