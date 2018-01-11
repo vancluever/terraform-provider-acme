@@ -1,4 +1,4 @@
-## v0.5.0 (Unreleased)
+## 0.5.0
 
 Most of the items in this release are the result of a refresh of lego, which
 brings the following new features, amongst others:
