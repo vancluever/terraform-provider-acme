@@ -404,7 +404,8 @@ The following attributes are exported:
 ## License
 
 ```
-Copyright 2016 PayByPhone Technologies, Inc.
+Copyright 2018 Chris Marchesi
+Copyright 2016-2018 PayByPhone Technologies, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
