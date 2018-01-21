@@ -424,7 +424,7 @@ limitations under the License.
 [2]: https://github.com/letsencrypt/boulder
 [3]: https://github.com/ietf-wg-acme/acme
 [4]: https://www.terraform.io/docs/plugins/basics.html
-[5]: https://github.com/paybyphone/terraform-provider-acme/releases
+[5]: https://github.com/vancluever/terraform-provider-acme/releases
 [6]: website/source/docs/providers/acme
 [7]: https://letsencrypt.org/docs/staging-environment/
 [8]: https://www.terraform.io/docs/providers/tls/r/private_key.html

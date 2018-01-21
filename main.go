@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/hashicorp/terraform/plugin"
-	"github.com/paybyphone/terraform-provider-acme/plugin/providers/acme"
+	"github.com/vancluever/terraform-provider-acme/plugin/providers/acme"
 )
 
 func main() {
