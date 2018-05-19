@@ -143,6 +143,7 @@ func certificateSchema() map[string]*schema.Schema {
 						Type:         schema.TypeMap,
 						Optional:     true,
 						ValidateFunc: validateDNSChallengeConfig,
+						Sensitive:    true,
 					},
 				},
 			},
