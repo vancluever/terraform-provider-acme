@@ -485,6 +485,15 @@ func parsePEMBundle(bundle []byte) ([]*x509.Certificate, error) {
 	return certificates, nil
 }
 
+// helper function to map environment variables if set
+func mapEnvironmentVariableValues(keyMapping map[string]string) {
+	for key := range keyMapping {
+		if value, ok := os.LookupEnv(key); ok {
+			os.Setenv(keyMapping[key], value)
+		}
+	}
+}
+
 // setDNSChallenge takes an *acme.Client and the DNS challenge complex
 // structure as a map[string]interface{}, and configues the client to only
 // allow a DNS challenge with the configured provider.
@@ -510,6 +519,14 @@ func setDNSChallenge(client *acme.Client, m map[string]interface{}) error {
 	// lego/providers/dns/dns_providers.go
 	switch providerName {
 	case "azure":
+		// map terraform provider environment variables if present
+		mapEnvironmentVariableValues(map[string]string{
+			"ARM_CLIENT_ID":       "AZURE_CLIENT_ID",
+			"ARM_CLIENT_SECRET":   "AZURE_CLIENT_SECRET",
+			"ARM_SUBSCRIPTION_ID": "AZURE_SUBSCRIPTION_ID",
+			"ARM_TENANT_ID":       "AZURE_TENANT_ID",
+			"ARM_RESOURCE_GROUP":  "AZURE_RESOURCE_GROUP",
+		})
 		provider, err = azure.NewDNSProvider()
 	case "auroradns":
 		provider, err = auroradns.NewDNSProvider()
