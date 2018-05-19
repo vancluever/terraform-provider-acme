@@ -1,7 +1,10 @@
-## 0.5.1-pre
+## 0.5.1 (Unreleased)
 
 IMPROVEMENTS:
 
+* `resource/acme_certificate`: Already revoked certificates are ignored by the
+  destroy process, ensuring that they are destroyed without error in Terraform.
+  (#33)
 * `resource/acme_certificate`: The `config` field of `dns_challenge` has now
   been marked as a sensitive field to prevent credentials from being leaked in
   output. (#31)
