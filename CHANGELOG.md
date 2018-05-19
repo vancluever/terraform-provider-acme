@@ -1,6 +1,10 @@
 ## 0.5.1-pre
 
-Bumped version for dev.
+IMPROVEMENTS:
+
+* `resource/acme_certificate`: The `config` field of `dns_challenge` has now
+  been marked as a sensitive field to prevent credentials from being leaked in
+  output. (#31)
 
 ## 0.5.0
 
