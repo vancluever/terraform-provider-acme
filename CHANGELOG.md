@@ -5,15 +5,18 @@ IMPROVEMENTS:
 * `resource/acme_certificate`: Added alias mappings for the Azure DNS provider's
   environment variables so that the same environment variables for the
   [Terraform Azure Provider][tf-azurerm-provider] can be used with the ACME
-  plugin. #36
+  plugin. ([#36][gh-36])
 * `resource/acme_certificate`: Already revoked certificates are ignored by the
   destroy process, ensuring that they are destroyed without error in Terraform.
-  (#33)
+  ([#33][gh-33])
 * `resource/acme_certificate`: The `config` field of `dns_challenge` has now
   been marked as a sensitive field to prevent credentials from being leaked in
-  output. (#31)
+  output. ([#31][gh-31])
 
 [tf-azurerm-provider]: https://www.terraform.io/docs/providers/azurerm/index.html
+[gh-36]: https://github.com/vancluever/terraform-provider-acme/pull/36
+[gh-33]: https://github.com/vancluever/terraform-provider-acme/pull/33
+[gh-31]: https://github.com/vancluever/terraform-provider-acme/pull/31
 
 ## 0.5.0
 
