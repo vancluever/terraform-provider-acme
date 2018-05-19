@@ -168,7 +168,10 @@ func resourceACMECertificateDelete(d *schema.ResourceData, meta interface{}) err
 	if ok {
 		err = client.RevokeCertificate([]byte(cert.(string)))
 		if err != nil {
-			return err
+			// Ignore conflict (409) responses, as certificate is already revoked.
+			if rerr, ok := err.(acme.RemoteError); !ok || rerr.StatusCode != 409 {
+				return err
+			}
 		}
 	}
 
