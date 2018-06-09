@@ -401,6 +401,14 @@ The following attributes are exported:
  * `certificate_pem` - The certificate in PEM format.
  * `issuer_pem` - The intermediate certificate of the issuer.
 
+#### Timeouts
+
+The `acme_certificate` resource honors the `delete` timeout that can be
+specified in the general [`timeout`][16] property of a resource. The default is
+20 minutes. When specified, this controls the amount of time the provider waits
+for a revoked certificate to show up in the CA's CRL, by checking its OCSP
+endpoint until revocation is confirmed.
+
 ## License
 
 ```
@@ -435,3 +443,4 @@ limitations under the License.
 [13]: https://godoc.org/github.com/xenolf/lego/providers/dns
 [14]: https://github.com/ietf-wg-acme/acme/blob/master/draft-ietf-acme-acme.md#http
 [15]: https://github.com/ietf-wg-acme/acme/blob/master/draft-ietf-acme-acme.md#tls-with-server-name-indication-tls-sni
+[16]: https://www.terraform.io/docs/configuration/resources.html#timeouts

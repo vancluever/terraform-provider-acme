@@ -23,6 +23,10 @@ func resourceACMECertificate() *schema.Resource {
 		Delete:        resourceACMECertificateDelete,
 
 		Schema: certificateSchemaFull(),
+
+		Timeouts: &schema.ResourceTimeout{
+			Delete: schema.DefaultTimeout(time.Minute * 20),
+		},
 	}
 }
 
@@ -181,7 +185,7 @@ func resourceACMECertificateDelete(d *schema.ResourceData, meta interface{}) err
 		Pending:    []string{"Good"},
 		Target:     []string{"Revoked"},
 		Refresh:    resourceACMECertificateRevokeRefreshFunc(cert.(string)),
-		Timeout:    3 * time.Minute,
+		Timeout:    d.Timeout(schema.TimeoutDelete),
 		MinTimeout: 15 * time.Second,
 		Delay:      5 * time.Second,
 	}
