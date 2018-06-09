@@ -4,6 +4,26 @@
 support for ACME v2 and will more than likely break support for ACME v1. If you
 require ACME v1 after 1.0.0, use this version of the provider.
 
+NEW DNS PROVIDERS:
+
+The `acme_certificate` resource has had a provider refresh, with the following
+new providers added:
+
+* `bluecat`
+* `cloudxns`
+* `duckdns`
+* `fastdns`
+* `gandiv5`
+* `glesys`
+* `lightsail`
+* `namedotcom`
+* `exec`
+
+These providers, and previous providers, have been synchronized with their state
+at lego version [v0.5.0][lego-dns-providers-v0.5.0].
+
+[lego-dns-providers-v0.5.0]: https://github.com/xenolf/lego/tree/v0.5.0/providers/dns
+
 IMPROVEMENTS:
 
 * `resource/acme_certificate`: This resource now supports supplying the `delete`
