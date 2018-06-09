@@ -1,3 +1,7 @@
+## 0.6.1-pre
+
+Bumped version for dev.
+
 ## 0.6.0
 
 **NOTE:** This is the last major release before 1.0.0, which will include
