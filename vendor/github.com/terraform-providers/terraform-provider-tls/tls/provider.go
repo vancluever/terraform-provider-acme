@@ -18,6 +18,9 @@ func Provider() terraform.ResourceProvider {
 			"tls_self_signed_cert":    resourceSelfSignedCert(),
 			"tls_cert_request":        resourceCertRequest(),
 		},
+		DataSourcesMap: map[string]*schema.Resource{
+			"tls_public_key": dataSourcePublicKey(),
+		},
 	}
 }
 
@@ -71,14 +74,17 @@ var nameSchema *schema.Resource = &schema.Resource{
 		"organization": &schema.Schema{
 			Type:     schema.TypeString,
 			Optional: true,
+			ForceNew: true,
 		},
 		"common_name": &schema.Schema{
 			Type:     schema.TypeString,
 			Optional: true,
+			ForceNew: true,
 		},
 		"organizational_unit": &schema.Schema{
 			Type:     schema.TypeString,
 			Optional: true,
+			ForceNew: true,
 		},
 		"street_address": &schema.Schema{
 			Type:     schema.TypeList,
@@ -86,26 +92,32 @@ var nameSchema *schema.Resource = &schema.Resource{
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
+			ForceNew: true,
 		},
 		"locality": &schema.Schema{
 			Type:     schema.TypeString,
 			Optional: true,
+			ForceNew: true,
 		},
 		"province": &schema.Schema{
 			Type:     schema.TypeString,
 			Optional: true,
+			ForceNew: true,
 		},
 		"country": &schema.Schema{
 			Type:     schema.TypeString,
 			Optional: true,
+			ForceNew: true,
 		},
 		"postal_code": &schema.Schema{
 			Type:     schema.TypeString,
 			Optional: true,
+			ForceNew: true,
 		},
 		"serial_number": &schema.Schema{
 			Type:     schema.TypeString,
 			Optional: true,
+			ForceNew: true,
 		},
 	},
 }

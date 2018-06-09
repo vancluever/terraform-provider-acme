@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
+	"github.com/zclconf/go-cty/cty/function"
 )
 
 // A Spec is a description of how to decode a hcl.Body to a cty.Value.
@@ -52,6 +53,7 @@ type attrSpec interface {
 // blockSpec is implemented by specs that require blocks from the body.
 type blockSpec interface {
 	blockHeaderSchemata() []hcl.BlockHeaderSchema
+	nestedSpec() Spec
 }
 
 // specNeedingVariables is implemented by specs that can use variables
@@ -298,6 +300,11 @@ func (s *BlockSpec) blockHeaderSchemata() []hcl.BlockHeaderSchema {
 	}
 }
 
+// blockSpec implementation
+func (s *BlockSpec) nestedSpec() Spec {
+	return s.Nested
+}
+
 // specNeedingVariables implementation
 func (s *BlockSpec) variablesNeeded(content *hcl.BodyContent) []hcl.Traversal {
 	var childBlock *hcl.Block
@@ -407,6 +414,11 @@ func (s *BlockListSpec) blockHeaderSchemata() []hcl.BlockHeaderSchema {
 			LabelNames: findLabelSpecs(s.Nested),
 		},
 	}
+}
+
+// blockSpec implementation
+func (s *BlockListSpec) nestedSpec() Spec {
+	return s.Nested
 }
 
 // specNeedingVariables implementation
@@ -519,6 +531,11 @@ func (s *BlockSetSpec) blockHeaderSchemata() []hcl.BlockHeaderSchema {
 	}
 }
 
+// blockSpec implementation
+func (s *BlockSetSpec) nestedSpec() Spec {
+	return s.Nested
+}
+
 // specNeedingVariables implementation
 func (s *BlockSetSpec) variablesNeeded(content *hcl.BodyContent) []hcl.Traversal {
 	var ret []hcl.Traversal
@@ -629,6 +646,11 @@ func (s *BlockMapSpec) blockHeaderSchemata() []hcl.BlockHeaderSchema {
 			LabelNames: append(s.LabelNames, findLabelSpecs(s.Nested)...),
 		},
 	}
+}
+
+// blockSpec implementation
+func (s *BlockMapSpec) nestedSpec() Spec {
+	return s.Nested
 }
 
 // specNeedingVariables implementation
@@ -826,6 +848,16 @@ func findLabelSpecs(spec Spec) []string {
 //
 // The two specifications must have the same implied result type for correct
 // operation. If not, the result is undefined.
+//
+// Any requirements imposed by the "Default" spec apply even if "Primary" does
+// not return null. For example, if the "Default" spec is for a required
+// attribute then that attribute is always required, regardless of the result
+// of the "Primary" spec.
+//
+// The "Default" spec must not describe a nested block, since otherwise the
+// result of ChildBlockTypes would not be decidable without evaluation. If
+// the default spec _does_ describe a nested block then the result is
+// undefined.
 type DefaultSpec struct {
 	Primary Spec
 	Default Spec
@@ -850,10 +882,159 @@ func (s *DefaultSpec) impliedType() cty.Type {
 	return s.Primary.impliedType()
 }
 
+// attrSpec implementation
+func (s *DefaultSpec) attrSchemata() []hcl.AttributeSchema {
+	// We must pass through the union of both of our nested specs so that
+	// we'll have both values available in the result.
+	var ret []hcl.AttributeSchema
+	if as, ok := s.Primary.(attrSpec); ok {
+		ret = append(ret, as.attrSchemata()...)
+	}
+	if as, ok := s.Default.(attrSpec); ok {
+		ret = append(ret, as.attrSchemata()...)
+	}
+	return ret
+}
+
+// blockSpec implementation
+func (s *DefaultSpec) blockHeaderSchemata() []hcl.BlockHeaderSchema {
+	// Only the primary spec may describe a block, since otherwise
+	// our nestedSpec method below can't know which to return.
+	if bs, ok := s.Primary.(blockSpec); ok {
+		return bs.blockHeaderSchemata()
+	}
+	return nil
+}
+
+// blockSpec implementation
+func (s *DefaultSpec) nestedSpec() Spec {
+	if bs, ok := s.Primary.(blockSpec); ok {
+		return bs.nestedSpec()
+	}
+	return nil
+}
+
 func (s *DefaultSpec) sourceRange(content *hcl.BodyContent, blockLabels []blockLabel) hcl.Range {
 	// We can't tell from here which of the two specs will ultimately be used
 	// in our result, so we'll just assume the first. This is usually the right
 	// choice because the default is often a literal spec that doesn't have a
 	// reasonable source range to return anyway.
 	return s.Primary.sourceRange(content, blockLabels)
+}
+
+// TransformExprSpec is a spec that wraps another and then evaluates a given
+// hcl.Expression on the result.
+//
+// The implied type of this spec is determined by evaluating the expression
+// with an unknown value of the nested spec's implied type, which may cause
+// the result to be imprecise. This spec should not be used in situations where
+// precise result type information is needed.
+type TransformExprSpec struct {
+	Wrapped      Spec
+	Expr         hcl.Expression
+	TransformCtx *hcl.EvalContext
+	VarName      string
+}
+
+func (s *TransformExprSpec) visitSameBodyChildren(cb visitFunc) {
+	cb(s.Wrapped)
+}
+
+func (s *TransformExprSpec) decode(content *hcl.BodyContent, blockLabels []blockLabel, ctx *hcl.EvalContext) (cty.Value, hcl.Diagnostics) {
+	wrappedVal, diags := s.Wrapped.decode(content, blockLabels, ctx)
+	if diags.HasErrors() {
+		// We won't try to run our function in this case, because it'll probably
+		// generate confusing additional errors that will distract from the
+		// root cause.
+		return cty.UnknownVal(s.impliedType()), diags
+	}
+
+	chiCtx := s.TransformCtx.NewChild()
+	chiCtx.Variables = map[string]cty.Value{
+		s.VarName: wrappedVal,
+	}
+	resultVal, resultDiags := s.Expr.Value(chiCtx)
+	diags = append(diags, resultDiags...)
+	return resultVal, diags
+}
+
+func (s *TransformExprSpec) impliedType() cty.Type {
+	wrappedTy := s.Wrapped.impliedType()
+	chiCtx := s.TransformCtx.NewChild()
+	chiCtx.Variables = map[string]cty.Value{
+		s.VarName: cty.UnknownVal(wrappedTy),
+	}
+	resultVal, _ := s.Expr.Value(chiCtx)
+	return resultVal.Type()
+}
+
+func (s *TransformExprSpec) sourceRange(content *hcl.BodyContent, blockLabels []blockLabel) hcl.Range {
+	// We'll just pass through our wrapped range here, even though that's
+	// not super-accurate, because there's nothing better to return.
+	return s.Wrapped.sourceRange(content, blockLabels)
+}
+
+// TransformFuncSpec is a spec that wraps another and then evaluates a given
+// cty function with the result. The given function must expect exactly one
+// argument, where the result of the wrapped spec will be passed.
+//
+// The implied type of this spec is determined by type-checking the function
+// with an unknown value of the nested spec's implied type, which may cause
+// the result to be imprecise. This spec should not be used in situations where
+// precise result type information is needed.
+//
+// If the given function produces an error when run, this spec will produce
+// a non-user-actionable diagnostic message. It's the caller's responsibility
+// to ensure that the given function cannot fail for any non-error result
+// of the wrapped spec.
+type TransformFuncSpec struct {
+	Wrapped Spec
+	Func    function.Function
+}
+
+func (s *TransformFuncSpec) visitSameBodyChildren(cb visitFunc) {
+	cb(s.Wrapped)
+}
+
+func (s *TransformFuncSpec) decode(content *hcl.BodyContent, blockLabels []blockLabel, ctx *hcl.EvalContext) (cty.Value, hcl.Diagnostics) {
+	wrappedVal, diags := s.Wrapped.decode(content, blockLabels, ctx)
+	if diags.HasErrors() {
+		// We won't try to run our function in this case, because it'll probably
+		// generate confusing additional errors that will distract from the
+		// root cause.
+		return cty.UnknownVal(s.impliedType()), diags
+	}
+
+	resultVal, err := s.Func.Call([]cty.Value{wrappedVal})
+	if err != nil {
+		// This is not a good example of a diagnostic because it is reporting
+		// a programming error in the calling application, rather than something
+		// an end-user could act on.
+		diags = append(diags, &hcl.Diagnostic{
+			Severity: hcl.DiagError,
+			Summary:  "Transform function failed",
+			Detail:   fmt.Sprintf("Decoder transform returned an error: %s", err),
+			Subject:  s.sourceRange(content, blockLabels).Ptr(),
+		})
+		return cty.UnknownVal(s.impliedType()), diags
+	}
+
+	return resultVal, diags
+}
+
+func (s *TransformFuncSpec) impliedType() cty.Type {
+	wrappedTy := s.Wrapped.impliedType()
+	resultTy, err := s.Func.ReturnType([]cty.Type{wrappedTy})
+	if err != nil {
+		// Should never happen with a correctly-configured spec
+		return cty.DynamicPseudoType
+	}
+
+	return resultTy
+}
+
+func (s *TransformFuncSpec) sourceRange(content *hcl.BodyContent, blockLabels []blockLabel) hcl.Range {
+	// We'll just pass through our wrapped range here, even though that's
+	// not super-accurate, because there's nothing better to return.
+	return s.Wrapped.sourceRange(content, blockLabels)
 }

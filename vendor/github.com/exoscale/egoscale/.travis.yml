@@ -3,17 +3,56 @@ language: go
 dist: trusty
 
 go:
-- 1.8
 - 1.9
+- "1.10"
 - tip
+
+env:
+  - DEP_VERSION=0.4.1
 
 cache: apt
 
-install:
-  - go get -u github.com/golang/lint/golint
+before_install:
+  - curl -L -s https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 -o $GOPATH/bin/dep
+  - chmod +x $GOPATH/bin/dep
+  - npm i -g codeclimate-test-reporter
 
-script:
-  - test `gofmt -s -d . | tee -a /dev/fd/2 | wc -l` -eq 0
-  - # test `bin/golint . | tee -a /dev/fd/2 | wc -l` -eq 0
-  - go tool vet .
-  - go test -v .
+jobs:
+  include:
+  - stage: test
+    script: |
+      dep ensure
+      go test -race .
+  - stage: coverage
+    script: |
+      dep ensure
+      go test -coverprofile=coverage.out -covermode=atomic .
+      codeclimate-test-reporter < coverage.out
+  - stage: cmd-linux
+    script: |
+      dep ensure
+      cd cmd/cs
+      dep ensure
+      GOOS=linux go build -ldflags "-s" .
+      cd ../exo
+      dep ensure
+      GOOS=linux go build -ldflags "-s" .
+  - stage: cmd-windows
+    script: |
+      dep ensure
+      cd cmd/cs
+      dep ensure
+      GOOS=windows go build -ldflags "-s" .
+      cd ../exo
+      dep ensure
+      GOOS=windows go build -ldflags "-s" .
+  - stage: cmd-darwin
+    script: |
+      dep ensure
+      cd cmd/cs
+      dep ensure
+      GOOS=darwin go build -ldflags "-s" .
+      cd ../exo
+      dep ensure
+      GOOS=darwin go build -ldflags "-s" .
+      

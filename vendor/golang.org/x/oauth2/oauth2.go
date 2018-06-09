@@ -3,7 +3,8 @@
 // license that can be found in the LICENSE file.
 
 // Package oauth2 provides support for making
-// OAuth2 authorized and authenticated HTTP requests.
+// OAuth2 authorized and authenticated HTTP requests,
+// as specified in RFC 6749.
 // It can additionally grant authorization with Bearer JWT.
 package oauth2 // import "golang.org/x/oauth2"
 
@@ -117,7 +118,7 @@ func SetAuthURLParam(key, value string) AuthCodeOption {
 // that asks for permissions for the required scopes explicitly.
 //
 // State is a token to protect the user from CSRF attacks. You must
-// always provide a non-zero string and validate that it matches the
+// always provide a non-empty string and validate that it matches the
 // the state query parameter on your redirect callback.
 // See http://tools.ietf.org/html/rfc6749#section-10.12 for more info.
 //

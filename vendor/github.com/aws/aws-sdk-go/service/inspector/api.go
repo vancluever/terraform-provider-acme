@@ -17,7 +17,7 @@ const opAddAttributesToFindings = "AddAttributesToFindings"
 
 // AddAttributesToFindingsRequest generates a "aws/request.Request" representing the
 // client's request for the AddAttributesToFindings operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -108,7 +108,7 @@ const opCreateAssessmentTarget = "CreateAssessmentTarget"
 
 // CreateAssessmentTargetRequest generates a "aws/request.Request" representing the
 // client's request for the CreateAssessmentTarget operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -182,6 +182,10 @@ func (c *Inspector) CreateAssessmentTargetRequest(input *CreateAssessmentTargetI
 //   The request was rejected because it referenced an entity that does not exist.
 //   The error code describes the entity.
 //
+//   * ErrCodeInvalidCrossAccountRoleException "InvalidCrossAccountRoleException"
+//   Amazon Inspector cannot assume the cross-account role that it needs to list
+//   your EC2 instances during the assessment run.
+//
 // See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/CreateAssessmentTarget
 func (c *Inspector) CreateAssessmentTarget(input *CreateAssessmentTargetInput) (*CreateAssessmentTargetOutput, error) {
 	req, out := c.CreateAssessmentTargetRequest(input)
@@ -208,7 +212,7 @@ const opCreateAssessmentTemplate = "CreateAssessmentTemplate"
 
 // CreateAssessmentTemplateRequest generates a "aws/request.Request" representing the
 // client's request for the CreateAssessmentTemplate operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -306,7 +310,7 @@ const opCreateResourceGroup = "CreateResourceGroup"
 
 // CreateResourceGroupRequest generates a "aws/request.Request" representing the
 // client's request for the CreateResourceGroup operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -399,7 +403,7 @@ const opDeleteAssessmentRun = "DeleteAssessmentRun"
 
 // DeleteAssessmentRunRequest generates a "aws/request.Request" representing the
 // client's request for the DeleteAssessmentRun operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -496,7 +500,7 @@ const opDeleteAssessmentTarget = "DeleteAssessmentTarget"
 
 // DeleteAssessmentTargetRequest generates a "aws/request.Request" representing the
 // client's request for the DeleteAssessmentTarget operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -593,7 +597,7 @@ const opDeleteAssessmentTemplate = "DeleteAssessmentTemplate"
 
 // DeleteAssessmentTemplateRequest generates a "aws/request.Request" representing the
 // client's request for the DeleteAssessmentTemplate operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -690,7 +694,7 @@ const opDescribeAssessmentRuns = "DescribeAssessmentRuns"
 
 // DescribeAssessmentRunsRequest generates a "aws/request.Request" representing the
 // client's request for the DescribeAssessmentRuns operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -774,7 +778,7 @@ const opDescribeAssessmentTargets = "DescribeAssessmentTargets"
 
 // DescribeAssessmentTargetsRequest generates a "aws/request.Request" representing the
 // client's request for the DescribeAssessmentTargets operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -858,7 +862,7 @@ const opDescribeAssessmentTemplates = "DescribeAssessmentTemplates"
 
 // DescribeAssessmentTemplatesRequest generates a "aws/request.Request" representing the
 // client's request for the DescribeAssessmentTemplates operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -942,7 +946,7 @@ const opDescribeCrossAccountAccessRole = "DescribeCrossAccountAccessRole"
 
 // DescribeCrossAccountAccessRoleRequest generates a "aws/request.Request" representing the
 // client's request for the DescribeCrossAccountAccessRole operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -1021,7 +1025,7 @@ const opDescribeFindings = "DescribeFindings"
 
 // DescribeFindingsRequest generates a "aws/request.Request" representing the
 // client's request for the DescribeFindings operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -1104,7 +1108,7 @@ const opDescribeResourceGroups = "DescribeResourceGroups"
 
 // DescribeResourceGroupsRequest generates a "aws/request.Request" representing the
 // client's request for the DescribeResourceGroups operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -1188,7 +1192,7 @@ const opDescribeRulesPackages = "DescribeRulesPackages"
 
 // DescribeRulesPackagesRequest generates a "aws/request.Request" representing the
 // client's request for the DescribeRulesPackages operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -1272,7 +1276,7 @@ const opGetAssessmentReport = "GetAssessmentReport"
 
 // GetAssessmentReportRequest generates a "aws/request.Request" representing the
 // client's request for the GetAssessmentReport operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -1374,7 +1378,7 @@ const opGetTelemetryMetadata = "GetTelemetryMetadata"
 
 // GetTelemetryMetadataRequest generates a "aws/request.Request" representing the
 // client's request for the GetTelemetryMetadata operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -1465,7 +1469,7 @@ const opListAssessmentRunAgents = "ListAssessmentRunAgents"
 
 // ListAssessmentRunAgentsRequest generates a "aws/request.Request" representing the
 // client's request for the ListAssessmentRunAgents operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -1612,7 +1616,7 @@ const opListAssessmentRuns = "ListAssessmentRuns"
 
 // ListAssessmentRunsRequest generates a "aws/request.Request" representing the
 // client's request for the ListAssessmentRuns operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -1759,7 +1763,7 @@ const opListAssessmentTargets = "ListAssessmentTargets"
 
 // ListAssessmentTargetsRequest generates a "aws/request.Request" representing the
 // client's request for the ListAssessmentTargets operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -1903,7 +1907,7 @@ const opListAssessmentTemplates = "ListAssessmentTemplates"
 
 // ListAssessmentTemplatesRequest generates a "aws/request.Request" representing the
 // client's request for the ListAssessmentTemplates operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -2050,7 +2054,7 @@ const opListEventSubscriptions = "ListEventSubscriptions"
 
 // ListEventSubscriptionsRequest generates a "aws/request.Request" representing the
 // client's request for the ListEventSubscriptions operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -2198,7 +2202,7 @@ const opListFindings = "ListFindings"
 
 // ListFindingsRequest generates a "aws/request.Request" representing the
 // client's request for the ListFindings operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -2345,7 +2349,7 @@ const opListRulesPackages = "ListRulesPackages"
 
 // ListRulesPackagesRequest generates a "aws/request.Request" representing the
 // client's request for the ListRulesPackages operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -2487,7 +2491,7 @@ const opListTagsForResource = "ListTagsForResource"
 
 // ListTagsForResourceRequest generates a "aws/request.Request" representing the
 // client's request for the ListTagsForResource operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -2577,7 +2581,7 @@ const opPreviewAgents = "PreviewAgents"
 
 // PreviewAgentsRequest generates a "aws/request.Request" representing the
 // client's request for the PreviewAgents operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -2728,7 +2732,7 @@ const opRegisterCrossAccountAccessRole = "RegisterCrossAccountAccessRole"
 
 // RegisterCrossAccountAccessRoleRequest generates a "aws/request.Request" representing the
 // client's request for the RegisterCrossAccountAccessRole operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -2821,7 +2825,7 @@ const opRemoveAttributesFromFindings = "RemoveAttributesFromFindings"
 
 // RemoveAttributesFromFindingsRequest generates a "aws/request.Request" representing the
 // client's request for the RemoveAttributesFromFindings operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -2913,7 +2917,7 @@ const opSetTagsForResource = "SetTagsForResource"
 
 // SetTagsForResourceRequest generates a "aws/request.Request" representing the
 // client's request for the SetTagsForResource operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -3006,7 +3010,7 @@ const opStartAssessmentRun = "StartAssessmentRun"
 
 // StartAssessmentRunRequest generates a "aws/request.Request" representing the
 // client's request for the StartAssessmentRun operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -3110,7 +3114,7 @@ const opStopAssessmentRun = "StopAssessmentRun"
 
 // StopAssessmentRunRequest generates a "aws/request.Request" representing the
 // client's request for the StopAssessmentRun operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -3202,7 +3206,7 @@ const opSubscribeToEvent = "SubscribeToEvent"
 
 // SubscribeToEventRequest generates a "aws/request.Request" representing the
 // client's request for the SubscribeToEvent operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -3299,7 +3303,7 @@ const opUnsubscribeFromEvent = "UnsubscribeFromEvent"
 
 // UnsubscribeFromEventRequest generates a "aws/request.Request" representing the
 // client's request for the UnsubscribeFromEvent operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -3392,7 +3396,7 @@ const opUpdateAssessmentTarget = "UpdateAssessmentTarget"
 
 // UpdateAssessmentTargetRequest generates a "aws/request.Request" representing the
 // client's request for the UpdateAssessmentTarget operation. The "output" return
-// value will be populated with the request's response once the request complets
+// value will be populated with the request's response once the request completes
 // successfuly.
 //
 // Use "Send" method on the returned Request to send the API call to the service.
@@ -3481,7 +3485,6 @@ func (c *Inspector) UpdateAssessmentTargetWithContext(ctx aws.Context, input *Up
 	return out, req.Send()
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/AddAttributesToFindingsRequest
 type AddAttributesToFindingsInput struct {
 	_ struct{} `type:"structure"`
 
@@ -3547,7 +3550,6 @@ func (s *AddAttributesToFindingsInput) SetFindingArns(v []*string) *AddAttribute
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/AddAttributesToFindingsResponse
 type AddAttributesToFindingsOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -3577,7 +3579,6 @@ func (s *AddAttributesToFindingsOutput) SetFailedItems(v map[string]*FailedItemD
 // Used in the exception error that is thrown if you start an assessment run
 // for an assessment target that includes an EC2 instance that is already participating
 // in another started assessment run.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/AgentAlreadyRunningAssessment
 type AgentAlreadyRunningAssessment struct {
 	_ struct{} `type:"structure"`
 
@@ -3617,7 +3618,6 @@ func (s *AgentAlreadyRunningAssessment) SetAssessmentRunArn(v string) *AgentAlre
 
 // Contains information about an Amazon Inspector agent. This data type is used
 // as a request parameter in the ListAssessmentRunAgents action.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/AgentFilter
 type AgentFilter struct {
 	_ struct{} `type:"structure"`
 
@@ -3672,7 +3672,6 @@ func (s *AgentFilter) SetAgentHealths(v []*string) *AgentFilter {
 }
 
 // Used as a response element in the PreviewAgents action.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/AgentPreview
 type AgentPreview struct {
 	_ struct{} `type:"structure"`
 
@@ -3768,7 +3767,6 @@ func (s *AgentPreview) SetOperatingSystem(v string) *AgentPreview {
 // of the assessment run .
 //
 // Used as the response element in the DescribeAssessmentRuns action.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/AssessmentRun
 type AssessmentRun struct {
 	_ struct{} `type:"structure"`
 
@@ -3950,7 +3948,6 @@ func (s *AssessmentRun) SetUserAttributesForFindings(v []*Attribute) *Assessment
 
 // Contains information about an Amazon Inspector agent. This data type is used
 // as a response element in the ListAssessmentRunAgents action.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/AssessmentRunAgent
 type AssessmentRunAgent struct {
 	_ struct{} `type:"structure"`
 
@@ -4040,7 +4037,6 @@ func (s *AssessmentRunAgent) SetTelemetryMetadata(v []*TelemetryMetadata) *Asses
 }
 
 // Used as the request parameter in the ListAssessmentRuns action.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/AssessmentRunFilter
 type AssessmentRunFilter struct {
 	_ struct{} `type:"structure"`
 
@@ -4153,7 +4149,6 @@ func (s *AssessmentRunFilter) SetStates(v []*string) *AssessmentRunFilter {
 }
 
 // Used as one of the elements of the AssessmentRun data type.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/AssessmentRunNotification
 type AssessmentRunNotification struct {
 	_ struct{} `type:"structure"`
 
@@ -4229,7 +4224,6 @@ func (s *AssessmentRunNotification) SetSnsTopicArn(v string) *AssessmentRunNotif
 }
 
 // Used as one of the elements of the AssessmentRun data type.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/AssessmentRunStateChange
 type AssessmentRunStateChange struct {
 	_ struct{} `type:"structure"`
 
@@ -4268,7 +4262,6 @@ func (s *AssessmentRunStateChange) SetStateChangedAt(v time.Time) *AssessmentRun
 
 // Contains information about an Amazon Inspector application. This data type
 // is used as the response element in the DescribeAssessmentTargets action.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/AssessmentTarget
 type AssessmentTarget struct {
 	_ struct{} `type:"structure"`
 
@@ -4289,9 +4282,7 @@ type AssessmentTarget struct {
 
 	// The ARN that specifies the resource group that is associated with the assessment
 	// target.
-	//
-	// ResourceGroupArn is a required field
-	ResourceGroupArn *string `locationName:"resourceGroupArn" min:"1" type:"string" required:"true"`
+	ResourceGroupArn *string `locationName:"resourceGroupArn" min:"1" type:"string"`
 
 	// The time at which UpdateAssessmentTarget is called.
 	//
@@ -4340,7 +4331,6 @@ func (s *AssessmentTarget) SetUpdatedAt(v time.Time) *AssessmentTarget {
 }
 
 // Used as the request parameter in the ListAssessmentTargets action.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/AssessmentTargetFilter
 type AssessmentTargetFilter struct {
 	_ struct{} `type:"structure"`
 
@@ -4382,7 +4372,6 @@ func (s *AssessmentTargetFilter) SetAssessmentTargetNamePattern(v string) *Asses
 // Contains information about an Amazon Inspector assessment template. This
 // data type is used as the response element in the DescribeAssessmentTemplates
 // action.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/AssessmentTemplate
 type AssessmentTemplate struct {
 	_ struct{} `type:"structure"`
 
@@ -4501,7 +4490,6 @@ func (s *AssessmentTemplate) SetUserAttributesForFindings(v []*Attribute) *Asses
 }
 
 // Used as the request parameter in the ListAssessmentTemplates action.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/AssessmentTemplateFilter
 type AssessmentTemplateFilter struct {
 	_ struct{} `type:"structure"`
 
@@ -4568,7 +4556,6 @@ func (s *AssessmentTemplateFilter) SetRulesPackageArns(v []*string) *AssessmentT
 }
 
 // A collection of attributes of the host from which the finding is generated.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/AssetAttributes
 type AssetAttributes struct {
 	_ struct{} `type:"structure"`
 
@@ -4643,7 +4630,6 @@ func (s *AssetAttributes) SetSchemaVersion(v int64) *AssetAttributes {
 
 // This data type is used as a request parameter in the AddAttributesToFindings
 // and CreateAssessmentTemplate actions.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/Attribute
 type Attribute struct {
 	_ struct{} `type:"structure"`
 
@@ -4697,7 +4683,6 @@ func (s *Attribute) SetValue(v string) *Attribute {
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/CreateAssessmentTargetRequest
 type CreateAssessmentTargetInput struct {
 	_ struct{} `type:"structure"`
 
@@ -4709,9 +4694,7 @@ type CreateAssessmentTargetInput struct {
 
 	// The ARN that specifies the resource group that is used to create the assessment
 	// target.
-	//
-	// ResourceGroupArn is a required field
-	ResourceGroupArn *string `locationName:"resourceGroupArn" min:"1" type:"string" required:"true"`
+	ResourceGroupArn *string `locationName:"resourceGroupArn" min:"1" type:"string"`
 }
 
 // String returns the string representation
@@ -4732,9 +4715,6 @@ func (s *CreateAssessmentTargetInput) Validate() error {
 	}
 	if s.AssessmentTargetName != nil && len(*s.AssessmentTargetName) < 1 {
 		invalidParams.Add(request.NewErrParamMinLen("AssessmentTargetName", 1))
-	}
-	if s.ResourceGroupArn == nil {
-		invalidParams.Add(request.NewErrParamRequired("ResourceGroupArn"))
 	}
 	if s.ResourceGroupArn != nil && len(*s.ResourceGroupArn) < 1 {
 		invalidParams.Add(request.NewErrParamMinLen("ResourceGroupArn", 1))
@@ -4758,7 +4738,6 @@ func (s *CreateAssessmentTargetInput) SetResourceGroupArn(v string) *CreateAsses
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/CreateAssessmentTargetResponse
 type CreateAssessmentTargetOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -4784,7 +4763,6 @@ func (s *CreateAssessmentTargetOutput) SetAssessmentTargetArn(v string) *CreateA
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/CreateAssessmentTemplateRequest
 type CreateAssessmentTemplateInput struct {
 	_ struct{} `type:"structure"`
 
@@ -4902,7 +4880,6 @@ func (s *CreateAssessmentTemplateInput) SetUserAttributesForFindings(v []*Attrib
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/CreateAssessmentTemplateResponse
 type CreateAssessmentTemplateOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -4928,7 +4905,6 @@ func (s *CreateAssessmentTemplateOutput) SetAssessmentTemplateArn(v string) *Cre
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/CreateResourceGroupRequest
 type CreateResourceGroupInput struct {
 	_ struct{} `type:"structure"`
 
@@ -4982,7 +4958,6 @@ func (s *CreateResourceGroupInput) SetResourceGroupTags(v []*ResourceGroupTag) *
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/CreateResourceGroupResponse
 type CreateResourceGroupOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -5008,7 +4983,6 @@ func (s *CreateResourceGroupOutput) SetResourceGroupArn(v string) *CreateResourc
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DeleteAssessmentRunRequest
 type DeleteAssessmentRunInput struct {
 	_ struct{} `type:"structure"`
 
@@ -5050,7 +5024,6 @@ func (s *DeleteAssessmentRunInput) SetAssessmentRunArn(v string) *DeleteAssessme
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DeleteAssessmentRunOutput
 type DeleteAssessmentRunOutput struct {
 	_ struct{} `type:"structure"`
 }
@@ -5065,7 +5038,6 @@ func (s DeleteAssessmentRunOutput) GoString() string {
 	return s.String()
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DeleteAssessmentTargetRequest
 type DeleteAssessmentTargetInput struct {
 	_ struct{} `type:"structure"`
 
@@ -5107,7 +5079,6 @@ func (s *DeleteAssessmentTargetInput) SetAssessmentTargetArn(v string) *DeleteAs
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DeleteAssessmentTargetOutput
 type DeleteAssessmentTargetOutput struct {
 	_ struct{} `type:"structure"`
 }
@@ -5122,7 +5093,6 @@ func (s DeleteAssessmentTargetOutput) GoString() string {
 	return s.String()
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DeleteAssessmentTemplateRequest
 type DeleteAssessmentTemplateInput struct {
 	_ struct{} `type:"structure"`
 
@@ -5164,7 +5134,6 @@ func (s *DeleteAssessmentTemplateInput) SetAssessmentTemplateArn(v string) *Dele
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DeleteAssessmentTemplateOutput
 type DeleteAssessmentTemplateOutput struct {
 	_ struct{} `type:"structure"`
 }
@@ -5179,7 +5148,6 @@ func (s DeleteAssessmentTemplateOutput) GoString() string {
 	return s.String()
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DescribeAssessmentRunsRequest
 type DescribeAssessmentRunsInput struct {
 	_ struct{} `type:"structure"`
 
@@ -5221,7 +5189,6 @@ func (s *DescribeAssessmentRunsInput) SetAssessmentRunArns(v []*string) *Describ
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DescribeAssessmentRunsResponse
 type DescribeAssessmentRunsOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -5259,7 +5226,6 @@ func (s *DescribeAssessmentRunsOutput) SetFailedItems(v map[string]*FailedItemDe
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DescribeAssessmentTargetsRequest
 type DescribeAssessmentTargetsInput struct {
 	_ struct{} `type:"structure"`
 
@@ -5301,7 +5267,6 @@ func (s *DescribeAssessmentTargetsInput) SetAssessmentTargetArns(v []*string) *D
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DescribeAssessmentTargetsResponse
 type DescribeAssessmentTargetsOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -5339,7 +5304,6 @@ func (s *DescribeAssessmentTargetsOutput) SetFailedItems(v map[string]*FailedIte
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DescribeAssessmentTemplatesRequest
 type DescribeAssessmentTemplatesInput struct {
 	_ struct{} `type:"structure"`
 
@@ -5379,7 +5343,6 @@ func (s *DescribeAssessmentTemplatesInput) SetAssessmentTemplateArns(v []*string
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DescribeAssessmentTemplatesResponse
 type DescribeAssessmentTemplatesOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -5417,7 +5380,6 @@ func (s *DescribeAssessmentTemplatesOutput) SetFailedItems(v map[string]*FailedI
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DescribeCrossAccountAccessRoleInput
 type DescribeCrossAccountAccessRoleInput struct {
 	_ struct{} `type:"structure"`
 }
@@ -5432,7 +5394,6 @@ func (s DescribeCrossAccountAccessRoleInput) GoString() string {
 	return s.String()
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DescribeCrossAccountAccessRoleResponse
 type DescribeCrossAccountAccessRoleOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -5482,7 +5443,6 @@ func (s *DescribeCrossAccountAccessRoleOutput) SetValid(v bool) *DescribeCrossAc
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DescribeFindingsRequest
 type DescribeFindingsInput struct {
 	_ struct{} `type:"structure"`
 
@@ -5534,7 +5494,6 @@ func (s *DescribeFindingsInput) SetLocale(v string) *DescribeFindingsInput {
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DescribeFindingsResponse
 type DescribeFindingsOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -5572,7 +5531,6 @@ func (s *DescribeFindingsOutput) SetFindings(v []*Finding) *DescribeFindingsOutp
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DescribeResourceGroupsRequest
 type DescribeResourceGroupsInput struct {
 	_ struct{} `type:"structure"`
 
@@ -5614,7 +5572,6 @@ func (s *DescribeResourceGroupsInput) SetResourceGroupArns(v []*string) *Describ
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DescribeResourceGroupsResponse
 type DescribeResourceGroupsOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -5652,7 +5609,6 @@ func (s *DescribeResourceGroupsOutput) SetResourceGroups(v []*ResourceGroup) *De
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DescribeRulesPackagesRequest
 type DescribeRulesPackagesInput struct {
 	_ struct{} `type:"structure"`
 
@@ -5703,7 +5659,6 @@ func (s *DescribeRulesPackagesInput) SetRulesPackageArns(v []*string) *DescribeR
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DescribeRulesPackagesResponse
 type DescribeRulesPackagesOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -5742,7 +5697,6 @@ func (s *DescribeRulesPackagesOutput) SetRulesPackages(v []*RulesPackage) *Descr
 }
 
 // This data type is used in the AssessmentTemplateFilter data type.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/DurationRange
 type DurationRange struct {
 	_ struct{} `type:"structure"`
 
@@ -5793,7 +5747,6 @@ func (s *DurationRange) SetMinSeconds(v int64) *DurationRange {
 }
 
 // This data type is used in the Subscription data type.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/EventSubscription
 type EventSubscription struct {
 	_ struct{} `type:"structure"`
 
@@ -5832,7 +5785,6 @@ func (s *EventSubscription) SetSubscribedAt(v time.Time) *EventSubscription {
 }
 
 // Includes details about the failed items.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/FailedItemDetails
 type FailedItemDetails struct {
 	_ struct{} `type:"structure"`
 
@@ -5872,7 +5824,6 @@ func (s *FailedItemDetails) SetRetryable(v bool) *FailedItemDetails {
 
 // Contains information about an Amazon Inspector finding. This data type is
 // used as the response element in the DescribeFindings action.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/Finding
 type Finding struct {
 	_ struct{} `type:"structure"`
 
@@ -6060,7 +6011,6 @@ func (s *Finding) SetUserAttributes(v []*Attribute) *Finding {
 }
 
 // This data type is used as a request parameter in the ListFindings action.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/FindingFilter
 type FindingFilter struct {
 	_ struct{} `type:"structure"`
 
@@ -6191,7 +6141,6 @@ func (s *FindingFilter) SetUserAttributes(v []*Attribute) *FindingFilter {
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/GetAssessmentReportRequest
 type GetAssessmentReportInput struct {
 	_ struct{} `type:"structure"`
 
@@ -6265,7 +6214,6 @@ func (s *GetAssessmentReportInput) SetReportType(v string) *GetAssessmentReportI
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/GetAssessmentReportResponse
 type GetAssessmentReportOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -6301,7 +6249,6 @@ func (s *GetAssessmentReportOutput) SetUrl(v string) *GetAssessmentReportOutput 
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/GetTelemetryMetadataRequest
 type GetTelemetryMetadataInput struct {
 	_ struct{} `type:"structure"`
 
@@ -6344,7 +6291,6 @@ func (s *GetTelemetryMetadataInput) SetAssessmentRunArn(v string) *GetTelemetryM
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/GetTelemetryMetadataResponse
 type GetTelemetryMetadataOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -6370,7 +6316,6 @@ func (s *GetTelemetryMetadataOutput) SetTelemetryMetadata(v []*TelemetryMetadata
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ListAssessmentRunAgentsRequest
 type ListAssessmentRunAgentsInput struct {
 	_ struct{} `type:"structure"`
 
@@ -6456,7 +6401,6 @@ func (s *ListAssessmentRunAgentsInput) SetNextToken(v string) *ListAssessmentRun
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ListAssessmentRunAgentsResponse
 type ListAssessmentRunAgentsOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -6494,7 +6438,6 @@ func (s *ListAssessmentRunAgentsOutput) SetNextToken(v string) *ListAssessmentRu
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ListAssessmentRunsRequest
 type ListAssessmentRunsInput struct {
 	_ struct{} `type:"structure"`
 
@@ -6573,7 +6516,6 @@ func (s *ListAssessmentRunsInput) SetNextToken(v string) *ListAssessmentRunsInpu
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ListAssessmentRunsResponse
 type ListAssessmentRunsOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -6612,7 +6554,6 @@ func (s *ListAssessmentRunsOutput) SetNextToken(v string) *ListAssessmentRunsOut
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ListAssessmentTargetsRequest
 type ListAssessmentTargetsInput struct {
 	_ struct{} `type:"structure"`
 
@@ -6681,7 +6622,6 @@ func (s *ListAssessmentTargetsInput) SetNextToken(v string) *ListAssessmentTarge
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ListAssessmentTargetsResponse
 type ListAssessmentTargetsOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -6720,7 +6660,6 @@ func (s *ListAssessmentTargetsOutput) SetNextToken(v string) *ListAssessmentTarg
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ListAssessmentTemplatesRequest
 type ListAssessmentTemplatesInput struct {
 	_ struct{} `type:"structure"`
 
@@ -6799,7 +6738,6 @@ func (s *ListAssessmentTemplatesInput) SetNextToken(v string) *ListAssessmentTem
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ListAssessmentTemplatesResponse
 type ListAssessmentTemplatesOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -6837,7 +6775,6 @@ func (s *ListAssessmentTemplatesOutput) SetNextToken(v string) *ListAssessmentTe
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ListEventSubscriptionsRequest
 type ListEventSubscriptionsInput struct {
 	_ struct{} `type:"structure"`
 
@@ -6900,7 +6837,6 @@ func (s *ListEventSubscriptionsInput) SetResourceArn(v string) *ListEventSubscri
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ListEventSubscriptionsResponse
 type ListEventSubscriptionsOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -6938,7 +6874,6 @@ func (s *ListEventSubscriptionsOutput) SetSubscriptions(v []*Subscription) *List
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ListFindingsRequest
 type ListFindingsInput struct {
 	_ struct{} `type:"structure"`
 
@@ -7017,7 +6952,6 @@ func (s *ListFindingsInput) SetNextToken(v string) *ListFindingsInput {
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ListFindingsResponse
 type ListFindingsOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -7055,7 +6989,6 @@ func (s *ListFindingsOutput) SetNextToken(v string) *ListFindingsOutput {
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ListRulesPackagesRequest
 type ListRulesPackagesInput struct {
 	_ struct{} `type:"structure"`
 
@@ -7105,7 +7038,6 @@ func (s *ListRulesPackagesInput) SetNextToken(v string) *ListRulesPackagesInput 
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ListRulesPackagesResponse
 type ListRulesPackagesOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -7143,7 +7075,6 @@ func (s *ListRulesPackagesOutput) SetRulesPackageArns(v []*string) *ListRulesPac
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ListTagsForResourceRequest
 type ListTagsForResourceInput struct {
 	_ struct{} `type:"structure"`
 
@@ -7185,7 +7116,6 @@ func (s *ListTagsForResourceInput) SetResourceArn(v string) *ListTagsForResource
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ListTagsForResourceResponse
 type ListTagsForResourceOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -7211,7 +7141,6 @@ func (s *ListTagsForResourceOutput) SetTags(v []*Tag) *ListTagsForResourceOutput
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/PreviewAgentsRequest
 type PreviewAgentsInput struct {
 	_ struct{} `type:"structure"`
 
@@ -7278,7 +7207,6 @@ func (s *PreviewAgentsInput) SetPreviewAgentsArn(v string) *PreviewAgentsInput {
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/PreviewAgentsResponse
 type PreviewAgentsOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -7316,7 +7244,6 @@ func (s *PreviewAgentsOutput) SetNextToken(v string) *PreviewAgentsOutput {
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/RegisterCrossAccountAccessRoleRequest
 type RegisterCrossAccountAccessRoleInput struct {
 	_ struct{} `type:"structure"`
 
@@ -7359,7 +7286,6 @@ func (s *RegisterCrossAccountAccessRoleInput) SetRoleArn(v string) *RegisterCros
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/RegisterCrossAccountAccessRoleOutput
 type RegisterCrossAccountAccessRoleOutput struct {
 	_ struct{} `type:"structure"`
 }
@@ -7374,7 +7300,6 @@ func (s RegisterCrossAccountAccessRoleOutput) GoString() string {
 	return s.String()
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/RemoveAttributesFromFindingsRequest
 type RemoveAttributesFromFindingsInput struct {
 	_ struct{} `type:"structure"`
 
@@ -7430,7 +7355,6 @@ func (s *RemoveAttributesFromFindingsInput) SetFindingArns(v []*string) *RemoveA
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/RemoveAttributesFromFindingsResponse
 type RemoveAttributesFromFindingsOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -7461,7 +7385,6 @@ func (s *RemoveAttributesFromFindingsOutput) SetFailedItems(v map[string]*Failed
 // set of tags that, when queried, identify the AWS resources that make up the
 // assessment target. This data type is used as the response element in the
 // DescribeResourceGroups action.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ResourceGroup
 type ResourceGroup struct {
 	_ struct{} `type:"structure"`
 
@@ -7511,7 +7434,6 @@ func (s *ResourceGroup) SetTags(v []*ResourceGroupTag) *ResourceGroup {
 }
 
 // This data type is used as one of the elements of the ResourceGroup data type.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/ResourceGroupTag
 type ResourceGroupTag struct {
 	_ struct{} `type:"structure"`
 
@@ -7567,7 +7489,6 @@ func (s *ResourceGroupTag) SetValue(v string) *ResourceGroupTag {
 
 // Contains information about an Amazon Inspector rules package. This data type
 // is used as the response element in the DescribeRulesPackages action.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/RulesPackage
 type RulesPackage struct {
 	_ struct{} `type:"structure"`
 
@@ -7636,7 +7557,6 @@ func (s *RulesPackage) SetVersion(v string) *RulesPackage {
 }
 
 // This data type is used in the Finding data type.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/InspectorServiceAttributes
 type ServiceAttributes struct {
 	_ struct{} `type:"structure"`
 
@@ -7680,7 +7600,6 @@ func (s *ServiceAttributes) SetSchemaVersion(v int64) *ServiceAttributes {
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/SetTagsForResourceRequest
 type SetTagsForResourceInput struct {
 	_ struct{} `type:"structure"`
 
@@ -7742,7 +7661,6 @@ func (s *SetTagsForResourceInput) SetTags(v []*Tag) *SetTagsForResourceInput {
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/SetTagsForResourceOutput
 type SetTagsForResourceOutput struct {
 	_ struct{} `type:"structure"`
 }
@@ -7757,7 +7675,6 @@ func (s SetTagsForResourceOutput) GoString() string {
 	return s.String()
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/StartAssessmentRunRequest
 type StartAssessmentRunInput struct {
 	_ struct{} `type:"structure"`
 
@@ -7813,7 +7730,6 @@ func (s *StartAssessmentRunInput) SetAssessmentTemplateArn(v string) *StartAsses
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/StartAssessmentRunResponse
 type StartAssessmentRunOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -7839,7 +7755,6 @@ func (s *StartAssessmentRunOutput) SetAssessmentRunArn(v string) *StartAssessmen
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/StopAssessmentRunRequest
 type StopAssessmentRunInput struct {
 	_ struct{} `type:"structure"`
 
@@ -7894,7 +7809,6 @@ func (s *StopAssessmentRunInput) SetStopAction(v string) *StopAssessmentRunInput
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/StopAssessmentRunOutput
 type StopAssessmentRunOutput struct {
 	_ struct{} `type:"structure"`
 }
@@ -7909,7 +7823,6 @@ func (s StopAssessmentRunOutput) GoString() string {
 	return s.String()
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/SubscribeToEventRequest
 type SubscribeToEventInput struct {
 	_ struct{} `type:"structure"`
 
@@ -7983,7 +7896,6 @@ func (s *SubscribeToEventInput) SetTopicArn(v string) *SubscribeToEventInput {
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/SubscribeToEventOutput
 type SubscribeToEventOutput struct {
 	_ struct{} `type:"structure"`
 }
@@ -8000,7 +7912,6 @@ func (s SubscribeToEventOutput) GoString() string {
 
 // This data type is used as a response element in the ListEventSubscriptions
 // action.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/Subscription
 type Subscription struct {
 	_ struct{} `type:"structure"`
 
@@ -8053,7 +7964,6 @@ func (s *Subscription) SetTopicArn(v string) *Subscription {
 // A key and value pair. This data type is used as a request parameter in the
 // SetTagsForResource action and a response element in the ListTagsForResource
 // action.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/Tag
 type Tag struct {
 	_ struct{} `type:"structure"`
 
@@ -8110,7 +8020,6 @@ func (s *Tag) SetValue(v string) *Tag {
 // The metadata about the Amazon Inspector application data metrics collected
 // by the agent. This data type is used as the response element in the GetTelemetryMetadata
 // action.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/TelemetryMetadata
 type TelemetryMetadata struct {
 	_ struct{} `type:"structure"`
 
@@ -8157,7 +8066,6 @@ func (s *TelemetryMetadata) SetMessageType(v string) *TelemetryMetadata {
 }
 
 // This data type is used in the AssessmentRunFilter data type.
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/TimestampRange
 type TimestampRange struct {
 	_ struct{} `type:"structure"`
 
@@ -8190,7 +8098,6 @@ func (s *TimestampRange) SetEndDate(v time.Time) *TimestampRange {
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/UnsubscribeFromEventRequest
 type UnsubscribeFromEventInput struct {
 	_ struct{} `type:"structure"`
 
@@ -8264,7 +8171,6 @@ func (s *UnsubscribeFromEventInput) SetTopicArn(v string) *UnsubscribeFromEventI
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/UnsubscribeFromEventOutput
 type UnsubscribeFromEventOutput struct {
 	_ struct{} `type:"structure"`
 }
@@ -8279,7 +8185,6 @@ func (s UnsubscribeFromEventOutput) GoString() string {
 	return s.String()
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/UpdateAssessmentTargetRequest
 type UpdateAssessmentTargetInput struct {
 	_ struct{} `type:"structure"`
 
@@ -8295,9 +8200,7 @@ type UpdateAssessmentTargetInput struct {
 
 	// The ARN of the resource group that is used to specify the new resource group
 	// to associate with the assessment target.
-	//
-	// ResourceGroupArn is a required field
-	ResourceGroupArn *string `locationName:"resourceGroupArn" min:"1" type:"string" required:"true"`
+	ResourceGroupArn *string `locationName:"resourceGroupArn" min:"1" type:"string"`
 }
 
 // String returns the string representation
@@ -8324,9 +8227,6 @@ func (s *UpdateAssessmentTargetInput) Validate() error {
 	}
 	if s.AssessmentTargetName != nil && len(*s.AssessmentTargetName) < 1 {
 		invalidParams.Add(request.NewErrParamMinLen("AssessmentTargetName", 1))
-	}
-	if s.ResourceGroupArn == nil {
-		invalidParams.Add(request.NewErrParamRequired("ResourceGroupArn"))
 	}
 	if s.ResourceGroupArn != nil && len(*s.ResourceGroupArn) < 1 {
 		invalidParams.Add(request.NewErrParamMinLen("ResourceGroupArn", 1))
@@ -8356,7 +8256,6 @@ func (s *UpdateAssessmentTargetInput) SetResourceGroupArn(v string) *UpdateAsses
 	return s
 }
 
-// See also, https://docs.aws.amazon.com/goto/WebAPI/inspector-2016-02-16/UpdateAssessmentTargetOutput
 type UpdateAssessmentTargetOutput struct {
 	_ struct{} `type:"structure"`
 }

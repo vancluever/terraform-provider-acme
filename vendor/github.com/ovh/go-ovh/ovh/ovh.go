@@ -21,6 +21,7 @@ const DefaultTimeout = 180 * time.Second
 const (
 	OvhEU        = "https://eu.api.ovh.com/1.0"
 	OvhCA        = "https://ca.api.ovh.com/1.0"
+	OvhUS        = "https://api.ovhcloud.com/1.0"
 	KimsufiEU    = "https://eu.api.kimsufi.com/1.0"
 	KimsufiCA    = "https://ca.api.kimsufi.com/1.0"
 	SoyoustartEU = "https://eu.api.soyoustart.com/1.0"
@@ -32,6 +33,7 @@ const (
 var Endpoints = map[string]string{
 	"ovh-eu":        OvhEU,
 	"ovh-ca":        OvhCA,
+	"ovh-us":        OvhUS,
 	"kimsufi-eu":    KimsufiEU,
 	"kimsufi-ca":    KimsufiCA,
 	"soyoustart-eu": SoyoustartEU,
@@ -177,6 +179,9 @@ func (c *Client) getTimeDelta() (time.Duration, error) {
 		// Ensure only one thread is updating
 		c.timeDeltaMutex.Lock()
 
+		// Ensure that the mutex will be released on return
+		defer c.timeDeltaMutex.Unlock()
+
 		// Did we wait ? Maybe no more needed
 		if !c.timeDeltaDone {
 			ovhTime, err := c.getTime()
@@ -187,7 +192,6 @@ func (c *Client) getTimeDelta() (time.Duration, error) {
 			c.timeDelta = time.Since(*ovhTime)
 			c.timeDeltaDone = true
 		}
-		c.timeDeltaMutex.Unlock()
 	}
 
 	return c.timeDelta, nil
@@ -296,7 +300,7 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 // argument is not nil, it will also serialize it as json and inject
 // the required Content-Type header.
 //
-// If everyrthing went fine, unmarshall response into resType and return nil
+// If everything went fine, unmarshall response into resType and return nil
 // otherwise, return the error
 func (c *Client) CallAPI(method, path string, reqBody, resType interface{}, needAuth bool) error {
 	req, err := c.NewRequest(method, path, reqBody, needAuth)
