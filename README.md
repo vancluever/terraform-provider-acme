@@ -326,6 +326,14 @@ The resource takes the following arguments:
    Defaults to `false`. **Note that this option has no effect when using an
    external CSR - it must be enabled in the CSR itself.**
 
+##### Timeouts
+
+The `acme_certificate` resource honors the `delete` timeout that can be
+specified in the general [`timeout`][16] property of a resource. The default is
+20 minutes. When specified, this controls the amount of time the provider waits
+for a revoked certificate to show up in the CA's CRL, by checking its OCSP
+endpoint until revocation is confirmed.
+
 ##### Using DNS challenges
 
 ACME and ACME CAs such as Let's Encrypt may support [DNS challenges][11], which
@@ -386,6 +394,18 @@ perform the following:
     namespace for HTTP challenges, or:
   * All TLS requests on port 443 for TLS challenges.
 
+##### Certificate renewal
+
+The `acme_certificate` resource handles automatic certificate renewal so long as
+a plan or apply is done within the number of days specified in the
+`min_days_remaining` resource parameter. During refresh, if Terraform detects
+that the certificate is within the expiry range specified in
+`min_days_remaining`, or is already expired, Terraform will mark mark the
+certificate to be renewed on the next apply.
+
+Note that a negative value of 0 supplied to `min_days_remaining` will cause
+renewal checks to be bypassed, and the certificate will never renew.
+
 #### Attribute Reference
 
 The following attributes are exported:
@@ -400,14 +420,6 @@ The following attributes are exported:
    `certificate_request_pem` was used, this will be blank.
  * `certificate_pem` - The certificate in PEM format.
  * `issuer_pem` - The intermediate certificate of the issuer.
-
-#### Timeouts
-
-The `acme_certificate` resource honors the `delete` timeout that can be
-specified in the general [`timeout`][16] property of a resource. The default is
-20 minutes. When specified, this controls the amount of time the provider waits
-for a revoked certificate to show up in the CA's CRL, by checking its OCSP
-endpoint until revocation is confirmed.
 
 ## License
 
