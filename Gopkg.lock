@@ -41,6 +41,17 @@
   version = "v1.2.1"
 
 [[projects]]
+  name = "github.com/akamai/AkamaiOPEN-edgegrid-golang"
+  packages = [
+    "client-v1",
+    "configdns-v1",
+    "edgegrid",
+    "jsonhooks-v1"
+  ]
+  revision = "196fbdab2db66d0e231cc363efb63454f55fed1c"
+  version = "v0.6.2"
+
+[[projects]]
   branch = "master"
   name = "github.com/apparentlymart/go-cidr"
   packages = ["cidr"]
@@ -276,6 +287,12 @@
   name = "github.com/google/go-querystring"
   packages = ["query"]
   revision = "53e6ce116135b80d037921a7fdd5138cf32d7a8a"
+
+[[projects]]
+  name = "github.com/google/uuid"
+  packages = ["."]
+  revision = "064e2069ce9c359c118179501254f67d7d37ba24"
+  version = "0.2"
 
 [[projects]]
   branch = "master"
@@ -561,6 +578,12 @@
   version = "1.0.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/namedotcom/go"
+  packages = ["namecom"]
+  revision = "08470befbe04613bd4b44cb6978b05d50294c4d4"
+
+[[projects]]
   name = "github.com/oklog/run"
   packages = ["."]
   revision = "4dadeb3030eda0273a12382bb2348ffc7c9d1a39"
@@ -571,6 +594,12 @@
   name = "github.com/ovh/go-ovh"
   packages = ["ovh"]
   revision = "858d9a5df2fb99a2f91d6e700726e83502b80589"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -639,18 +668,27 @@
     "acme",
     "providers/dns/auroradns",
     "providers/dns/azure",
+    "providers/dns/bluecat",
     "providers/dns/cloudflare",
+    "providers/dns/cloudxns",
     "providers/dns/digitalocean",
     "providers/dns/dnsimple",
     "providers/dns/dnsmadeeasy",
     "providers/dns/dnspod",
+    "providers/dns/duckdns",
     "providers/dns/dyn",
+    "providers/dns/exec",
     "providers/dns/exoscale",
+    "providers/dns/fastdns",
     "providers/dns/gandi",
+    "providers/dns/gandiv5",
+    "providers/dns/glesys",
     "providers/dns/godaddy",
     "providers/dns/googlecloud",
+    "providers/dns/lightsail",
     "providers/dns/linode",
     "providers/dns/namecheap",
+    "providers/dns/namedotcom",
     "providers/dns/ns1",
     "providers/dns/otc",
     "providers/dns/ovh",
@@ -870,6 +908,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ceffedea64821648e4194c4f7e3d905f500b40420b6accf058651121263cedba"
+  inputs-digest = "f7e35fcc51fd93b27a98124685a58cc9f726f934042c51546e99dab45f2f9308"
   solver-name = "gps-cdcl"
   solver-version = 1
