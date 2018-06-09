@@ -1,6 +1,8 @@
 ALL_TARGETS += darwin_amd64 \
 	linux_amd64 \
-	windows_amd64 \
+	windows_amd64
+
+VERSION ?= dev
 
 .PHONY: test
 test:
@@ -35,7 +37,7 @@ define makePackageTarget
 pkg/$(1).zip: pkg/$(1)/terraform-provider-acme
 	@echo "==> Packaging for $(1)..."
 	@mkdir -p pkg/dist
-	@zip -j pkg/dist/$(1).zip pkg/$(1)/*
+	@zip -j pkg/dist/terraform-provider-acme_$(VERSION)_$(1).zip pkg/$(1)/*
 
 endef
 
