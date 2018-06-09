@@ -1,4 +1,8 @@
-## 0.5.1 (Unreleased)
+## 0.6.0 (Unreleased)
+
+**NOTE:** This is the last major release before 1.0.0, which will include
+support for ACME v2 and will more than likely break support for ACME v1. If you
+require ACME v1 after 1.0.0, use this version of the provider.
 
 IMPROVEMENTS:
 
