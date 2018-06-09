@@ -2,6 +2,10 @@
 
 IMPROVEMENTS:
 
+* `resource/acme_certificate`: This resource now supports supplying the `delete`
+  [resource timeout][resource-timeouts] timeout, which controls the certificate
+  revocation timeout (or more specifically, the OCSP wait timeout).
+  ([#32][gh-32])
 * `resource/acme_certificate`: Added alias mappings for the Azure DNS provider's
   environment variables so that the same environment variables for the
   [Terraform Azure Provider][tf-azurerm-provider] can be used with the ACME
@@ -13,9 +17,11 @@ IMPROVEMENTS:
   been marked as a sensitive field to prevent credentials from being leaked in
   output. ([#31][gh-31])
 
+[resource-timeouts]: https://www.terraform.io/docs/configuration/resources.html#timeouts
 [tf-azurerm-provider]: https://www.terraform.io/docs/providers/azurerm/index.html
 [gh-36]: https://github.com/vancluever/terraform-provider-acme/pull/36
 [gh-33]: https://github.com/vancluever/terraform-provider-acme/pull/33
+[gh-32]: https://github.com/vancluever/terraform-provider-acme/pull/32
 [gh-31]: https://github.com/vancluever/terraform-provider-acme/pull/31
 
 ## 0.5.0
