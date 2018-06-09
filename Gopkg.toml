@@ -3,7 +3,7 @@
   unused-packages = true
 
 [[constraint]]
-  branch = "master"
+  version = "v0.11.7"
   name = "github.com/hashicorp/terraform"
 
 [[constraint]]
@@ -15,7 +15,7 @@
   name = "github.com/terraform-providers/terraform-provider-tls"
 
 [[constraint]]
-  branch = "master"
+  version = "v0.5.0"
   name = "github.com/xenolf/lego"
 
 [[constraint]]
@@ -23,9 +23,5 @@
   name = "golang.org/x/crypto"
 
 [[override]]
-  name = "github.com/mitchellh/copystructure"
-  revision = "5af94aef99f597e6a9e1f6ac6be6ce0f3c96b49d"
-
-[[override]]
-  name = "github.com/mitchellh/reflectwalk"
-  revision = "92573fe8d000a145bfebc03a16bc22b34945867f"
+  branch = "master"
+  name = "github.com/dnsimple/dnsimple-go"
