@@ -12,8 +12,9 @@ import (
 
 func TestAccACMERegistration_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheckReg(t) },
-		Providers: testAccProviders,
+		PreCheck:     func() { testAccPreCheckReg(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckACMERegistrationValid("acme_registration.reg"),
 		Steps: []resource.TestStep{
 			resource.TestStep{
 				Config: testAccACMERegistrationConfig(),
@@ -38,7 +39,7 @@ func testAccCheckACMERegistrationValid(n string) resource.TestCheckFunc {
 
 		d := testAccCheckACMERegistrationResourceData(rs)
 
-		client, _, err := expandACMEClient(d, d.Get("registration_url").(string))
+		client, _, err := expandACMEClient(d, true)
 		if err != nil {
 			return fmt.Errorf("Could not build ACME client off reg: %s", err.Error())
 		}
@@ -69,7 +70,6 @@ func testAccCheckACMERegistrationResourceData(rs *terraform.ResourceState) *sche
 	d.Set("server_url", rs.Primary.Attributes["server_url"])
 	d.Set("account_key_pem", rs.Primary.Attributes["account_key_pem"])
 	d.Set("email_address", rs.Primary.Attributes["email_address"])
-	d.Set("registration_url", rs.Primary.Attributes["registration_url"])
 
 	return d
 }

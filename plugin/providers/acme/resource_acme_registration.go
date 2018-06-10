@@ -14,32 +14,35 @@ func resourceACMERegistration() *schema.Resource {
 
 func resourceACMERegistrationCreate(d *schema.ResourceData, meta interface{}) error {
 	// register and agree to the TOS
-	client, user, err := expandACMEClient(d, "")
+	client, _, err := expandACMEClient(d, false)
 	if err != nil {
 		return err
 	}
-	reg, err := client.Register(true)
-	if err != nil {
-		return err
-	}
-	user.Registration = reg
-
-	// save the reg
-	err = saveACMERegistration(d, reg)
+	_, err = client.Register(true)
 	if err != nil {
 		return err
 	}
 
-	return nil
+	return resourceACMERegistrationRead(d, meta)
 }
 
 func resourceACMERegistrationRead(d *schema.ResourceData, meta interface{}) error {
-	return nil
+	// NOTE: This may change the ID of the resource - this is currently an
+	// unfortunate consequence of the transition from ACME v1 to ACME v2.
+	_, user, err := expandACMEClient(d, true)
+	if err != nil {
+		return err
+	}
+
+	// save the reg
+	return saveACMERegistration(d, user.Registration)
 }
 
 func resourceACMERegistrationDelete(d *schema.ResourceData, meta interface{}) error {
-	// TODO: Add deletion support using *acme.Client.DeleteRegistration().
-	// I had this, but I think I jumped the gun on it still being in draft :)
-	d.SetId("")
-	return nil
+	client, _, err := expandACMEClient(d, true)
+	if err != nil {
+		return err
+	}
+
+	return client.DeleteRegistration()
 }

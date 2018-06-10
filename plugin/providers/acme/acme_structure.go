@@ -78,10 +78,6 @@ func registrationSchema() map[string]*schema.Schema {
 			Required: true,
 			ForceNew: true,
 		},
-		"registration_url": &schema.Schema{
-			Type:     schema.TypeString,
-			Computed: true,
-		},
 	}
 }
 
@@ -254,7 +250,6 @@ func expandACMEUser(d *schema.ResourceData) (*acmeUser, error) {
 // for a registration resource.
 func saveACMERegistration(d *schema.ResourceData, reg *acme.RegistrationResource) error {
 	d.SetId(reg.URI)
-	d.Set("registration_url", reg.URI)
 
 	return nil
 }
@@ -262,9 +257,10 @@ func saveACMERegistration(d *schema.ResourceData, reg *acme.RegistrationResource
 // expandACMEClient creates a connection to an ACME server from resource data,
 // and also returns the user.
 //
-// If regURL is supplied, the registration information is loaded in to the user's registration
-// via the registration URL.
-func expandACMEClient(d *schema.ResourceData, regURL string) (*acme.Client, *acmeUser, error) {
+// If loadReg is supplied, the registration information is loaded in to the
+// user's registration, if it exists - if the account cannot be resolved by the
+// private key, then the appropriate error is returned.
+func expandACMEClient(d *schema.ResourceData, loadReg bool) (*acme.Client, *acmeUser, error) {
 	user, err := expandACMEUser(d)
 	if err != nil {
 		return nil, nil, fmt.Errorf("Error getting user data: %s", err.Error())
@@ -283,15 +279,11 @@ func expandACMEClient(d *schema.ResourceData, regURL string) (*acme.Client, *acm
 		return nil, nil, err
 	}
 
-	if regURL != "" {
-		user.Registration = &acme.RegistrationResource{
-			URI: regURL,
-		}
-		reg, err := client.QueryRegistration()
+	if loadReg {
+		user.Registration, err = client.ResolveAccountByKey()
 		if err != nil {
 			return nil, nil, err
 		}
-		user.Registration = reg
 	}
 
 	return client, user, nil
