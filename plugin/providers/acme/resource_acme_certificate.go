@@ -1,10 +1,10 @@
 package acme
 
 import (
+	"crypto/x509"
 	"fmt"
 	"log"
 	"strconv"
-	"strings"
 	"time"
 
 	"golang.org/x/crypto/ocsp"
@@ -45,18 +45,17 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		}
 	} else {
 		client.SetHTTPAddress(":" + strconv.Itoa(d.Get("http_challenge_port").(int)))
-		client.SetTLSAddress(":" + strconv.Itoa(d.Get("tls_challenge_port").(int)))
 	}
 
-	var cert acme.CertificateResource
-	var errs map[string]error
+	var cert *acme.CertificateResource
 
 	if v, ok := d.GetOk("certificate_request_pem"); ok {
-		csr, err := csrFromPEM([]byte(v.(string)))
+		var csr *x509.CertificateRequest
+		csr, err = csrFromPEM([]byte(v.(string)))
 		if err != nil {
 			return err
 		}
-		cert, errs = client.ObtainCertificateForCSR(*csr, true)
+		cert, err = client.ObtainCertificateForCSR(*csr, true)
 	} else {
 		cn := d.Get("common_name").(string)
 		domains := []string{cn}
@@ -69,15 +68,11 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 			}
 		}
 
-		cert, errs = client.ObtainCertificate(domains, true, nil, d.Get("must_staple").(bool))
+		cert, err = client.ObtainCertificate(domains, true, nil, d.Get("must_staple").(bool))
 	}
 
-	if len(errs) > 0 {
-		messages := []string{}
-		for k, v := range errs {
-			messages = append(messages, fmt.Sprintf("%s: %s", k, v))
-		}
-		return fmt.Errorf("Errors were encountered creating the certificate:\n    %s", strings.Join(messages, "\n    "))
+	if err != nil {
+		return fmt.Errorf("error creating certificate: %s", err)
 	}
 
 	// Done! save the cert
@@ -146,9 +141,8 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 		}
 	} else {
 		client.SetHTTPAddress(":" + strconv.Itoa(d.Get("http_challenge_port").(int)))
-		client.SetTLSAddress(":" + strconv.Itoa(d.Get("tls_challenge_port").(int)))
 	}
-	newCert, err := client.RenewCertificate(cert, true, d.Get("must_staple").(bool))
+	newCert, err := client.RenewCertificate(*cert, true, d.Get("must_staple").(bool))
 	if err != nil {
 		return err
 	}

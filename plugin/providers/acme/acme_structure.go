@@ -306,7 +306,7 @@ type certificateResourceExpander interface {
 
 // expandCertificateResource takes saved state in the certificate resource
 // and returns an acme.CertificateResource.
-func expandCertificateResource(d certificateResourceExpander) acme.CertificateResource {
+func expandCertificateResource(d certificateResourceExpander) *acme.CertificateResource {
 	cert := acme.CertificateResource{
 		Domain:     d.Get("certificate_domain").(string),
 		CertURL:    d.Get("certificate_url").(string),
@@ -327,7 +327,7 @@ func expandCertificateResource(d certificateResourceExpander) acme.CertificateRe
 }
 
 // saveCertificateResource takes an acme.CertificateResource and sets fields.
-func saveCertificateResource(d *schema.ResourceData, cert acme.CertificateResource) error {
+func saveCertificateResource(d *schema.ResourceData, cert *acme.CertificateResource) error {
 	d.SetId(cert.CertURL)
 	d.Set("certificate_domain", cert.Domain)
 	d.Set("certificate_url", cert.CertURL)
@@ -345,7 +345,7 @@ func saveCertificateResource(d *schema.ResourceData, cert acme.CertificateResour
 
 // certDaysRemaining takes an acme.CertificateResource, parses the
 // certificate, and computes the days that it has remaining.
-func certDaysRemaining(cert acme.CertificateResource) (int64, error) {
+func certDaysRemaining(cert *acme.CertificateResource) (int64, error) {
 	x509Certs, err := parsePEMBundle(cert.Certificate)
 	if err != nil {
 		return 0, err
