@@ -10,11 +10,11 @@ test:
 
 .PHONY: testacc
 testacc:
-	TF_ACC=1 go test -v ./plugin/providers/acme $(TESTARGS) -timeout 20m
+	TF_ACC=1 go test -v ./plugin/providers/acme $(TESTARGS) -timeout 240m
 
 .PHONY: debugacc
 debugacc:
-	TF_ACC=1 dlv test ./plugin/providers/acme -- -test.v $(TESTARGS) -test.timeout 20m
+	TF_ACC=1 dlv test ./plugin/providers/acme -- -test.v $(TESTARGS) -test.timeout 240m
 
 pkg/darwin_amd64/terraform-provider-acme:
 	@echo "==> Building $@..."
