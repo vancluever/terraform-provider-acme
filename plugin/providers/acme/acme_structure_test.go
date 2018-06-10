@@ -108,10 +108,10 @@ func registrationResourceData() *schema.ResourceData {
 	d := r.TestResourceData()
 
 	d.SetId("regurl")
-	d.Set("server_url", "https://acme-staging.api.letsencrypt.org/directory")
+	d.Set("server_url", "https://acme-staging-v02.api.letsencrypt.org/directory")
 	d.Set("account_key_pem", testPrivateKeyText)
 	d.Set("email_address", "nobody@example.com")
-	d.Set("registration_url", "https://acme-staging.api.letsencrypt.org/acme/reg/123456789")
+	d.Set("registration_url", "https://acme-staging-v02.api.letsencrypt.org/acme/acct/123456789")
 
 	return d
 }
