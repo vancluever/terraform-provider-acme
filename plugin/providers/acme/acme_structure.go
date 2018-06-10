@@ -271,52 +271,6 @@ func expandACMEUser(d *schema.ResourceData) (*acmeUser, error) {
 	return user, nil
 }
 
-// expandACMERegistration takes a *schema.ResourceData and builds an
-// *acme.RegistrationResource, complete with body, for use in lego calls.
-//
-// Note that this function will return nil, false if any of the computed
-// registration fields are un-readable, to allow non-fatal behaviour when the
-// data does not exist.
-//
-// TODO: This function is currently unused as registrations do not currently
-// seem to be deletable in Let's Encrypt.
-// Leaving it here, with an appropriate unit test, so that once this
-// functionality becomes available it will be easy to grab the reg for deletion.
-func expandACMERegistration(d *schema.ResourceData) (*acme.RegistrationResource, bool) {
-	reg := acme.RegistrationResource{}
-	var v interface{}
-	var ok bool
-
-	if v, ok = d.GetOk("registration_body"); ok == false {
-		return nil, false
-	}
-	body := acme.Registration{}
-	err := json.Unmarshal([]byte(v.(string)), &body)
-	if err != nil {
-		log.Printf("[DEBUG] Error reading JSON for registration body: %s", err.Error())
-		return nil, false
-	}
-	reg.Body = body
-
-	if v, ok = d.GetOk("registration_url"); ok == false {
-		return nil, false
-	}
-	reg.URI = v.(string)
-
-	if v, ok = d.GetOk("registration_new_authz_url"); ok == false {
-		return nil, false
-	}
-	reg.NewAuthzURL = v.(string)
-
-	// TOS url can be blank, ensure we don't fail on this
-	if v, ok = d.GetOk("registration_tos_url"); ok == false {
-		log.Printf("[DEBUG] ACME reg %s: registration_tos_url is blank", reg.URI)
-	}
-	reg.TosURL = v.(string)
-
-	return &reg, true
-}
-
 // saveACMERegistration takes an *acme.RegistrationResource and sets the appropriate fields
 // for a registration resource.
 func saveACMERegistration(d *schema.ResourceData, reg *acme.RegistrationResource) error {
