@@ -307,7 +307,7 @@ type certificateResourceExpander interface {
 // expandCertificateResource takes saved state in the certificate resource
 // and returns an acme.CertificateResource.
 func expandCertificateResource(d certificateResourceExpander) *acme.CertificateResource {
-	cert := acme.CertificateResource{
+	cert := &acme.CertificateResource{
 		Domain:     d.Get("certificate_domain").(string),
 		CertURL:    d.Get("certificate_url").(string),
 		AccountRef: d.Get("account_ref").(string),
@@ -565,7 +565,7 @@ func privateKeyFromPEM(pemData []byte) (crypto.PrivateKey, error) {
 	var result *pem.Block
 	rest := pemData
 	for {
-		result, rest = pem.Decode([]byte(rest))
+		result, rest = pem.Decode(rest)
 		if result == nil {
 			return nil, fmt.Errorf("Cannot decode supplied PEM data")
 		}
@@ -583,7 +583,7 @@ func csrFromPEM(pemData []byte) (*x509.CertificateRequest, error) {
 	var result *pem.Block
 	rest := pemData
 	for {
-		result, rest = pem.Decode([]byte(rest))
+		result, rest = pem.Decode(rest)
 		if result == nil {
 			return nil, fmt.Errorf("Cannot decode supplied PEM data")
 		}

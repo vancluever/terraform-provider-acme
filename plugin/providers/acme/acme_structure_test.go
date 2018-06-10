@@ -1,8 +1,6 @@
 package acme
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -15,14 +13,17 @@ import (
 
 const testDirResponseText = `
 {
-  "new-reg": "https://example.com/acme/new-reg",
-  "new-authz": "https://example.com/acme/new-authz",
-  "new-cert": "https://example.com/acme/new-cert",
-  "revoke-cert": "https://example.com/acme/revoke-cert",
+  "newNonce": "https://example.com/acme/new-nonce",
+  "newAccount": "https://example.com/acme/new-account",
+  "newOrder": "https://example.com/acme/new-order",
+  "newAuthz": "https://example.com/acme/new-authz",
+  "revokeCert": "https://example.com/acme/revoke-cert",
+  "keyChange": "https://example.com/acme/key-change",
   "meta": {
-    "terms-of-service": "https://example.com/acme/terms",
+    "termsOfService": "https://example.com/acme/terms/2017-5-30",
     "website": "https://www.example.com/",
-    "caa-identities": ["example.com"]
+    "caaIdentities": ["example.com"],
+    "externalAccountRequired": false
   }
 }
 `
@@ -100,35 +101,6 @@ n5Z5MqkYhlMI3J1tPRTp1nEt9fyGspBOO05gi148Qasp+3N+svqKomoQglNoAxU=
 -----END CERTIFICATE-----
 `
 
-const testRegJSONText = `
-{
-	"resource": "reg",
-	"id": 224403,
-	"key": {
-			 "kty": "RSA",
-			 "use": "sig",
-			 "n": "n4EPtAOCc9AlkeQHPzHStgAbgs7bTZLwUBZdR8_KuKPEHLd4rHVTeT-O-XV2jRojdNhxJWTDvNd7nqQ0VEiZQHz_AJmSCpMaJMRBSFKrKb2wqVwGU_NsYOYL-QtiWN2lbzcEe6XC0dApr5ydQLrHqkHHig3RBordaZ6Aj-oBHqFEHYpPe7Tpe-OfVfHd1E6cS6M1FZcD1NNLYD5lFHpPI9bTwJlsde3uhGqC0ZCuEHg8lhzwOHrtIQbS0FVbb9k3-tVTU4fg_3L_vniUFAKwuCLqKnS2BYwdq_mzSnbLY7h_qixoR7jig3__kRhuaxwUkRz5iaiQkqgc5gHdrNP5zw",
-			 "e": "AQAB"
-	},
-	"contact": ["mailto:nobody@example.com"],
-	"agreement": "https://letsencrypt.org/documents/LE-SA-v1.0.1-July-27-2015.pdf"
-}
-`
-
-func testRegData() *acme.RegistrationResource {
-	reg := acme.RegistrationResource{}
-	body := acme.Registration{}
-	err := json.Unmarshal([]byte(testRegJSONText), &body)
-	if err != nil {
-		panic(fmt.Errorf("Error reading JSON for registration body: %s", err.Error()))
-	}
-	reg.Body = body
-	reg.URI = "https://acme-staging.api.letsencrypt.org/acme/reg/123456789"
-	reg.NewAuthzURL = "https://acme-staging.api.letsencrypt.org/acme/new-authz"
-	reg.TosURL = "https://letsencrypt.org/documents/LE-SA-v1.0.1-July-27-2015.pdf"
-	return &reg
-}
-
 func registrationResourceData() *schema.ResourceData {
 	r := &schema.Resource{
 		Schema: registrationSchemaFull(),
@@ -139,10 +111,7 @@ func registrationResourceData() *schema.ResourceData {
 	d.Set("server_url", "https://acme-staging.api.letsencrypt.org/directory")
 	d.Set("account_key_pem", testPrivateKeyText)
 	d.Set("email_address", "nobody@example.com")
-	d.Set("registration_body", testRegJSONText)
 	d.Set("registration_url", "https://acme-staging.api.letsencrypt.org/acme/reg/123456789")
-	d.Set("registration_new_authz_url", "https://acme-staging.api.letsencrypt.org/acme/new-authz")
-	d.Set("registration_tos_url", "https://letsencrypt.org/documents/LE-SA-v1.0.1-July-27-2015.pdf")
 
 	return d
 }
@@ -166,7 +135,7 @@ func blankCertificateResource() *schema.ResourceData {
 
 func TestACME_registrationSchemaFull(t *testing.T) {
 	m := registrationSchemaFull()
-	fields := []string{"email_address", "registration_body", "registration_url", "registration_new_authz_url", "registration_tos_url"}
+	fields := []string{"email_address", "registration_url"}
 	for _, v := range fields {
 		if _, ok := m[v]; ok == false {
 			t.Fatalf("Expected %s to be present", v)
@@ -184,7 +153,6 @@ func TestACME_certificateSchema(t *testing.T) {
 		"min_days_remaining",
 		"dns_challenge",
 		"http_challenge_port",
-		"tls_challenge_port",
 		"registration_url",
 		"must_staple",
 		"certificate_domain",
@@ -230,59 +198,6 @@ func TestACME_expandACMEUser_badKey(t *testing.T) {
 	}
 }
 
-func TestACME_expandACMERegistration(t *testing.T) {
-	d := registrationResourceData()
-	actual, ok := expandACMERegistration(d)
-	if ok == false {
-		t.Fatalf("Got error while expanding registration")
-	}
-
-	expected := testRegData()
-	if reflect.DeepEqual(expected, actual) == false {
-		t.Fatalf("Expected %#v, got %#v", expected, actual)
-	}
-}
-
-func TestACME_expandACMERegistration_noBody(t *testing.T) {
-	d := registrationResourceData()
-	d.Set("registration_body", "")
-	if _, ok := expandACMERegistration(d); ok {
-		t.Fatalf("Expected error due to empty body")
-	}
-}
-
-func TestACME_expandACMERegistration_badBody(t *testing.T) {
-	d := registrationResourceData()
-	d.Set("registration_body", "foo")
-	if _, ok := expandACMERegistration(d); ok {
-		t.Fatalf("Expected error due to bad body data")
-	}
-}
-
-func TestACME_expandACMERegistration_noRegURL(t *testing.T) {
-	d := registrationResourceData()
-	d.Set("registration_url", "")
-	if _, ok := expandACMERegistration(d); ok {
-		t.Fatalf("Expected error due to empty reg URL")
-	}
-}
-
-func TestACME_expandACMERegistration_noNewAuthZ(t *testing.T) {
-	d := registrationResourceData()
-	d.Set("registration_new_authz_url", "")
-	if _, ok := expandACMERegistration(d); ok {
-		t.Fatalf("Expected error due to empty new-authz URL")
-	}
-}
-
-func TestACME_expandACMERegistration_noTOS(t *testing.T) {
-	d := registrationResourceData()
-	d.Set("registration_tos_url", "")
-	if _, ok := expandACMERegistration(d); ok == false {
-		t.Fatalf("Blank TOS URL should have been OK")
-	}
-}
-
 func TestACME_expandACMEClient_badKey(t *testing.T) {
 	d := registrationResourceData()
 	d.Set("account_key_pem", "bad")
@@ -310,7 +225,7 @@ func TestACME_expandACMEClient_badRegURL(t *testing.T) {
 }
 
 func TestACME_expandACMEClient_noCertData(t *testing.T) {
-	c := acme.CertificateResource{}
+	c := &acme.CertificateResource{}
 	_, err := certDaysRemaining(c)
 	if err == nil {
 		t.Fatalf("expected error due to bad cert data")
@@ -361,7 +276,7 @@ func TestACME_setDNSChallenge_unsuppotedProvider(t *testing.T) {
 
 func TestACME_saveCertificateResource_badCert(t *testing.T) {
 	b := testBadCertBundleText
-	c := acme.CertificateResource{
+	c := &acme.CertificateResource{
 		Certificate: []byte(b),
 	}
 	d := blankCertificateResource()
@@ -373,7 +288,7 @@ func TestACME_saveCertificateResource_badCert(t *testing.T) {
 
 func TestACME_certDaysRemaining_CACert(t *testing.T) {
 	b := testBadCertBundleText
-	c := acme.CertificateResource{
+	c := &acme.CertificateResource{
 		Certificate: []byte(b),
 	}
 	_, err := certDaysRemaining(c)
