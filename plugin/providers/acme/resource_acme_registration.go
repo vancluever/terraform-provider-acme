@@ -18,15 +18,11 @@ func resourceACMERegistrationCreate(d *schema.ResourceData, meta interface{}) er
 	if err != nil {
 		return err
 	}
-	reg, err := client.Register()
+	reg, err := client.Register(true)
 	if err != nil {
 		return err
 	}
 	user.Registration = reg
-	err = client.AgreeToTOS()
-	if err != nil {
-		return err
-	}
 
 	// save the reg
 	err = saveACMERegistration(d, reg)
