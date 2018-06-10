@@ -1,6 +1,7 @@
 package acme
 
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -13,6 +14,9 @@ var testAccProvider *schema.Provider
 var testAccProviders map[string]terraform.ResourceProvider
 
 func init() {
+	// Set TF_SCHEMA_PANIC_ON_ERROR as a sanity check on tests.
+	os.Setenv("TF_SCHEMA_PANIC_ON_ERROR", "true")
+
 	testAccProvider = Provider().(*schema.Provider)
 	testAccProviders = map[string]terraform.ResourceProvider{
 		"acme": testAccProvider,
