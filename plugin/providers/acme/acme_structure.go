@@ -4,11 +4,9 @@ import (
 	"bytes"
 	"crypto"
 	"crypto/x509"
-	"encoding/json"
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"sort"
 	"time"
@@ -80,20 +78,7 @@ func registrationSchema() map[string]*schema.Schema {
 			Required: true,
 			ForceNew: true,
 		},
-		"registration_body": &schema.Schema{
-			Type:      schema.TypeString,
-			Computed:  true,
-			Sensitive: true,
-		},
 		"registration_url": &schema.Schema{
-			Type:     schema.TypeString,
-			Computed: true,
-		},
-		"registration_new_authz_url": &schema.Schema{
-			Type:     schema.TypeString,
-			Computed: true,
-		},
-		"registration_tos_url": &schema.Schema{
 			Type:     schema.TypeString,
 			Computed: true,
 		},
@@ -162,12 +147,6 @@ func certificateSchema() map[string]*schema.Schema {
 			Type:     schema.TypeInt,
 			Optional: true,
 			Default:  80,
-			ForceNew: true,
-		},
-		"tls_challenge_port": &schema.Schema{
-			Type:     schema.TypeInt,
-			Optional: true,
-			Default:  443,
 			ForceNew: true,
 		},
 		"registration_url": &schema.Schema{
@@ -275,16 +254,7 @@ func expandACMEUser(d *schema.ResourceData) (*acmeUser, error) {
 // for a registration resource.
 func saveACMERegistration(d *schema.ResourceData, reg *acme.RegistrationResource) error {
 	d.SetId(reg.URI)
-
-	body, err := json.Marshal(reg.Body)
-	if err != nil {
-		return fmt.Errorf("error reading registration body: %s", err.Error())
-	}
-	d.Set("registration_body", string(body))
-
 	d.Set("registration_url", reg.URI)
-	d.Set("registration_new_authz_url", reg.NewAuthzURL)
-	d.Set("registration_tos_url", reg.TosURL)
 
 	return nil
 }
@@ -558,7 +528,7 @@ func setDNSChallenge(client *acme.Client, m map[string]interface{}) error {
 		return err
 	}
 	client.SetChallengeProvider(acme.DNS01, provider)
-	client.ExcludeChallenges([]acme.Challenge{acme.HTTP01, acme.TLSSNI01})
+	client.ExcludeChallenges([]acme.Challenge{acme.HTTP01})
 
 	return nil
 }
