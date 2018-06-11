@@ -111,7 +111,6 @@ func registrationResourceData() *schema.ResourceData {
 	d.Set("server_url", "https://acme-staging-v02.api.letsencrypt.org/directory")
 	d.Set("account_key_pem", testPrivateKeyText)
 	d.Set("email_address", "nobody@example.com")
-	d.Set("registration_url", "https://acme-staging-v02.api.letsencrypt.org/acme/acct/123456789")
 
 	return d
 }
@@ -228,7 +227,7 @@ func TestACME_setDNSChallenge_noProvider(t *testing.T) {
 	d := blankBaseResource()
 	ts := httpDirTestServer()
 	d.Set("server_url", ts.URL)
-	client, _, err := expandACMEClient(d, true)
+	client, _, err := expandACMEClient(d, false)
 	if err != nil {
 		t.Fatalf("fatal: %s", err.Error())
 	}
@@ -246,7 +245,7 @@ func TestACME_setDNSChallenge_unsuppotedProvider(t *testing.T) {
 	d := blankBaseResource()
 	ts := httpDirTestServer()
 	d.Set("server_url", ts.URL)
-	client, _, err := expandACMEClient(d, true)
+	client, _, err := expandACMEClient(d, false)
 	if err != nil {
 		t.Fatalf("fatal: %s", err.Error())
 	}
