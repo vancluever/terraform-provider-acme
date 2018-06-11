@@ -311,15 +311,13 @@ resource "acme_registration" "reg" {
 
 resource "acme_certificate" "certificate" {
   server_url                = "https://acme-staging-v02.api.letsencrypt.org/directory"
-  account_key_pem           = "${tls_private_key.private_key.private_key_pem}"
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
   common_name               = "www.${var.domain}"
   subject_alternative_names = ["www2.${var.domain}"]
 
   dns_challenge {
     provider = "route53"
   }
-
-  registration_url = "${acme_registration.reg.id}"
 }
 `, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"))
 }
@@ -359,15 +357,13 @@ resource "tls_cert_request" "req" {
 }
 
 resource "acme_certificate" "certificate" {
-  server_url       = "https://acme-staging-v02.api.letsencrypt.org/directory"
-  account_key_pem  = "${tls_private_key.reg_private_key.private_key_pem}"
+  server_url              = "https://acme-staging-v02.api.letsencrypt.org/directory"
+  account_key_pem         = "${acme_registration.reg.account_key_pem}"
   certificate_request_pem = "${tls_cert_request.req.cert_request_pem}"
 
   dns_challenge {
     provider = "route53"
   }
-
-  registration_url = "${acme_registration.reg.id}"
 }
 `, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"))
 }
@@ -393,22 +389,21 @@ resource "acme_registration" "reg" {
 }
 
 resource "acme_certificate" "certificate" {
-  server_url                = "https://acme-staging-v02.api.letsencrypt.org/directory"
-  account_key_pem           = "${tls_private_key.private_key.private_key_pem}"
-  common_name               = "www5.${var.domain}"
+  server_url      = "https://acme-staging-v02.api.letsencrypt.org/directory"
+  account_key_pem = "${acme_registration.reg.account_key_pem}"
+  common_name     = "www5.${var.domain}"
 
   dns_challenge {
     provider = "route53"
-		config {
-			AWS_PROFILE           = "%s"
-			AWS_ACCESS_KEY_ID     = "%s"
-			AWS_SECRET_ACCESS_KEY = "%s"
-			AWS_SESSION_TOKEN     = "%s"
-			AWS_HOSTED_ZONE_ID    = "%s"
-		}
-  }
 
-  registration_url = "${acme_registration.reg.id}"
+    config {
+      AWS_PROFILE           = "%s"
+      AWS_ACCESS_KEY_ID     = "%s"
+      AWS_SECRET_ACCESS_KEY = "%s"
+      AWS_SESSION_TOKEN     = "%s"
+      AWS_HOSTED_ZONE_ID    = "%s"
+    }
+  }
 }
 `,
 		os.Getenv("ACME_EMAIL_ADDRESS"),
@@ -442,16 +437,14 @@ resource "acme_registration" "reg" {
 }
 
 resource "acme_certificate" "certificate" {
-  server_url                = "https://acme-staging-v02.api.letsencrypt.org/directory"
-  account_key_pem           = "${tls_private_key.private_key.private_key_pem}"
-  common_name               = "www6.${var.domain}"
-	min_days_remaining        = 720
+  server_url         = "https://acme-staging-v02.api.letsencrypt.org/directory"
+  account_key_pem    = "${acme_registration.reg.account_key_pem}"
+  common_name        = "www6.${var.domain}"
+  min_days_remaining = 720
 
   dns_challenge {
     provider = "route53"
   }
-
-  registration_url = "${acme_registration.reg.id}"
 }
 `, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"))
 }
@@ -477,15 +470,13 @@ resource "acme_registration" "reg" {
 }
 
 resource "acme_certificate" "certificate" {
-  server_url                = "https://acme-staging-v02.api.letsencrypt.org/directory"
-  account_key_pem           = "${tls_private_key.private_key.private_key_pem}"
-  common_name               = "www7.${var.domain}"
+  server_url      = "https://acme-staging-v02.api.letsencrypt.org/directory"
+  account_key_pem = "${acme_registration.reg.account_key_pem}"
+  common_name     = "www7.${var.domain}"
 
   dns_challenge {
     provider = "route53"
   }
-
-  registration_url = "${acme_registration.reg.id}"
 }
 `, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"))
 }
@@ -511,14 +502,11 @@ resource "acme_registration" "reg" {
 }
 
 resource "acme_certificate" "certificate" {
-  server_url                = "https://acme-staging-v02.api.letsencrypt.org/directory"
-  account_key_pem           = "${tls_private_key.private_key.private_key_pem}"
-  common_name               = "www7.${var.domain}"
+  server_url      = "https://acme-staging-v02.api.letsencrypt.org/directory"
+  account_key_pem = "${acme_registration.reg.account_key_pem}"
+  common_name     = "www7.${var.domain}"
 
-  registration_url = "${acme_registration.reg.id}"
-
-	depends_on = ["aws_route53_record.www7"]
-
+  depends_on = ["aws_route53_record.www7"]
 }
 
 resource "aws_route53_record" "www7" {
@@ -553,16 +541,14 @@ resource "acme_registration" "reg" {
 
 resource "acme_certificate" "certificate" {
   server_url                = "https://acme-staging-v02.api.letsencrypt.org/directory"
-  account_key_pem           = "${tls_private_key.private_key.private_key_pem}"
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
   common_name               = "www8.${var.domain}"
   subject_alternative_names = ["www9.${var.domain}"]
-	must_staple               = true
+  must_staple               = true
 
   dns_challenge {
     provider = "route53"
   }
-
-  registration_url = "${acme_registration.reg.id}"
 }
 `, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"))
 }

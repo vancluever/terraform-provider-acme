@@ -145,11 +145,6 @@ func certificateSchema() map[string]*schema.Schema {
 			Default:  80,
 			ForceNew: true,
 		},
-		"registration_url": &schema.Schema{
-			Type:     schema.TypeString,
-			Required: true,
-			ForceNew: true,
-		},
 		"must_staple": &schema.Schema{
 			Type:     schema.TypeBool,
 			Optional: true,
