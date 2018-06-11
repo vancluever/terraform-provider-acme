@@ -3,6 +3,7 @@ package acme
 import (
 	"fmt"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/resource"
@@ -14,19 +15,19 @@ func TestAccACMERegistration_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheckReg(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckACMERegistrationValid("acme_registration.reg"),
+		CheckDestroy: testAccCheckACMERegistrationValid("acme_registration.reg", false),
 		Steps: []resource.TestStep{
 			resource.TestStep{
 				Config: testAccACMERegistrationConfig(),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckACMERegistrationValid("acme_registration.reg"),
+					testAccCheckACMERegistrationValid("acme_registration.reg", true),
 				),
 			},
 		},
 	})
 }
 
-func testAccCheckACMERegistrationValid(n string) resource.TestCheckFunc {
+func testAccCheckACMERegistrationValid(n string, exists bool) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
 		if !ok {
@@ -41,6 +42,9 @@ func testAccCheckACMERegistrationValid(n string) resource.TestCheckFunc {
 
 		client, _, err := expandACMEClient(d, true)
 		if err != nil {
+			if strings.Contains(err.Error(), `has status "deactivated"`) && !exists {
+				return nil
+			}
 			return fmt.Errorf("Could not build ACME client off reg: %s", err.Error())
 		}
 		reg, err := client.QueryRegistration()

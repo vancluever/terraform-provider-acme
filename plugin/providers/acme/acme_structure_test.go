@@ -201,26 +201,9 @@ func TestACME_expandACMEUser_badKey(t *testing.T) {
 func TestACME_expandACMEClient_badKey(t *testing.T) {
 	d := registrationResourceData()
 	d.Set("account_key_pem", "bad")
-	_, _, err := expandACMEClient(d, "")
+	_, _, err := expandACMEClient(d, true)
 	if err == nil {
 		t.Fatalf("expected error due to bad key")
-	}
-}
-
-func TestACME_expandACMEClient_badURL(t *testing.T) {
-	d := registrationResourceData()
-	d.Set("server_url", "bad://")
-	_, _, err := expandACMEClient(d, "")
-	if err == nil {
-		t.Fatalf("expected error due to bad URL")
-	}
-}
-
-func TestACME_expandACMEClient_badRegURL(t *testing.T) {
-	d := registrationResourceData()
-	_, _, err := expandACMEClient(d, "bad://")
-	if err == nil {
-		t.Fatalf("expected error due to bad reg URL")
 	}
 }
 
@@ -245,7 +228,7 @@ func TestACME_setDNSChallenge_noProvider(t *testing.T) {
 	d := blankBaseResource()
 	ts := httpDirTestServer()
 	d.Set("server_url", ts.URL)
-	client, _, err := expandACMEClient(d, "")
+	client, _, err := expandACMEClient(d, true)
 	if err != nil {
 		t.Fatalf("fatal: %s", err.Error())
 	}
@@ -263,7 +246,7 @@ func TestACME_setDNSChallenge_unsuppotedProvider(t *testing.T) {
 	d := blankBaseResource()
 	ts := httpDirTestServer()
 	d.Set("server_url", ts.URL)
-	client, _, err := expandACMEClient(d, "")
+	client, _, err := expandACMEClient(d, true)
 	if err != nil {
 		t.Fatalf("fatal: %s", err.Error())
 	}

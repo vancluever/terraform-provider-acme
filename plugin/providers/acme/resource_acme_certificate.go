@@ -34,7 +34,7 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 	// Turn on partial state to ensure that nothing is recorded until we want it to be.
 	d.Partial(true)
 
-	client, _, err := expandACMEClient(d, d.Get("registration_url").(string))
+	client, _, err := expandACMEClient(d, true)
 	if err != nil {
 		return err
 	}
@@ -129,7 +129,7 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 		return nil
 	}
 
-	client, _, err := expandACMEClient(d, d.Get("registration_url").(string))
+	client, _, err := expandACMEClient(d, true)
 	if err != nil {
 		return err
 	}
@@ -156,7 +156,7 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 
 // resourceACMECertificateDelete "deletes" the certificate by revoking it.
 func resourceACMECertificateDelete(d *schema.ResourceData, meta interface{}) error {
-	client, _, err := expandACMEClient(d, d.Get("registration_url").(string))
+	client, _, err := expandACMEClient(d, true)
 	if err != nil {
 		return err
 	}
