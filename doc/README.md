@@ -62,7 +62,7 @@ reference Let's Encrypt's staging server endpoint. For production use, change
 the directory URLs to the production endpoints, which can be found
 [here][lets-encrypt-endpoints].
 
-[lets-encrypt-endpoints]: https://letsencrypt.org/docs/acme-protocol-updates/a
+[lets-encrypt-endpoints]: https://letsencrypt.org/docs/acme-protocol-updates/
 
 ```hcl
 variable "server_url" {
