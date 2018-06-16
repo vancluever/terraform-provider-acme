@@ -13,7 +13,3 @@
 [[constraint]]
   version = "v1.0.1"
   name = "github.com/xenolf/lego"
-
-[[constraint]]
-  branch = "master"
-  name = "golang.org/x/crypto"
