@@ -30,7 +30,7 @@ made by CAs such as Let's Encrypt.
 [about-acme]: https://ietf-wg-acme.github.io/acme/draft-ietf-acme-acme.html
 
 :warning: **NOTE:** The ACME provider as of version 1.0.0 supports ACME v2 only.
-For ACME v1 endpoints, version 0.6.0 is required, which can be found on the
+For ACME v1 endpoints, version 0.6.0 is required, which can be found
 [here][release-v0.6.0].
 
 [release-v0.6.0]: https://github.com/vancluever/terraform-provider-acme/releases/tag/v0.6.0
