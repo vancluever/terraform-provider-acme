@@ -167,8 +167,8 @@ Terraform, making use of [lego][xenolf-lego-gh], responds to DNS challenges
 automatically by utilizing one of lego's supported [DNS challenge
 providers][lego-dns-challenges]. Most providers take credentials as environment
 variables, but if you would rather use configuration for this purpose, you can
-through specifying `config` blocks within a `dns_challenge` block, along with
-the `provider` parameter.
+by specifying `config` blocks within a `dns_challenge` block, along with the
+`provider` parameter.
 
 [xenolf-lego-gh]: https://github.com/xenolf/lego
 [lego-dns-challenges]: https://godoc.org/github.com/xenolf/lego/providers/dns
