@@ -121,6 +121,21 @@ func TestAccACMECertificate_mustStaple(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_wildcard(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheckCert(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			resource.TestStep{
+				Config: testAccACMECertificateWildcardConfig(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "*", "", false),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckACMECertificateValid(n, cn, san string, mustStaple bool) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
@@ -456,6 +471,38 @@ resource "acme_certificate" "certificate" {
   common_name               = "www8.${var.domain}"
   subject_alternative_names = ["www9.${var.domain}"]
   must_staple               = true
+
+  dns_challenge {
+    provider = "route53"
+  }
+}
+`, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"))
+}
+
+func testAccACMECertificateWildcardConfig() string {
+	return fmt.Sprintf(`
+variable "email_address" {
+  default = "%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  server_url      = "https://acme-staging-v02.api.letsencrypt.org/directory"
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  server_url                = "https://acme-staging-v02.api.letsencrypt.org/directory"
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "*.${var.domain}"
 
   dns_challenge {
     provider = "route53"
