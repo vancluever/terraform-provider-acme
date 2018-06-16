@@ -4,7 +4,6 @@ import (
 	"crypto/x509"
 	"fmt"
 	"log"
-	"strconv"
 	"time"
 
 	"golang.org/x/crypto/ocsp"
@@ -39,12 +38,8 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		return err
 	}
 
-	if v, ok := d.GetOk("dns_challenge"); ok {
-		if err := setDNSChallenge(client, v.(*schema.Set).List()[0].(map[string]interface{})); err != nil {
-			return err
-		}
-	} else {
-		client.SetHTTPAddress(":" + strconv.Itoa(d.Get("http_challenge_port").(int)))
+	if err = setDNSChallenge(client, d.Get("dns_challenge").(*schema.Set).List()[0].(map[string]interface{})); err != nil {
+		return err
 	}
 
 	var cert *acme.CertificateResource
@@ -135,12 +130,8 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 	}
 
 	cert := expandCertificateResource(d)
-	if v, ok := d.GetOk("dns_challenge"); ok {
-		if err := setDNSChallenge(client, v.(*schema.Set).List()[0].(map[string]interface{})); err != nil {
-			return err
-		}
-	} else {
-		client.SetHTTPAddress(":" + strconv.Itoa(d.Get("http_challenge_port").(int)))
+	if err := setDNSChallenge(client, d.Get("dns_challenge").(*schema.Set).List()[0].(map[string]interface{})); err != nil {
+		return err
 	}
 	newCert, err := client.RenewCertificate(*cert, true, d.Get("must_staple").(bool))
 	if err != nil {

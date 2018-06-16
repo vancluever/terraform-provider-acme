@@ -113,28 +113,6 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 	})
 }
 
-func TestAccACMECertificate_httpChallenge(t *testing.T) {
-	if v := os.Getenv("ACME_R53_ZONE_ID"); v == "" {
-		t.Skip("ACME_R53_ZONE_ID not set - skipping")
-	}
-	if v := os.Getenv("ACME_HTTP_HOST_IP"); v == "" {
-		t.Skip("ACME_HTTP_HOST_IP not set - skipping")
-	}
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheckCert(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckACMECertificateDestroy,
-		Steps: []resource.TestStep{
-			resource.TestStep{
-				Config: testAccACMECertificateHTTPChallengeConfig(),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckACMECertificateValid("acme_certificate.certificate", "www7", "", false),
-				),
-			},
-		},
-	})
-}
-
 func TestAccACMECertificate_mustStaple(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheckCert(t) },
@@ -479,44 +457,6 @@ resource "acme_certificate" "certificate" {
   }
 }
 `, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"))
-}
-
-func testAccACMECertificateHTTPChallengeConfig() string {
-	return fmt.Sprintf(`
-variable "email_address" {
-  default = "%s"
-}
-
-variable "domain" {
-  default = "%s"
-}
-
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
-resource "acme_registration" "reg" {
-  server_url      = "https://acme-staging-v02.api.letsencrypt.org/directory"
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
-  email_address   = "${var.email_address}"
-}
-
-resource "acme_certificate" "certificate" {
-  server_url      = "https://acme-staging-v02.api.letsencrypt.org/directory"
-  account_key_pem = "${acme_registration.reg.account_key_pem}"
-  common_name     = "www7.${var.domain}"
-
-  depends_on = ["aws_route53_record.www7"]
-}
-
-resource "aws_route53_record" "www7" {
-	zone_id = "%s"
-	name = "www7"
-	type = "A"
-	ttl = "10"
-	records = ["%s"]
-}
-`, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"), os.Getenv("ACME_HTTP_R53_ZONE_ID"), os.Getenv("ACME_HTTP_HOST_IP"))
 }
 
 func testAccACMECertificateMustStapleConfig() string {

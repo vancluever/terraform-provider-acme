@@ -6,7 +6,6 @@ import (
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/terraform-providers/terraform-provider-aws/aws"
 	"github.com/terraform-providers/terraform-provider-tls/tls"
 )
 
@@ -21,7 +20,6 @@ func init() {
 	testAccProviders = map[string]terraform.ResourceProvider{
 		"acme": testAccProvider,
 		"tls":  tls.Provider().(*schema.Provider),
-		"aws":  aws.Provider().(*schema.Provider),
 	}
 }
 

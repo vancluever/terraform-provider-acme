@@ -120,7 +120,7 @@ func certificateSchema() map[string]*schema.Schema {
 		},
 		"dns_challenge": &schema.Schema{
 			Type:     schema.TypeSet,
-			Optional: true,
+			Required: true,
 			Set:      dnsChallengeSetHash,
 			MaxItems: 1,
 			Elem: &schema.Resource{
@@ -137,12 +137,6 @@ func certificateSchema() map[string]*schema.Schema {
 					},
 				},
 			},
-			ForceNew: true,
-		},
-		"http_challenge_port": &schema.Schema{
-			Type:     schema.TypeInt,
-			Optional: true,
-			Default:  80,
 			ForceNew: true,
 		},
 		"must_staple": &schema.Schema{

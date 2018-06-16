@@ -8,10 +8,6 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/terraform-providers/terraform-provider-aws"
-
-[[constraint]]
-  branch = "master"
   name = "github.com/terraform-providers/terraform-provider-tls"
 
 [[constraint]]
