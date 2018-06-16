@@ -4,11 +4,7 @@ import (
 	"crypto/x509"
 	"fmt"
 	"log"
-	"time"
 
-	"golang.org/x/crypto/ocsp"
-
-	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/xenolf/lego/acme"
 )
@@ -22,10 +18,6 @@ func resourceACMECertificate() *schema.Resource {
 		Delete:        resourceACMECertificateDelete,
 
 		Schema: certificateSchemaFull(),
-
-		Timeouts: &schema.ResourceTimeout{
-			Delete: schema.DefaultTimeout(time.Minute * 20),
-		},
 	}
 }
 
@@ -164,41 +156,5 @@ func resourceACMECertificateDelete(d *schema.ResourceData, meta interface{}) err
 		}
 	}
 
-	// Add a state waiter for the OCSP status of the cert, to make sure it's
-	// truly revoked.
-	state := &resource.StateChangeConf{
-		Pending:    []string{"Good"},
-		Target:     []string{"Revoked"},
-		Refresh:    resourceACMECertificateRevokeRefreshFunc(cert.(string)),
-		Timeout:    d.Timeout(schema.TimeoutDelete),
-		MinTimeout: 15 * time.Second,
-		Delay:      5 * time.Second,
-	}
-
-	_, err = state.WaitForState()
-	if err != nil {
-		return fmt.Errorf("Cert did not revoke: %s", err.Error())
-	}
-
-	d.SetId("")
 	return nil
-}
-
-// resourceACMECertificateRevokeRefreshFunc polls the certificate's status
-// via the OSCP url and returns success once it's Revoked.
-func resourceACMECertificateRevokeRefreshFunc(cert string) resource.StateRefreshFunc {
-	return func() (interface{}, string, error) {
-		_, resp, err := acme.GetOCSPForCert([]byte(cert))
-		if err != nil {
-			return nil, "", fmt.Errorf("Bad: %s", err.Error())
-		}
-		switch resp.Status {
-		case ocsp.Revoked:
-			return cert, "Revoked", nil
-		case ocsp.Good:
-			return cert, "Good", nil
-		default:
-			return nil, "", fmt.Errorf("Bad status: OCSP status %d", resp.Status)
-		}
-	}
 }

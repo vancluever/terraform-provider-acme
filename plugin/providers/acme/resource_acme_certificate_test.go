@@ -11,11 +11,8 @@ import (
 	"reflect"
 	"testing"
 
-	"golang.org/x/crypto/ocsp"
-
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/xenolf/lego/acme"
 )
 
 // Constants for OCSP must staple
@@ -32,9 +29,8 @@ var (
 
 func TestAccACMECertificate_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheckCert(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckACMECertificateDestroy,
+		PreCheck:  func() { testAccPreCheckCert(t) },
+		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			resource.TestStep{
 				Config: testAccACMECertificateConfig(),
@@ -48,9 +44,8 @@ func TestAccACMECertificate_basic(t *testing.T) {
 
 func TestAccACMECertificate_CSR(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheckCert(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckACMECertificateDestroy,
+		PreCheck:  func() { testAccPreCheckCert(t) },
+		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			resource.TestStep{
 				Config: testAccACMECertificateCSRConfig(),
@@ -83,8 +78,7 @@ func TestAccACMECertificate_withDNSProviderConfig(t *testing.T) {
 				os.Unsetenv(k)
 			}
 		},
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckACMECertificateDestroy,
+		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			resource.TestStep{
 				Config: testAccACMECertificateWithDNSProviderConfig(envCache),
@@ -98,9 +92,8 @@ func TestAccACMECertificate_withDNSProviderConfig(t *testing.T) {
 
 func TestAccACMECertificate_forceRenewal(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheckCert(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckACMECertificateDestroy,
+		PreCheck:  func() { testAccPreCheckCert(t) },
+		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			resource.TestStep{
 				Config: testAccACMECertificateForceRenewalConfig(),
@@ -115,9 +108,8 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 
 func TestAccACMECertificate_mustStaple(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheckCert(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckACMECertificateDestroy,
+		PreCheck:  func() { testAccPreCheckCert(t) },
+		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			resource.TestStep{
 				Config: testAccACMECertificateMustStapleConfig(),
@@ -217,27 +209,6 @@ func testAccCheckACMECertificateValid(n, cn, san string, mustStaple bool) resour
 
 		return nil
 	}
-}
-
-func testAccCheckACMECertificateDestroy(s *terraform.State) error {
-	for _, rs := range s.RootModule().Resources {
-		if rs.Type != "acme_certificate" {
-			continue
-		}
-
-		cert := rs.Primary.Attributes["certificate_pem"]
-		_, resp, err := acme.GetOCSPForCert([]byte(cert))
-		if err != nil {
-			return err
-		}
-
-		if resp.Status != ocsp.Revoked {
-			return fmt.Errorf("Expected OCSP status to be %d, got %d", ocsp.Revoked, resp.Status)
-		}
-
-		return nil
-	}
-	return fmt.Errorf("acme_certificate resource not found")
 }
 
 func testAccPreCheckCert(t *testing.T) {
