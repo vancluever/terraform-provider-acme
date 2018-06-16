@@ -16,8 +16,8 @@ major version of the provider, if at all.
 
 ## Example
 
-The following creates an ACME registration off of a private key generated with
-the [`tls_private_key`][resource-tls-private-key] resource.
+The following creates an account off of a private key generated with the
+[`tls_private_key`][resource-tls-private-key] resource.
 
 [resource-tls-private-key]: https://www.terraform.io/docs/providers/tls/r/private_key.html
 
