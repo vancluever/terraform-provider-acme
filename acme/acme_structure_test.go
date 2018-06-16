@@ -153,7 +153,6 @@ func TestACME_certificateSchema(t *testing.T) {
 		"dns_challenge",
 		"must_staple",
 		"certificate_domain",
-		"certificate_url",
 		"account_ref",
 		"private_key_pem",
 		"certificate_pem",
