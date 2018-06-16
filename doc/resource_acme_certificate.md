@@ -120,8 +120,8 @@ The resource takes the following arguments:
 `min_days_remaining`, force a new resource when changed.
 
 * `server_url` (Required) - The URL of the ACME directory endpoint.
-* `account_key_pem` (Required) - The private key used to sign requests. This
-  will be the private key that will be registered to the account.
+* `account_key_pem` (Required) - The private key of the account that is
+  requesting the certificate.
 * `common_name` - The certificate's common name, the primary domain that the
   certificate will be recognized for. Required when not specifying a CSR.
 * `subject_alternative_names` - The certificate's subject alternative names,
