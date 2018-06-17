@@ -8,7 +8,9 @@ func resourceACMERegistration() *schema.Resource {
 		Read:   resourceACMERegistrationRead,
 		Delete: resourceACMERegistrationDelete,
 
-		Schema: registrationSchemaFull(),
+		Schema:        registrationSchemaFull(),
+		SchemaVersion: 1,
+		MigrateState:  resourceACMERegistrationMigrateState,
 	}
 }
 

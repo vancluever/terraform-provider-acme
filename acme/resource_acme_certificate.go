@@ -17,7 +17,9 @@ func resourceACMECertificate() *schema.Resource {
 		Update:        resourceACMECertificateUpdate,
 		Delete:        resourceACMECertificateDelete,
 
-		Schema: certificateSchemaFull(),
+		Schema:        certificateSchemaFull(),
+		SchemaVersion: 1,
+		MigrateState:  resourceACMECertificateMigrateState,
 	}
 }
 
