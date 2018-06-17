@@ -6,7 +6,7 @@ VERSION ?= dev
 
 .PHONY: test
 test:
-	go test -v . ./acme 
+	go test . ./acme 
 
 .PHONY: testacc
 testacc:
