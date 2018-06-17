@@ -93,7 +93,7 @@ func TestResourceACMERegistrationMigrateState(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(expected, actual) {
-		t.Fatalf("expected %+v, got %+v", expected, actual)
+		t.Fatalf("expected %#v, got %#v", expected, actual)
 	}
 }
 
@@ -105,7 +105,7 @@ func TestMigrateACMERegistrationStateV1(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(expected, actual) {
-		t.Fatalf("expected %+v, got %+v", expected, actual)
+		t.Fatalf("expected %#v, got %#v", expected, actual)
 	}
 }
 
@@ -117,7 +117,7 @@ func TestResourceACMECertificateMigrateState(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(expected, actual) {
-		t.Fatalf("expected %+v, got %+v", expected, actual)
+		t.Fatalf("expected %#v, got %#v", expected, actual)
 	}
 }
 
@@ -129,6 +129,6 @@ func TestMigrateACMECertificateStateV1(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(expected, actual) {
-		t.Fatalf("expected %+v, got %+v", expected, actual)
+		t.Fatalf("expected %#v, got %#v", expected, actual)
 	}
 }
