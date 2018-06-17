@@ -65,8 +65,8 @@ the directory URLs to the production endpoints, which can be found
 [lets-encrypt-endpoints]: https://letsencrypt.org/docs/acme-protocol-updates/
 
 ```hcl
-variable "server_url" {
-  default = "https://acme-staging-v02.api.letsencrypt.org/directory"
+provider "acme" {
+  server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
 }
 
 resource "tls_private_key" "private_key" {
@@ -74,13 +74,11 @@ resource "tls_private_key" "private_key" {
 }
 
 resource "acme_registration" "reg" {
-  server_url      = "${var.server_url}"
   account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "nobody@example.com"
 }
 
 resource "acme_certificate" "certificate" {
-  server_url                = "${var.server_url}"
   account_key_pem           = "${acme_registration.reg.account_key_pem}"
   common_name               = "www.example.com"
   subject_alternative_names = ["www2.example.com"]
@@ -93,6 +91,10 @@ resource "acme_certificate" "certificate" {
 
 ## Argument Reference
 
-Note that there are no top-level arguments in the ACME provider. The directory
-URL is supplied in both `acme_registration` and `acme_certificate`, as is the
-account's key.
+The following arguments are required:
+
+* `server_url` - (Required) The URL to the ACME endpoint's directory.
+
+:warning: Note that the account key is not a provider-level config value at this
+time to allow the management of accounts and certificates within the same
+provider.

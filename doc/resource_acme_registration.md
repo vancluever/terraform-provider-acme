@@ -22,12 +22,15 @@ The following creates an account off of a private key generated with the
 [resource-tls-private-key]: https://www.terraform.io/docs/providers/tls/r/private_key.html
 
 ```hcl
+provider "acme" {
+  server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
+}
+
 resource "tls_private_key" "private_key" {
   algorithm = "RSA"
 }
 
 resource "acme_registration" "reg" {
-  server_url      = "https://acme-staging-v02.api.letsencrypt.org/directory"
   account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "nobody@example.com"
 }
@@ -40,7 +43,6 @@ changed.
 
 The resource takes the following arguments:
 
-* `server_url` (Required) - The URL of the ACME directory endpoint.
 * `account_key_pem` (Required) - The private key used to identity the account.
 * `email_address` (Required) - The contact email address for the account.
 

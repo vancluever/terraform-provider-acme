@@ -32,3 +32,9 @@ func TestProvider(t *testing.T) {
 func TestProvider_impl(t *testing.T) {
 	var _ terraform.ResourceProvider = Provider()
 }
+
+func testAccPreCheck(t *testing.T) {
+	if v := os.Getenv(""); v == "ACME_SERVER_URL" {
+		t.Fatal("ACME_SERVER_URL must be set for acceptance tests")
+	}
+}

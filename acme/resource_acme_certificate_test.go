@@ -29,7 +29,7 @@ var (
 
 func TestAccACMECertificate_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheckCert(t) },
+		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckCert(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			resource.TestStep{
@@ -48,7 +48,7 @@ func TestAccACMECertificate_basic(t *testing.T) {
 
 func TestAccACMECertificate_CSR(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheckCert(t) },
+		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckCert(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			resource.TestStep{
@@ -76,6 +76,7 @@ func TestAccACMECertificate_withDNSProviderConfig(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck: func() {
+			testAccPreCheck(t)
 			testAccPreCheckCert(t)
 			testAccPreCheckCertZoneID(t)
 			for _, k := range envKeys {
@@ -96,7 +97,7 @@ func TestAccACMECertificate_withDNSProviderConfig(t *testing.T) {
 
 func TestAccACMECertificate_forceRenewal(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheckCert(t) },
+		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckCert(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			resource.TestStep{
@@ -112,7 +113,7 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 
 func TestAccACMECertificate_mustStaple(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheckCert(t) },
+		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckCert(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			resource.TestStep{
@@ -127,7 +128,7 @@ func TestAccACMECertificate_mustStaple(t *testing.T) {
 
 func TestAccACMECertificate_wildcard(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheckCert(t) },
+		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckCert(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			resource.TestStep{
@@ -272,13 +273,11 @@ resource "tls_private_key" "private_key" {
 }
 
 resource "acme_registration" "reg" {
-  server_url      = "https://acme-staging-v02.api.letsencrypt.org/directory"
   account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
 resource "acme_certificate" "certificate" {
-  server_url                = "https://acme-staging-v02.api.letsencrypt.org/directory"
   account_key_pem           = "${acme_registration.reg.account_key_pem}"
   common_name               = "www.${var.domain}"
   subject_alternative_names = ["www2.${var.domain}"]
@@ -305,7 +304,6 @@ resource "tls_private_key" "reg_private_key" {
 }
 
 resource "acme_registration" "reg" {
-  server_url      = "https://acme-staging-v02.api.letsencrypt.org/directory"
   account_key_pem = "${tls_private_key.reg_private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
@@ -325,7 +323,6 @@ resource "tls_cert_request" "req" {
 }
 
 resource "acme_certificate" "certificate" {
-  server_url              = "https://acme-staging-v02.api.letsencrypt.org/directory"
   account_key_pem         = "${acme_registration.reg.account_key_pem}"
   certificate_request_pem = "${tls_cert_request.req.cert_request_pem}"
 
@@ -351,13 +348,11 @@ resource "tls_private_key" "private_key" {
 }
 
 resource "acme_registration" "reg" {
-  server_url      = "https://acme-staging-v02.api.letsencrypt.org/directory"
   account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
 resource "acme_certificate" "certificate" {
-  server_url      = "https://acme-staging-v02.api.letsencrypt.org/directory"
   account_key_pem = "${acme_registration.reg.account_key_pem}"
   common_name     = "www5.${var.domain}"
 
@@ -399,13 +394,11 @@ resource "tls_private_key" "private_key" {
 }
 
 resource "acme_registration" "reg" {
-  server_url      = "https://acme-staging-v02.api.letsencrypt.org/directory"
   account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
 resource "acme_certificate" "certificate" {
-  server_url         = "https://acme-staging-v02.api.letsencrypt.org/directory"
   account_key_pem    = "${acme_registration.reg.account_key_pem}"
   common_name        = "www6.${var.domain}"
   min_days_remaining = 720
@@ -432,13 +425,11 @@ resource "tls_private_key" "private_key" {
 }
 
 resource "acme_registration" "reg" {
-  server_url      = "https://acme-staging-v02.api.letsencrypt.org/directory"
   account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
 resource "acme_certificate" "certificate" {
-  server_url      = "https://acme-staging-v02.api.letsencrypt.org/directory"
   account_key_pem = "${acme_registration.reg.account_key_pem}"
   common_name     = "www7.${var.domain}"
 
@@ -464,13 +455,11 @@ resource "tls_private_key" "private_key" {
 }
 
 resource "acme_registration" "reg" {
-  server_url      = "https://acme-staging-v02.api.letsencrypt.org/directory"
   account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
 resource "acme_certificate" "certificate" {
-  server_url                = "https://acme-staging-v02.api.letsencrypt.org/directory"
   account_key_pem           = "${acme_registration.reg.account_key_pem}"
   common_name               = "www8.${var.domain}"
   subject_alternative_names = ["www9.${var.domain}"]
@@ -498,15 +487,13 @@ resource "tls_private_key" "private_key" {
 }
 
 resource "acme_registration" "reg" {
-  server_url      = "https://acme-staging-v02.api.letsencrypt.org/directory"
   account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
 resource "acme_certificate" "certificate" {
-  server_url                = "https://acme-staging-v02.api.letsencrypt.org/directory"
-  account_key_pem           = "${acme_registration.reg.account_key_pem}"
-  common_name               = "*.${var.domain}"
+  account_key_pem = "${acme_registration.reg.account_key_pem}"
+  common_name     = "*.${var.domain}"
 
   dns_challenge {
     provider = "route53"

@@ -1,6 +1,39 @@
-## 0.6.1-pre
+## 1.0.0 (Unreleased)
 
-Bumped version for dev.
+GENERAL BREAKING CHANGES:
+
+* The provider has now been updated for ACME v2 and will no longer work for ACME
+  v1. If you require v1, use version 0.6.0 of the provider.
+* Existing states for `acme_registration` and `acme_certificate` will be
+  preserved on update and there should be no need to create either registrations
+  or certificates, so long as the CA supports it. Let's Encrypt supports these
+  updates.
+* Several fields have been removed of the resource relationships have changed.
+  For full details, see the documentation.
+* `server_url` is now a provider-level configuration value. The documentation
+  has several full examples of this in action.
+
+* `resource/acme_certificate`: The `http_challenge_port` and
+  `tls_challenge_port` parameters have been removed. The resource now only
+  supports DNS challenges, so `dns_challenge` is now a required field.
+  [#40][gh-40]
+
+
+IMPROVEMENTS:
+
+* `resource/acme_registration`: This resource will now completely remove a
+  registration from the ACME server when the resource is destroyed. [#39][gh-39]
+
+BUG FIXES:
+
+* `resource/acme_certificate`: The post-revocation OCSP validation has been
+  completely removed. This should make destruction of the resource much more
+  reliable. [#41][gh-41]
+
+
+[gh-41]: https://github.com/vancluever/terraform-provider-acme/pull/41
+[gh-40]: https://github.com/vancluever/terraform-provider-acme/pull/40
+[gh-39]: https://github.com/vancluever/terraform-provider-acme/pull/39
 
 ## 0.6.0
 

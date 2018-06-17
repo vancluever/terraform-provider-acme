@@ -26,9 +26,9 @@ func testACMERegistrationStateDataV1() *terraform.InstanceState {
 	return &terraform.InstanceState{
 		ID: "regurl",
 		Attributes: map[string]string{
-			"server_url":      "https://acme-staging.api.letsencrypt.org/directory",
-			"account_key_pem": "key",
-			"email_address":   "nobody@example.com",
+			"account_key_pem":  "key",
+			"email_address":    "nobody@example.com",
+			"registration_url": "https://acme-staging.api.letsencrypt.org/acme/reg/123456789",
 		},
 	}
 }
@@ -65,7 +65,6 @@ func testACMECertificateStateDataV1() *terraform.InstanceState {
 	return &terraform.InstanceState{
 		ID: "certurl",
 		Attributes: map[string]string{
-			"server_url":                  "https://acme-staging.api.letsencrypt.org/directory",
 			"account_key_pem":             "key",
 			"common_name":                 "foobar",
 			"subject_alternative_names.#": "2",
@@ -81,6 +80,7 @@ func testACMECertificateStateDataV1() *terraform.InstanceState {
 			"account_ref":                 "regurl",
 			"private_key_pem":             "certkey",
 			"certificate_pem":             "certpem",
+			"certificate_url":             "certurl",
 		},
 	}
 }

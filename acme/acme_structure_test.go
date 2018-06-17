@@ -108,7 +108,6 @@ func registrationResourceData() *schema.ResourceData {
 	d := r.TestResourceData()
 
 	d.SetId("regurl")
-	d.Set("server_url", "https://acme-staging-v02.api.letsencrypt.org/directory")
 	d.Set("account_key_pem", testPrivateKeyText)
 	d.Set("email_address", "nobody@example.com")
 
@@ -134,7 +133,7 @@ func blankCertificateResource() *schema.ResourceData {
 
 func TestACME_registrationSchemaFull(t *testing.T) {
 	m := registrationSchemaFull()
-	fields := []string{"server_url", "account_key_pem", "email_address", "registration_url"}
+	fields := []string{"account_key_pem", "email_address", "registration_url"}
 	for _, v := range fields {
 		if _, ok := m[v]; ok == false {
 			t.Fatalf("Expected %s to be present", v)
@@ -149,7 +148,6 @@ func TestACME_registrationSchemaFull(t *testing.T) {
 func TestACME_certificateSchema(t *testing.T) {
 	m := certificateSchemaFull()
 	fields := []string{
-		"server_url",
 		"account_key_pem",
 		"common_name",
 		"subject_alternative_names",
@@ -209,7 +207,7 @@ func TestACME_expandACMEUser_badKey(t *testing.T) {
 func TestACME_expandACMEClient_badKey(t *testing.T) {
 	d := registrationResourceData()
 	d.Set("account_key_pem", "bad")
-	_, _, err := expandACMEClient(d, true)
+	_, _, err := expandACMEClient(d, &Config{ServerURL: "https://acme-staging.api-v02.letsencrypt.org/directory"}, true)
 	if err == nil {
 		t.Fatalf("expected error due to bad key")
 	}
@@ -235,8 +233,7 @@ func TestACME_setDNSChallenge_noProvider(t *testing.T) {
 	m := make(map[string]interface{})
 	d := blankBaseResource()
 	ts := httpDirTestServer()
-	d.Set("server_url", ts.URL)
-	client, _, err := expandACMEClient(d, false)
+	client, _, err := expandACMEClient(d, &Config{ServerURL: ts.URL}, false)
 	if err != nil {
 		t.Fatalf("fatal: %s", err.Error())
 	}
@@ -253,8 +250,7 @@ func TestACME_setDNSChallenge_unsuppotedProvider(t *testing.T) {
 	}
 	d := blankBaseResource()
 	ts := httpDirTestServer()
-	d.Set("server_url", ts.URL)
-	client, _, err := expandACMEClient(d, false)
+	client, _, err := expandACMEClient(d, &Config{ServerURL: ts.URL}, false)
 	if err != nil {
 		t.Fatalf("fatal: %s", err.Error())
 	}

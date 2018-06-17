@@ -13,7 +13,7 @@ import (
 
 func TestAccACMERegistration_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheckReg(t) },
+		PreCheck:     func() { testAccPreCheck(t); testAccPreCheckReg(t) },
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckACMERegistrationValid("acme_registration.reg", false),
 		Steps: []resource.TestStep{
@@ -44,7 +44,7 @@ func testAccCheckACMERegistrationValid(n string, exists bool) resource.TestCheck
 
 		d := testAccCheckACMERegistrationResourceData(rs)
 
-		client, _, err := expandACMEClient(d, true)
+		client, _, err := expandACMEClient(d, testAccProvider.Meta(), true)
 		if err != nil {
 			if strings.Contains(err.Error(), `has status "deactivated"`) && !exists {
 				return nil
@@ -75,7 +75,6 @@ func testAccCheckACMERegistrationResourceData(rs *terraform.ResourceState) *sche
 	d := r.TestResourceData()
 
 	d.SetId(rs.Primary.ID)
-	d.Set("server_url", rs.Primary.Attributes["server_url"])
 	d.Set("account_key_pem", rs.Primary.Attributes["account_key_pem"])
 	d.Set("email_address", rs.Primary.Attributes["email_address"])
 
@@ -95,10 +94,8 @@ resource "tls_private_key" "private_key" {
 }
 
 resource "acme_registration" "reg" {
-	server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
   account_key_pem = "${tls_private_key.private_key.private_key_pem}"
-  email_address = "%s"
-
+  email_address   = "%s"
 }
 `, os.Getenv("ACME_EMAIL_ADDRESS"))
 }

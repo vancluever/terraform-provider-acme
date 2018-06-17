@@ -41,8 +41,8 @@ func resourceACMERegistrationMigrateState(version int, os *terraform.InstanceSta
 // migrateACMERegistrationStateV1 handles migration of acme_registration from
 // schema version 0 to version 1.
 func migrateACMERegistrationStateV1(is *terraform.InstanceState, meta interface{}) error {
+	delete(is.Attributes, "server_url")
 	delete(is.Attributes, "registration_body")
-	delete(is.Attributes, "registration_url")
 	delete(is.Attributes, "registration_new_authz_url")
 	delete(is.Attributes, "registration_tos_url")
 
@@ -84,10 +84,10 @@ func resourceACMECertificateMigrateState(version int, os *terraform.InstanceStat
 // migrateACMECertificateStateV1 handles migration of acme_certificate from
 // schema version 0 to version 1.
 func migrateACMECertificateStateV1(is *terraform.InstanceState, meta interface{}) error {
+	delete(is.Attributes, "server_url")
 	delete(is.Attributes, "http_challenge_port")
 	delete(is.Attributes, "tls_challenge_port")
 	delete(is.Attributes, "registration_url")
-	delete(is.Attributes, "certificate_url")
 
 	return nil
 }

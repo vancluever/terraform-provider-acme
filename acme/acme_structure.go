@@ -53,11 +53,6 @@ import (
 // schema.
 func baseACMESchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"server_url": &schema.Schema{
-			Type:     schema.TypeString,
-			Required: true,
-			ForceNew: true,
-		},
 		"account_key_pem": &schema.Schema{
 			Type:      schema.TypeString,
 			Required:  true,
@@ -253,7 +248,7 @@ func saveACMERegistration(d *schema.ResourceData, reg *acme.RegistrationResource
 // If loadReg is supplied, the registration information is loaded in to the
 // user's registration, if it exists - if the account cannot be resolved by the
 // private key, then the appropriate error is returned.
-func expandACMEClient(d *schema.ResourceData, loadReg bool) (*acme.Client, *acmeUser, error) {
+func expandACMEClient(d *schema.ResourceData, meta interface{}, loadReg bool) (*acme.Client, *acmeUser, error) {
 	user, err := expandACMEUser(d)
 	if err != nil {
 		return nil, nil, fmt.Errorf("Error getting user data: %s", err.Error())
@@ -267,7 +262,7 @@ func expandACMEClient(d *schema.ResourceData, loadReg bool) (*acme.Client, *acme
 		keytype = v.(string)
 	}
 
-	client, err := acme.NewClient(d.Get("server_url").(string), user, acme.KeyType(keytype))
+	client, err := acme.NewClient(meta.(*Config).ServerURL, user, acme.KeyType(keytype))
 	if err != nil {
 		return nil, nil, err
 	}

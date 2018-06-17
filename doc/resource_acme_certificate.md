@@ -30,8 +30,8 @@ This will ensure that the account gets created before the certificate and avoid
 errors.
 
 ```hcl
-variable "server_url" {
-  default = "https://acme-staging-v02.api.letsencrypt.org/directory"
+provider "acme" {
+  server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
 }
 
 resource "tls_private_key" "private_key" {
@@ -39,13 +39,11 @@ resource "tls_private_key" "private_key" {
 }
 
 resource "acme_registration" "reg" {
-  server_url      = "${var.server_url}"
   account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "nobody@example.com"
 }
 
 resource "acme_certificate" "certificate" {
-  server_url                = "${var.server_url}"
   account_key_pem           = "${acme_registration.reg.account_key_pem}"
   common_name               = "www.example.com"
   subject_alternative_names = ["www2.example.com"]
@@ -73,8 +71,8 @@ may wish to confirm with the CA what behavior to expect when using the
 both your account and your certificate. Make sure you use different keys.
 
 ```hcl
-variable "server_url" {
-  default = "https://acme-staging-v02.api.letsencrypt.org/directory"
+provider "acme" {
+  server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
 }
 
 resource "tls_private_key" "reg_private_key" {
@@ -82,7 +80,6 @@ resource "tls_private_key" "reg_private_key" {
 }
 
 resource "acme_registration" "reg" {
-  server_url      = "${var.server_url}"
   account_key_pem = "${tls_private_key.reg_private_key.private_key_pem}"
   email_address   = "nobody@example.com"
 }
@@ -97,12 +94,11 @@ resource "tls_cert_request" "req" {
   dns_names       = ["www.example.com", "www2.example.com"]
 
   subject {
-    common_name  = "www.example.com"
+    common_name = "www.example.com"
   }
 }
 
 resource "acme_certificate" "certificate" {
-  server_url              = "${var.server_url}"
   account_key_pem         = "${acme_registration.reg.account_key_pem}"
   certificate_request_pem = "${tls_cert_request.req.cert_request_pem}"
 
@@ -119,7 +115,6 @@ The resource takes the following arguments:
 :warning: **NOTE:** All arguments in `acme_certificate`, other than
 `min_days_remaining`, force a new resource when changed.
 
-* `server_url` (Required) - The URL of the ACME directory endpoint.
 * `account_key_pem` (Required) - The private key of the account that is
   requesting the certificate.
 * `common_name` - The certificate's common name, the primary domain that the

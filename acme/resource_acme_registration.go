@@ -16,7 +16,7 @@ func resourceACMERegistration() *schema.Resource {
 
 func resourceACMERegistrationCreate(d *schema.ResourceData, meta interface{}) error {
 	// register and agree to the TOS
-	client, _, err := expandACMEClient(d, false)
+	client, _, err := expandACMEClient(d, meta, false)
 	if err != nil {
 		return err
 	}
@@ -31,7 +31,7 @@ func resourceACMERegistrationCreate(d *schema.ResourceData, meta interface{}) er
 }
 
 func resourceACMERegistrationRead(d *schema.ResourceData, meta interface{}) error {
-	_, user, err := expandACMEClient(d, true)
+	_, user, err := expandACMEClient(d, meta, true)
 	if err != nil {
 		return err
 	}
@@ -41,7 +41,7 @@ func resourceACMERegistrationRead(d *schema.ResourceData, meta interface{}) erro
 }
 
 func resourceACMERegistrationDelete(d *schema.ResourceData, meta interface{}) error {
-	client, _, err := expandACMEClient(d, true)
+	client, _, err := expandACMEClient(d, meta, true)
 	if err != nil {
 		return err
 	}
