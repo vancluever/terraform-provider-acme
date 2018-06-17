@@ -135,6 +135,7 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 
 	// Now safe to record state
 	d.Partial(false)
+	d.SetId(newCert.CertURL)
 	saveCertificateResource(d, newCert)
 
 	return nil

@@ -103,6 +103,21 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 			resource.TestStep{
 				Config: testAccACMECertificateForceRenewalConfig(),
 				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrPair(
+						"acme_certificate.certificate", "id",
+						"acme_certificate.certificate", "certificate_url",
+					),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www6", "", false),
+				),
+				ExpectNonEmptyPlan: true,
+			},
+			resource.TestStep{
+				Config: testAccACMECertificateForceRenewalConfig(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrPair(
+						"acme_certificate.certificate", "id",
+						"acme_certificate.certificate", "certificate_url",
+					),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www6", "", false),
 				),
 				ExpectNonEmptyPlan: true,
