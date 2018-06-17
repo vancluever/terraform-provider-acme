@@ -78,6 +78,10 @@ func registrationSchema() map[string]*schema.Schema {
 			Required: true,
 			ForceNew: true,
 		},
+		"registration_url": &schema.Schema{
+			Type:     schema.TypeString,
+			Computed: true,
+		},
 	}
 }
 
@@ -144,6 +148,10 @@ func certificateSchema() map[string]*schema.Schema {
 			Optional: true,
 			Default:  false,
 			ForceNew: true,
+		},
+		"certificate_url": &schema.Schema{
+			Type:     schema.TypeString,
+			Computed: true,
 		},
 		"certificate_domain": &schema.Schema{
 			Type:     schema.TypeString,
@@ -234,7 +242,7 @@ func expandACMEUser(d *schema.ResourceData) (*acmeUser, error) {
 // saveACMERegistration takes an *acme.RegistrationResource and sets the appropriate fields
 // for a registration resource.
 func saveACMERegistration(d *schema.ResourceData, reg *acme.RegistrationResource) error {
-	d.SetId(reg.URI)
+	d.Set("registration_url", reg.URI)
 
 	return nil
 }
@@ -277,7 +285,6 @@ func expandACMEClient(d *schema.ResourceData, loadReg bool) (*acme.Client, *acme
 // certificateResourceExpander is a simple interface to allow us to use the Get
 // function that is in ResourceData and ResourceDiff under the same function.
 type certificateResourceExpander interface {
-	Id() string
 	Get(string) interface{}
 	GetChange(string) (interface{}, interface{})
 }
@@ -287,7 +294,7 @@ type certificateResourceExpander interface {
 func expandCertificateResource(d certificateResourceExpander) *acme.CertificateResource {
 	cert := &acme.CertificateResource{
 		Domain:     d.Get("certificate_domain").(string),
-		CertURL:    d.Id(),
+		CertURL:    d.Get("certificate_url").(string),
 		AccountRef: d.Get("account_ref").(string),
 		PrivateKey: []byte(d.Get("private_key_pem").(string)),
 		CSR:        []byte(d.Get("certificate_request_pem").(string)),
@@ -306,7 +313,7 @@ func expandCertificateResource(d certificateResourceExpander) *acme.CertificateR
 
 // saveCertificateResource takes an acme.CertificateResource and sets fields.
 func saveCertificateResource(d *schema.ResourceData, cert *acme.CertificateResource) error {
-	d.SetId(cert.CertURL)
+	d.Set("certificate_url", cert.CertURL)
 	d.Set("certificate_domain", cert.Domain)
 	d.Set("account_ref", cert.AccountRef)
 	d.Set("private_key_pem", string(cert.PrivateKey))

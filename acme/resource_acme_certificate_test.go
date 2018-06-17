@@ -35,6 +35,10 @@ func TestAccACMECertificate_basic(t *testing.T) {
 			resource.TestStep{
 				Config: testAccACMECertificateConfig(),
 				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrPair(
+						"acme_certificate.certificate", "id",
+						"acme_certificate.certificate", "certificate_url",
+					),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www", "www2", false),
 				),
 			},

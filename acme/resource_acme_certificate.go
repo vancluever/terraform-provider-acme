@@ -66,9 +66,10 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 
 	// Done! save the cert
 	d.Partial(false)
+	d.SetId(cert.CertURL)
 	saveCertificateResource(d, cert)
 
-	return nil
+	return resourceACMECertificateRead(d, meta)
 }
 
 // resourceACMECertificateRead is a noop. See

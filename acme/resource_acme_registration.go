@@ -20,17 +20,17 @@ func resourceACMERegistrationCreate(d *schema.ResourceData, meta interface{}) er
 	if err != nil {
 		return err
 	}
-	_, err = client.Register(true)
+	reg, err := client.Register(true)
 	if err != nil {
 		return err
 	}
+
+	d.SetId(reg.URI)
 
 	return resourceACMERegistrationRead(d, meta)
 }
 
 func resourceACMERegistrationRead(d *schema.ResourceData, meta interface{}) error {
-	// NOTE: This may change the ID of the resource - this is currently an
-	// unfortunate consequence of the transition from ACME v1 to ACME v2.
 	_, user, err := expandACMEClient(d, true)
 	if err != nil {
 		return err

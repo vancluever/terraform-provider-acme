@@ -20,6 +20,10 @@ func TestAccACMERegistration_basic(t *testing.T) {
 			resource.TestStep{
 				Config: testAccACMERegistrationConfig(),
 				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrPair(
+						"acme_registration.reg", "id",
+						"acme_registration.reg", "registration_url",
+					),
 					testAccCheckACMERegistrationValid("acme_registration.reg", true),
 				),
 			},

@@ -134,7 +134,7 @@ func blankCertificateResource() *schema.ResourceData {
 
 func TestACME_registrationSchemaFull(t *testing.T) {
 	m := registrationSchemaFull()
-	fields := []string{"server_url", "account_key_pem", "email_address"}
+	fields := []string{"server_url", "account_key_pem", "email_address", "registration_url"}
 	for _, v := range fields {
 		if _, ok := m[v]; ok == false {
 			t.Fatalf("Expected %s to be present", v)
@@ -163,6 +163,7 @@ func TestACME_certificateSchema(t *testing.T) {
 		"private_key_pem",
 		"certificate_pem",
 		"issuer_pem",
+		"certificate_url",
 	}
 	for _, v := range fields {
 		if _, ok := m[v]; ok == false {

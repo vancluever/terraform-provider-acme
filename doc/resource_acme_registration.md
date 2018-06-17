@@ -46,5 +46,10 @@ The resource takes the following arguments:
 
 #### Attribute Reference
 
-The only attribute that is exported from this resource is the `id` of the
-resource, which is set to the full URL of the account.
+The following attributes are exported:
+
+* `id`: The original full URL of the account.
+* `registration_url`: The current full URL of the account.
+
+:warning: **NOTE:** `id` and `registration_url` will usually be the same and
+will usually only diverge when migrating protocols, ie: ACME v1 to v2.
