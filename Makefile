@@ -4,17 +4,19 @@ ALL_TARGETS += darwin_amd64 \
 
 VERSION ?= dev
 
+export ACME_SERVER_URL ?= https://acme-staging-v02.api.letsencrypt.org/directory
+
 .PHONY: test
 test:
-	go test -v . ./plugin/providers/acme 
+	go test . ./acme 
 
 .PHONY: testacc
 testacc:
-	TF_ACC=1 go test -v ./plugin/providers/acme $(TESTARGS) -timeout 20m
+	TF_ACC=1 go test -v ./acme $(TESTARGS) -timeout 240m
 
 .PHONY: debugacc
 debugacc:
-	TF_ACC=1 dlv test ./plugin/providers/acme -- -test.v $(TESTARGS) -test.timeout 20m
+	TF_ACC=1 dlv test ./acme -- -test.v $(TESTARGS) -test.timeout 240m
 
 pkg/darwin_amd64/terraform-provider-acme:
 	@echo "==> Building $@..."

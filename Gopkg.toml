@@ -8,20 +8,8 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/terraform-providers/terraform-provider-aws"
-
-[[constraint]]
-  branch = "master"
   name = "github.com/terraform-providers/terraform-provider-tls"
 
 [[constraint]]
-  version = "v0.5.0"
+  version = "v1.0.1"
   name = "github.com/xenolf/lego"
-
-[[constraint]]
-  branch = "master"
-  name = "golang.org/x/crypto"
-
-[[override]]
-  branch = "master"
-  name = "github.com/dnsimple/dnsimple-go"
