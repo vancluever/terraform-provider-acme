@@ -139,6 +139,10 @@ func TestACME_registrationSchemaFull(t *testing.T) {
 		if _, ok := m[v]; ok == false {
 			t.Fatalf("Expected %s to be present", v)
 		}
+		delete(m, v)
+	}
+	if len(m) > 0 {
+		t.Fatalf("unaccounted for schema fields: %#v", m)
 	}
 }
 
@@ -158,11 +162,16 @@ func TestACME_certificateSchema(t *testing.T) {
 		"account_ref",
 		"private_key_pem",
 		"certificate_pem",
+		"issuer_pem",
 	}
 	for _, v := range fields {
 		if _, ok := m[v]; ok == false {
 			t.Fatalf("Expected %s to be present", v)
 		}
+		delete(m, v)
+	}
+	if len(m) > 0 {
+		t.Fatalf("unaccounted for schema fields: %#v", m)
 	}
 }
 
