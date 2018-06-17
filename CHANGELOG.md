@@ -8,7 +8,7 @@ GENERAL BREAKING CHANGES:
   preserved on update and there should be no need to re-create either
   registrations or certificates, so long as the CA supports it. Let's Encrypt
   supports these updates.
-* Several fields have been removed of the resource relationships have changed.
+* Several fields have been removed and the resource relationships have changed.
   For full details, see the documentation.
 * `server_url` is now a provider-level configuration value. The documentation
   has several full examples of this in action.
