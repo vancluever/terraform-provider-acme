@@ -4,7 +4,7 @@ Bumped version for dev.
 
 ## 1.0.0 (Unreleased)
 
-GENERAL BREAKING CHANGES:
+BREAKING CHANGES:
 
 * The provider has now been updated for ACME v2 and will no longer work for ACME
   v1. If you require v1, use version 0.6.0 of the provider.
