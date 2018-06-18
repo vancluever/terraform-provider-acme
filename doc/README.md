@@ -49,10 +49,11 @@ the latest release from the [releases page][releases-page].
 If you use [Arch Linux][arch-linux], the
 [`terraform-provider-acme-bin`][terraform-provider-acme-bin-arch] package is
 available via the AUR and can be installed via an AUR-supported package manager
-such as `pacaur` or `yaourt`. Thanks to @SamWhited for this!
+such as `pacaur` or `yaourt`. Thanks to [**@SamWhited**][samwhited-gh] for this!
 
 [arch-linux]: https://www.archlinux.org/
 [terraform-provider-acme-bin-arch]: https://aur.archlinux.org/packages/terraform-provider-acme-bin/
+[samwhited-gh]: https://github.com/SamWhited
 
 ## Basic Example
 
