@@ -44,6 +44,16 @@ the latest release from the [releases page][releases-page].
 [3rd-party-plugins]: https://www.terraform.io/docs/configuration/providers.html#third-party-plugins
 [releases-page]: https://github.com/vancluever/terraform-provider-acme/releases
 
+### Distributions with direct installation support
+
+If you use [Arch Linux][arch-linux], the
+[`terraform-provider-acme-bin`][terraform-provider-acme-bin-arch] package is
+available via the AUR and can be installed via an AUR-supported package manager
+such as `pacaur` or `yaourt`. Thanks to @SamWhited for this!
+
+[arch-linux]: https://www.archlinux.org/
+[terraform-provider-acme-bin-arch]: https://aur.archlinux.org/packages/terraform-provider-acme-bin/
+
 ## Basic Example
 
 The following example can be used to create an account using the
