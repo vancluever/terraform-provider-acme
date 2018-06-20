@@ -8,7 +8,7 @@ export ACME_SERVER_URL ?= https://acme-staging-v02.api.letsencrypt.org/directory
 
 .PHONY: test
 test:
-	go test . ./acme 
+	go test . ./acme
 
 .PHONY: testacc
 testacc:
