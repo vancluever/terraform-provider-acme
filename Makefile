@@ -51,6 +51,9 @@ release: clean $(foreach t,$(ALL_TARGETS),pkg/$(t).zip) ## Build all release pac
 	@echo "==> Results:"
 	@tree --dirsfirst pkg
 
+.PHONY: build
+build: release
+
 .PHONY: clean
 clean:
 	rm -rf pkg/
