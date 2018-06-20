@@ -8,7 +8,7 @@ export ACME_SERVER_URL ?= https://acme-staging-v02.api.letsencrypt.org/directory
 
 .PHONY: test
 test:
-	go test . ./acme 
+	go test . ./acme
 
 .PHONY: testacc
 testacc:
@@ -50,6 +50,9 @@ $(foreach t,$(ALL_TARGETS),$(eval $(call makePackageTarget,$(t))))
 release: clean $(foreach t,$(ALL_TARGETS),pkg/$(t).zip) ## Build all release packages which can be built on this platform.
 	@echo "==> Results:"
 	@tree --dirsfirst pkg
+
+.PHONY: build
+build: release
 
 .PHONY: clean
 clean:
