@@ -68,7 +68,7 @@ The following example can be used to create an account using the
 using the [`acme_certificate`](resource_acme_certificate.md) resource. The
 initial private key is created using the
 [`tls_private_key`][resource-tls-private-key] resource, but can be supplied via
-other means. DNS validation is preformed by using [Amazon Route 53][aws-route-53],
+other means. DNS validation is performed by using [Amazon Route 53][aws-route-53],
 for which appropriate credentials are assumed to be in your environment.
 
 [resource-tls-private-key]: https://www.terraform.io/docs/providers/tls/r/private_key.html
