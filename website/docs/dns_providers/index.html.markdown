@@ -19,6 +19,8 @@ For complete information on how to use these providers with the
 
 [resource-acme-certificate-dns-challenges]: /docs/providers/acme/r/certificate.html#using-dns-challenges
 
+Refer to a specific provider on the left sidebar for more details.
+
 ## Relation to Terraform provider configuration
 
 The DNS provider configuration specified in the

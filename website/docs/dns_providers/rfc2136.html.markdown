@@ -1,0 +1,55 @@
+---
+layout: "acme"
+page_title: "ACME: RFC 2136 DNS Challenge Provider"
+sidebar_current: "docs-acme-dns-providers-rfc2136"
+description: |-
+  Provides a resource to manage certificates on an ACME CA.
+---
+
+# RFC 2136 DNS Challenge Provider
+
+The `rfc2136` DNS challenge provider can be used to perform DNS challenges for
+the [`acme_certificate`][resource-acme-certificate] resource with
+an [RFC 2136][provider-service-page]-compatible DNS server.
+
+[resource-acme-certificate]: /docs/providers/acme/r/certificate.html
+[provider-service-page]: https://tools.ietf.org/html/rfc2136
+
+For complete information on how to use this provider with the `acme_certifiate`
+resource, see [here][resource-acme-certificate-dns-challenges].
+
+[resource-acme-certificate-dns-challenges]: /docs/providers/acme/r/certificate.html#using-dns-challenges
+
+## Example
+
+```hcl
+resource "acme_certificate" "certificate" {
+  ...
+
+  dns_challenge {
+    provider = "rfc2136"
+  }
+}
+```
+
+## Argument Reference
+
+The following arguments can be either passed as environment variables, or
+directly through the `config` block in the
+[`dns_challenge`][resource-acme-certificate-dns-challenge-arg] argument in the
+[`acme_certificate`][resource-acme-certificate] resource. For more details, see
+[here][resource-acme-certificate-dns-challenges].
+
+[resource-acme-certificate-dns-challenge-arg]: /docs/providers/acme/r/certificate.html#dns_challenge
+
+-> To disable TSIG authentication, leave the specific TSIG variables unset.
+
+* `RFC2136_NAMESERVER` - The network address of the DNS server to send the
+  updates to. Can be in the form of `HOST` or `HOST:PORT`.
+* `RFC2136_TSIG_ALGORITHM` - The TSIG algorithm to use. Can be one of
+  `hmac-md5.sig-alg.reg.int.` (HMAC-MD5), `hmac-sha1.` (HMAC-SHA1),
+  `hmac-sha256.` (HMAC-SHA256), or `hmac-sha512.` (HMAC-SHA512). Default:
+  `hmac-md5.sig-alg.reg.int.`
+* `RFC2136_TSIG_KEY` - The TSIG secret key name.
+* `RFC2136_TSIG_SECRET` - The TSIG secret key payload.
+* `RFC2136_TIMEOUT` - The DNS propagation timeout.

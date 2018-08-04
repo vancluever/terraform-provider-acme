@@ -164,26 +164,19 @@ resource only supports DNS challenges. This method authenticates certificate
 domains by requiring the requester to place a TXT record on the FQDNs in the
 certificate.
 
-Terraform, making use of [lego][xenolf-lego-gh], responds to DNS challenges
-automatically by utilizing one of lego's supported [DNS challenge
-providers][lego-dns-challenges]. Most providers take credentials as environment
-variables, but if you would rather use configuration for this purpose, you can
-by specifying `config` blocks within a [`dns_challenge`](#dns_challenge) block,
-along with the `provider` parameter.
+The ACME provider responds to DNS challenges automatically by utilizing one of
+the supported DNS challenge providers. Most providers take credentials as
+environment variables, but if you would rather use configuration for this
+purpose, you can by specifying `config` blocks within a
+[`dns_challenge`](#dns_challenge) block, along with the `provider` parameter.
 
-[xenolf-lego-gh]: https://github.com/xenolf/lego
-[lego-dns-challenges]: https://godoc.org/github.com/xenolf/lego/providers/dns
+For a full list of providers, click [here][dns-challenge-providers].
 
-Most of the DNS providers have their environment variables documented within the
-`NewDNSProvider` function for a specific provider. As an example, the variables
-for the Amazon Route 53 provider (referred to as `route53`) can be found
-[here][lego-route53-provider].
+[dns-challenge-providers]: /docs/providers/acme/dns_providers/index.html
 
-[lego-route53-provider]: https://godoc.org/github.com/xenolf/lego/providers/dns/route53#NewDNSProvider
+Example with the [Route 53 provider][route53-dns-provider]:
 
--> **NOTE:** The `manual` lego DNS provider is not supported.
-
-Example with Route 53 (AWS):
+[route53-dns-provider]: /docs/providers/acme/dns_providers/route53.html
 
 ```hcl
 resource "acme_certificate" "certificate" {
@@ -220,18 +213,12 @@ per above.
 [tf-provider-aws]: /docs/providers/aws/index.html
 [tf-providers]: /docs/configuration/providers.html
 
-Some of these providers have environment variable settings that overlap with the
-ones with lego, generally depending on whether or not these variables are
+Some of these providers have environment variable settings that overlap with
+the ones found here, generally depending on whether or not these variables are
 supported by the corresponding provider's SDK.
 
-We alias certain provider environment variables so the same settings can be
-supplied to both ACME and the respective native cloud provider. At the moment,
-this is only done for the `azure` provider, which corresponds to the
-[`azurerm`][tf-provider-azurerm] Provider in Terraform. To request another,
-submit an issue on the [GitHub page][tf-acme-github].
-
-[tf-acme-github]: https://github.com/terraform-providers/terraform-provider-acme
-[tf-provider-azurerm]: /docs/providers/azurerm/index.html
+Check the [DNS provider page][dns-challenge-providers] of a specific provider
+for more details on exactly what variables are supported.
 
 ## Certificate renewal
 
