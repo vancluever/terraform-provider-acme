@@ -36,12 +36,12 @@ CAs such as Let's Encrypt.
 [lets-encrypt-how-it-works]: https://letsencrypt.org/how-it-works/
 [about-acme]: https://ietf-wg-acme.github.io/acme/draft-ietf-acme-acme.html
 
-~> **NOTE:** The ACME provider as of version 1.0.0 supports ACME v2 only.  For
-ACME v1 endpoints, version 0.6.0 is required, which can be found
+~> **NOTE:** The upstream version of the ACME provider supports ACME v2 only.
+For ACME v1 endpoints, version 0.6.0 is required, which can be found
 [here][release-v0.6.0]. Note that this version is a [3rd party
 plugin][3rd-party-plugins] and needs to be installed as such.
 
-[release-v0.6.0]: https://github.com/terraform-providers/terraform-provider-acme/releases/tag/v0.6.0
+[release-v0.6.0]: https://github.com/vancluever/terraform-provider-acme/releases/tag/v0.6.0
 [3rd-party-plugins]: /docs/configuration/providers.html#third-party-plugins
 
 ## Basic Example
