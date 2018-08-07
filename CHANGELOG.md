@@ -1,8 +1,9 @@
-## 1.0.1-pre
+## 1.0.1 (Unreleased)
 
-Bumped version for dev.
+This is release bump for the sole purpose of releasing the provider upstream. As
+of this release, you will be able to fetch this project directly via Terraform!
 
-## 1.0.0 (Unreleased)
+## 1.0.0 (Jun 17, 2018)
 
 BREAKING CHANGES:
 
