@@ -14,41 +14,124 @@ website][terraform-io] and the [GitHub project page][terraform-gh].
 [terraform-io]: https://www.terraform.io/
 [terraform-gh]: https://github.com/hashicorp/terraform
 
-:warning: **NOTE:** The ACME provider as of version 1.0.0 supports ACME v2 only.
+:warning: **NOTE:** The ACME provider found here supports ACME v2 only.
 For ACME v1 endpoints, version 0.6.0 is required, which can be found
 [here][release-v0.6.0].
 
 [release-v0.6.0]: https://github.com/vancluever/terraform-provider-acme/releases/tag/v0.6.0
 
-## Installation Instructions
+## Full Provider Documentation
 
-The ACME provider is currently a 3rd party plugin. See the documentation on [3rd
-party plugins][3rd-party-plugins] for installation instructions, and download
-the latest release from the [releases page][releases-page].
+The provider is documented in full on the Terraform website and can be found
+[here][tf-acme-docs].
 
-[3rd-party-plugins]: https://www.terraform.io/docs/configuration/providers.html#third-party-plugins
-[releases-page]: https://github.com/vancluever/terraform-provider-acme/releases
+[tf-acme-docs]: https://www.terraform.io/docs/providers/acme/index.html
 
-### Distributions with direct installation support
+### Controlling the provider version
 
-If you use [Arch Linux][arch-linux], the
-[`terraform-provider-acme-bin`][terraform-provider-acme-bin-arch] package is
-available via the AUR and can be installed via an AUR-supported package manager
-such as `yay`. Thanks to [**@SamWhited**][samwhited-gh] for this!
+Note that you can also control the provider version. This requires the use of a
+`provider` block in your Terraform configuration if you have not added one
+already.
 
-[arch-linux]: https://www.archlinux.org/
-[terraform-provider-acme-bin-arch]: https://aur.archlinux.org/packages/terraform-provider-acme-bin/
-[samwhited-gh]: https://github.com/SamWhited
+The syntax is as follows:
 
-Example with `yay`:
-
-```
-yay -S terraform-provider-acme-bin
+```hcl
+provider "acme" {
+  version = "~> 1.0"
+  ...
+}
 ```
 
-## Documentation
+Version locking uses a pessimistic operator, so this version lock would mean
+anything within the 1.x namespace, including or after 1.0.0. [Read
+more][provider-vc] on provider version control.
 
-Documentation can be found in the [doc](doc/) directory.
+[provider-vc]: https://www.terraform.io/docs/configuration/providers.html#provider-versions
+
+# Building The Provider
+
+**NOTE:** Unless you are [developing](#developing-the-provider) or require a
+pre-release bugfix or feature, you will want to use the officially released
+version of the provider (see [the section above](#using-the-provider)).
+
+## Cloning the Project
+
+First, you will want to clone the repository to
+`$GOPATH/src/github.com/terraform-providers/terraform-provider-acme`:
+
+```sh
+mkdir -p $GOPATH/src/github.com/terraform-providers
+cd $GOPATH/src/github.com/terraform-providers
+git clone git@github.com:terraform-providers/terraform-provider-acme
+```
+
+## Running the Build
+
+After the clone has been completed, you can enter the provider directory and
+build the provider.
+
+```sh
+cd $GOPATH/src/github.com/terraform-providers/terraform-provider-acme
+make build
+```
+
+## Installing the Local Plugin
+
+After the build is complete, copy the `terraform-provider-acme` binary into
+the same path as your `terraform` binary, and re-run `terraform init`.
+
+After this, your project-local `.terraform/plugins/ARCH/lock.json` (where `ARCH`
+matches the architecture of your machine) file should contain a SHA256 sum that
+matches the local plugin. Run `shasum -a 256` on the binary to verify the values
+match.
+
+# Developing the Provider
+
+**NOTE:** Before you start work on a feature, please make sure to check the
+[issue tracker][gh-issues] and existing [pull requests][gh-prs] to ensure that
+work is not being duplicated. For further clarification, you can also ask in a
+new issue.
+
+[gh-issues]: https://github.com/terraform-providers/terraform-provider-acme/issues
+[gh-prs]: https://github.com/terraform-providers/terraform-provider-acme/pulls
+
+If you wish to work on the provider, you'll first need [Go][go-website]
+installed on your machine (version 1.9+ is **required**). You'll also need to
+correctly setup a [GOPATH][gopath], as well as adding `$GOPATH/bin` to your
+`$PATH`.
+
+[go-website]: https://golang.org/
+[gopath]: http://golang.org/doc/code.html#GOPATH
+
+See [Building the Provider](#building-the-provider) for details on building the provider.
+
+# Testing the Provider
+
+Testing the provider requires:
+
+* An email address and valid domain name on AWS Route 53. These need to be set
+using the `ACME_EMAIL_ADDRESS` and `ACME_CERT_DOMAIN` environment variables.
+* Valid AWS credentials set in the environment - at the very least
+`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+
+Some environment variables may be needed for other acceptance tests.
+
+After this is done, you can run the acceptance tests by running:
+
+```sh
+$ make testacc
+```
+
+If you want to run against a specific set of tests, run `make testacc` with the
+`TESTARGS` parameter containing the run mask as per below:
+
+```sh
+make testacc TESTARGS="-run=TestAccACMECertificate"
+```
+
+This following example would run all of the acceptance tests matching
+`TestAccACMECertificate`. Change this for the specific tests you want to
+run.
 
 ## License
 
