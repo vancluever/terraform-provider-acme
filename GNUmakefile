@@ -3,6 +3,8 @@ GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 WEBSITE_REPO=github.com/hashicorp/terraform-website
 PKG_NAME=acme
 
+export ACME_SERVER_URL ?= https://acme-staging-v02.api.letsencrypt.org/directory
+
 default: build
 
 build: fmtcheck

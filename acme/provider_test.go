@@ -34,7 +34,7 @@ func TestProvider_impl(t *testing.T) {
 }
 
 func testAccPreCheck(t *testing.T) {
-	if v := os.Getenv(""); v == "ACME_SERVER_URL" {
+	if v := os.Getenv("ACME_SERVER_URL"); v == "" {
 		t.Fatal("ACME_SERVER_URL must be set for acceptance tests")
 	}
 }
