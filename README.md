@@ -20,6 +20,17 @@ For ACME v1 endpoints, version 0.6.0 is required, which can be found
 
 [release-v0.6.0]: https://github.com/vancluever/terraform-provider-acme/releases/tag/v0.6.0
 
+# Using the Provider
+
+The current version of this provider requires Terraform v0.10.2 or higher to
+run.
+
+Note that you need to run `terraform init` to fetch the provider before
+deploying. Read about the provider split and other changes to TF v0.10.0 in the
+official release announcement found [here][tf-0.10-announce].
+
+[tf-0.10-announce]: https://www.hashicorp.com/blog/hashicorp-terraform-0-10/
+
 ## Full Provider Documentation
 
 The provider is documented in full on the Terraform website and can be found
