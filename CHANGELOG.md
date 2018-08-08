@@ -1,4 +1,4 @@
-## 1.0.1 (Unreleased)
+## 1.0.1 (August 08, 2018)
 
 This is release bump for the sole purpose of releasing the provider upstream. As
 of this release, you will be able to fetch this project directly via Terraform!
