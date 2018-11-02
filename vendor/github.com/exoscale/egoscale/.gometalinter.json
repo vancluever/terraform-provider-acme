@@ -1,4 +1,25 @@
 {
-    "Disable": ["gocyclo", "maligned"],
+    "Test": false,
+    "Enable": [
+        "deadcode",
+        "errcheck",
+        "golint",
+        "gosimple",
+        "gotype",
+        "ineffassign",
+        "interfacer",
+        "misspell",
+        "structcheck",
+        "unconvert",
+        "varcheck",
+        "vet",
+        "vetshadow"
+    ],
+    "Disable": [
+        "goconst",
+        "gocyclo",
+        "gosec",
+        "maligned"
+    ],
     "Skip": ["vendor"]
 }

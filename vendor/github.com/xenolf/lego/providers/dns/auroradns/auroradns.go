@@ -1,75 +1,109 @@
 package auroradns
 
 import (
+	"errors"
 	"fmt"
-	"os"
 	"sync"
+	"time"
 
 	"github.com/edeckers/auroradnsclient"
 	"github.com/edeckers/auroradnsclient/records"
 	"github.com/edeckers/auroradnsclient/zones"
 	"github.com/xenolf/lego/acme"
+	"github.com/xenolf/lego/platform/config/env"
 )
+
+const defaultBaseURL = "https://api.auroradns.eu"
+
+// Config is used to configure the creation of the DNSProvider
+type Config struct {
+	BaseURL            string
+	UserID             string
+	Key                string
+	PropagationTimeout time.Duration
+	PollingInterval    time.Duration
+	TTL                int
+}
+
+// NewDefaultConfig returns a default configuration for the DNSProvider
+func NewDefaultConfig() *Config {
+	return &Config{
+		TTL:                env.GetOrDefaultInt("AURORA_TTL", 300),
+		PropagationTimeout: env.GetOrDefaultSecond("AURORA_PROPAGATION_TIMEOUT", acme.DefaultPropagationTimeout),
+		PollingInterval:    env.GetOrDefaultSecond("AURORA_POLLING_INTERVAL", acme.DefaultPollingInterval),
+	}
+}
 
 // DNSProvider describes a provider for AuroraDNS
 type DNSProvider struct {
 	recordIDs   map[string]string
 	recordIDsMu sync.Mutex
+	config      *Config
 	client      *auroradnsclient.AuroraDNSClient
 }
 
 // NewDNSProvider returns a DNSProvider instance configured for AuroraDNS.
-// Credentials must be passed in the environment variables: AURORA_USER_ID
-// and AURORA_KEY.
+// Credentials must be passed in the environment variables:
+// AURORA_USER_ID and AURORA_KEY.
 func NewDNSProvider() (*DNSProvider, error) {
-	userID := os.Getenv("AURORA_USER_ID")
-	key := os.Getenv("AURORA_KEY")
-
-	endpoint := os.Getenv("AURORA_ENDPOINT")
-	if endpoint == "" {
-		endpoint = "https://api.auroradns.eu"
+	values, err := env.Get("AURORA_USER_ID", "AURORA_KEY")
+	if err != nil {
+		return nil, fmt.Errorf("aurora: %v", err)
 	}
 
-	return NewDNSProviderCredentials(endpoint, userID, key)
+	config := NewDefaultConfig()
+	config.BaseURL = env.GetOrFile("AURORA_ENDPOINT")
+	config.UserID = values["AURORA_USER_ID"]
+	config.Key = values["AURORA_KEY"]
+
+	return NewDNSProviderConfig(config)
 }
 
-// NewDNSProviderCredentials uses the supplied credentials to return a
-// DNSProvider instance configured for AuroraDNS.
+// NewDNSProviderCredentials uses the supplied credentials
+// to return a DNSProvider instance configured for AuroraDNS.
+// Deprecated
 func NewDNSProviderCredentials(baseURL string, userID string, key string) (*DNSProvider, error) {
-	client, err := auroradnsclient.NewAuroraDNSClient(baseURL, userID, key)
+	config := NewDefaultConfig()
+	config.BaseURL = baseURL
+	config.UserID = userID
+	config.Key = key
+
+	return NewDNSProviderConfig(config)
+}
+
+// NewDNSProviderConfig return a DNSProvider instance configured for AuroraDNS.
+func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
+	if config == nil {
+		return nil, errors.New("aurora: the configuration of the DNS provider is nil")
+	}
+
+	if config.UserID == "" || config.Key == "" {
+		return nil, errors.New("aurora: some credentials information are missing")
+	}
+
+	if config.BaseURL == "" {
+		config.BaseURL = defaultBaseURL
+	}
+
+	client, err := auroradnsclient.NewAuroraDNSClient(config.BaseURL, config.UserID, config.Key)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("aurora: %v", err)
 	}
 
 	return &DNSProvider{
+		config:    config,
 		client:    client,
 		recordIDs: make(map[string]string),
 	}, nil
 }
 
-func (provider *DNSProvider) getZoneInformationByName(name string) (zones.ZoneRecord, error) {
-	zs, err := provider.client.GetZones()
-
-	if err != nil {
-		return zones.ZoneRecord{}, err
-	}
-
-	for _, element := range zs {
-		if element.Name == name {
-			return element, nil
-		}
-	}
-
-	return zones.ZoneRecord{}, fmt.Errorf("could not find Zone record")
-}
-
 // Present creates a record with a secret
-func (provider *DNSProvider) Present(domain, token, keyAuth string) error {
+func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	fqdn, value, _ := acme.DNS01Record(domain, keyAuth)
 
 	authZone, err := acme.FindZoneByFqdn(acme.ToFqdn(domain), acme.RecursiveNameservers)
 	if err != nil {
-		return fmt.Errorf("Could not determine zone for domain: '%s'. %s", domain, err)
+		return fmt.Errorf("aurora: could not determine zone for domain: '%s'. %s", domain, err)
 	}
 
 	// 1. Aurora will happily create the TXT record when it is provided a fqdn,
@@ -83,9 +117,9 @@ func (provider *DNSProvider) Present(domain, token, keyAuth string) error {
 
 	authZone = acme.UnFqdn(authZone)
 
-	zoneRecord, err := provider.getZoneInformationByName(authZone)
+	zoneRecord, err := d.getZoneInformationByName(authZone)
 	if err != nil {
-		return fmt.Errorf("could not create record: %v", err)
+		return fmt.Errorf("aurora: could not create record: %v", err)
 	}
 
 	reqData :=
@@ -93,28 +127,28 @@ func (provider *DNSProvider) Present(domain, token, keyAuth string) error {
 			RecordType: "TXT",
 			Name:       subdomain,
 			Content:    value,
-			TTL:        300,
+			TTL:        d.config.TTL,
 		}
 
-	respData, err := provider.client.CreateRecord(zoneRecord.ID, reqData)
+	respData, err := d.client.CreateRecord(zoneRecord.ID, reqData)
 	if err != nil {
-		return fmt.Errorf("could not create record: %v", err)
+		return fmt.Errorf("aurora: could not create record: %v", err)
 	}
 
-	provider.recordIDsMu.Lock()
-	provider.recordIDs[fqdn] = respData.ID
-	provider.recordIDsMu.Unlock()
+	d.recordIDsMu.Lock()
+	d.recordIDs[fqdn] = respData.ID
+	d.recordIDsMu.Unlock()
 
 	return nil
 }
 
 // CleanUp removes a given record that was generated by Present
-func (provider *DNSProvider) CleanUp(domain, token, keyAuth string) error {
+func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	fqdn, _, _ := acme.DNS01Record(domain, keyAuth)
 
-	provider.recordIDsMu.Lock()
-	recordID, ok := provider.recordIDs[fqdn]
-	provider.recordIDsMu.Unlock()
+	d.recordIDsMu.Lock()
+	recordID, ok := d.recordIDs[fqdn]
+	d.recordIDsMu.Unlock()
 
 	if !ok {
 		return fmt.Errorf("unknown recordID for %q", fqdn)
@@ -127,19 +161,40 @@ func (provider *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 
 	authZone = acme.UnFqdn(authZone)
 
-	zoneRecord, err := provider.getZoneInformationByName(authZone)
+	zoneRecord, err := d.getZoneInformationByName(authZone)
 	if err != nil {
 		return err
 	}
 
-	_, err = provider.client.RemoveRecord(zoneRecord.ID, recordID)
+	_, err = d.client.RemoveRecord(zoneRecord.ID, recordID)
 	if err != nil {
 		return err
 	}
 
-	provider.recordIDsMu.Lock()
-	delete(provider.recordIDs, fqdn)
-	provider.recordIDsMu.Unlock()
+	d.recordIDsMu.Lock()
+	delete(d.recordIDs, fqdn)
+	d.recordIDsMu.Unlock()
 
 	return nil
+}
+
+// Timeout returns the timeout and interval to use when checking for DNS propagation.
+// Adjusting here to cope with spikes in propagation times.
+func (d *DNSProvider) Timeout() (timeout, interval time.Duration) {
+	return d.config.PropagationTimeout, d.config.PollingInterval
+}
+
+func (d *DNSProvider) getZoneInformationByName(name string) (zones.ZoneRecord, error) {
+	zs, err := d.client.GetZones()
+	if err != nil {
+		return zones.ZoneRecord{}, err
+	}
+
+	for _, element := range zs {
+		if element.Name == name {
+			return element, nil
+		}
+	}
+
+	return zones.ZoneRecord{}, fmt.Errorf("could not find Zone record")
 }

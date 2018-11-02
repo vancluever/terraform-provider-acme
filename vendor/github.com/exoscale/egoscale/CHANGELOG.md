@@ -1,10 +1,119 @@
 Changelog
 =========
 
+0.11.6
+------
+
+- fix: `Network.ListRequest` accepts a `Name` argument
+- change: `SecurityGroup` and the rules aren't `Taggable` anymore
+
+0.11.5
+------
+
+- feat: addition of `updateVmNicIp`
+- fix: `UpdateVMAffinityGroup` expected response
+
+0.11.4
+------
+
+*no changes in the core library*
+
+0.11.3
+------
+
+*no changes in the core library*
+
+0.11.2
+------
+
+- fix: empty list responses
+
+0.11.1
+------
+
+- fix: `client.Sign` handles correctly the brackets (kudos to @stffabi)
+- change: `client.Payload` returns a `url.Values`
+
+0.11.0
+------
+
+- feat: `listOSCategories` and `OSCategory` type
+- feat: `listApis` supports recursive response structures
+- feat: `GetRecordsWithFilters` to list records with name or record_type filters
+- fix: better `DNSErrorResponse`
+- fix: `ListResourceLimits` type
+- change: use UUID everywhere
+
+0.10.5
+------
+
+- feat: `Client.Logger` to plug in any `*log.Logger`
+- feat: `Client.TraceOn`/`ClientTraceOff` to toggle the HTTP tracing
+
+0.10.4
+------
+
+- feat: `CIDR` to replace string string
+- fix: prevent panic on nil
+
+0.10.3
+------
+
+- feat: `Account` is Listable
+- feat: `MACAddress` to replace string type
+- fix: Go 1.7 support
+
+0.10.2
+------
+
+- fix: ActivateIP6 response
+
+0.10.1
+------
+
+- feat: expose `SyncRequest` and `SyncRequestWithContext`
+- feat: addition of reverse DNS calls
+- feat: addition of `SecurityGroup.UserSecurityGroup`
+
+0.10.0
+------
+
+- global: cloudstack documentation links are moved into cs
+- global: removal of all the `...Response` types
+- feat: `Network` is `Listable`
+- feat: addition of `deleteUser`
+- feat: addition of `listHosts`
+- feat: addition of `updateHost`
+- feat: exo cmd (kudos to @pierre-emmanuelJ)
+- change: refactor `Gettable` to use `ListRequest`
+
+0.9.31
+------
+
+- fix: `IPAddress`.`ListRequest` with boolean fields
+- fix: `Network`.`ListRequest` with boolean fields
+- fix: `ServiceOffering`.`ListRequest` with boolean fields
+
+0.9.30
+------
+
+- fix: `VirtualMachine` `PCIDevice` representation was incomplete
+
+0.9.29
+------
+
+- change: `DNSErrorResponse` is a proper `error`
+
+0.9.28
+------
+
+- feat: addition of `GetDomains`
+- fix: `UpdateDomain` may contain more empty fields than `CreateDomain`
+
 0.9.27
 ------
 
-- fix: checks that the Content-Type is correctly set to `application/json`
+- fix: expects body to be `application/json`
 
 0.9.26
 ------

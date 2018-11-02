@@ -1,8 +1,8 @@
 ignored = ["github.com/exoscale/egoscale/cmd/*"]
 
 [[constraint]]
-  name = "github.com/jinzhu/copier"
-  branch = "master"
+  name = "github.com/satori/go.uuid"
+  version = "1.2.0"
 
 [prune]
   non-go = true

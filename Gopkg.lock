@@ -35,6 +35,12 @@
   version = "1.15.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/OpenDNS/vegadns2client"
+  packages = ["."]
+  revision = "a3fa4a771d87bda2514a90a157e1fed1b6897d2e"
+
+[[projects]]
   name = "github.com/agext/levenshtein"
   packages = ["."]
   revision = "5f10fee965225ac1eecdc234c09daf5cd9e7f7b6"
@@ -50,6 +56,23 @@
   ]
   revision = "196fbdab2db66d0e231cc363efb63454f55fed1c"
   version = "v0.6.2"
+
+[[projects]]
+  name = "github.com/aliyun/alibaba-cloud-sdk-go"
+  packages = [
+    "sdk",
+    "sdk/auth",
+    "sdk/auth/credentials",
+    "sdk/auth/signers",
+    "sdk/endpoints",
+    "sdk/errors",
+    "sdk/requests",
+    "sdk/responses",
+    "sdk/utils",
+    "services/alidns"
+  ]
+  revision = "cad214d7d71fba7883fcf3b7e550ba782c15b400"
+  version = "1.27.7"
 
 [[projects]]
   branch = "master"
@@ -129,6 +152,18 @@
   version = "v3.5.1"
 
 [[projects]]
+  name = "github.com/cloudflare/cloudflare-go"
+  packages = ["."]
+  revision = "1f9007fbecae20711133c60519338c41cef1ffb4"
+  version = "v0.8.5"
+
+[[projects]]
+  name = "github.com/cpu/goacmedns"
+  packages = ["."]
+  revision = "ed19cad6ddd23bdd76990050f9a78b70ea9cbb15"
+  version = "0.0.1"
+
+[[projects]]
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
@@ -168,8 +203,8 @@
 [[projects]]
   name = "github.com/exoscale/egoscale"
   packages = ["."]
-  revision = "43703f86849566a547e8f1812508ab873e8d12dd"
-  version = "v0.9.27"
+  revision = "67368ae928a70cb5cb44ecf6f418ee33a1ade044"
+  version = "v0.11.6"
 
 [[projects]]
   name = "github.com/fatih/color"
@@ -182,6 +217,12 @@
   packages = ["."]
   revision = "06f5f3d67269ccec1fe5fe4134ba6e982984f7f5"
   version = "v1.37.0"
+
+[[projects]]
+  name = "github.com/go-resty/resty"
+  packages = ["."]
+  revision = "92a651cff2687ad3083767fb04b6f53d258b546c"
+  version = "v1.10.1"
 
 [[projects]]
   name = "github.com/golang/protobuf"
@@ -350,9 +391,12 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/jinzhu/copier"
-  packages = ["."]
-  revision = "7e38e58719c33e0d44d585c4ab477a30f8cb82dd"
+  name = "github.com/iij/doapi"
+  packages = [
+    ".",
+    "protocol"
+  ]
+  revision = "8803795a9b7b938fa88ddbd63a77893beee14cd8"
 
 [[projects]]
   name = "github.com/jmespath/go-jmespath"
@@ -370,6 +414,12 @@
   packages = ["."]
   revision = "59fac5042749a5afb9af70e813da1dd5474f0167"
   version = "1.0.1"
+
+[[projects]]
+  name = "github.com/linode/linodego"
+  packages = ["."]
+  revision = "d0d31d8ca62fa3f7e4526ca0ce95de81e4ed001e"
+  version = "v0.5.1"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -474,12 +524,6 @@
   version = "v0.8.0"
 
 [[projects]]
-  name = "github.com/pmezard/go-difflib"
-  packages = ["difflib"]
-  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
-  version = "v1.0.0"
-
-[[projects]]
   name = "github.com/posener/complete"
   packages = [
     ".",
@@ -491,16 +535,27 @@
   version = "v1.1.1"
 
 [[projects]]
+  name = "github.com/sacloud/libsacloud"
+  packages = [
+    ".",
+    "api",
+    "sacloud",
+    "sacloud/ostype"
+  ]
+  revision = "108b1efe4b4d106fee6760bdf1847c4f92e1a92e"
+  version = "v1.1.0"
+
+[[projects]]
+  name = "github.com/satori/go.uuid"
+  packages = ["."]
+  revision = "f58768cc1a7a7e77a3bd49e98cdd21419399b6a3"
+  version = "v1.2.0"
+
+[[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
   revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
   version = "v1.0.5"
-
-[[projects]]
-  name = "github.com/stretchr/testify"
-  packages = ["assert"]
-  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
-  version = "v1.2.2"
 
 [[projects]]
   branch = "master"
@@ -533,6 +588,9 @@
   packages = [
     "acme",
     "log",
+    "platform/config/env",
+    "providers/dns/acmedns",
+    "providers/dns/alidns",
     "providers/dns/auroradns",
     "providers/dns/azure",
     "providers/dns/bluecat",
@@ -542,6 +600,7 @@
     "providers/dns/dnsimple",
     "providers/dns/dnsmadeeasy",
     "providers/dns/dnspod",
+    "providers/dns/dreamhost",
     "providers/dns/duckdns",
     "providers/dns/dyn",
     "providers/dns/exec",
@@ -552,10 +611,15 @@
     "providers/dns/gcloud",
     "providers/dns/glesys",
     "providers/dns/godaddy",
+    "providers/dns/hostingde",
+    "providers/dns/iij",
     "providers/dns/lightsail",
     "providers/dns/linode",
+    "providers/dns/linodev4",
     "providers/dns/namecheap",
     "providers/dns/namedotcom",
+    "providers/dns/netcup",
+    "providers/dns/nifcloud",
     "providers/dns/ns1",
     "providers/dns/otc",
     "providers/dns/ovh",
@@ -563,10 +627,13 @@
     "providers/dns/rackspace",
     "providers/dns/rfc2136",
     "providers/dns/route53",
+    "providers/dns/sakuracloud",
+    "providers/dns/stackpath",
+    "providers/dns/vegadns",
     "providers/dns/vultr"
   ]
-  revision = "27e0f97c9df37cad8c4ba0ef1d133fa57afb7469"
-  version = "v1.0.1"
+  revision = "d775f2bcd5fc2e7ca52d868f9d00a1df327f0b44"
+  version = "v1.1.0"
 
 [[projects]]
   branch = "master"
@@ -624,6 +691,7 @@
     "internal/timeseries",
     "ipv4",
     "ipv6",
+    "publicsuffix",
     "trace"
   ]
   revision = "1e491301e022f8f977054da4c2d852decd59571f"
@@ -633,6 +701,7 @@
   name = "golang.org/x/oauth2"
   packages = [
     ".",
+    "clientcredentials",
     "google",
     "internal",
     "jws",
@@ -669,6 +738,12 @@
   ]
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
   version = "v0.3.0"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/time"
+  packages = ["rate"]
+  revision = "fbb02b2291d28baffd63558aa44b4b56f178d650"
 
 [[projects]]
   branch = "master"
@@ -769,6 +844,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8a88f3388747187b2f240b68d6e5ef314efb7746acf137bba87bf5a1a8daeb68"
+  inputs-digest = "4d97b16c6a5b49871461ebe310a50ec986f2527129743160542fe5c5aa2c139b"
   solver-name = "gps-cdcl"
   solver-version = 1
