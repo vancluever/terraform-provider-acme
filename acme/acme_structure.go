@@ -53,7 +53,7 @@ import (
 // schema.
 func baseACMESchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"account_key_pem": &schema.Schema{
+		"account_key_pem": {
 			Type:      schema.TypeString,
 			Required:  true,
 			ForceNew:  true,
@@ -68,12 +68,12 @@ func registrationSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// Even though the ACME spec does allow for multiple contact types, lego
 		// only works with a single email address.
-		"email_address": &schema.Schema{
+		"email_address": {
 			Type:     schema.TypeString,
 			Required: true,
 			ForceNew: true,
 		},
-		"registration_url": &schema.Schema{
+		"registration_url": {
 			Type:     schema.TypeString,
 			Computed: true,
 		},
@@ -84,13 +84,13 @@ func registrationSchema() map[string]*schema.Schema {
 // that are specific to an ACME certificate resource.
 func certificateSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"common_name": &schema.Schema{
+		"common_name": {
 			Type:          schema.TypeString,
 			Optional:      true,
 			ForceNew:      true,
 			ConflictsWith: []string{"certificate_request_pem"},
 		},
-		"subject_alternative_names": &schema.Schema{
+		"subject_alternative_names": {
 			Type:          schema.TypeSet,
 			Optional:      true,
 			Elem:          &schema.Schema{Type: schema.TypeString},
@@ -98,7 +98,7 @@ func certificateSchema() map[string]*schema.Schema {
 			ForceNew:      true,
 			ConflictsWith: []string{"certificate_request_pem"},
 		},
-		"key_type": &schema.Schema{
+		"key_type": {
 			Type:          schema.TypeString,
 			Optional:      true,
 			ForceNew:      true,
@@ -106,29 +106,29 @@ func certificateSchema() map[string]*schema.Schema {
 			ConflictsWith: []string{"certificate_request_pem"},
 			ValidateFunc:  validateKeyType,
 		},
-		"certificate_request_pem": &schema.Schema{
+		"certificate_request_pem": {
 			Type:          schema.TypeString,
 			Optional:      true,
 			ForceNew:      true,
 			ConflictsWith: []string{"common_name", "subject_alternative_names", "key_type"},
 		},
-		"min_days_remaining": &schema.Schema{
+		"min_days_remaining": {
 			Type:     schema.TypeInt,
 			Optional: true,
 			Default:  7,
 		},
-		"dns_challenge": &schema.Schema{
+		"dns_challenge": {
 			Type:     schema.TypeSet,
 			Required: true,
 			Set:      dnsChallengeSetHash,
 			MaxItems: 1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
-					"provider": &schema.Schema{
+					"provider": {
 						Type:     schema.TypeString,
 						Required: true,
 					},
-					"config": &schema.Schema{
+					"config": {
 						Type:         schema.TypeMap,
 						Optional:     true,
 						ValidateFunc: validateDNSChallengeConfig,
@@ -138,34 +138,34 @@ func certificateSchema() map[string]*schema.Schema {
 			},
 			ForceNew: true,
 		},
-		"must_staple": &schema.Schema{
+		"must_staple": {
 			Type:     schema.TypeBool,
 			Optional: true,
 			Default:  false,
 			ForceNew: true,
 		},
-		"certificate_url": &schema.Schema{
+		"certificate_url": {
 			Type:     schema.TypeString,
 			Computed: true,
 		},
-		"certificate_domain": &schema.Schema{
+		"certificate_domain": {
 			Type:     schema.TypeString,
 			Computed: true,
 		},
-		"account_ref": &schema.Schema{
+		"account_ref": {
 			Type:     schema.TypeString,
 			Computed: true,
 		},
-		"private_key_pem": &schema.Schema{
+		"private_key_pem": {
 			Type:      schema.TypeString,
 			Computed:  true,
 			Sensitive: true,
 		},
-		"certificate_pem": &schema.Schema{
+		"certificate_pem": {
 			Type:     schema.TypeString,
 			Computed: true,
 		},
-		"issuer_pem": &schema.Schema{
+		"issuer_pem": {
 			Type:     schema.TypeString,
 			Computed: true,
 		},

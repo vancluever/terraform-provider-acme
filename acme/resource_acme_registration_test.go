@@ -17,7 +17,7 @@ func TestAccACMERegistration_basic(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckACMERegistrationValid("acme_registration.reg", false),
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccACMERegistrationConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrPair(

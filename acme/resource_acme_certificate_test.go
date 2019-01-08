@@ -32,7 +32,7 @@ func TestAccACMECertificate_basic(t *testing.T) {
 		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckCert(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccACMECertificateConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrPair(
@@ -51,7 +51,7 @@ func TestAccACMECertificate_CSR(t *testing.T) {
 		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckCert(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccACMECertificateCSRConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www3", "www4", false),
@@ -85,7 +85,7 @@ func TestAccACMECertificate_withDNSProviderConfig(t *testing.T) {
 		},
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccACMECertificateWithDNSProviderConfig(envCache),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www5", "", false),
@@ -100,7 +100,7 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckCert(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccACMECertificateForceRenewalConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrPair(
@@ -111,7 +111,7 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 				),
 				ExpectNonEmptyPlan: true,
 			},
-			resource.TestStep{
+			{
 				Config: testAccACMECertificateForceRenewalConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrPair(
@@ -131,7 +131,7 @@ func TestAccACMECertificate_mustStaple(t *testing.T) {
 		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckCert(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccACMECertificateMustStapleConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www8", "www9", true),
@@ -146,7 +146,7 @@ func TestAccACMECertificate_wildcard(t *testing.T) {
 		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckCert(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccACMECertificateWildcardConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "*", "", false),
