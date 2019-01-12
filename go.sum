@@ -53,6 +53,8 @@ github.com/dimchansky/utfbom v1.1.0/go.mod h1:rO41eb7gLfo8SF1jd9F8HplJm1Fewwi4mQ
 >>>>>>> Use go-auroradns v2 module
 github.com/dnsimple/dnsimple-go v0.0.0-20180423020233-bbe1a2c87aff h1:8dH/3bJoBitZfxZCfzIBgFtP46UcSOHr4rXIZIrXD6U=
 github.com/dnsimple/dnsimple-go v0.0.0-20180423020233-bbe1a2c87aff/go.mod h1:0FYu4qVNv/UcfZPNwa9zi68IkggJu3TIwM54D7rhmI4=
+github.com/dnsimple/dnsimple-go v0.21.0 h1:y86XiLbpPEUSRfS4Z+Xzb/E+OEppFPyP2fZvVDNXgI8=
+github.com/dnsimple/dnsimple-go v0.21.0/go.mod h1:0FYu4qVNv/UcfZPNwa9zi68IkggJu3TIwM54D7rhmI4=
 github.com/edeckers/auroradnsclient v1.0.3 h1:FZ0NFpIHmWhctDd3GzTKWmbJVErTwq/OqGuFFEuQms4=
 github.com/edeckers/auroradnsclient v1.0.3/go.mod h1:DfnGuII5MpjHzl0Vg5+2kNBr+95TU2w4wYv3IznTYOg=
 github.com/exoscale/egoscale v0.9.28 h1:s5qe1w1kM8F0ZhTkKq7MDSFEsjwBjmxgvSLdCPwM6tI=

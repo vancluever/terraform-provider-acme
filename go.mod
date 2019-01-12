@@ -29,8 +29,12 @@ require (
 	github.com/decker502/dnspod-go v0.0.0-20180416134550-83a3ba562b04 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/dimchansky/utfbom v1.1.0 // indirect
+<<<<<<< HEAD
 >>>>>>> Use go-auroradns v2 module
 	github.com/dnsimple/dnsimple-go v0.0.0-20180423020233-bbe1a2c87aff // indirect
+=======
+	github.com/dnsimple/dnsimple-go v0.21.0 // indirect
+>>>>>>> go get -m github.com/dnsimple/dnsimple-go@v0.21.0
 	github.com/edeckers/auroradnsclient v1.0.3 // indirect
 	github.com/exoscale/egoscale v0.9.28 // indirect
 	github.com/fatih/color v1.7.0 // indirect
