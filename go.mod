@@ -36,7 +36,11 @@ require (
 	github.com/dnsimple/dnsimple-go v0.21.0 // indirect
 >>>>>>> go get -m github.com/dnsimple/dnsimple-go@v0.21.0
 	github.com/edeckers/auroradnsclient v1.0.3 // indirect
+<<<<<<< HEAD
 	github.com/exoscale/egoscale v0.9.28 // indirect
+=======
+	github.com/exoscale/egoscale v0.11.6 // indirect
+>>>>>>> go get -m github.com/exoscale/egoscale@v0.11.6
 	github.com/fatih/color v1.7.0 // indirect
 	github.com/go-ini/ini v1.37.0 // indirect
 	github.com/go-test/deep v1.0.1 // indirect
@@ -93,7 +97,10 @@ require (
 	github.com/ovh/go-ovh v0.0.0-20180606082425-858d9a5df2fb // indirect
 	github.com/pkg/errors v0.8.0 // indirect
 	github.com/posener/complete v1.1.1 // indirect
+<<<<<<< HEAD
 	github.com/sacloud/libsacloud v1.13.0 // indirect
+=======
+>>>>>>> go get -m github.com/exoscale/egoscale@v0.11.6
 	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/sirupsen/logrus v1.0.5 // indirect
 	github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d // indirect

@@ -57,8 +57,15 @@ github.com/dnsimple/dnsimple-go v0.21.0 h1:y86XiLbpPEUSRfS4Z+Xzb/E+OEppFPyP2fZvV
 github.com/dnsimple/dnsimple-go v0.21.0/go.mod h1:0FYu4qVNv/UcfZPNwa9zi68IkggJu3TIwM54D7rhmI4=
 github.com/edeckers/auroradnsclient v1.0.3 h1:FZ0NFpIHmWhctDd3GzTKWmbJVErTwq/OqGuFFEuQms4=
 github.com/edeckers/auroradnsclient v1.0.3/go.mod h1:DfnGuII5MpjHzl0Vg5+2kNBr+95TU2w4wYv3IznTYOg=
+<<<<<<< HEAD
 github.com/exoscale/egoscale v0.9.28 h1:s5qe1w1kM8F0ZhTkKq7MDSFEsjwBjmxgvSLdCPwM6tI=
 github.com/exoscale/egoscale v0.9.28/go.mod h1:Ee3U4ZjSDpbbEc9VkQ/jttUU8USE8Nv7L3YzVi03Y1U=
+=======
+github.com/exoscale/egoscale v0.9.27 h1:l+GEngWF3Jwn11QfRuvPF8ffiDLAUNgmpiAm3f9Ab+Q=
+github.com/exoscale/egoscale v0.9.27/go.mod h1:Ee3U4ZjSDpbbEc9VkQ/jttUU8USE8Nv7L3YzVi03Y1U=
+github.com/exoscale/egoscale v0.11.6 h1:sdem/cPuvXqz6LfTyfNoa+iHLXI9vXClmOCTA/PFiKg=
+github.com/exoscale/egoscale v0.11.6/go.mod h1:Ee3U4ZjSDpbbEc9VkQ/jttUU8USE8Nv7L3YzVi03Y1U=
+>>>>>>> go get -m github.com/exoscale/egoscale@v0.11.6
 github.com/fatih/color v1.7.0 h1:DkWD4oS2D8LGGgTQ6IvwJJXSL5Vp2ffcQg58nFV38Ys=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
 github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV9I=
@@ -188,8 +195,11 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/posener/complete v1.1.1 h1:ccV59UEOTzVDnDUEFdT95ZzHVZ+5+158q8+SJb2QV5w=
 github.com/posener/complete v1.1.1/go.mod h1:em0nMJCgc9GFtwrmVmEMR/ZL6WyhyjMBndrE9hABlRI=
+<<<<<<< HEAD
 github.com/sacloud/libsacloud v1.13.0 h1:FEF7l9UAyeqnOImYp3xmYE+xEfTFLTRHSEgi6aM1CB0=
 github.com/sacloud/libsacloud v1.13.0/go.mod h1:js4lAYJrwAUoE6xR+xw+yFtwCBII98zgFGsT6gwXd8I=
+=======
+>>>>>>> go get -m github.com/exoscale/egoscale@v0.11.6
 github.com/satori/go.uuid v1.2.0 h1:0uYX9dsZ2yD7q2RtLRtPSdGDWzjeM3TbMJP9utgA0ww=
 github.com/satori/go.uuid v1.2.0/go.mod h1:dA0hQrYB0VpLJoorglMZABFdXlWrHn1NEOzdhQKdks0=
 github.com/sirupsen/logrus v1.0.5 h1:8c8b5uO0zS4X6RPl/sd1ENwSkIc0/H2PaHxE3udaE8I=
