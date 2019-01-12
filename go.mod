@@ -86,7 +86,11 @@ require (
 	github.com/terraform-providers/terraform-provider-tls v0.0.0-20180502173329-ba449b19fa96
 	github.com/timewasted/linode v0.0.0-20160829202747-37e84520dcf7 // indirect
 	github.com/ulikunitz/xz v0.5.4 // indirect
+<<<<<<< HEAD
 	github.com/xenolf/lego v1.1.0
+=======
+	github.com/xenolf/lego v2.0.1+incompatible
+>>>>>>> go get -m github.com/xenolf/lego@v2.0.1
 	github.com/zclconf/go-cty v0.0.0-20180524003106-ba988ce11d99 // indirect
 	golang.org/x/oauth2 v0.0.0-20180603041954-1e0a3fa8ba9a // indirect
 	golang.org/x/sync v0.0.0-20181221193216-37e7f081c4d4 // indirect
