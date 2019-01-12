@@ -32,16 +32,25 @@ github.com/blang/semver v3.5.1+incompatible h1:cQNTCjp13qL8KC3Nbxr/y2Bqb63oX6wdn
 github.com/blang/semver v3.5.1+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnwebNt5EWlYSAyrTnjyyk=
 github.com/cloudflare/cloudflare-go v0.8.5 h1:k1iz+H2jIL8OnS+bGhNQ6GPldi7VCo2tuWmfQ4kMiDI=
 github.com/cloudflare/cloudflare-go v0.8.5/go.mod h1:8KhU6K+zHUEWOSU++mEQYf7D9UZOcQcibUoSm6vCUz4=
+<<<<<<< HEAD
 github.com/cpu/goacmedns v0.0.1 h1:GeIU5chKys9zmHgOAgP+bstRaLqcGQ6HJh/hLw9hrus=
 github.com/cpu/goacmedns v0.0.1/go.mod h1:sesf/pNnCYwUevQEQfEwY0Y3DydlQWSGZbaMElOWxok=
+=======
+>>>>>>> Use go-auroradns v2 module
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/decker502/dnspod-go v0.0.0-20180416134550-83a3ba562b04 h1:deUJYiwGrb7hk3lTnqDtsXxMBmaFmzR2F5EFZUV5PRw=
 github.com/decker502/dnspod-go v0.0.0-20180416134550-83a3ba562b04/go.mod h1:1xTEhqHsJ0UdTJTGBagkADAOwd/7ulfYdlQwJcqdSHs=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible h1:7qlOGliEKZXTDg6OTjfoBKDXWrumCAMpl/TFQ4/5kLM=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
+<<<<<<< HEAD
 github.com/dnaeon/go-vcr v1.0.1 h1:r8L/HqC0Hje5AXMu1ooW8oyQyOFv4GxqpL0nRP7SLLY=
 github.com/dnaeon/go-vcr v1.0.1/go.mod h1:aBB1+wY4s93YsC3HHjMBMrwTj2R9FHDzUr9KyGc8n1E=
+=======
+github.com/dimchansky/utfbom v1.1.0 h1:FcM3g+nofKgUteL8dm/UpdRXNC9KmADgTpLKsu0TRo4=
+github.com/dimchansky/utfbom v1.1.0/go.mod h1:rO41eb7gLfo8SF1jd9F8HplJm1Fewwi4mQvIirEdv+8=
+>>>>>>> Use go-auroradns v2 module
 github.com/dnsimple/dnsimple-go v0.0.0-20180423020233-bbe1a2c87aff h1:8dH/3bJoBitZfxZCfzIBgFtP46UcSOHr4rXIZIrXD6U=
 github.com/dnsimple/dnsimple-go v0.0.0-20180423020233-bbe1a2c87aff/go.mod h1:0FYu4qVNv/UcfZPNwa9zi68IkggJu3TIwM54D7rhmI4=
 github.com/edeckers/auroradnsclient v1.0.3 h1:FZ0NFpIHmWhctDd3GzTKWmbJVErTwq/OqGuFFEuQms4=
@@ -119,8 +128,15 @@ github.com/kr/text v0.1.0 h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
 github.com/kylelemons/godebug v0.0.0-20170820004349-d65d576e9348 h1:MtvEpTB6LX3vkb4ax0b5D2DHbNAUsen0Gx5wZoq3lV4=
 github.com/kylelemons/godebug v0.0.0-20170820004349-d65d576e9348/go.mod h1:B69LEHPfb2qLo0BaaOLcbitczOKLWTsrBG9LczfCD4k=
+<<<<<<< HEAD
 github.com/linode/linodego v0.7.1 h1:4WZmMpSA2NRwlPZcc0+4Gyn7rr99Evk9bnr0B3gXRKE=
 github.com/linode/linodego v0.7.1/go.mod h1:ga11n3ivecUrPCHN0rANxKmfWBJVkOXfLMZinAbj2sY=
+=======
+github.com/ldez/go-auroradns v1.0.3 h1:g9TqZm668y0LNCZSSRuAr1MReumFl6y/2dkCefQCAug=
+github.com/ldez/go-auroradns v1.0.3/go.mod h1:l0nWqFww/ifCAEo3RuXnmoZY3L4SeqdaM59VtDvXcf4=
+github.com/ldez/go-auroradns/v2 v2.0.2 h1:veCD3S78dxhuydt0fy3LKLURaADgVLfUnCj76k4df8s=
+github.com/ldez/go-auroradns/v2 v2.0.2/go.mod h1:FQMzLGTorwZrdX50q/kmQ4jOfCSBrCTJdXjrylyJFm4=
+>>>>>>> Use go-auroradns v2 module
 github.com/mattn/go-colorable v0.0.9 h1:UVL0vNpWh04HeJXV0KLcaT7r06gOH2l4OW6ddYRUIY4=
 github.com/mattn/go-colorable v0.0.9/go.mod h1:9vuHe8Xs5qXnSaW/c/ABM9alt+Vo+STaOChaDxuIBZU=
 github.com/mattn/go-isatty v0.0.3 h1:ns/ykhmWi7G9O+8a448SecJU3nSMBXJfqQkl0upE1jI=
@@ -197,6 +213,7 @@ github.com/xenolf/lego v1.1.0/go.mod h1:fwiGnfsIjG7OHPfOvgK7Y/Qo6+2Ox0iozjNTkZIC
 =======
 github.com/xenolf/lego v1.0.1 h1:Rr9iqO8MoNxY6OvqdIZTnNZ8bwt0RNz00nGXfoTq4Bc=
 github.com/xenolf/lego v1.0.1/go.mod h1:fwiGnfsIjG7OHPfOvgK7Y/Qo6+2Ox0iozjNTkZICKbY=
+github.com/xenolf/lego v2.0.1+incompatible h1:5x9Zy8MXq0zVvssH5Jk4b3kbDUe5voX1qGTfKA72HAk=
 github.com/xenolf/lego v2.0.1+incompatible/go.mod h1:fwiGnfsIjG7OHPfOvgK7Y/Qo6+2Ox0iozjNTkZICKbY=
 >>>>>>> go get -m github.com/xenolf/lego@v2.0.1
 github.com/zclconf/go-cty v0.0.0-20180524003106-ba988ce11d99 h1:VfpLp8VjBgQJ1rqDPeOuo0EVW5VyE2a3UeWpYo9Xc2c=
@@ -220,7 +237,10 @@ golang.org/x/text v0.3.0 h1:g61tztE5qeGQ89tm6NTjjM9VPIm088od1l6aSorWRWg=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/time v0.0.0-20181108054448-85acf8d2951c h1:fqgJT0MGcGpPgpWU7VRdRjuArfcOvC4AoJmILihzhDg=
 golang.org/x/time v0.0.0-20181108054448-85acf8d2951c/go.mod h1:tRJNPiyCQ0inRvYxbN9jk5I+vvW/OXSQhTDSoE431IQ=
+<<<<<<< HEAD
 golang.org/x/tools v0.0.0-20181022211751-9650c66da3ff/go.mod h1:n7NCudcB/nEzxVGmLbDWY5pfWTLqBcC2KZ6jyYvM4mQ=
+=======
+>>>>>>> Use go-auroradns v2 module
 google.golang.org/api v0.0.0-20180610000806-ef86ce4234ef h1:io1bnXnFWF3c0tOsKFxjJnQNi5VDCz3q7JJHbPhS7Ts=
 google.golang.org/api v0.0.0-20180610000806-ef86ce4234ef/go.mod h1:4mhQ8q/RsB7i+udVvVy5NUi08OU8ZlA0gRVgrF7VFY0=
 google.golang.org/appengine v1.0.0 h1:dN4LljjBKVChsv0XCSI+zbyzdqrkEwX5LQFUMRSGqOc=

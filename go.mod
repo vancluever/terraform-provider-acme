@@ -17,11 +17,19 @@ require (
 	github.com/aws/aws-sdk-go v1.14.3 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
 	github.com/bgentry/speakeasy v0.1.0 // indirect
+<<<<<<< HEAD
 	github.com/cloudflare/cloudflare-go v0.8.5 // indirect
 	github.com/cpu/goacmedns v0.0.1 // indirect
 	github.com/decker502/dnspod-go v0.0.0-20180416134550-83a3ba562b04 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/dnaeon/go-vcr v1.0.1 // indirect
+=======
+	github.com/blang/semver v3.5.1+incompatible // indirect
+	github.com/cloudflare/cloudflare-go v0.8.5 // indirect
+	github.com/decker502/dnspod-go v0.0.0-20180416134550-83a3ba562b04 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/dimchansky/utfbom v1.1.0 // indirect
+>>>>>>> Use go-auroradns v2 module
 	github.com/dnsimple/dnsimple-go v0.0.0-20180423020233-bbe1a2c87aff // indirect
 	github.com/edeckers/auroradnsclient v1.0.3 // indirect
 	github.com/exoscale/egoscale v0.9.28 // indirect
@@ -56,7 +64,11 @@ require (
 	github.com/juju/ratelimit v1.0.1 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/kylelemons/godebug v0.0.0-20170820004349-d65d576e9348 // indirect
+<<<<<<< HEAD
 	github.com/linode/linodego v0.7.1 // indirect
+=======
+	github.com/ldez/go-auroradns v1.0.3 // indirect
+>>>>>>> Use go-auroradns v2 module
 	github.com/mattn/go-colorable v0.0.9 // indirect
 	github.com/miekg/dns v1.0.8 // indirect
 	github.com/mitchellh/cli v0.0.0-20180414170447-c48282d14eba // indirect
@@ -82,7 +94,10 @@ require (
 	github.com/sirupsen/logrus v1.0.5 // indirect
 	github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d // indirect
 	github.com/smartystreets/goconvey v0.0.0-20181108003508-044398e4856c // indirect
+<<<<<<< HEAD
 	github.com/stretchr/objx v0.1.1 // indirect
+=======
+>>>>>>> Use go-auroradns v2 module
 	github.com/terraform-providers/terraform-provider-tls v0.0.0-20180502173329-ba449b19fa96
 	github.com/timewasted/linode v0.0.0-20160829202747-37e84520dcf7 // indirect
 	github.com/ulikunitz/xz v0.5.4 // indirect
@@ -190,3 +205,5 @@ require (
 	gopkg.in/square/go-jose.v2 v2.1.6
 >>>>>>> go mod init
 )
+
+replace github.com/ldez/go-auroradns => github.com/ldez/go-auroradns/v2 v2.0.2
