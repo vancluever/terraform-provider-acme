@@ -34,11 +34,14 @@ require (
 	github.com/dnsimple/dnsimple-go v0.0.0-20180423020233-bbe1a2c87aff // indirect
 =======
 	github.com/dnsimple/dnsimple-go v0.21.0 // indirect
+<<<<<<< HEAD
 >>>>>>> go get -m github.com/dnsimple/dnsimple-go@v0.21.0
 	github.com/edeckers/auroradnsclient v1.0.3 // indirect
 <<<<<<< HEAD
 	github.com/exoscale/egoscale v0.9.28 // indirect
 =======
+=======
+>>>>>>> git mod tidy
 	github.com/exoscale/egoscale v0.11.6 // indirect
 >>>>>>> go get -m github.com/exoscale/egoscale@v0.11.6
 	github.com/fatih/color v1.7.0 // indirect
@@ -64,8 +67,11 @@ require (
 	github.com/hashicorp/logutils v0.0.0-20150609070431-0dc08b1671f3 // indirect
 	github.com/hashicorp/terraform v0.11.7
 	github.com/hashicorp/yamux v0.0.0-20180604194846-3520598351bb // indirect
+<<<<<<< HEAD
 	github.com/iij/doapi v0.0.0-20180911005243-8803795a9b7b // indirect
 	github.com/jinzhu/copier v0.0.0-20180308034124-7e38e58719c3 // indirect
+=======
+>>>>>>> git mod tidy
 	github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8 // indirect
 	github.com/json-iterator/go v0.0.0-20180315132816-ca39e5af3ece // indirect
 	github.com/jtolds/gls v4.2.1+incompatible // indirect
@@ -106,9 +112,13 @@ require (
 	github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d // indirect
 	github.com/smartystreets/goconvey v0.0.0-20181108003508-044398e4856c // indirect
 <<<<<<< HEAD
+<<<<<<< HEAD
 	github.com/stretchr/objx v0.1.1 // indirect
 =======
 >>>>>>> Use go-auroradns v2 module
+=======
+	github.com/stretchr/objx v0.1.1 // indirect
+>>>>>>> git mod tidy
 	github.com/terraform-providers/terraform-provider-tls v0.0.0-20180502173329-ba449b19fa96
 	github.com/timewasted/linode v0.0.0-20160829202747-37e84520dcf7 // indirect
 	github.com/ulikunitz/xz v0.5.4 // indirect

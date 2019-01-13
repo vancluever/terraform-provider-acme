@@ -33,12 +33,16 @@ github.com/blang/semver v3.5.1+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnweb
 github.com/cloudflare/cloudflare-go v0.8.5 h1:k1iz+H2jIL8OnS+bGhNQ6GPldi7VCo2tuWmfQ4kMiDI=
 github.com/cloudflare/cloudflare-go v0.8.5/go.mod h1:8KhU6K+zHUEWOSU++mEQYf7D9UZOcQcibUoSm6vCUz4=
 <<<<<<< HEAD
+<<<<<<< HEAD
 github.com/cpu/goacmedns v0.0.1 h1:GeIU5chKys9zmHgOAgP+bstRaLqcGQ6HJh/hLw9hrus=
 github.com/cpu/goacmedns v0.0.1/go.mod h1:sesf/pNnCYwUevQEQfEwY0Y3DydlQWSGZbaMElOWxok=
 =======
 >>>>>>> Use go-auroradns v2 module
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+=======
+github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
+>>>>>>> git mod tidy
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/decker502/dnspod-go v0.0.0-20180416134550-83a3ba562b04 h1:deUJYiwGrb7hk3lTnqDtsXxMBmaFmzR2F5EFZUV5PRw=
 github.com/decker502/dnspod-go v0.0.0-20180416134550-83a3ba562b04/go.mod h1:1xTEhqHsJ0UdTJTGBagkADAOwd/7ulfYdlQwJcqdSHs=
@@ -50,6 +54,7 @@ github.com/dnaeon/go-vcr v1.0.1/go.mod h1:aBB1+wY4s93YsC3HHjMBMrwTj2R9FHDzUr9KyG
 =======
 github.com/dimchansky/utfbom v1.1.0 h1:FcM3g+nofKgUteL8dm/UpdRXNC9KmADgTpLKsu0TRo4=
 github.com/dimchansky/utfbom v1.1.0/go.mod h1:rO41eb7gLfo8SF1jd9F8HplJm1Fewwi4mQvIirEdv+8=
+<<<<<<< HEAD
 >>>>>>> Use go-auroradns v2 module
 github.com/dnsimple/dnsimple-go v0.0.0-20180423020233-bbe1a2c87aff h1:8dH/3bJoBitZfxZCfzIBgFtP46UcSOHr4rXIZIrXD6U=
 github.com/dnsimple/dnsimple-go v0.0.0-20180423020233-bbe1a2c87aff/go.mod h1:0FYu4qVNv/UcfZPNwa9zi68IkggJu3TIwM54D7rhmI4=
@@ -63,6 +68,10 @@ github.com/exoscale/egoscale v0.9.28/go.mod h1:Ee3U4ZjSDpbbEc9VkQ/jttUU8USE8Nv7L
 =======
 github.com/exoscale/egoscale v0.9.27 h1:l+GEngWF3Jwn11QfRuvPF8ffiDLAUNgmpiAm3f9Ab+Q=
 github.com/exoscale/egoscale v0.9.27/go.mod h1:Ee3U4ZjSDpbbEc9VkQ/jttUU8USE8Nv7L3YzVi03Y1U=
+=======
+github.com/dnsimple/dnsimple-go v0.21.0 h1:y86XiLbpPEUSRfS4Z+Xzb/E+OEppFPyP2fZvVDNXgI8=
+github.com/dnsimple/dnsimple-go v0.21.0/go.mod h1:0FYu4qVNv/UcfZPNwa9zi68IkggJu3TIwM54D7rhmI4=
+>>>>>>> git mod tidy
 github.com/exoscale/egoscale v0.11.6 h1:sdem/cPuvXqz6LfTyfNoa+iHLXI9vXClmOCTA/PFiKg=
 github.com/exoscale/egoscale v0.11.6/go.mod h1:Ee3U4ZjSDpbbEc9VkQ/jttUU8USE8Nv7L3YzVi03Y1U=
 >>>>>>> go get -m github.com/exoscale/egoscale@v0.11.6
@@ -118,10 +127,13 @@ github.com/hashicorp/yamux v0.0.0-20180604194846-3520598351bb h1:b5rjCoWHc7eqmAS
 github.com/hashicorp/yamux v0.0.0-20180604194846-3520598351bb/go.mod h1:+NfK9FKeTrX5uv1uIXGdwYDTeHna2qgaIlx54MXqjAM=
 github.com/hpcloud/tail v1.0.0 h1:nfCOvKYfkgYP8hkirhJocXT2+zOD8yUNjXaWfTlyFKI=
 github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=
+<<<<<<< HEAD
 github.com/iij/doapi v0.0.0-20180911005243-8803795a9b7b h1:FggChB6PC8OugG7sAlG2oueeXlljdNDQTpVdOYxHDQo=
 github.com/iij/doapi v0.0.0-20180911005243-8803795a9b7b/go.mod h1:QMZY7/J/KSQEhKWFeDesPjMj+wCHReeknARU3wqlyN4=
 github.com/jinzhu/copier v0.0.0-20180308034124-7e38e58719c3 h1:sHsPfNMAG70QAvKbddQ0uScZCHQoZsT5NykGRCeeeIs=
 github.com/jinzhu/copier v0.0.0-20180308034124-7e38e58719c3/go.mod h1:yL958EeXv8Ylng6IfnvG4oflryUi3vgA3xPs9hmII1s=
+=======
+>>>>>>> git mod tidy
 github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8 h1:12VvqtR6Aowv3l/EQUlocDHW2Cp4G9WJVH7uyH8QFJE=
 github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8/go.mod h1:Nht3zPeWKUH0NzdCt2Blrr5ys8VGpn0CEB0cQHVjt7k=
 github.com/json-iterator/go v0.0.0-20180315132816-ca39e5af3ece h1:3HJXp/18JmMk5sjBP3LDUBtWjczCvynxaeAF6b6kWp8=
@@ -143,7 +155,6 @@ github.com/linode/linodego v0.7.1/go.mod h1:ga11n3ivecUrPCHN0rANxKmfWBJVkOXfLMZi
 =======
 github.com/ldez/go-auroradns v1.0.3 h1:g9TqZm668y0LNCZSSRuAr1MReumFl6y/2dkCefQCAug=
 github.com/ldez/go-auroradns v1.0.3/go.mod h1:l0nWqFww/ifCAEo3RuXnmoZY3L4SeqdaM59VtDvXcf4=
-github.com/ldez/go-auroradns/v2 v2.0.2 h1:veCD3S78dxhuydt0fy3LKLURaADgVLfUnCj76k4df8s=
 github.com/ldez/go-auroradns/v2 v2.0.2/go.mod h1:FQMzLGTorwZrdX50q/kmQ4jOfCSBrCTJdXjrylyJFm4=
 >>>>>>> Use go-auroradns v2 module
 github.com/mattn/go-colorable v0.0.9 h1:UVL0vNpWh04HeJXV0KLcaT7r06gOH2l4OW6ddYRUIY4=
@@ -220,11 +231,14 @@ github.com/timewasted/linode v0.0.0-20160829202747-37e84520dcf7/go.mod h1:imsgLp
 github.com/ulikunitz/xz v0.5.4 h1:zATC2OoZ8H1TZll3FpbX+ikwmadbO699PE06cIkm9oU=
 github.com/ulikunitz/xz v0.5.4/go.mod h1:2bypXElzHzzJZwzH67Y6wb67pO62Rzfn7BSiF4ABRW8=
 <<<<<<< HEAD
+<<<<<<< HEAD
 github.com/xenolf/lego v1.1.0 h1:Ias1pE9hO98/fI23RLza0T3461YiM720d96oxTRPyuM=
 github.com/xenolf/lego v1.1.0/go.mod h1:fwiGnfsIjG7OHPfOvgK7Y/Qo6+2Ox0iozjNTkZICKbY=
 =======
 github.com/xenolf/lego v1.0.1 h1:Rr9iqO8MoNxY6OvqdIZTnNZ8bwt0RNz00nGXfoTq4Bc=
 github.com/xenolf/lego v1.0.1/go.mod h1:fwiGnfsIjG7OHPfOvgK7Y/Qo6+2Ox0iozjNTkZICKbY=
+=======
+>>>>>>> git mod tidy
 github.com/xenolf/lego v2.0.1+incompatible h1:5x9Zy8MXq0zVvssH5Jk4b3kbDUe5voX1qGTfKA72HAk=
 github.com/xenolf/lego v2.0.1+incompatible/go.mod h1:fwiGnfsIjG7OHPfOvgK7Y/Qo6+2Ox0iozjNTkZICKbY=
 >>>>>>> go get -m github.com/xenolf/lego@v2.0.1
