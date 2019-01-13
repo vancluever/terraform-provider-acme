@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/xenolf/lego/acme"
+	"github.com/xenolf/lego/certificate"
 )
 
 const testDirResponseText = `
@@ -214,7 +214,7 @@ func TestACME_expandACMEClient_badKey(t *testing.T) {
 }
 
 func TestACME_expandACMEClient_noCertData(t *testing.T) {
-	c := &acme.CertificateResource{}
+	c := &certificate.Resource{}
 	_, err := certDaysRemaining(c)
 	if err == nil {
 		t.Fatalf("expected error due to bad cert data")
@@ -233,12 +233,12 @@ func TestACME_setDNSChallenge_noProvider(t *testing.T) {
 	m := make(map[string]interface{})
 	d := blankBaseResource()
 	ts := httpDirTestServer()
-	client, _, err := expandACMEClient(d, &Config{ServerURL: ts.URL}, false)
+	client, user, err := expandACMEClient(d, &Config{ServerURL: ts.URL}, false)
 	if err != nil {
 		t.Fatalf("fatal: %s", err.Error())
 	}
 
-	err = setDNSChallenge(client, m)
+	err = setDNSChallenge(client, user, m)
 	if err == nil {
 		t.Fatalf("should have errored due to no provider supplied")
 	}
@@ -250,12 +250,12 @@ func TestACME_setDNSChallenge_unsuppotedProvider(t *testing.T) {
 	}
 	d := blankBaseResource()
 	ts := httpDirTestServer()
-	client, _, err := expandACMEClient(d, &Config{ServerURL: ts.URL}, false)
+	client, user, err := expandACMEClient(d, &Config{ServerURL: ts.URL}, false)
 	if err != nil {
 		t.Fatalf("fatal: %s", err.Error())
 	}
 
-	err = setDNSChallenge(client, m)
+	err = setDNSChallenge(client, user, m)
 	if err == nil {
 		t.Fatalf("should have errored due to unknown provider")
 	}
@@ -263,7 +263,7 @@ func TestACME_setDNSChallenge_unsuppotedProvider(t *testing.T) {
 
 func TestACME_saveCertificateResource_badCert(t *testing.T) {
 	b := testBadCertBundleText
-	c := &acme.CertificateResource{
+	c := &certificate.Resource{
 		Certificate: []byte(b),
 	}
 	d := blankCertificateResource()
@@ -275,7 +275,7 @@ func TestACME_saveCertificateResource_badCert(t *testing.T) {
 
 func TestACME_certDaysRemaining_CACert(t *testing.T) {
 	b := testBadCertBundleText
-	c := &acme.CertificateResource{
+	c := &certificate.Resource{
 		Certificate: []byte(b),
 	}
 	_, err := certDaysRemaining(c)

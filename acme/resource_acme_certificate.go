@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/xenolf/lego/acme"
+	"github.com/xenolf/lego/certificate"
 )
 
 func resourceACMECertificate() *schema.Resource {
@@ -27,16 +27,16 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 	// Turn on partial state to ensure that nothing is recorded until we want it to be.
 	d.Partial(true)
 
-	client, _, err := expandACMEClient(d, meta, true)
+	client, user, err := expandACMEClient(d, meta, true)
 	if err != nil {
 		return err
 	}
 
-	if err = setDNSChallenge(client, d.Get("dns_challenge").(*schema.Set).List()[0].(map[string]interface{})); err != nil {
+	if err = setDNSChallenge(client, user, d.Get("dns_challenge").(*schema.Set).List()[0].(map[string]interface{})); err != nil {
 		return err
 	}
 
-	var cert *acme.CertificateResource
+	var cert *certificate.Resource
 
 	if v, ok := d.GetOk("certificate_request_pem"); ok {
 		var csr *x509.CertificateRequest
@@ -44,7 +44,7 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		if err != nil {
 			return err
 		}
-		cert, err = client.ObtainCertificateForCSR(*csr, true)
+		cert, err = client.Certificate.ObtainForCSR(*csr, true)
 	} else {
 		cn := d.Get("common_name").(string)
 		domains := []string{cn}
@@ -57,7 +57,11 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 			}
 		}
 
-		cert, err = client.ObtainCertificate(domains, true, nil, d.Get("must_staple").(bool))
+		cert, err = client.Certificate.Obtain(certificate.ObtainRequest{
+			Domains:    domains,
+			Bundle:     true,
+			MustStaple: d.Get("must_staple").(bool),
+		})
 	}
 
 	if err != nil {
@@ -119,16 +123,17 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 		return nil
 	}
 
-	client, _, err := expandACMEClient(d, meta, true)
+	client, user, err := expandACMEClient(d, meta, true)
 	if err != nil {
 		return err
 	}
 
 	cert := expandCertificateResource(d)
-	if err := setDNSChallenge(client, d.Get("dns_challenge").(*schema.Set).List()[0].(map[string]interface{})); err != nil {
+	if err := setDNSChallenge(client, user, d.Get("dns_challenge").(*schema.Set).List()[0].(map[string]interface{})); err != nil {
 		return err
 	}
-	newCert, err := client.RenewCertificate(*cert, true, d.Get("must_staple").(bool))
+
+	newCert, err := client.Certificate.Renew(*cert, true, d.Get("must_staple").(bool))
 	if err != nil {
 		return err
 	}
@@ -151,12 +156,8 @@ func resourceACMECertificateDelete(d *schema.ResourceData, meta interface{}) err
 	cert, ok := d.GetOk("certificate_pem")
 
 	if ok {
-		err = client.RevokeCertificate([]byte(cert.(string)))
-		if err != nil {
-			// Ignore conflict (409) responses, as certificate is already revoked.
-			if rerr, ok := err.(acme.RemoteError); !ok || rerr.StatusCode != 409 {
-				return err
-			}
+		if err := client.Certificate.Revoke([]byte(cert.(string))); err != nil {
+			return err
 		}
 	}
 

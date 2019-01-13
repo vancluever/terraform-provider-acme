@@ -9,6 +9,9 @@ import (
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/xenolf/lego/acme/api"
+	"github.com/xenolf/lego/lego"
+	"github.com/xenolf/lego/registration"
 )
 
 func TestAccACMERegistration_basic(t *testing.T) {
@@ -44,14 +47,24 @@ func testAccCheckACMERegistrationValid(n string, exists bool) resource.TestCheck
 
 		d := testAccCheckACMERegistrationResourceData(rs)
 
-		client, _, err := expandACMEClient(d, testAccProvider.Meta(), true)
+		_, user, err := expandACMEClient(d, testAccProvider.Meta(), true)
 		if err != nil {
 			if strings.Contains(err.Error(), `has status "deactivated"`) && !exists {
 				return nil
 			}
 			return fmt.Errorf("Could not build ACME client off reg: %s", err.Error())
 		}
-		reg, err := client.QueryRegistration()
+
+		config := lego.NewConfig(user)
+
+		core, err := api.New(config.HTTPClient, config.UserAgent, config.CADirURL, "", user.GetPrivateKey())
+		if err != nil {
+			return err
+		}
+
+		registrar := registration.NewRegistrar(core, user)
+
+		reg, err := registrar.QueryRegistration()
 		if err != nil {
 			return fmt.Errorf("Error on reg query: %s", err.Error())
 		}

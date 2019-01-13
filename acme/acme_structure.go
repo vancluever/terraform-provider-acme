@@ -13,9 +13,16 @@ import (
 
 	"github.com/hashicorp/terraform/helper/hashcode"
 	"github.com/hashicorp/terraform/helper/schema"
+<<<<<<< HEAD
 	"github.com/xenolf/lego/acme"
 	"github.com/xenolf/lego/providers/dns/acmedns"
 	"github.com/xenolf/lego/providers/dns/alidns"
+=======
+	"github.com/xenolf/lego/certcrypto"
+	"github.com/xenolf/lego/certificate"
+	"github.com/xenolf/lego/challenge"
+	"github.com/xenolf/lego/lego"
+>>>>>>> lego@v2 API updates
 	"github.com/xenolf/lego/providers/dns/auroradns"
 	"github.com/xenolf/lego/providers/dns/azure"
 	"github.com/xenolf/lego/providers/dns/bluecat"
@@ -56,6 +63,7 @@ import (
 	"github.com/xenolf/lego/providers/dns/stackpath"
 	"github.com/xenolf/lego/providers/dns/vegadns"
 	"github.com/xenolf/lego/providers/dns/vultr"
+	"github.com/xenolf/lego/registration"
 )
 
 // baseACMESchema returns a map[string]*schema.Schema with all the elements
@@ -208,7 +216,7 @@ type acmeUser struct {
 	Email string
 
 	// The registration resource object.
-	Registration *acme.RegistrationResource
+	Registration *registration.Resource
 
 	// The private key for the account.
 	key crypto.PrivateKey
@@ -217,7 +225,7 @@ type acmeUser struct {
 func (u acmeUser) GetEmail() string {
 	return u.Email
 }
-func (u acmeUser) GetRegistration() *acme.RegistrationResource {
+func (u acmeUser) GetRegistration() *registration.Resource {
 	return u.Registration
 }
 func (u acmeUser) GetPrivateKey() crypto.PrivateKey {
@@ -245,9 +253,9 @@ func expandACMEUser(d *schema.ResourceData) (*acmeUser, error) {
 	return user, nil
 }
 
-// saveACMERegistration takes an *acme.RegistrationResource and sets the appropriate fields
+// saveACMERegistration takes an *registration.Resource and sets the appropriate fields
 // for a registration resource.
-func saveACMERegistration(d *schema.ResourceData, reg *acme.RegistrationResource) error {
+func saveACMERegistration(d *schema.ResourceData, reg *registration.Resource) error {
 	d.Set("registration_url", reg.URI)
 
 	return nil
@@ -259,27 +267,29 @@ func saveACMERegistration(d *schema.ResourceData, reg *acme.RegistrationResource
 // If loadReg is supplied, the registration information is loaded in to the
 // user's registration, if it exists - if the account cannot be resolved by the
 // private key, then the appropriate error is returned.
-func expandACMEClient(d *schema.ResourceData, meta interface{}, loadReg bool) (*acme.Client, *acmeUser, error) {
+func expandACMEClient(d *schema.ResourceData, meta interface{}, loadReg bool) (*lego.Client, *acmeUser, error) {
 	user, err := expandACMEUser(d)
 	if err != nil {
 		return nil, nil, fmt.Errorf("Error getting user data: %s", err.Error())
 	}
 
+	config := lego.NewConfig(user)
+
 	// Note this function is used by both the registration and certificate
 	// resources, but key type is not necessary during registration, so
 	// it's okay if it's empty for that.
-	var keytype string
 	if v, ok := d.GetOk("key_type"); ok {
-		keytype = v.(string)
+		config.Certificate.KeyType = certcrypto.KeyType(v.(string))
 	}
 
-	client, err := acme.NewClient(meta.(*Config).ServerURL, user, acme.KeyType(keytype))
+	client, err := lego.NewClient(config)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	if loadReg {
-		user.Registration, err = client.ResolveAccountByKey()
+	// Populate user's registration resource if needed
+	if loadReg && user.Registration == nil {
+		user.Registration, err = client.Registration.ResolveAccountByKey()
 		if err != nil {
 			return nil, nil, err
 		}
@@ -296,12 +306,11 @@ type certificateResourceExpander interface {
 }
 
 // expandCertificateResource takes saved state in the certificate resource
-// and returns an acme.CertificateResource.
-func expandCertificateResource(d certificateResourceExpander) *acme.CertificateResource {
-	cert := &acme.CertificateResource{
+// and returns an certificate.Resource.
+func expandCertificateResource(d certificateResourceExpander) *certificate.Resource {
+	cert := &certificate.Resource{
 		Domain:     d.Get("certificate_domain").(string),
 		CertURL:    d.Get("certificate_url").(string),
-		AccountRef: d.Get("account_ref").(string),
 		PrivateKey: []byte(d.Get("private_key_pem").(string)),
 		CSR:        []byte(d.Get("certificate_request_pem").(string)),
 	}
@@ -317,11 +326,10 @@ func expandCertificateResource(d certificateResourceExpander) *acme.CertificateR
 	return cert
 }
 
-// saveCertificateResource takes an acme.CertificateResource and sets fields.
-func saveCertificateResource(d *schema.ResourceData, cert *acme.CertificateResource) error {
+// saveCertificateResource takes an certificate.Resource and sets fields.
+func saveCertificateResource(d *schema.ResourceData, cert *certificate.Resource) error {
 	d.Set("certificate_url", cert.CertURL)
 	d.Set("certificate_domain", cert.Domain)
-	d.Set("account_ref", cert.AccountRef)
 	d.Set("private_key_pem", string(cert.PrivateKey))
 	issued, issuer, err := splitPEMBundle(cert.Certificate)
 	if err != nil {
@@ -333,9 +341,9 @@ func saveCertificateResource(d *schema.ResourceData, cert *acme.CertificateResou
 	return nil
 }
 
-// certDaysRemaining takes an acme.CertificateResource, parses the
+// certDaysRemaining takes an certificate.Resource, parses the
 // certificate, and computes the days that it has remaining.
-func certDaysRemaining(cert *acme.CertificateResource) (int64, error) {
+func certDaysRemaining(cert *certificate.Resource) (int64, error) {
 	x509Certs, err := parsePEMBundle(cert.Certificate)
 	if err != nil {
 		return 0, err
@@ -417,11 +425,11 @@ func mapEnvironmentVariableValues(keyMapping map[string]string) {
 	}
 }
 
-// setDNSChallenge takes an *acme.Client and the DNS challenge complex
-// structure as a map[string]interface{}, and configues the client to only
-// allow a DNS challenge with the configured provider.
-func setDNSChallenge(client *acme.Client, m map[string]interface{}) error {
-	var provider acme.ChallengeProvider
+// setDNSChallenge takes a *lego.Client, *registration.User and the DNS
+// challenge complex structure as a map[string]interface{}, and configues the
+// client to only allow a DNS challenge with the configured provider.
+func setDNSChallenge(client *lego.Client, user registration.User, m map[string]interface{}) error {
+	var provider challenge.Provider
 	var err error
 	var providerName string
 
@@ -539,8 +547,15 @@ func setDNSChallenge(client *acme.Client, m map[string]interface{}) error {
 	if err != nil {
 		return err
 	}
+<<<<<<< HEAD
 	client.SetChallengeProvider(acme.DNS01, provider)
 	client.ExcludeChallenges([]acme.Challenge{acme.HTTP01, acme.TLSALPN01})
+=======
+
+	if err := client.Challenge.SetDNS01Provider(provider); err != nil {
+		return err
+	}
+>>>>>>> lego@v2 API updates
 
 	return nil
 }

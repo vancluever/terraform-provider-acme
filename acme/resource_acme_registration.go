@@ -1,6 +1,9 @@
 package acme
 
-import "github.com/hashicorp/terraform/helper/schema"
+import (
+	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/xenolf/lego/registration"
+)
 
 func resourceACMERegistration() *schema.Resource {
 	return &schema.Resource{
@@ -20,11 +23,13 @@ func resourceACMERegistrationCreate(d *schema.ResourceData, meta interface{}) er
 	if err != nil {
 		return err
 	}
-	reg, err := client.Register(true)
+
+	reg, err := client.Registration.Register(registration.RegisterOptions{
+		TermsOfServiceAgreed: true,
+	})
 	if err != nil {
 		return err
 	}
-
 	d.SetId(reg.URI)
 
 	return resourceACMERegistrationRead(d, meta)
@@ -46,5 +51,5 @@ func resourceACMERegistrationDelete(d *schema.ResourceData, meta interface{}) er
 		return err
 	}
 
-	return client.DeleteRegistration()
+	return client.Registration.DeleteRegistration()
 }
