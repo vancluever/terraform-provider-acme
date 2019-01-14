@@ -67,12 +67,7 @@ version of the provider (see [the section above](#using-the-provider)).
 
 ## Cloning the Project
 
-First, you will want to clone the repository to
-`$GOPATH/src/github.com/terraform-providers/terraform-provider-acme`:
-
 ```sh
-mkdir -p $GOPATH/src/github.com/terraform-providers
-cd $GOPATH/src/github.com/terraform-providers
 git clone git@github.com:terraform-providers/terraform-provider-acme
 ```
 
@@ -82,7 +77,7 @@ After the clone has been completed, you can enter the provider directory and
 build the provider.
 
 ```sh
-cd $GOPATH/src/github.com/terraform-providers/terraform-provider-acme
+cd terraform-provider-acme
 make build
 ```
 
