@@ -107,7 +107,7 @@ new issue.
 [gh-prs]: https://github.com/terraform-providers/terraform-provider-acme/pulls
 
 If you wish to work on the provider, you'll first need [Go][go-website]
-installed on your machine (version 1.9+ is **required**). You'll also need to
+installed on your machine (version 1.11+ is **required**). You'll also need to
 correctly setup a [GOPATH][gopath], as well as adding `$GOPATH/bin` to your
 `$PATH`.
 
