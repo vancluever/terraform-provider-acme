@@ -52,3 +52,5 @@ chain. For more details, see the [AWS SDK documentation][aws-sdk-docs].
 * `AWS_HOSTED_ZONE_ID` - The hosted zone ID to use. This can be used to
   override ACME's default domain discovery and force the provider to use a
   specific hosted zone.
+* `AWS_SDK_LOAD_CONFIG` - Load settings from `~/.aws/config`. Useful when using AssumeRole with cross-account auth.
+* `AWS_PROFILE` - The profile to use.
