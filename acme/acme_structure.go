@@ -14,6 +14,8 @@ import (
 	"github.com/hashicorp/terraform/helper/hashcode"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/xenolf/lego/acme"
+	"github.com/xenolf/lego/providers/dns/acmedns"
+	"github.com/xenolf/lego/providers/dns/alidns"
 	"github.com/xenolf/lego/providers/dns/auroradns"
 	"github.com/xenolf/lego/providers/dns/azure"
 	"github.com/xenolf/lego/providers/dns/bluecat"
@@ -23,6 +25,7 @@ import (
 	"github.com/xenolf/lego/providers/dns/dnsimple"
 	"github.com/xenolf/lego/providers/dns/dnsmadeeasy"
 	"github.com/xenolf/lego/providers/dns/dnspod"
+	"github.com/xenolf/lego/providers/dns/dreamhost"
 	"github.com/xenolf/lego/providers/dns/duckdns"
 	"github.com/xenolf/lego/providers/dns/dyn"
 	"github.com/xenolf/lego/providers/dns/exec"
@@ -33,10 +36,15 @@ import (
 	"github.com/xenolf/lego/providers/dns/gcloud"
 	"github.com/xenolf/lego/providers/dns/glesys"
 	"github.com/xenolf/lego/providers/dns/godaddy"
+	"github.com/xenolf/lego/providers/dns/hostingde"
+	"github.com/xenolf/lego/providers/dns/iij"
 	"github.com/xenolf/lego/providers/dns/lightsail"
 	"github.com/xenolf/lego/providers/dns/linode"
+	"github.com/xenolf/lego/providers/dns/linodev4"
 	"github.com/xenolf/lego/providers/dns/namecheap"
 	"github.com/xenolf/lego/providers/dns/namedotcom"
+	"github.com/xenolf/lego/providers/dns/netcup"
+	"github.com/xenolf/lego/providers/dns/nifcloud"
 	"github.com/xenolf/lego/providers/dns/ns1"
 	"github.com/xenolf/lego/providers/dns/otc"
 	"github.com/xenolf/lego/providers/dns/ovh"
@@ -44,6 +52,9 @@ import (
 	"github.com/xenolf/lego/providers/dns/rackspace"
 	"github.com/xenolf/lego/providers/dns/rfc2136"
 	"github.com/xenolf/lego/providers/dns/route53"
+	"github.com/xenolf/lego/providers/dns/sakuracloud"
+	"github.com/xenolf/lego/providers/dns/stackpath"
+	"github.com/xenolf/lego/providers/dns/vegadns"
 	"github.com/xenolf/lego/providers/dns/vultr"
 )
 
@@ -430,6 +441,10 @@ func setDNSChallenge(client *acme.Client, m map[string]interface{}) error {
 	// The below list is manually kept in sync with
 	// lego/providers/dns/dns_providers.go
 	switch providerName {
+	case "acme-dns":
+		provider, err = acmedns.NewDNSProvider()
+	case "alidns":
+		provider, err = alidns.NewDNSProvider()
 	case "azure":
 		// map terraform provider environment variables if present
 		mapEnvironmentVariableValues(map[string]string{
@@ -456,12 +471,16 @@ func setDNSChallenge(client *acme.Client, m map[string]interface{}) error {
 		provider, err = dnsmadeeasy.NewDNSProvider()
 	case "dnspod":
 		provider, err = dnspod.NewDNSProvider()
+	case "dreamhost":
+		provider, err = dreamhost.NewDNSProvider()
 	case "duckdns":
 		provider, err = duckdns.NewDNSProvider()
 	case "dyn":
 		provider, err = dyn.NewDNSProvider()
 	case "fastdns":
 		provider, err = fastdns.NewDNSProvider()
+	case "exec":
+		provider, err = exec.NewDNSProvider()
 	case "exoscale":
 		provider, err = exoscale.NewDNSProvider()
 	case "gandi":
@@ -474,32 +493,46 @@ func setDNSChallenge(client *acme.Client, m map[string]interface{}) error {
 		provider, err = gcloud.NewDNSProvider()
 	case "godaddy":
 		provider, err = godaddy.NewDNSProvider()
+	case "hostingde":
+		provider, err = hostingde.NewDNSProvider()
+	case "iij":
+		provider, err = iij.NewDNSProvider()
 	case "lightsail":
 		provider, err = lightsail.NewDNSProvider()
 	case "linode":
 		provider, err = linode.NewDNSProvider()
+	case "linodev4":
+		provider, err = linodev4.NewDNSProvider()
 	case "namecheap":
 		provider, err = namecheap.NewDNSProvider()
 	case "namedotcom":
 		provider, err = namedotcom.NewDNSProvider()
+	case "netcup":
+		provider, err = netcup.NewDNSProvider()
+	case "nifcloud":
+		provider, err = nifcloud.NewDNSProvider()
+	case "ns1":
+		provider, err = ns1.NewDNSProvider()
+	case "otc":
+		provider, err = otc.NewDNSProvider()
+	case "ovh":
+		provider, err = ovh.NewDNSProvider()
+	case "pdns":
+		provider, err = pdns.NewDNSProvider()
 	case "rackspace":
 		provider, err = rackspace.NewDNSProvider()
 	case "route53":
 		provider, err = route53.NewDNSProvider()
 	case "rfc2136":
 		provider, err = rfc2136.NewDNSProvider()
+	case "sakuracloud":
+		provider, err = sakuracloud.NewDNSProvider()
+	case "stackpath":
+		provider, err = stackpath.NewDNSProvider()
+	case "vegadns":
+		provider, err = vegadns.NewDNSProvider()
 	case "vultr":
 		provider, err = vultr.NewDNSProvider()
-	case "ovh":
-		provider, err = ovh.NewDNSProvider()
-	case "pdns":
-		provider, err = pdns.NewDNSProvider()
-	case "ns1":
-		provider, err = ns1.NewDNSProvider()
-	case "otc":
-		provider, err = otc.NewDNSProvider()
-	case "exec":
-		provider, err = exec.NewDNSProvider()
 	default:
 		return fmt.Errorf("%s: unsupported DNS challenge provider", providerName)
 	}
@@ -507,7 +540,7 @@ func setDNSChallenge(client *acme.Client, m map[string]interface{}) error {
 		return err
 	}
 	client.SetChallengeProvider(acme.DNS01, provider)
-	client.ExcludeChallenges([]acme.Challenge{acme.HTTP01})
+	client.ExcludeChallenges([]acme.Challenge{acme.HTTP01, acme.TLSALPN01})
 
 	return nil
 }

@@ -5,131 +5,123 @@ package rackspace
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/xenolf/lego/acme"
+	"github.com/xenolf/lego/platform/config/env"
 )
 
-// rackspaceAPIURL represents the Identity API endpoint to call
-var rackspaceAPIURL = "https://identity.api.rackspacecloud.com/v2.0/tokens"
+// defaultBaseURL represents the Identity API endpoint to call
+const defaultBaseURL = "https://identity.api.rackspacecloud.com/v2.0/tokens"
+
+// Config is used to configure the creation of the DNSProvider
+type Config struct {
+	BaseURL            string
+	APIUser            string
+	APIKey             string
+	PropagationTimeout time.Duration
+	PollingInterval    time.Duration
+	TTL                int
+	HTTPClient         *http.Client
+}
+
+// NewDefaultConfig returns a default configuration for the DNSProvider
+func NewDefaultConfig() *Config {
+	return &Config{
+		BaseURL:            defaultBaseURL,
+		TTL:                env.GetOrDefaultInt("RACKSPACE_TTL", 300),
+		PropagationTimeout: env.GetOrDefaultSecond("RACKSPACE_PROPAGATION_TIMEOUT", acme.DefaultPropagationTimeout),
+		PollingInterval:    env.GetOrDefaultSecond("RACKSPACE_POLLING_INTERVAL", acme.DefaultPollingInterval),
+		HTTPClient: &http.Client{
+			Timeout: env.GetOrDefaultSecond("RACKSPACE_HTTP_TIMEOUT", 30*time.Second),
+		},
+	}
+}
 
 // DNSProvider is an implementation of the acme.ChallengeProvider interface
 // used to store the reusable token and DNS API endpoint
 type DNSProvider struct {
+	config           *Config
 	token            string
 	cloudDNSEndpoint string
 }
 
 // NewDNSProvider returns a DNSProvider instance configured for Rackspace.
-// Credentials must be passed in the environment variables: RACKSPACE_USER
-// and RACKSPACE_API_KEY.
+// Credentials must be passed in the environment variables:
+// RACKSPACE_USER and RACKSPACE_API_KEY.
 func NewDNSProvider() (*DNSProvider, error) {
-	user := os.Getenv("RACKSPACE_USER")
-	key := os.Getenv("RACKSPACE_API_KEY")
-	return NewDNSProviderCredentials(user, key)
+	values, err := env.Get("RACKSPACE_USER", "RACKSPACE_API_KEY")
+	if err != nil {
+		return nil, fmt.Errorf("rackspace: %v", err)
+	}
+
+	config := NewDefaultConfig()
+	config.APIUser = values["RACKSPACE_USER"]
+	config.APIKey = values["RACKSPACE_API_KEY"]
+
+	return NewDNSProviderConfig(config)
 }
 
-// NewDNSProviderCredentials uses the supplied credentials to return a
-// DNSProvider instance configured for Rackspace. It authenticates against
-// the API, also grabbing the DNS Endpoint.
+// NewDNSProviderCredentials uses the supplied credentials
+// to return a DNSProvider instance configured for Rackspace.
+// It authenticates against the API, also grabbing the DNS Endpoint.
+// Deprecated
 func NewDNSProviderCredentials(user, key string) (*DNSProvider, error) {
-	if user == "" || key == "" {
-		return nil, fmt.Errorf("Rackspace credentials missing")
+	config := NewDefaultConfig()
+	config.APIUser = user
+	config.APIKey = key
+
+	return NewDNSProviderConfig(config)
+}
+
+// NewDNSProviderConfig return a DNSProvider instance configured for Rackspace.
+// It authenticates against the API, also grabbing the DNS Endpoint.
+func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
+	if config == nil {
+		return nil, errors.New("rackspace: the configuration of the DNS provider is nil")
 	}
 
-	type APIKeyCredentials struct {
-		Username string `json:"username"`
-		APIKey   string `json:"apiKey"`
+	if config.APIUser == "" || config.APIKey == "" {
+		return nil, fmt.Errorf("rackspace: credentials missing")
 	}
 
-	type Auth struct {
-		APIKeyCredentials `json:"RAX-KSKEY:apiKeyCredentials"`
-	}
-
-	type RackspaceAuthData struct {
-		Auth `json:"auth"`
-	}
-
-	type RackspaceIdentity struct {
-		Access struct {
-			ServiceCatalog []struct {
-				Endpoints []struct {
-					PublicURL string `json:"publicURL"`
-					TenantID  string `json:"tenantId"`
-				} `json:"endpoints"`
-				Name string `json:"name"`
-			} `json:"serviceCatalog"`
-			Token struct {
-				ID string `json:"id"`
-			} `json:"token"`
-		} `json:"access"`
-	}
-
-	authData := RackspaceAuthData{
-		Auth: Auth{
-			APIKeyCredentials: APIKeyCredentials{
-				Username: user,
-				APIKey:   key,
-			},
-		},
-	}
-
-	body, err := json.Marshal(authData)
+	identity, err := login(config)
 	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", rackspaceAPIURL, bytes.NewReader(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	client := http.Client{Timeout: 30 * time.Second}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error querying Rackspace Identity API: %v", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Rackspace Authentication failed. Response code: %d", resp.StatusCode)
-	}
-
-	var rackspaceIdentity RackspaceIdentity
-	err = json.NewDecoder(resp.Body).Decode(&rackspaceIdentity)
-	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("rackspace: %v", err)
 	}
 
 	// Iterate through the Service Catalog to get the DNS Endpoint
 	var dnsEndpoint string
-	for _, service := range rackspaceIdentity.Access.ServiceCatalog {
+	for _, service := range identity.Access.ServiceCatalog {
 		if service.Name == "cloudDNS" {
 			dnsEndpoint = service.Endpoints[0].PublicURL
 			break
 		}
 	}
+
 	if dnsEndpoint == "" {
-		return nil, fmt.Errorf("failed to populate DNS endpoint, check Rackspace API for changes")
+		return nil, fmt.Errorf("rackspace: failed to populate DNS endpoint, check Rackspace API for changes")
 	}
 
 	return &DNSProvider{
-		token:            rackspaceIdentity.Access.Token.ID,
+		config:           config,
+		token:            identity.Access.Token.ID,
 		cloudDNSEndpoint: dnsEndpoint,
 	}, nil
+
 }
 
-// Present creates a TXT record to fulfil the dns-01 challenge
-func (c *DNSProvider) Present(domain, token, keyAuth string) error {
+// Present creates a TXT record to fulfill the dns-01 challenge
+func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	fqdn, value, _ := acme.DNS01Record(domain, keyAuth)
-	zoneID, err := c.getHostedZoneID(fqdn)
+
+	zoneID, err := d.getHostedZoneID(fqdn)
 	if err != nil {
-		return err
+		return fmt.Errorf("rackspace: %v", err)
 	}
 
 	rec := Records{
@@ -137,54 +129,58 @@ func (c *DNSProvider) Present(domain, token, keyAuth string) error {
 			Name: acme.UnFqdn(fqdn),
 			Type: "TXT",
 			Data: value,
-			TTL:  300,
+			TTL:  d.config.TTL,
 		}},
 	}
 
 	body, err := json.Marshal(rec)
 	if err != nil {
-		return err
+		return fmt.Errorf("rackspace: %v", err)
 	}
 
-	_, err = c.makeRequest("POST", fmt.Sprintf("/domains/%d/records", zoneID), bytes.NewReader(body))
-	return err
+	_, err = d.makeRequest(http.MethodPost, fmt.Sprintf("/domains/%d/records", zoneID), bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("rackspace: %v", err)
+	}
+	return nil
 }
 
 // CleanUp removes the TXT record matching the specified parameters
-func (c *DNSProvider) CleanUp(domain, token, keyAuth string) error {
+func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	fqdn, _, _ := acme.DNS01Record(domain, keyAuth)
-	zoneID, err := c.getHostedZoneID(fqdn)
+
+	zoneID, err := d.getHostedZoneID(fqdn)
 	if err != nil {
-		return err
+		return fmt.Errorf("rackspace: %v", err)
 	}
 
-	record, err := c.findTxtRecord(fqdn, zoneID)
+	record, err := d.findTxtRecord(fqdn, zoneID)
 	if err != nil {
-		return err
+		return fmt.Errorf("rackspace: %v", err)
 	}
 
-	_, err = c.makeRequest("DELETE", fmt.Sprintf("/domains/%d/records?id=%s", zoneID, record.ID), nil)
-	return err
+	_, err = d.makeRequest(http.MethodDelete, fmt.Sprintf("/domains/%d/records?id=%s", zoneID, record.ID), nil)
+	if err != nil {
+		return fmt.Errorf("rackspace: %v", err)
+	}
+	return nil
+}
+
+// Timeout returns the timeout and interval to use when checking for DNS propagation.
+// Adjusting here to cope with spikes in propagation times.
+func (d *DNSProvider) Timeout() (timeout, interval time.Duration) {
+	return d.config.PropagationTimeout, d.config.PollingInterval
 }
 
 // getHostedZoneID performs a lookup to get the DNS zone which needs
 // modifying for a given FQDN
-func (c *DNSProvider) getHostedZoneID(fqdn string) (int, error) {
-	// HostedZones represents the response when querying Rackspace DNS zones
-	type ZoneSearchResponse struct {
-		TotalEntries int `json:"totalEntries"`
-		HostedZones  []struct {
-			ID   int    `json:"id"`
-			Name string `json:"name"`
-		} `json:"domains"`
-	}
-
+func (d *DNSProvider) getHostedZoneID(fqdn string) (int, error) {
 	authZone, err := acme.FindZoneByFqdn(fqdn, acme.RecursiveNameservers)
 	if err != nil {
 		return 0, err
 	}
 
-	result, err := c.makeRequest("GET", fmt.Sprintf("/domains?name=%s", acme.UnFqdn(authZone)), nil)
+	result, err := d.makeRequest(http.MethodGet, fmt.Sprintf("/domains?name=%s", acme.UnFqdn(authZone)), nil)
 	if err != nil {
 		return 0, err
 	}
@@ -204,8 +200,8 @@ func (c *DNSProvider) getHostedZoneID(fqdn string) (int, error) {
 }
 
 // findTxtRecord searches a DNS zone for a TXT record with a specific name
-func (c *DNSProvider) findTxtRecord(fqdn string, zoneID int) (*Record, error) {
-	result, err := c.makeRequest("GET", fmt.Sprintf("/domains/%d/records?type=TXT&name=%s", zoneID, acme.UnFqdn(fqdn)), nil)
+func (d *DNSProvider) findTxtRecord(fqdn string, zoneID int) (*Record, error) {
+	result, err := d.makeRequest(http.MethodGet, fmt.Sprintf("/domains/%d/records?type=TXT&name=%s", zoneID, acme.UnFqdn(fqdn)), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -216,8 +212,7 @@ func (c *DNSProvider) findTxtRecord(fqdn string, zoneID int) (*Record, error) {
 		return nil, err
 	}
 
-	recordsLength := len(records.Record)
-	switch recordsLength {
+	switch len(records.Record) {
 	case 1:
 	case 0:
 		return nil, fmt.Errorf("no TXT record found for %s", fqdn)
@@ -229,18 +224,18 @@ func (c *DNSProvider) findTxtRecord(fqdn string, zoneID int) (*Record, error) {
 }
 
 // makeRequest is a wrapper function used for making DNS API requests
-func (c *DNSProvider) makeRequest(method, uri string, body io.Reader) (json.RawMessage, error) {
-	url := c.cloudDNSEndpoint + uri
+func (d *DNSProvider) makeRequest(method, uri string, body io.Reader) (json.RawMessage, error) {
+	url := d.cloudDNSEndpoint + uri
+
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return nil, err
 	}
 
-	req.Header.Set("X-Auth-Token", c.token)
+	req.Header.Set("X-Auth-Token", d.token)
 	req.Header.Set("Content-Type", "application/json")
 
-	client := http.Client{Timeout: 30 * time.Second}
-	resp, err := client.Do(req)
+	resp, err := d.config.HTTPClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("error querying DNS API: %v", err)
 	}
@@ -260,16 +255,43 @@ func (c *DNSProvider) makeRequest(method, uri string, body io.Reader) (json.RawM
 	return r, nil
 }
 
-// Records is the list of records sent/received from the DNS API
-type Records struct {
-	Record []Record `json:"records"`
-}
+func login(config *Config) (*Identity, error) {
+	authData := AuthData{
+		Auth: Auth{
+			APIKeyCredentials: APIKeyCredentials{
+				Username: config.APIUser,
+				APIKey:   config.APIKey,
+			},
+		},
+	}
 
-// Record represents a Rackspace DNS record
-type Record struct {
-	Name string `json:"name"`
-	Type string `json:"type"`
-	Data string `json:"data"`
-	TTL  int    `json:"ttl,omitempty"`
-	ID   string `json:"id,omitempty"`
+	body, err := json.Marshal(authData)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, config.BaseURL, bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := config.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error querying Identity API: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("authentication failed: response code: %d", resp.StatusCode)
+	}
+
+	var identity Identity
+	err = json.NewDecoder(resp.Body).Decode(&identity)
+	if err != nil {
+		return nil, err
+	}
+
+	return &identity, nil
 }
