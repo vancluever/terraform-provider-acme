@@ -503,8 +503,6 @@ func setDNSChallenge(client *acme.Client, m map[string]interface{}) error {
 		provider, err = linode.NewDNSProvider()
 	case "linodev4":
 		provider, err = linodev4.NewDNSProvider()
-	case "manual":
-		provider, err = acme.NewDNSProviderManual()
 	case "namecheap":
 		provider, err = namecheap.NewDNSProvider()
 	case "namedotcom":
