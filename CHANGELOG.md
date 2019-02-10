@@ -1,4 +1,25 @@
-## 1.0.2 (Unreleased)
+## 1.1.0 (Unreleased)
+
+NEW DNS PROVIDERS:
+
+New DNS providers added for `acme_certificate`:
+
+* `acmedns`
+* `alidns`
+* `dreamhost`
+* `hostingde`
+* `iij`
+* `linodev4`
+* `netcup`
+* `nifcloud`
+* `sakuracloud`
+* `stackpath`
+* `vegadns`
+
+Thanks to @yamamoto-febc for the work done in [GH-10] to document these
+providers!
+
+
 ## 1.0.1 (August 08, 2018)
 
 This is release bump for the sole purpose of releasing the provider upstream. As
