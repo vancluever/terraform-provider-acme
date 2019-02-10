@@ -13,16 +13,12 @@ import (
 
 	"github.com/hashicorp/terraform/helper/hashcode"
 	"github.com/hashicorp/terraform/helper/schema"
-<<<<<<< HEAD
-	"github.com/xenolf/lego/acme"
-	"github.com/xenolf/lego/providers/dns/acmedns"
-	"github.com/xenolf/lego/providers/dns/alidns"
-=======
 	"github.com/xenolf/lego/certcrypto"
 	"github.com/xenolf/lego/certificate"
 	"github.com/xenolf/lego/challenge"
 	"github.com/xenolf/lego/lego"
->>>>>>> lego@v2 API updates
+	"github.com/xenolf/lego/providers/dns/acmedns"
+	"github.com/xenolf/lego/providers/dns/alidns"
 	"github.com/xenolf/lego/providers/dns/auroradns"
 	"github.com/xenolf/lego/providers/dns/azure"
 	"github.com/xenolf/lego/providers/dns/bluecat"
@@ -274,6 +270,7 @@ func expandACMEClient(d *schema.ResourceData, meta interface{}, loadReg bool) (*
 	}
 
 	config := lego.NewConfig(user)
+	config.CADirURL = meta.(*Config).ServerURL
 
 	// Note this function is used by both the registration and certificate
 	// resources, but key type is not necessary during registration, so
@@ -547,15 +544,10 @@ func setDNSChallenge(client *lego.Client, user registration.User, m map[string]i
 	if err != nil {
 		return err
 	}
-<<<<<<< HEAD
-	client.SetChallengeProvider(acme.DNS01, provider)
-	client.ExcludeChallenges([]acme.Challenge{acme.HTTP01, acme.TLSALPN01})
-=======
 
 	if err := client.Challenge.SetDNS01Provider(provider); err != nil {
 		return err
 	}
->>>>>>> lego@v2 API updates
 
 	return nil
 }
