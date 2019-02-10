@@ -5,8 +5,10 @@ require (
 	github.com/Azure/azure-sdk-for-go v17.3.0+incompatible // indirect
 	github.com/Azure/go-autorest v10.10.0+incompatible // indirect
 	github.com/JamesClonk/vultr v0.0.0-20180101102256-fa1c0367800d // indirect
+	github.com/OpenDNS/vegadns2client v0.0.0-20180418235048-a3fa4a771d87 // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/akamai/AkamaiOPEN-edgegrid-golang v0.6.2 // indirect
+	github.com/aliyun/alibaba-cloud-sdk-go v0.0.0-20190203032130-408505a5fba8 // indirect
 	github.com/apparentlymart/go-cidr v0.0.0-20170616213631-2bd8b58cf427 // indirect
 	github.com/apparentlymart/go-dump v0.0.0-20180507223929-23540a00eaa3 // indirect
 	github.com/apparentlymart/go-textseg v0.0.0-20170531203952-b836f5c4d331 // indirect
@@ -14,13 +16,14 @@ require (
 	github.com/aws/aws-sdk-go v1.14.3 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
 	github.com/bgentry/speakeasy v0.1.0 // indirect
-	github.com/blang/semver v3.5.1+incompatible // indirect
-	github.com/davecgh/go-spew v1.1.0 // indirect
+	github.com/cloudflare/cloudflare-go v0.8.5 // indirect
+	github.com/cpu/goacmedns v0.0.1 // indirect
 	github.com/decker502/dnspod-go v0.0.0-20180416134550-83a3ba562b04 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/dnaeon/go-vcr v1.0.1 // indirect
 	github.com/dnsimple/dnsimple-go v0.0.0-20180423020233-bbe1a2c87aff // indirect
 	github.com/edeckers/auroradnsclient v1.0.3 // indirect
-	github.com/exoscale/egoscale v0.9.27 // indirect
+	github.com/exoscale/egoscale v0.9.28 // indirect
 	github.com/fatih/color v1.7.0 // indirect
 	github.com/go-ini/ini v1.37.0 // indirect
 	github.com/go-test/deep v1.0.1 // indirect
@@ -44,6 +47,7 @@ require (
 	github.com/hashicorp/logutils v0.0.0-20150609070431-0dc08b1671f3 // indirect
 	github.com/hashicorp/terraform v0.11.7
 	github.com/hashicorp/yamux v0.0.0-20180604194846-3520598351bb // indirect
+	github.com/iij/doapi v0.0.0-20180911005243-8803795a9b7b // indirect
 	github.com/jinzhu/copier v0.0.0-20180308034124-7e38e58719c3 // indirect
 	github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8 // indirect
 	github.com/json-iterator/go v0.0.0-20180315132816-ca39e5af3ece // indirect
@@ -51,8 +55,8 @@ require (
 	github.com/juju/ratelimit v1.0.1 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/kylelemons/godebug v0.0.0-20170820004349-d65d576e9348 // indirect
+	github.com/linode/linodego v0.7.1 // indirect
 	github.com/mattn/go-colorable v0.0.9 // indirect
-	github.com/mattn/go-isatty v0.0.3 // indirect
 	github.com/miekg/dns v1.0.8 // indirect
 	github.com/mitchellh/cli v0.0.0-20180414170447-c48282d14eba // indirect
 	github.com/mitchellh/copystructure v0.0.0-20170525013902-d23ffcb85de3 // indirect
@@ -71,20 +75,21 @@ require (
 	github.com/onsi/gomega v1.4.3 // indirect
 	github.com/ovh/go-ovh v0.0.0-20180606082425-858d9a5df2fb // indirect
 	github.com/pkg/errors v0.8.0 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/posener/complete v1.1.1 // indirect
+	github.com/sacloud/libsacloud v1.13.0 // indirect
+	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/sirupsen/logrus v1.0.5 // indirect
 	github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d // indirect
 	github.com/smartystreets/goconvey v0.0.0-20181108003508-044398e4856c // indirect
-	github.com/stretchr/testify v1.2.2 // indirect
+	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/terraform-providers/terraform-provider-tls v0.0.0-20180502173329-ba449b19fa96
 	github.com/timewasted/linode v0.0.0-20160829202747-37e84520dcf7 // indirect
 	github.com/ulikunitz/xz v0.5.4 // indirect
-	github.com/xenolf/lego v1.0.1
+	github.com/xenolf/lego v1.1.0
 	github.com/zclconf/go-cty v0.0.0-20180524003106-ba988ce11d99 // indirect
-	golang.org/x/crypto v0.0.0-20180608092829-8ac0e0d97ce4 // indirect
 	golang.org/x/oauth2 v0.0.0-20180603041954-1e0a3fa8ba9a // indirect
 	golang.org/x/sync v0.0.0-20181221193216-37e7f081c4d4 // indirect
+	golang.org/x/time v0.0.0-20181108054448-85acf8d2951c // indirect
 	google.golang.org/api v0.0.0-20180610000806-ef86ce4234ef // indirect
 	google.golang.org/appengine v1.0.0 // indirect
 	google.golang.org/genproto v0.0.0-20180608181217-32ee49c4dd80 // indirect
@@ -94,5 +99,6 @@ require (
 	gopkg.in/gemnasium/logrus-airbrake-hook.v2 v2.1.2 // indirect
 	gopkg.in/ini.v1 v1.37.0 // indirect
 	gopkg.in/ns1/ns1-go.v2 v2.0.0-20180315153759-a5bcac82d3f6 // indirect
+	gopkg.in/resty.v1 v1.11.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.1.6 // indirect
 )
