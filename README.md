@@ -102,12 +102,16 @@ new issue.
 [gh-prs]: https://github.com/terraform-providers/terraform-provider-acme/pulls
 
 If you wish to work on the provider, you'll first need [Go][go-website]
-installed on your machine (version 1.11+ is **required**). You'll also need to
-correctly setup a [GOPATH][gopath], as well as adding `$GOPATH/bin` to your
-`$PATH`.
+installed on your machine (version 1.11+ is **required**).
+
+:warning: This provider uses [modules][go-modules]. Although a `vendor/`
+directory is currently included with this project for backwards compatibility,
+it may be removed at a later time. If you have trouble building the project in a
+GOPATH, move the project outside of it.
 
 [go-website]: https://golang.org/
 [gopath]: http://golang.org/doc/code.html#GOPATH
+[go-modules]: https://github.com/golang/go/wiki/Modules
 
 See [Building the Provider](#building-the-provider) for details on building the provider.
 
