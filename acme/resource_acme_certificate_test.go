@@ -269,7 +269,7 @@ func testAccPreCheckCert(t *testing.T) {
 
 func testAccPreCheckCertZoneID(t *testing.T) {
 	if v := os.Getenv("ACME_R53_ZONE_ID"); v == "" {
-		t.Fatal("ACME_R53_ZONE_ID must be set for the static configuration certificate acceptance test")
+		t.Skip("ACME_R53_ZONE_ID must be set for the static configuration certificate acceptance test")
 	}
 }
 
