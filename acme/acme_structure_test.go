@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/xenolf/lego/acme"
+	"github.com/xenolf/lego/certificate"
 )
 
 const testDirResponseText = `
@@ -157,7 +157,6 @@ func TestACME_certificateSchema(t *testing.T) {
 		"dns_challenge",
 		"must_staple",
 		"certificate_domain",
-		"account_ref",
 		"private_key_pem",
 		"certificate_pem",
 		"issuer_pem",
@@ -214,7 +213,7 @@ func TestACME_expandACMEClient_badKey(t *testing.T) {
 }
 
 func TestACME_expandACMEClient_noCertData(t *testing.T) {
-	c := &acme.CertificateResource{}
+	c := &certificate.Resource{}
 	_, err := certDaysRemaining(c)
 	if err == nil {
 		t.Fatalf("expected error due to bad cert data")
@@ -263,7 +262,7 @@ func TestACME_setDNSChallenge_unsuppotedProvider(t *testing.T) {
 
 func TestACME_saveCertificateResource_badCert(t *testing.T) {
 	b := testBadCertBundleText
-	c := &acme.CertificateResource{
+	c := &certificate.Resource{
 		Certificate: []byte(b),
 	}
 	d := blankCertificateResource()
@@ -275,7 +274,7 @@ func TestACME_saveCertificateResource_badCert(t *testing.T) {
 
 func TestACME_certDaysRemaining_CACert(t *testing.T) {
 	b := testBadCertBundleText
-	c := &acme.CertificateResource{
+	c := &certificate.Resource{
 		Certificate: []byte(b),
 	}
 	_, err := certDaysRemaining(c)

@@ -240,7 +240,6 @@ The following attributes are exported:
 * `certificate_url` - The full URL of the certificate within the ACME CA. Same
   as `id`.
 * `certificate_domain` - The common name of the certificate.
-* `account_ref` - The URI of the account for this certificate.
 * `private_key_pem` - The certificate's private key, in PEM format, if the
   certificate was generated from scratch and not with
   [`certificate_request_pem`](#certificate_request_pem).  If

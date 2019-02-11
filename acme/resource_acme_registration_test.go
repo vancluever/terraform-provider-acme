@@ -51,7 +51,8 @@ func testAccCheckACMERegistrationValid(n string, exists bool) resource.TestCheck
 			}
 			return fmt.Errorf("Could not build ACME client off reg: %s", err.Error())
 		}
-		reg, err := client.QueryRegistration()
+
+		reg, err := client.Registration.QueryRegistration()
 		if err != nil {
 			return fmt.Errorf("Error on reg query: %s", err.Error())
 		}

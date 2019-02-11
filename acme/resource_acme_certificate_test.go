@@ -269,7 +269,7 @@ func testAccPreCheckCert(t *testing.T) {
 
 func testAccPreCheckCertZoneID(t *testing.T) {
 	if v := os.Getenv("ACME_R53_ZONE_ID"); v == "" {
-		t.Fatal("ACME_R53_ZONE_ID must be set for the static configuration certificate acceptance test")
+		t.Skip("ACME_R53_ZONE_ID must be set for the static configuration certificate acceptance test")
 	}
 }
 
@@ -417,36 +417,6 @@ resource "acme_certificate" "certificate" {
   account_key_pem    = "${acme_registration.reg.account_key_pem}"
   common_name        = "www6.${var.domain}"
   min_days_remaining = 720
-
-  dns_challenge {
-    provider = "route53"
-  }
-}
-`, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"))
-}
-
-func testAccACMECertificateECKeyCertConfig() string {
-	return fmt.Sprintf(`
-variable "email_address" {
-  default = "%s"
-}
-
-variable "domain" {
-  default = "%s"
-}
-
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
-resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
-  email_address   = "${var.email_address}"
-}
-
-resource "acme_certificate" "certificate" {
-  account_key_pem = "${acme_registration.reg.account_key_pem}"
-  common_name     = "www7.${var.domain}"
 
   dns_challenge {
     provider = "route53"
