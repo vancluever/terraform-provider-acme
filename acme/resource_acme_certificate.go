@@ -18,7 +18,7 @@ func resourceACMECertificate() *schema.Resource {
 		Delete:        resourceACMECertificateDelete,
 
 		Schema:        certificateSchemaFull(),
-		SchemaVersion: 1,
+		SchemaVersion: 2,
 		MigrateState:  resourceACMECertificateMigrateState,
 	}
 }
@@ -27,12 +27,12 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 	// Turn on partial state to ensure that nothing is recorded until we want it to be.
 	d.Partial(true)
 
-	client, user, err := expandACMEClient(d, meta, true)
+	client, _, err := expandACMEClient(d, meta, true)
 	if err != nil {
 		return err
 	}
 
-	if err = setDNSChallenge(client, user, d.Get("dns_challenge").(*schema.Set).List()[0].(map[string]interface{})); err != nil {
+	if err = setDNSChallenge(client, d.Get("dns_challenge").(*schema.Set).List()[0].(map[string]interface{})); err != nil {
 		return err
 	}
 
@@ -123,13 +123,13 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 		return nil
 	}
 
-	client, user, err := expandACMEClient(d, meta, true)
+	client, _, err := expandACMEClient(d, meta, true)
 	if err != nil {
 		return err
 	}
 
 	cert := expandCertificateResource(d)
-	if err := setDNSChallenge(client, user, d.Get("dns_challenge").(*schema.Set).List()[0].(map[string]interface{})); err != nil {
+	if err := setDNSChallenge(client, d.Get("dns_challenge").(*schema.Set).List()[0].(map[string]interface{})); err != nil {
 		return err
 	}
 

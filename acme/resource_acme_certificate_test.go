@@ -425,36 +425,6 @@ resource "acme_certificate" "certificate" {
 `, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"))
 }
 
-func testAccACMECertificateECKeyCertConfig() string {
-	return fmt.Sprintf(`
-variable "email_address" {
-  default = "%s"
-}
-
-variable "domain" {
-  default = "%s"
-}
-
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
-resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
-  email_address   = "${var.email_address}"
-}
-
-resource "acme_certificate" "certificate" {
-  account_key_pem = "${acme_registration.reg.account_key_pem}"
-  common_name     = "www7.${var.domain}"
-
-  dns_challenge {
-    provider = "route53"
-  }
-}
-`, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"))
-}
-
 func testAccACMECertificateMustStapleConfig() string {
 	return fmt.Sprintf(`
 variable "email_address" {

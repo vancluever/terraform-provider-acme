@@ -167,10 +167,6 @@ func certificateSchema() map[string]*schema.Schema {
 			Type:     schema.TypeString,
 			Computed: true,
 		},
-		"account_ref": {
-			Type:     schema.TypeString,
-			Computed: true,
-		},
 		"private_key_pem": {
 			Type:      schema.TypeString,
 			Computed:  true,
@@ -285,7 +281,7 @@ func expandACMEClient(d *schema.ResourceData, meta interface{}, loadReg bool) (*
 	}
 
 	// Populate user's registration resource if needed
-	if loadReg && user.Registration == nil {
+	if loadReg {
 		user.Registration, err = client.Registration.ResolveAccountByKey()
 		if err != nil {
 			return nil, nil, err
@@ -422,10 +418,10 @@ func mapEnvironmentVariableValues(keyMapping map[string]string) {
 	}
 }
 
-// setDNSChallenge takes a *lego.Client, *registration.User and the DNS
-// challenge complex structure as a map[string]interface{}, and configues the
-// client to only allow a DNS challenge with the configured provider.
-func setDNSChallenge(client *lego.Client, user registration.User, m map[string]interface{}) error {
+// setDNSChallenge takes a *lego.Client and the DNS challenge complex
+// structure as a map[string]interface{}, and configues the client to
+// only allow a DNS challenge with the configured provider.
+func setDNSChallenge(client *lego.Client, m map[string]interface{}) error {
 	var provider challenge.Provider
 	var err error
 	var providerName string

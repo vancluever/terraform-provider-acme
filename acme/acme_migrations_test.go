@@ -85,6 +85,29 @@ func testACMECertificateStateDataV1() *terraform.InstanceState {
 	}
 }
 
+func testACMECertificateStateDataV2() *terraform.InstanceState {
+	return &terraform.InstanceState{
+		ID: "certurl",
+		Attributes: map[string]string{
+			"account_key_pem":             "key",
+			"common_name":                 "foobar",
+			"subject_alternative_names.#": "2",
+			"subject_alternative_names.0": "barbar",
+			"subject_alternative_names.1": "bazbar",
+			"key_type":                    "2048",
+			"certificate_request_pem":     "req",
+			"min_days_remaining":          "7",
+			"dns_challenge.%":             "1",
+			"dns_challenge.1234.provider": "route53",
+			"must_staple":                 "0",
+			"certificate_domain":          "foobar",
+			"private_key_pem":             "certkey",
+			"certificate_pem":             "certpem",
+			"certificate_url":             "certurl",
+		},
+	}
+}
+
 func TestResourceACMERegistrationMigrateState(t *testing.T) {
 	expected := testACMERegistrationStateDataV1()
 	actual, err := resourceACMERegistrationMigrateState(0, testACMERegistrationStateDataV0(), nil)
@@ -110,9 +133,21 @@ func TestMigrateACMERegistrationStateV1(t *testing.T) {
 }
 
 func TestResourceACMECertificateMigrateState(t *testing.T) {
-	expected := testACMECertificateStateDataV1()
+	expected := testACMECertificateStateDataV2()
 	actual, err := resourceACMECertificateMigrateState(0, testACMECertificateStateDataV0(), nil)
 	if err != nil {
+		t.Fatalf("error migrating state: %s", err)
+	}
+
+	if !reflect.DeepEqual(expected, actual) {
+		t.Fatalf("expected %#v, got %#v", expected, actual)
+	}
+}
+
+func TestMigrateACMECertificateStateV2(t *testing.T) {
+	expected := testACMECertificateStateDataV2()
+	actual := testACMECertificateStateDataV1()
+	if err := migrateACMECertificateStateV2(actual, nil); err != nil {
 		t.Fatalf("error migrating state: %s", err)
 	}
 

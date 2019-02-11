@@ -157,7 +157,6 @@ func TestACME_certificateSchema(t *testing.T) {
 		"dns_challenge",
 		"must_staple",
 		"certificate_domain",
-		"account_ref",
 		"private_key_pem",
 		"certificate_pem",
 		"issuer_pem",
@@ -233,12 +232,12 @@ func TestACME_setDNSChallenge_noProvider(t *testing.T) {
 	m := make(map[string]interface{})
 	d := blankBaseResource()
 	ts := httpDirTestServer()
-	client, user, err := expandACMEClient(d, &Config{ServerURL: ts.URL}, false)
+	client, _, err := expandACMEClient(d, &Config{ServerURL: ts.URL}, false)
 	if err != nil {
 		t.Fatalf("fatal: %s", err.Error())
 	}
 
-	err = setDNSChallenge(client, user, m)
+	err = setDNSChallenge(client, m)
 	if err == nil {
 		t.Fatalf("should have errored due to no provider supplied")
 	}
@@ -250,12 +249,12 @@ func TestACME_setDNSChallenge_unsuppotedProvider(t *testing.T) {
 	}
 	d := blankBaseResource()
 	ts := httpDirTestServer()
-	client, user, err := expandACMEClient(d, &Config{ServerURL: ts.URL}, false)
+	client, _, err := expandACMEClient(d, &Config{ServerURL: ts.URL}, false)
 	if err != nil {
 		t.Fatalf("fatal: %s", err.Error())
 	}
 
-	err = setDNSChallenge(client, user, m)
+	err = setDNSChallenge(client, m)
 	if err == nil {
 		t.Fatalf("should have errored due to unknown provider")
 	}

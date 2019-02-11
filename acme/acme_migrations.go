@@ -65,6 +65,9 @@ func resourceACMECertificateMigrateState(version int, os *terraform.InstanceStat
 
 	var migrateFunc func(*terraform.InstanceState, interface{}) error
 	switch version {
+	case 1:
+		log.Printf("[DEBUG] Migrating acme_certificate state: old v%d state: %#v", version, os)
+		migrateFunc = migrateACMECertificateStateV2
 	case 0:
 		log.Printf("[DEBUG] Migrating acme_certificate state: old v%d state: %#v", version, os)
 		migrateFunc = migrateACMECertificateStateV1
@@ -79,6 +82,14 @@ func resourceACMECertificateMigrateState(version int, os *terraform.InstanceStat
 	version++
 	log.Printf("[DEBUG] Migrating acme_certificate state: new v%d state: %#v", version, os)
 	return resourceACMECertificateMigrateState(version, os, meta)
+}
+
+// migrateACMECertificateStateV1 handles migration of acme_certificate from
+// schema version 1 to version 2.
+func migrateACMECertificateStateV2(is *terraform.InstanceState, meta interface{}) error {
+	delete(is.Attributes, "account_ref")
+
+	return nil
 }
 
 // migrateACMECertificateStateV1 handles migration of acme_certificate from
