@@ -1,8 +1,13 @@
 ## 1.1.0 (Unreleased)
 
-NEW DNS PROVIDERS:
+LEGO UPDATE AND NEW DNS PROVIDERS:
 
-New DNS providers added for `acme_certificate`:
+[lego][lego-url] has been updated to v2.2.0.
+
+[lego-url]: https://github.com/xenolf/lego
+
+As part of this update, a number of new DNS providers have been added for
+`acme_certificate`:
 
 * `acmedns`
 * `alidns`
@@ -16,9 +21,8 @@ New DNS providers added for `acme_certificate`:
 * `stackpath`
 * `vegadns`
 
-Thanks to @yamamoto-febc for the work done in [GH-10] to document these
-providers!
-
+Thanks very much to @yamamoto-febc [GH-10] and @bzub [GH-17], [GH-18] for the
+help with documentation, code updates, and module migration work!
 
 ## 1.0.1 (August 08, 2018)
 
