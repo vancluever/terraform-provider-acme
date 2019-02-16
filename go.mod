@@ -26,10 +26,12 @@ require (
 	github.com/dnsimple/dnsimple-go v0.23.0 // indirect
 	github.com/exoscale/egoscale v0.13.3 // indirect
 	github.com/fatih/color v1.7.0 // indirect
+	github.com/fatih/structs v1.1.0 // indirect
 	github.com/go-ini/ini v1.37.0 // indirect
 	github.com/go-test/deep v1.0.1 // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/google/uuid v1.1.0 // indirect
+	github.com/gophercloud/gophercloud v0.0.0-20190215023200-9e57e2f8ff0c // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20181103185306-d547d1d9531e // indirect
 	github.com/h2non/gock v1.0.14 // indirect
 	github.com/hashicorp/errwrap v0.0.0-20141028054710-7554cd9344ce // indirect
@@ -52,6 +54,7 @@ require (
 	github.com/json-iterator/go v1.1.5 // indirect
 	github.com/jtolds/gls v4.2.1+incompatible // indirect
 	github.com/juju/ratelimit v1.0.1 // indirect
+	github.com/kolo/xmlrpc v0.0.0-20181023172212-16bdd962781d // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/kylelemons/godebug v0.0.0-20170820004349-d65d576e9348 // indirect
 	github.com/linode/linodego v0.7.1 // indirect
@@ -69,6 +72,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/namedotcom/go v0.0.0-20180403034216-08470befbe04 // indirect
 	github.com/nrdcg/auroradns v1.0.0 // indirect
+	github.com/nrdcg/goinwx v0.6.0 // indirect
 	github.com/oklog/run v1.0.0 // indirect
 	github.com/ovh/go-ovh v0.0.0-20181109152953-ba5adb4cf014 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
@@ -79,6 +83,7 @@ require (
 	github.com/smartystreets/goconvey v0.0.0-20181108003508-044398e4856c // indirect
 	github.com/terraform-providers/terraform-provider-tls v0.0.0-20180502173329-ba449b19fa96
 	github.com/timewasted/linode v0.0.0-20160829202747-37e84520dcf7 // indirect
+	github.com/transip/gotransip v5.8.1+incompatible // indirect
 	github.com/ulikunitz/xz v0.5.4 // indirect
 	github.com/xenolf/lego v2.2.0+incompatible
 	github.com/zclconf/go-cty v0.0.0-20180524003106-ba988ce11d99 // indirect
