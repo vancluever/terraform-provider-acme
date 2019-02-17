@@ -11,15 +11,24 @@ As part of this update, a number of new DNS providers have been added for
 
 * `acmedns`
 * `alidns`
+* `conoha`
+* `designate`
 * `dreamhost`
 * `hostingde`
+* `httpreq`
 * `iij`
+* `inwx`
 * `linodev4`
+* `mydnsjp`
 * `netcup`
 * `nifcloud`
 * `sakuracloud`
+* `selectel`
 * `stackpath`
+* `transip`
 * `vegadns`
+* `vscale`
+* `zoneee`
 
 Thanks very much to @yamamoto-febc [GH-10] and @bzub [GH-17], [GH-18] for the
 help with documentation, code updates, and module migration work!
