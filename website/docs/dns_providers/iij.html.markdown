@@ -45,3 +45,12 @@ directly through the `config` block in the
 * `IIJ_API_ACCESS_KEY` - The API access key to use.
 * `IIJ_API_SECRET_KEY` - The API secret key to use.
 * `IIJ_DO_SERVICE_CODE` - The service code of DNS outsource service to use.
+
+The following additional optional variables are available:
+
+* `IIJ_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `4`).
+* `IIJ_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `120`).
+* `IIJ_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `300`).

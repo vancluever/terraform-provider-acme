@@ -44,3 +44,14 @@ directly through the `config` block in the
 
 * `GLESYS_API_USER` - The API user to use.
 * `GLESYS_API_KEY` - The API key to use.
+
+The following additional optional variables are available:
+
+* `GLESYS_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `20`).
+* `GLESYS_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `1200`).
+* `GLESYS_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `60`).
+* `GLESYS_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
+  `10`).

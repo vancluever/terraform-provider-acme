@@ -47,3 +47,14 @@ directly through the `config` block in the
 [resource-acme-certificate-dns-challenge-arg]: /docs/providers/acme/r/certificate.html#dns_challenge
 
 * `GANDI_API_KEY` - The API key to use.
+
+The following additional optional variables are available:
+
+* `GANDI_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `60`).
+* `GANDI_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `2400`).
+* `GANDI_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `300`).
+* `GANDI_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
+  `60`).

@@ -44,3 +44,14 @@ directly through the `config` block in the
 
 * `ALICLOUD_ACCESS_KEY` - The API key to use.
 * `ALICLOUD_SECRET_KEY` - The secret key to use.
+
+The following additional optional variables are available:
+
+* `ALICLOUD_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `60`).
+* `ALICLOUD_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `60`).
+* `ALICLOUD_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `600`).
+* `ALICLOUD_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
+  `10`).

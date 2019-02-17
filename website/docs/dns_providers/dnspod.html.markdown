@@ -43,3 +43,14 @@ directly through the `config` block in the
 [resource-acme-certificate-dns-challenge-arg]: /docs/providers/acme/r/certificate.html#dns_challenge
 
 * `DNSPOD_API_KEY` - The API key to use.
+
+The following additional optional variables are available:
+
+* `DNSPOD_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `60`).
+* `DNSPOD_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `60`).
+* `DNSPOD_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `600`).
+* `DNSPOD_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
+  no timeout).

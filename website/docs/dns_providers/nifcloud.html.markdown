@@ -44,3 +44,14 @@ directly through the `config` block in the
 
 * `NIFCLOUD_ACCESS_KEY_ID` - The access key to use.
 * `NIFCLOUD_SECRET_ACCESS_KEY` - The secret access key to use.
+
+The following additional optional variables are available:
+
+* `NIFCLOUD_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `60`).
+* `NIFCLOUD_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `60`).
+* `NIFCLOUD_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `120`).
+* `NIFCLOUD_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
+  `30`).

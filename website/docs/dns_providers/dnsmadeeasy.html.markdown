@@ -44,3 +44,14 @@ directly through the `config` block in the
 
 * `DNSMADEEASY_API_KEY` - The API key to use.
 * `DNSMADEEASY_API_SECRET` - The secret key to use.
+
+The following additional optional variables are available:
+
+* `DNSMADEEASY_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `60`).
+* `DNSMADEEASY_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `60`).
+* `DNSMADEEASY_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `120`).
+* `DNSMADEEASY_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
+  `10`).

@@ -50,3 +50,10 @@ chain. For more details, see the [AWS SDK documentation][aws-sdk-docs].
 * `AWS_SECRET_ACCESS_KEY` - The AWS secret access key.
 * `AWS_SESSION_TOKEN` - The session token to use, if necessary.
 * `DNS_ZONE` - The hosted zone ID to use.
+
+The following additional optional variables are available:
+
+* `LIGHTSAIL_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `60`).
+* `LIGHTSAIL_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `60`).

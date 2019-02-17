@@ -52,3 +52,13 @@ directly through the `config` block in the
   supplied with `ARM_TENANT_ID`.
 * `AZURE_RESOURCE_GROUP` - The resource group to use to place the DNS records
   in. Can also be supplied with `ARM_RESOURCE_GROUP`.
+
+The following additional optional variables are available:
+
+* `AZURE_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `2`).
+* `AZURE_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `120`).
+* `AZURE_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `60`).
+* `AZURE_METADATA_ENDPOINT` - The metadata endpoint to use.

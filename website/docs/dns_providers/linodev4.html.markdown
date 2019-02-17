@@ -43,3 +43,12 @@ directly through the `config` block in the
 [resource-acme-certificate-dns-challenge-arg]: /docs/providers/acme/r/certificate.html#dns_challenge
 
 * `LINODE_TOKEN` - The token to use.
+
+The following additional optional variables are available:
+
+* `LINODE_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `15`).
+* `LINODE_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `300`).
+* `LINODE_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
+  no timeout).

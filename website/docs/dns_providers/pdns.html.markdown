@@ -44,3 +44,14 @@ directly through the `config` block in the
 
 * `PDNS_API_URL` - The API URL to use.
 * `PDNS_API_KEY` - The API key to use.
+
+The following additional optional variables are available:
+
+* `PDNS_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `2`).
+* `PDNS_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `120`).
+* `PDNS_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `120`).
+* `PDNS_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
+  `30`).

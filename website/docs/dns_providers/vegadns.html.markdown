@@ -45,3 +45,12 @@ directly through the `config` block in the
 * `SECRET_VEGADNS_KEY` - The API key to use.
 * `SECRET_VEGADNS_SECRET` - The API secret to use.
 * `VEGADNS_URL` - The base URL to use.
+
+The following additional optional variables are available:
+
+* `VEGADNS_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `1`).
+* `VEGADNS_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `720`).
+* `VEGADNS_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `10`).

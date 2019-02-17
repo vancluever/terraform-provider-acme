@@ -44,3 +44,14 @@ directly through the `config` block in the
 
 * `NAMECOM_USERNAME` - The user name to use.
 * `NAMECOM_API_TOKEN` - The API token to use.
+
+The following additional optional variables are available:
+
+* `NAMECOM_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `20`).
+* `NAMECOM_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `900`).
+* `NAMECOM_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `300`).
+* `NAMECOM_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
+  `10`).

@@ -47,3 +47,14 @@ directly through the `config` block in the
 * `OTC_PASSWORD ` - The password for the supplied user.
 * `OTC_PROJECT_NAME` - The project name.
 * `OTC_IDENTITY_ENDPOINT` - The identity endpoint to use.
+
+The following additional optional variables are available:
+
+* `OTC_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `60`).
+* `OTC_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `60`).
+* `OTC_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `300`).
+* `OTC_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
+  `10`).

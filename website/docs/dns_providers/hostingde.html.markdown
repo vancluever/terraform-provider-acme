@@ -44,3 +44,14 @@ directly through the `config` block in the
 
 * `HOSTINGDE_API_KEY` - The API key to use.
 * `HOSTINGDE_ZONE_NAME` - The zone name to use.
+
+The following additional optional variables are available:
+
+* `HOSTINGDE_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `2`).
+* `HOSTINGDE_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `120`).
+* `HOSTINGDE_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `120`).
+* `HOSTINGDE_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
+  `30`).

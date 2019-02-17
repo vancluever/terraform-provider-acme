@@ -45,3 +45,14 @@ directly through the `config` block in the
 * `NETCUP_CUSTOMER_NUMBER` - The customer number to use.
 * `NETCUP_API_KEY` - The API key to use.
 * `NETCUP_API_PASSWORD` - The API password to use.
+
+The following additional optional variables are available:
+
+* `NETCUP_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `5`).
+* `NETCUP_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `120`).
+* `NETCUP_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `120`).
+* `NETCUP_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
+  `10`).

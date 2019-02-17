@@ -43,3 +43,12 @@ directly through the `config` block in the
 [resource-acme-certificate-dns-challenge-arg]: /docs/providers/acme/r/certificate.html#dns_challenge
 
 * `DREAMHOST_API_KEY` - The API key to use.
+
+The following additional optional variables are available:
+
+* `DREAMHOST_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `60`).
+* `DREAMHOST_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `3600`).
+* `DREAMHOST_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
+  `30`).

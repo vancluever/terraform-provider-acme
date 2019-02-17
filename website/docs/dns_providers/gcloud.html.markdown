@@ -50,3 +50,12 @@ directly through the `config` block in the
 
 [tf-provider-google-credentials]: /docs/providers/google/index.html#credentials
 [tf-provider-google]: /docs/providers/google/index.html
+
+The following additional optional variables are available:
+
+* `GCE_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `5`).
+* `GCE_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `180`).
+* `GCE_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `120`).

@@ -55,3 +55,12 @@ chain. For more details, see the [AWS SDK documentation][aws-sdk-docs].
 * `AWS_SDK_LOAD_CONFIG` - Load settings from `~/.aws/config`. Useful
   when using AssumeRole with cross-account auth.
 * `AWS_PROFILE` - The profile to use.
+
+The following additional optional variables are available:
+
+* `AWS_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `4`).
+* `AWS_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `120`).
+* `AWS_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `10`).

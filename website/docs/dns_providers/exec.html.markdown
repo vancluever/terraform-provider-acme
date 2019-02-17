@@ -81,3 +81,10 @@ these be supplied as explicit `config` values.
 * `EXEC_MODE` - Send the raw domain, token, and keyAuth values to the external
   script. The only usable value here is `RAW`.
 * `EXEC_PATH` - The path to the external script to call.
+
+The following additional optional variables are available:
+
+* `EXEC_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `60`).
+* `EXEC_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `60`).

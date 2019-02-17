@@ -44,3 +44,14 @@ directly through the `config` block in the
 
 * `GODADDY_API_KEY` - The API key to use.
 * `GODADDY_API_SECRET` - The API secret to use.
+
+The following additional optional variables are available:
+
+* `GODADDY_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
+  DNS propagation checks (default: `2`).
+* `GODADDY_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
+  propagation (default: `120`).
+* `GODADDY_TTL` - The TTL to set on DNS challenge records, in seconds (default:
+  `600`).
+* `GODADDY_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
+  `30`).
