@@ -47,6 +47,8 @@ directly through the `config` block in the
   the same file referenced by the
   [`credentials`][tf-provider-google-credentials] option in the [Terraform
   Google provider][tf-provider-google].
+* `GCE_SERVICE_ACCOUNT` - The contents of the service account file, if passed
+  in directly.
 
 [tf-provider-google-credentials]: /docs/providers/google/index.html#credentials
 [tf-provider-google]: /docs/providers/google/index.html
