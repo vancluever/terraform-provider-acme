@@ -180,7 +180,7 @@ Example with the [Route 53 provider][route53-dns-provider]:
 
 ```hcl
 resource "acme_certificate" "certificate" {
-  ...
+  #...
 
   dns_challenge {
     provider = "route53"
@@ -192,7 +192,31 @@ resource "acme_certificate" "certificate" {
     }
   }
 
-  ...
+  #...
+}
+```
+
+#### Manually specifying recursive nameservers for propagation checks
+
+The ACME provider will normally use your system-configured DNS resolvers to
+check for propagation of the TXT records before proceeding with the certificate
+request. In split horizon scenarios, this check may never succeed, as the
+machine running Terraform may not have visibility into these public DNS
+records.
+
+To override this default behavior, supply the `recursive_nameservers` to use as
+a list in `host:port` form within the `dns_challenge` block:
+
+```hcl
+resource "acme_certificate" "certificate" {
+  #...
+
+  dns_challenge {
+    provider              = "route53"
+    recursive_nameservers = ["8.8.8.8:53"]
+  }
+
+  #...
 }
 ```
 

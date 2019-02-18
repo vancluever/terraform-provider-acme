@@ -16,6 +16,7 @@ import (
 	"github.com/xenolf/lego/certcrypto"
 	"github.com/xenolf/lego/certificate"
 	"github.com/xenolf/lego/challenge"
+	"github.com/xenolf/lego/challenge/dns01"
 	"github.com/xenolf/lego/lego"
 	"github.com/xenolf/lego/providers/dns/acmedns"
 	"github.com/xenolf/lego/providers/dns/alidns"
@@ -157,6 +158,11 @@ func certificateSchema() map[string]*schema.Schema {
 						Optional:     true,
 						ValidateFunc: validateDNSChallengeConfig,
 						Sensitive:    true,
+					},
+					"recursive_nameservers": {
+						Type:     schema.TypeList,
+						Optional: true,
+						Elem:     &schema.Schema{Type: schema.TypeString},
 					},
 				},
 			},
@@ -568,7 +574,17 @@ func setDNSChallenge(client *lego.Client, m map[string]interface{}) error {
 		return err
 	}
 
-	if err := client.Challenge.SetDNS01Provider(provider); err != nil {
+	var opts []dns01.ChallengeOption
+	if nameservers := m["recursive_nameservers"].(*schema.Set).List(); len(nameservers) > 0 {
+		var s []string
+		for _, ns := range nameservers {
+			s = append(s, ns.(string))
+		}
+
+		opts = append(opts, dns01.AddRecursiveNameservers(s))
+	}
+
+	if err := client.Challenge.SetDNS01Provider(provider, opts...); err != nil {
 		return err
 	}
 
