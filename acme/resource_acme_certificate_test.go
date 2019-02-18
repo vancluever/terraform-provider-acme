@@ -5,6 +5,8 @@ import (
 	"crypto/ecdsa"
 	"crypto/rsa"
 	"encoding/asn1"
+	"encoding/base64"
+	"encoding/pem"
 	"fmt"
 	"log"
 	"os"
@@ -13,6 +15,7 @@ import (
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
+	"software.sslmate.com/src/go-pkcs12"
 )
 
 // Constants for OCSP must staple
@@ -182,6 +185,15 @@ func testAccCheckACMECertificateValid(n, cn, san string, mustStaple bool) resour
 		}
 		issuerCert := issuerCerts[0]
 
+		// Compare certs with P12 data to ensure they are in the bundle
+		if err := testFindPEMInP12(
+			[]byte(rs.Primary.Attributes["certificate_p12"]),
+			[]byte(cert),
+			[]byte(issuer),
+		); err != nil {
+			return fmt.Errorf("error validating P12 certificates: %s", err)
+		}
+
 		// Skip the private key test if we have an empty key. This is a legit case
 		// that comes up when a CSR is supplied instead of creating a cert from
 		// scratch.
@@ -202,6 +214,14 @@ func testAccCheckACMECertificateValid(n, cn, san string, mustStaple bool) resour
 
 			if reflect.DeepEqual(x509Cert.PublicKey, privPub) != true {
 				return fmt.Errorf("Public key for cert and private key don't match: %#v, %#v", x509Cert.PublicKey, privPub)
+			}
+
+			// Compare private key with one sourced from P12 archive
+			if err := testFindPEMInP12(
+				[]byte(rs.Primary.Attributes["certificate_p12"]),
+				[]byte(key),
+			); err != nil {
+				return fmt.Errorf("error validating P12 private key: %s", err)
 			}
 		}
 
@@ -244,6 +264,50 @@ func testAccCheckACMECertificateValid(n, cn, san string, mustStaple bool) resour
 
 		return nil
 	}
+}
+
+// testFindPEMInP12 tries to find the supplied PEM blocks in the supplied
+// base64-encoded P12 content.
+func testFindPEMInP12(pfxB64 []byte, expected ...[]byte) error {
+	pfxData := make([]byte, base64.RawStdEncoding.DecodedLen(len(pfxB64)))
+	if _, err := base64.RawStdEncoding.Decode(pfxData, pfxB64); err != nil {
+		return err
+	}
+
+	actualBlocks, err := pkcs12.ToPEM(pfxData, "")
+	if err != nil {
+		return err
+	}
+
+	var expectedBlocks []*pem.Block
+	for i, data := range expected {
+		block, _ := pem.Decode(data)
+		if block == nil {
+			return fmt.Errorf("bad PEM data in expected block %d", i)
+		}
+
+		expectedBlocks = append(expectedBlocks, block)
+	}
+
+	for i := 0; i < len(expectedBlocks); i++ {
+		expected := expectedBlocks[i]
+		for _, actual := range actualBlocks {
+			if reflect.DeepEqual(expected.Bytes, actual.Bytes) {
+				expectedBlocks = append(expectedBlocks[:i], expectedBlocks[i+1:]...)
+				i--
+			}
+		}
+	}
+
+	if len(expectedBlocks) > 0 {
+		return fmt.Errorf(
+			"not all expected blocks were found in the PFX archive (remaining: %d, %d in archive)",
+			len(expectedBlocks),
+			len(actualBlocks),
+		)
+	}
+
+	return nil
 }
 
 func testAccPreCheckCert(t *testing.T) {

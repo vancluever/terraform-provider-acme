@@ -3,7 +3,9 @@ package acme
 import (
 	"bytes"
 	"crypto"
+	"crypto/rand"
 	"crypto/x509"
+	"encoding/base64"
 	"encoding/pem"
 	"errors"
 	"fmt"
@@ -69,6 +71,7 @@ import (
 	"github.com/xenolf/lego/providers/dns/vultr"
 	"github.com/xenolf/lego/providers/dns/zoneee"
 	"github.com/xenolf/lego/registration"
+	"software.sslmate.com/src/go-pkcs12"
 )
 
 // baseACMESchema returns a map[string]*schema.Schema with all the elements
@@ -188,6 +191,11 @@ func certificateSchema() map[string]*schema.Schema {
 		"issuer_pem": {
 			Type:     schema.TypeString,
 			Computed: true,
+		},
+		"certificate_p12": {
+			Type:      schema.TypeString,
+			Computed:  true,
+			Sensitive: true,
 		},
 	}
 }
@@ -337,9 +345,17 @@ func saveCertificateResource(d *schema.ResourceData, cert *certificate.Resource)
 	if err != nil {
 		return err
 	}
+
 	d.Set("certificate_pem", string(issued))
 	d.Set("issuer_pem", string(issuer))
-	// note that CSR is skipped as it is not computed.
+
+	pfxB64, err := bundleToPKCS12(cert.Certificate, cert.PrivateKey)
+	if err != nil {
+		return err
+	}
+
+	d.Set("certificate_p12", string(pfxB64))
+
 	return nil
 }
 
@@ -362,7 +378,7 @@ func certDaysRemaining(cert *certificate.Resource) (int64, error) {
 	return (expiry - now) / 86400, nil
 }
 
-// splitPEMBundle get a slice of x509 certificates from parsePEMBundle,
+// splitPEMBundle gets a slice of x509 certificates from parsePEMBundle,
 // and always returns 2 certificates - the issued cert first, and the issuer
 // certificate second.
 //
@@ -385,6 +401,43 @@ func splitPEMBundle(bundle []byte) (cert, issuer []byte, err error) {
 	cert = pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: cb[0].Raw})
 	issuer = pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: cb[1].Raw})
 	return
+}
+
+// bundleToPKCS12 packs an issued certificate (and any supplied
+// intermediates) into a PFX file.  The private key is included in
+// the archive if it is a non-zero value.
+//
+// The returned archive is base64-encoded.
+func bundleToPKCS12(bundle, key []byte) ([]byte, error) {
+	cb, err := parsePEMBundle(bundle)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(cb) != 2 {
+		return nil, fmt.Errorf("Certificate bundle does not contain exactly 2 certificates")
+	}
+
+	// lego always returns the issued cert first, if the CA is first there is a problem
+	if cb[0].IsCA {
+		return nil, fmt.Errorf("First certificate is a CA certificate")
+	}
+
+	var pk crypto.PrivateKey
+	if len(key) > 0 {
+		if pk, err = privateKeyFromPEM(key); err != nil {
+			return nil, err
+		}
+	}
+
+	pfxData, err := pkcs12.Encode(rand.Reader, pk, cb[0], cb[1:2], "")
+	if err != nil {
+		return nil, err
+	}
+
+	buf := make([]byte, base64.RawStdEncoding.EncodedLen(len(pfxData)))
+	base64.RawStdEncoding.Encode(buf, pfxData)
+	return buf, nil
 }
 
 // parsePEMBundle parses a certificate bundle from top to bottom and returns

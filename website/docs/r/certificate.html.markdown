@@ -246,3 +246,6 @@ The following attributes are exported:
   `certificate_request_pem` was used, this will be blank.
 * `certificate_pem` - The certificate in PEM format.
 * `issuer_pem` - The intermediate certificate of the issuer.
+* `certificate_p12` - The certificate, intermediate, and any private key archived
+  as a PFX file (PKCS12 format, generally used by Microsoft products). The data
+  is base64 encoded and has no password.
