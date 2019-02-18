@@ -2,6 +2,7 @@ package acme
 
 import (
 	"log"
+	"strings"
 
 	"github.com/hashicorp/terraform/terraform"
 )
@@ -65,6 +66,9 @@ func resourceACMECertificateMigrateState(version int, os *terraform.InstanceStat
 
 	var migrateFunc func(*terraform.InstanceState, interface{}) error
 	switch version {
+	case 2:
+		log.Printf("[DEBUG] Migrating acme_certificate state: old v%d state: %#v", version, os)
+		migrateFunc = migrateACMECertificateStateV3
 	case 1:
 		log.Printf("[DEBUG] Migrating acme_certificate state: old v%d state: %#v", version, os)
 		migrateFunc = migrateACMECertificateStateV2
@@ -82,6 +86,38 @@ func resourceACMECertificateMigrateState(version int, os *terraform.InstanceStat
 	version++
 	log.Printf("[DEBUG] Migrating acme_certificate state: new v%d state: %#v", version, os)
 	return resourceACMECertificateMigrateState(version, os, meta)
+}
+
+// migrateACMECertificateStateV1 handles migration of
+// acme_certificate from schema version 2 to version 3.
+func migrateACMECertificateStateV3(is *terraform.InstanceState, meta interface{}) error {
+	// There has ever only been one "dns_challenge" key allowed in
+	// state, so we should be safe to just iterate over every key and
+	// look for the set hash, and re-write that back to zero.
+	for k, v := range is.Attributes {
+		path := strings.Split(k, ".")
+		if len(path) < 2 {
+			// Top-level key, not what we are looking for.
+			continue
+		}
+
+		if path[0] != "dns_challenge" {
+			continue
+		}
+
+		if path[1] == "#" {
+			// skip the count key
+			continue
+		}
+
+		// Every other possible attribute is going to be the hash. We can
+		// safely re-write to zero here.
+		path[1] = "0"
+		delete(is.Attributes, k)
+		is.Attributes[strings.Join(path, ".")] = v
+	}
+
+	return nil
 }
 
 // migrateACMECertificateStateV1 handles migration of acme_certificate from

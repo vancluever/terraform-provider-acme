@@ -1,17 +1,14 @@
 package acme
 
 import (
-	"bytes"
 	"crypto"
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
 	"fmt"
 	"os"
-	"sort"
 	"time"
 
-	"github.com/hashicorp/terraform/helper/hashcode"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/xenolf/lego/certcrypto"
 	"github.com/xenolf/lego/certificate"
@@ -142,9 +139,8 @@ func certificateSchema() map[string]*schema.Schema {
 			Default:  7,
 		},
 		"dns_challenge": {
-			Type:     schema.TypeSet,
+			Type:     schema.TypeList,
 			Required: true,
-			Set:      dnsChallengeSetHash,
 			MaxItems: 1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
@@ -160,7 +156,6 @@ func certificateSchema() map[string]*schema.Schema {
 					},
 				},
 			},
-			ForceNew: true,
 		},
 		"must_staple": {
 			Type:     schema.TypeBool,
@@ -573,24 +568,6 @@ func setDNSChallenge(client *lego.Client, m map[string]interface{}) error {
 	}
 
 	return nil
-}
-
-// dnsChallengeSetHash computes the hash for the DNS challenge.
-func dnsChallengeSetHash(v interface{}) int {
-	var buf bytes.Buffer
-	m := v.(map[string]interface{})
-	buf.WriteString(fmt.Sprintf("%s-", m["provider"].(string)))
-	// sort the keys first so that the hash is consistent every time
-	keys := []string{}
-	for k := range m["config"].(map[string]interface{}) {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	// now write out the hash values
-	for _, k := range keys {
-		buf.WriteString(fmt.Sprintf("%s-%s-", k, m["config"].(map[string]interface{})[k].(string)))
-	}
-	return hashcode.String(buf.String())
 }
 
 // stringSlice converts an interface slice to a string slice.
