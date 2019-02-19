@@ -7,18 +7,18 @@ export ACME_SERVER_URL ?= https://acme-staging-v02.api.letsencrypt.org/directory
 
 default: build
 
-build: fmtcheck vendor-status
+build: fmtcheck
 	go install
 
-test: fmtcheck vendor-status
+test: fmtcheck
 	go test -i $(TEST) || exit 1
 	echo $(TEST) | \
 		xargs -t -n4 go test $(TESTARGS) -timeout=30s -parallel=4
 
-testacc: fmtcheck vendor-status
+testacc: fmtcheck
 	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 240m
 
-debugacc: fmtcheck vendor-status
+debugacc: fmtcheck
 	TF_ACC=1 dlv test $(TEST) -- -test.v $(TESTARGS)
 
 vet:
@@ -38,10 +38,6 @@ fmtcheck:
 
 errcheck:
 	@sh -c "'$(CURDIR)/scripts/errcheck.sh'"
-
-vendor-status:
-	go mod tidy -v
-	go mod verify
 
 test-compile:
 	@if [ "$(TEST)" = "./..." ]; then \
@@ -65,4 +61,4 @@ ifeq (,$(wildcard $(GOPATH)/src/$(WEBSITE_REPO)))
 endif
 	@$(MAKE) -C $(GOPATH)/src/$(WEBSITE_REPO) website-provider-test PROVIDER_PATH=$(shell pwd) PROVIDER_NAME=$(PKG_NAME)
 
-.PHONY: build test testacc vet fmt fmtcheck errcheck vendor-status test-compile website website-test
+.PHONY: build test testacc vet fmt fmtcheck errcheck test-compile website website-test
