@@ -118,7 +118,6 @@ func certificateSchema() map[string]*schema.Schema {
 			Type:          schema.TypeSet,
 			Optional:      true,
 			Elem:          &schema.Schema{Type: schema.TypeString},
-			Set:           schema.HashString,
 			ForceNew:      true,
 			ConflictsWith: []string{"certificate_request_pem"},
 		},
