@@ -33,6 +33,15 @@ As part of this update, a number of new DNS providers have been added for
 Thanks very much to @yamamoto-febc [GH-10] and @bzub [GH-17], [GH-18] for the
 help with documentation, code updates, and module migration work!
 
+IMPROVEMENTS:
+
+* `resource/acme_certificate`: Added the `recursive_nameservers` attribute to
+  the `dns_challenge` block. This allows someone to specify a static resolver
+  list for DNS propagation checks that will override the resolvers of the system
+  running Terraform. This can be useful when dealing with split horizon DNS
+  scenarios. [GH-25]
+
+
 ## 1.0.1 (August 08, 2018)
 
 This is release bump for the sole purpose of releasing the provider upstream. As
