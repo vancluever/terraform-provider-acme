@@ -161,6 +161,7 @@ func TestACME_certificateSchema(t *testing.T) {
 		"certificate_pem",
 		"issuer_pem",
 		"certificate_url",
+		"certificate_p12",
 	}
 	for _, v := range fields {
 		if _, ok := m[v]; ok == false {
