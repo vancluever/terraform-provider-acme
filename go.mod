@@ -94,6 +94,7 @@ require (
 	gopkg.in/ns1/ns1-go.v2 v2.0.0-20181211201113-a57b2a18aab6 // indirect
 	gopkg.in/resty.v1 v1.11.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.1.6 // indirect
+	software.sslmate.com/src/go-pkcs12 v0.0.0-20190209200317-47dd539968c4
 )
 
 replace github.com/ldez/go-auroradns => github.com/ldez/go-auroradns/v2 v2.0.2
