@@ -18,21 +18,18 @@ func resourceACMECertificate() *schema.Resource {
 		Delete:        resourceACMECertificateDelete,
 
 		Schema:        certificateSchemaFull(),
-		SchemaVersion: 2,
+		SchemaVersion: 3,
 		MigrateState:  resourceACMECertificateMigrateState,
 	}
 }
 
 func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) error {
-	// Turn on partial state to ensure that nothing is recorded until we want it to be.
-	d.Partial(true)
-
 	client, _, err := expandACMEClient(d, meta, true)
 	if err != nil {
 		return err
 	}
 
-	if err = setDNSChallenge(client, d.Get("dns_challenge").(*schema.Set).List()[0].(map[string]interface{})); err != nil {
+	if err = setDNSChallenge(client, d.Get("dns_challenge").([]interface{})[0].(map[string]interface{})); err != nil {
 		return err
 	}
 
@@ -68,10 +65,10 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		return fmt.Errorf("error creating certificate: %s", err)
 	}
 
-	// Done! save the cert
-	d.Partial(false)
 	d.SetId(cert.CertURL)
-	saveCertificateResource(d, cert)
+	if err := saveCertificateResource(d, cert); err != nil {
+		return err
+	}
 
 	return resourceACMECertificateRead(d, meta)
 }
@@ -112,12 +109,6 @@ func resourceACMECertificateCustomizeDiff(d *schema.ResourceDiff, meta interface
 
 // resourceACMECertificateUpdate renews a certificate if it has been flagged as changed.
 func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) error {
-	// We use partial state to protect against losing the certificate during bad
-	// renewal. min_days_remaining is a safe change to record in the state
-	// however, so we allow that to be set even on error.
-	d.Partial(true)
-	d.SetPartial("min_days_remaining")
-
 	// We don't need to do anything else here if the certificate hasn't been diffed
 	if !d.HasChange("certificate_pem") {
 		return nil
@@ -138,10 +129,10 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 		return err
 	}
 
-	// Now safe to record state
-	d.Partial(false)
 	d.SetId(newCert.CertURL)
-	saveCertificateResource(d, newCert)
+	if err := saveCertificateResource(d, newCert); err != nil {
+		return err
+	}
 
 	return nil
 }
