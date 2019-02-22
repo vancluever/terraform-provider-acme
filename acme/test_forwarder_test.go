@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"strings"
+	"time"
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
@@ -13,12 +14,15 @@ import (
 
 const forwardingAddress = "8.8.8.8:53"
 
+var startTimeout = time.Second * 30
+
 // testForwarder is a DNS forwarder designed to test the custom
 // propagation nameserver functionality.
 type testForwarder struct {
-	called bool
-	conn   net.PacketConn
-	server *dns.Server
+	called  bool
+	conn    net.PacketConn
+	server  *dns.Server
+	started chan struct{}
 }
 
 // newTestForwarder creates a new testForwarder and starts it.
@@ -34,12 +38,20 @@ func newTestForwarder() (*testForwarder, error) {
 	mux := dns.NewServeMux()
 	mux.HandleFunc(".", f.forward)
 	f.server = &dns.Server{
-		Handler:    mux,
-		PacketConn: f.conn,
+		Handler:           mux,
+		PacketConn:        f.conn,
+		NotifyStartedFunc: f.notifyStarted,
 	}
 
 	log.Printf("[DEBUG] new test forwarding DNS server registered at %s", f.conn.LocalAddr())
+	f.started = make(chan struct{})
 	f.start()
+	select {
+	case <-f.started:
+	case <-time.After(startTimeout):
+		panic(fmt.Sprintf("test DNS server did not start after %s", startTimeout))
+	}
+
 	return f, nil
 }
 
@@ -68,6 +80,12 @@ func (f *testForwarder) start() {
 
 		log.Printf("[DEBUG] test forwarding DNS server on %s shutting down", f.conn.LocalAddr())
 	}()
+}
+
+// notifyStarted closes the started channel after the server has
+// started to prevent races.
+func (f *testForwarder) notifyStarted() {
+	close(f.started)
 }
 
 // Shutdown shuts down the DNS server and should be called when the
