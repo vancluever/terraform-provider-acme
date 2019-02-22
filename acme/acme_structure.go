@@ -623,7 +623,7 @@ func setDNSChallenge(client *lego.Client, m map[string]interface{}) error {
 	}
 
 	var opts []dns01.ChallengeOption
-	if nameservers := m["recursive_nameservers"].(*schema.Set).List(); len(nameservers) > 0 {
+	if nameservers := m["recursive_nameservers"].([]interface{}); len(nameservers) > 0 {
 		var s []string
 		for _, ns := range nameservers {
 			s = append(s, ns.(string))
