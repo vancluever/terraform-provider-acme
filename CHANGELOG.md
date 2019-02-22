@@ -40,7 +40,15 @@ IMPROVEMENTS:
   list for DNS propagation checks that will override the resolvers of the system
   running Terraform. This can be useful when dealing with split horizon DNS
   scenarios. [GH-25]
+* `resource/acme_certificate`: Added the `certificate_p12` output, which makes
+  the certificate, intermediate CA, and private key available in a PFX PKCS12
+  archive. This can be useful when working with Microsoft products.  [GH-26]
 
+BUG FIXES:
+
+* `resource/acme_certificate`: Modifications to the `dns_challenge`
+  configuration will now persist across no-op updates. Additionally,
+  modification of these values will no longer force a new resource. [GH-28]
 
 ## 1.0.1 (August 08, 2018)
 
