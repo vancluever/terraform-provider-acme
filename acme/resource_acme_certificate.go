@@ -120,7 +120,7 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 	}
 
 	cert := expandCertificateResource(d)
-	if err := setDNSChallenge(client, d.Get("dns_challenge").(*schema.Set).List()[0].(map[string]interface{})); err != nil {
+	if err := setDNSChallenge(client, d.Get("dns_challenge").([]interface{})[0].(map[string]interface{})); err != nil {
 		return err
 	}
 
