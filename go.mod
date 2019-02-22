@@ -59,7 +59,7 @@ require (
 	github.com/kylelemons/godebug v0.0.0-20170820004349-d65d576e9348 // indirect
 	github.com/linode/linodego v0.7.1 // indirect
 	github.com/mattn/go-colorable v0.0.9 // indirect
-	github.com/miekg/dns v1.1.4 // indirect
+	github.com/miekg/dns v1.1.4
 	github.com/mitchellh/cli v0.0.0-20180414170447-c48282d14eba // indirect
 	github.com/mitchellh/copystructure v0.0.0-20170525013902-d23ffcb85de3 // indirect
 	github.com/mitchellh/go-homedir v0.0.0-20180523094522-3864e76763d9 // indirect

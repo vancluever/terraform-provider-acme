@@ -156,6 +156,33 @@ func TestAccACMECertificate_wildcard(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_recursiveNameservers(t *testing.T) {
+	f, err := newTestForwarder()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer f.Shutdown()
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckCert(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateRecursiveNameserversConfig(f.LocalAddr()),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrPair(
+						"acme_certificate.certificate", "id",
+						"acme_certificate.certificate", "certificate_url",
+					),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www10", "www11", false),
+					f.Check(),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckACMECertificateValid(n, cn, san string, mustStaple bool) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
@@ -485,4 +512,36 @@ resource "acme_certificate" "certificate" {
   }
 }
 `, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"))
+}
+
+func testAccACMECertificateRecursiveNameserversConfig(nameserver string) string {
+	return fmt.Sprintf(`
+variable "email_address" {
+  default = "%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "www10.${var.domain}"
+  subject_alternative_names = ["www11.${var.domain}"]
+
+  dns_challenge {
+    provider              = "route53"
+    recursive_nameservers = ["%s"]
+  }
+}
+`, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"), nameserver)
 }
