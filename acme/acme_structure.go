@@ -350,12 +350,18 @@ func saveCertificateResource(d *schema.ResourceData, cert *certificate.Resource)
 	d.Set("certificate_pem", string(issued))
 	d.Set("issuer_pem", string(issuer))
 
-	pfxB64, err := bundleToPKCS12(cert.Certificate, cert.PrivateKey)
-	if err != nil {
-		return err
-	}
+	// Set PKCS12 data. This is only set if there is a private key
+	// present.
+	if len(cert.PrivateKey) > 0 {
+		pfxB64, err := bundleToPKCS12(cert.Certificate, cert.PrivateKey)
+		if err != nil {
+			return err
+		}
 
-	d.Set("certificate_p12", string(pfxB64))
+		d.Set("certificate_p12", string(pfxB64))
+	} else {
+		d.Set("certificate_p12", "")
+	}
 
 	return nil
 }
@@ -424,11 +430,9 @@ func bundleToPKCS12(bundle, key []byte) ([]byte, error) {
 		return nil, fmt.Errorf("First certificate is a CA certificate")
 	}
 
-	var pk crypto.PrivateKey
-	if len(key) > 0 {
-		if pk, err = privateKeyFromPEM(key); err != nil {
-			return nil, err
-		}
+	pk, err := privateKeyFromPEM(key)
+	if err != nil {
+		return nil, err
 	}
 
 	pfxData, err := pkcs12.Encode(rand.Reader, pk, cb[0], cb[1:2], "")

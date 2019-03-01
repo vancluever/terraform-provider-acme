@@ -212,15 +212,6 @@ func testAccCheckACMECertificateValid(n, cn, san string, mustStaple bool) resour
 		}
 		issuerCert := issuerCerts[0]
 
-		// Compare certs with P12 data to ensure they are in the bundle
-		if err := testFindPEMInP12(
-			[]byte(rs.Primary.Attributes["certificate_p12"]),
-			[]byte(cert),
-			[]byte(issuer),
-		); err != nil {
-			return fmt.Errorf("error validating P12 certificates: %s", err)
-		}
-
 		// Skip the private key test if we have an empty key. This is a legit case
 		// that comes up when a CSR is supplied instead of creating a cert from
 		// scratch.
@@ -243,12 +234,14 @@ func testAccCheckACMECertificateValid(n, cn, san string, mustStaple bool) resour
 				return fmt.Errorf("Public key for cert and private key don't match: %#v, %#v", x509Cert.PublicKey, privPub)
 			}
 
-			// Compare private key with one sourced from P12 archive
+			// Test PKCS12, which is only present if there's a private key.
 			if err := testFindPEMInP12(
 				[]byte(rs.Primary.Attributes["certificate_p12"]),
+				[]byte(cert),
+				[]byte(issuer),
 				[]byte(key),
 			); err != nil {
-				return fmt.Errorf("error validating P12 private key: %s", err)
+				return fmt.Errorf("error validating P12 certificates: %s", err)
 			}
 		}
 
