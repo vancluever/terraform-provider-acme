@@ -1,4 +1,4 @@
-## 1.1.0 (Unreleased)
+## 1.1.0 (March 01, 2019)
 
 LEGO UPDATE AND NEW DNS PROVIDERS:
 
@@ -30,7 +30,7 @@ As part of this update, a number of new DNS providers have been added for
 * `vscale`
 * `zoneee`
 
-Thanks very much to @yamamoto-febc [GH-10] and @bzub [GH-17], [GH-18] for the
+Thanks very much to @yamamoto-febc [[#10](https://github.com/terraform-providers/terraform-provider-acme/issues/10)] and @bzub [[#17](https://github.com/terraform-providers/terraform-provider-acme/issues/17)], [[#18](https://github.com/terraform-providers/terraform-provider-acme/issues/18)] for the
 help with documentation, code updates, and module migration work!
 
 IMPROVEMENTS:
@@ -39,16 +39,16 @@ IMPROVEMENTS:
   the `dns_challenge` block. This allows someone to specify a static resolver
   list for DNS propagation checks that will override the resolvers of the system
   running Terraform. This can be useful when dealing with split horizon DNS
-  scenarios. [GH-25]
+  scenarios. ([#25](https://github.com/terraform-providers/terraform-provider-acme/issues/25))
 * `resource/acme_certificate`: Added the `certificate_p12` output, which makes
   the certificate, intermediate CA, and private key available in a PFX PKCS12
-  archive. This can be useful when working with Microsoft products.  [GH-26]
+  archive. This can be useful when working with Microsoft products.  ([#26](https://github.com/terraform-providers/terraform-provider-acme/issues/26))
 
 BUG FIXES:
 
 * `resource/acme_certificate`: Modifications to the `dns_challenge`
   configuration will now persist across no-op updates. Additionally,
-  modification of these values will no longer force a new resource. [GH-28]
+  modification of these values will no longer force a new resource. ([#28](https://github.com/terraform-providers/terraform-provider-acme/issues/28))
 
 ## 1.0.1 (August 08, 2018)
 
