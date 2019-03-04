@@ -440,8 +440,8 @@ func bundleToPKCS12(bundle, key []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	buf := make([]byte, base64.RawStdEncoding.EncodedLen(len(pfxData)))
-	base64.RawStdEncoding.Encode(buf, pfxData)
+	buf := make([]byte, base64.StdEncoding.EncodedLen(len(pfxData)))
+	base64.StdEncoding.Encode(buf, pfxData)
 	return buf, nil
 }
 

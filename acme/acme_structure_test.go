@@ -1,10 +1,12 @@
 package acme
 
 import (
+	"math"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -100,6 +102,49 @@ WzYlTWeUVsO40xJqhgUQRER9YLOLxJ0O6C8i0xFxAMKOtSdodMB3RIwt7RFQ0uyt
 n5Z5MqkYhlMI3J1tPRTp1nEt9fyGspBOO05gi148Qasp+3N+svqKomoQglNoAxU=
 -----END CERTIFICATE-----
 `
+
+const testPaddingBundle = `
+-----BEGIN CERTIFICATE-----
+MIIDSjCCAjICCQDjsMLnU/0KpzANBgkqhkiG9w0BAQsFADBnMQswCQYDVQQGEwJV
+SzEQMA4GA1UECAwHRW5nbGFuZDEPMA0GA1UEBwwGTG9uZG9uMSEwHwYDVQQKDBhJ
+bnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQxEjAQBgNVBAMMCWxvY2FsaG9zdDAeFw0x
+OTAzMDQyMjE2MzFaFw0yNDAzMDIyMjE2MzFaMGcxCzAJBgNVBAYTAlVLMRAwDgYD
+VQQIDAdFbmdsYW5kMQ8wDQYDVQQHDAZMb25kb24xITAfBgNVBAoMGEludGVybmV0
+IFdpZGdpdHMgUHR5IEx0ZDESMBAGA1UEAwwJbG9jYWxob3N0MIIBIjANBgkqhkiG
+9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0A0z2uLCRrw8DXKgG1UMBRlmRt3TXEoDSPSJ
+y5Awp3fJG8b5+MvU2QufUrtk3XAwG5q7dBFpV+bAQGds/1cmMNjRRXHby0mmk7v6
+b57rhAuaD4VLXa7/pJDEIGDaQ7NmFe4vgO8mup5HDw7C9VZI25ou70ajZZvpBzyd
+rd6pgfCq4fcCZRS56rdzcO4n48HhXHjSOaSyqHHGkLJpVc7qqc3OmJQoeUgn+1xc
+MkSBEiZA3XvISHegc/5s5wB/aMDfegJEe2ZA7Ae9gAmCczPFGRtZUVU9J9UC1jVS
+jIWsIyOsdHc18TxafEBjcBctpuNnvhOshbOYsd1HLbmZB/4GuwIDAQABMA0GCSqG
+SIb3DQEBCwUAA4IBAQB82OHtGfw2tDsDsqj2IvkHqGw8bvxwXZ5KVRdGVg90AD+f
+rFKS5qF3JxspcUjDHwFAyZo/mTXMOzRFQAytcuID4qijVRLRaM8dnFWvzwhFo0Kq
+UEdVfmq2ANmhqWI5j87BoPu2GGcZ+xlzW7axl2tFOj4g1xOW1Vd/CVuPBfMHZ5JD
+WyQVnPXi3plkGnIW/P5R1NHYqXIb0HW8xjzqRmbbQOW5eJ+Hy1Id4O0pnOVlNjDl
+Rb4po3kWJaGezLmNO+JyUOr5HnCjLSD/4WNHGAJbfOVES4hOz+oiTlWd7HflS+00
+iITbUq4IV5mAI5yceK+3rYWGYG47cu0BG9ngevUZ
+-----END CERTIFICATE-----
+
+-----BEGIN CERTIFICATE-----
+MIIDSjCCAjICCQDjsMLnU/0KpzANBgkqhkiG9w0BAQsFADBnMQswCQYDVQQGEwJV
+SzEQMA4GA1UECAwHRW5nbGFuZDEPMA0GA1UEBwwGTG9uZG9uMSEwHwYDVQQKDBhJ
+bnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQxEjAQBgNVBAMMCWxvY2FsaG9zdDAeFw0x
+OTAzMDQyMjE2MzFaFw0yNDAzMDIyMjE2MzFaMGcxCzAJBgNVBAYTAlVLMRAwDgYD
+VQQIDAdFbmdsYW5kMQ8wDQYDVQQHDAZMb25kb24xITAfBgNVBAoMGEludGVybmV0
+IFdpZGdpdHMgUHR5IEx0ZDESMBAGA1UEAwwJbG9jYWxob3N0MIIBIjANBgkqhkiG
+9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0A0z2uLCRrw8DXKgG1UMBRlmRt3TXEoDSPSJ
+y5Awp3fJG8b5+MvU2QufUrtk3XAwG5q7dBFpV+bAQGds/1cmMNjRRXHby0mmk7v6
+b57rhAuaD4VLXa7/pJDEIGDaQ7NmFe4vgO8mup5HDw7C9VZI25ou70ajZZvpBzyd
+rd6pgfCq4fcCZRS56rdzcO4n48HhXHjSOaSyqHHGkLJpVc7qqc3OmJQoeUgn+1xc
+MkSBEiZA3XvISHegc/5s5wB/aMDfegJEe2ZA7Ae9gAmCczPFGRtZUVU9J9UC1jVS
+jIWsIyOsdHc18TxafEBjcBctpuNnvhOshbOYsd1HLbmZB/4GuwIDAQABMA0GCSqG
+SIb3DQEBCwUAA4IBAQB82OHtGfw2tDsDsqj2IvkHqGw8bvxwXZ5KVRdGVg90AD+f
+rFKS5qF3JxspcUjDHwFAyZo/mTXMOzRFQAytcuID4qijVRLRaM8dnFWvzwhFo0Kq
+UEdVfmq2ANmhqWI5j87BoPu2GGcZ+xlzW7axl2tFOj4g1xOW1Vd/CVuPBfMHZ5JD
+WyQVnPXi3plkGnIW/P5R1NHYqXIb0HW8xjzqRmbbQOW5eJ+Hy1Id4O0pnOVlNjDl
+Rb4po3kWJaGezLmNO+JyUOr5HnCjLSD/4WNHGAJbfOVES4hOz+oiTlWd7HflS+00
+iITbUq4IV5mAI5yceK+3rYWGYG47cu0BG9ngevUZ
+-----END CERTIFICATE-----`
 
 func registrationResourceData() *schema.ResourceData {
 	r := &schema.Resource{
@@ -297,6 +342,21 @@ func TestACME_splitPEMBundle_CAFirst(t *testing.T) {
 	_, _, err := splitPEMBundle([]byte(b))
 	if err == nil {
 		t.Fatalf("expected error due to CA cert being first")
+	}
+}
+
+func TestACME_bundleToPKCS12_base64IsPadded(t *testing.T) {
+	b := testPaddingBundle
+	key := testPrivateKeyText
+	pfxBase64, err := bundleToPKCS12([]byte(b), []byte(key))
+
+	if err != nil {
+		t.Fatalf("bad: %#v", err)
+	}
+
+	// testPaddingBundle requires padding to 4 bytes so will end in =
+	if math.Remainder(float64(len(pfxBase64)), 4) != 0 && !strings.HasSuffix(string(pfxBase64), "=") {
+		t.Fatalf("p12 base64 encoded certificate should be padded")
 	}
 }
 
