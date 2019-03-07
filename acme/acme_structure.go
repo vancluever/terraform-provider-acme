@@ -198,6 +198,12 @@ func certificateSchema() map[string]*schema.Schema {
 			Computed:  true,
 			Sensitive: true,
 		},
+		"certificate_p12_password": {
+			Type:      schema.TypeString,
+			Optional:  true,
+			Default:   "",
+			Sensitive: true,
+		},
 	}
 }
 
@@ -338,7 +344,7 @@ func expandCertificateResource(d certificateResourceExpander) *certificate.Resou
 }
 
 // saveCertificateResource takes an certificate.Resource and sets fields.
-func saveCertificateResource(d *schema.ResourceData, cert *certificate.Resource) error {
+func saveCertificateResource(d *schema.ResourceData, cert *certificate.Resource, password string) error {
 	d.Set("certificate_url", cert.CertURL)
 	d.Set("certificate_domain", cert.Domain)
 	d.Set("private_key_pem", string(cert.PrivateKey))
@@ -353,7 +359,7 @@ func saveCertificateResource(d *schema.ResourceData, cert *certificate.Resource)
 	// Set PKCS12 data. This is only set if there is a private key
 	// present.
 	if len(cert.PrivateKey) > 0 {
-		pfxB64, err := bundleToPKCS12(cert.Certificate, cert.PrivateKey)
+		pfxB64, err := bundleToPKCS12(cert.Certificate, cert.PrivateKey, password)
 		if err != nil {
 			return err
 		}
@@ -415,7 +421,7 @@ func splitPEMBundle(bundle []byte) (cert, issuer []byte, err error) {
 // the archive if it is a non-zero value.
 //
 // The returned archive is base64-encoded.
-func bundleToPKCS12(bundle, key []byte) ([]byte, error) {
+func bundleToPKCS12(bundle, key []byte, password string) ([]byte, error) {
 	cb, err := parsePEMBundle(bundle)
 	if err != nil {
 		return nil, err
@@ -435,7 +441,7 @@ func bundleToPKCS12(bundle, key []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	pfxData, err := pkcs12.Encode(rand.Reader, pk, cb[0], cb[1:2], "")
+	pfxData, err := pkcs12.Encode(rand.Reader, pk, cb[0], cb[1:2], password)
 	if err != nil {
 		return nil, err
 	}

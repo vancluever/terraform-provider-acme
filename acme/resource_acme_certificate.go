@@ -66,7 +66,8 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 	}
 
 	d.SetId(cert.CertURL)
-	if err := saveCertificateResource(d, cert); err != nil {
+	password := d.Get("certificate_p12_password").(string)
+	if err := saveCertificateResource(d, cert, password); err != nil {
 		return err
 	}
 
@@ -130,7 +131,8 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 	}
 
 	d.SetId(newCert.CertURL)
-	if err := saveCertificateResource(d, newCert); err != nil {
+	password := d.Get("certificate_p12_password").(string)
+	if err := saveCertificateResource(d, newCert, password); err != nil {
 		return err
 	}
 
