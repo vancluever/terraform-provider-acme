@@ -2,6 +2,8 @@
 
 BUG FIXES:
 
+* `resource/acme_certificate`: Added the optional `certificate_p12_password`
+  field, used when creating the PFX bundle found in `certificate_p12`. [GH-35]
 * `resource/acme_certificate`: `certificate_p12` base64 data is now padded and
   should be usable by Azure services that take PKCS12 data. [GH-34]
 
