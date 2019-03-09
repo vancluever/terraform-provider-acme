@@ -237,6 +237,7 @@ func testAccCheckACMECertificateValid(n, cn, san string, mustStaple bool) resour
 			// Test PKCS12, which is only present if there's a private key.
 			if err := testFindPEMInP12(
 				[]byte(rs.Primary.Attributes["certificate_p12"]),
+				rs.Primary.Attributes["certificate_p12_password"],
 				[]byte(cert),
 				[]byte(issuer),
 				[]byte(key),
@@ -288,14 +289,14 @@ func testAccCheckACMECertificateValid(n, cn, san string, mustStaple bool) resour
 
 // testFindPEMInP12 tries to find the supplied PEM blocks in the supplied
 // base64-encoded P12 content.
-func testFindPEMInP12(pfxB64 []byte, expected ...[]byte) error {
+func testFindPEMInP12(pfxB64 []byte, password string, expected ...[]byte) error {
 	pfxData := make([]byte, base64.StdEncoding.DecodedLen(len(pfxB64)))
 	nBytes, err := base64.StdEncoding.Decode(pfxData, pfxB64)
 	if err != nil {
 		return err
 	}
 
-	actualBlocks, err := pkcs12.ToPEM(pfxData[:nBytes], "")
+	actualBlocks, err := pkcs12.ToPEM(pfxData[:nBytes], password)
 	if err != nil {
 		return err
 	}
@@ -381,6 +382,7 @@ resource "acme_certificate" "certificate" {
   account_key_pem           = "${acme_registration.reg.account_key_pem}"
   common_name               = "www.${var.domain}"
   subject_alternative_names = ["www2.${var.domain}"]
+  certificate_p12_password  = "changeit"
 
   dns_challenge {
     provider = "route53"

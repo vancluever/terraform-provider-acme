@@ -143,6 +143,8 @@ The resource takes the following arguments:
   valid OCSP Staple in the TLS handshake for the connection to succeed.
   Defaults to `false`. Note that this option has no effect when using an
   external CSR - it must be enabled in the CSR itself.
+* `certificate_p12_password` - (Optional) Password to be used when generating
+  the PFX file. Defaults to an empty string.
 
 [ocsp-stapling]: https://letsencrypt.org/docs/integration-guide/#implement-ocsp-stapling
 
@@ -272,5 +274,5 @@ The following attributes are exported:
 * `issuer_pem` - The intermediate certificate of the issuer.
 * `certificate_p12` - The certificate, intermediate, and the private key
   archived as a PFX file (PKCS12 format, generally used by Microsoft products).
-  The data is base64 encoded (including padding) and has no password. This field is empty if
-  creating a certificate from a CSR.
+  The data is base64 encoded (including padding) and has no password. This field
+  is empty if creating a certificate from a CSR.

@@ -207,6 +207,7 @@ func TestACME_certificateSchema(t *testing.T) {
 		"issuer_pem",
 		"certificate_url",
 		"certificate_p12",
+		"certificate_p12_password",
 	}
 	for _, v := range fields {
 		if _, ok := m[v]; ok == false {
@@ -312,7 +313,7 @@ func TestACME_saveCertificateResource_badCert(t *testing.T) {
 		Certificate: []byte(b),
 	}
 	d := blankCertificateResource()
-	err := saveCertificateResource(d, c)
+	err := saveCertificateResource(d, c, "")
 	if err == nil {
 		t.Fatalf("expected error due to bad cert data")
 	}
