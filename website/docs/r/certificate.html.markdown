@@ -143,9 +143,6 @@ The resource takes the following arguments:
   valid OCSP Staple in the TLS handshake for the connection to succeed.
   Defaults to `false`. Note that this option has no effect when using an
   external CSR - it must be enabled in the CSR itself.
-* `certificate_p12_password` - (Optional) Password to be used when generating
-  the PFX file. Defaults to an empty string.
-
 [ocsp-stapling]: https://letsencrypt.org/docs/integration-guide/#implement-ocsp-stapling
 
 -> **NOTE:** OCSP stapling requires specific webserver configuration to
@@ -154,9 +151,12 @@ be configured to tolerate prolonged outages of the OCSP service. Consider this
 when using `must_staple`, and only enable it if you are sure your webserver or
 service provider can be configured correctly.
 
- * `min_days_remaining` (Optional) - The minimum amount of days remaining on the
+* `min_days_remaining` (Optional) - The minimum amount of days remaining on the
    expiration of a certificate before a renewal is attempted. The default is
    `7`. A value of less than `0` means that the certificate will never be renewed.
+* `certificate_p12_password` - (Optional) Password to be used when generating
+  the PFX file stored in [`certificate_p12`](#certificate_p12). Defaults to an
+  empty string.
 
 ### Using DNS challenges
 
