@@ -289,12 +289,13 @@ func testAccCheckACMECertificateValid(n, cn, san string, mustStaple bool) resour
 // testFindPEMInP12 tries to find the supplied PEM blocks in the supplied
 // base64-encoded P12 content.
 func testFindPEMInP12(pfxB64 []byte, expected ...[]byte) error {
-	pfxData := make([]byte, base64.RawStdEncoding.DecodedLen(len(pfxB64)))
-	if _, err := base64.RawStdEncoding.Decode(pfxData, pfxB64); err != nil {
+	pfxData := make([]byte, base64.StdEncoding.DecodedLen(len(pfxB64)))
+	nBytes, err := base64.StdEncoding.Decode(pfxData, pfxB64)
+	if err != nil {
 		return err
 	}
 
-	actualBlocks, err := pkcs12.ToPEM(pfxData, "")
+	actualBlocks, err := pkcs12.ToPEM(pfxData[:nBytes], "")
 	if err != nil {
 		return err
 	}
