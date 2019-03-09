@@ -349,7 +349,7 @@ func TestACME_splitPEMBundle_CAFirst(t *testing.T) {
 func TestACME_bundleToPKCS12_base64IsPadded(t *testing.T) {
 	b := testPaddingBundle
 	key := testPrivateKeyText
-	pfxBase64, err := bundleToPKCS12([]byte(b), []byte(key))
+	pfxBase64, err := bundleToPKCS12([]byte(b), []byte(key), "")
 
 	if err != nil {
 		t.Fatalf("bad: %#v", err)
