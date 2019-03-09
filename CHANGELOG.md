@@ -1,4 +1,10 @@
 ## 1.1.1 (Unreleased)
+
+BUG FIXES:
+
+* `resource/acme_certificate`: `certificate_p12` base64 data is now padded and
+  should be usable by Azure services that take PKCS12 data. [GH-34]
+
 ## 1.1.0 (March 01, 2019)
 
 LEGO UPDATE AND NEW DNS PROVIDERS:
@@ -31,7 +37,7 @@ As part of this update, a number of new DNS providers have been added for
 * `vscale`
 * `zoneee`
 
-Thanks very much to @yamamoto-febc [[#10](https://github.com/terraform-providers/terraform-provider-acme/issues/10)] and @bzub [[#17](https://github.com/terraform-providers/terraform-provider-acme/issues/17)], [[#18](https://github.com/terraform-providers/terraform-provider-acme/issues/18)] for the
+Thanks very much to @yamamoto-febc ([#10](https://github.com/terraform-providers/terraform-provider-acme/issues/10)) and @bzub ([#17](https://github.com/terraform-providers/terraform-provider-acme/issues/17)), ([#18](https://github.com/terraform-providers/terraform-provider-acme/issues/18)) for the
 help with documentation, code updates, and module migration work!
 
 IMPROVEMENTS:
