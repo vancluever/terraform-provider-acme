@@ -1,11 +1,11 @@
-## 1.1.1 (Unreleased)
+## 1.1.1 (March 12, 2019)
 
 BUG FIXES:
 
 * `resource/acme_certificate`: Added the optional `certificate_p12_password`
-  field, used when creating the PFX bundle found in `certificate_p12`. [GH-35]
+  field, used when creating the PFX bundle found in `certificate_p12`. ([#35](https://github.com/terraform-providers/terraform-provider-acme/issues/35))
 * `resource/acme_certificate`: `certificate_p12` base64 data is now padded and
-  should be usable by Azure services that take PKCS12 data. [GH-34]
+  should be usable by Azure services that take PKCS12 data. ([#34](https://github.com/terraform-providers/terraform-provider-acme/issues/34))
 
 ## 1.1.0 (March 01, 2019)
 
