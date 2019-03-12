@@ -1,3 +1,4 @@
+## 1.1.2 (Unreleased)
 ## 1.1.1 (March 12, 2019)
 
 BUG FIXES:
