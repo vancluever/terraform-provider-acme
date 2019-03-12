@@ -186,6 +186,35 @@ func TestAccACMECertificate_recursiveNameservers(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_p12Password(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckCert(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigP12Password("changeit"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrPair(
+						"acme_certificate.certificate", "id",
+						"acme_certificate.certificate", "certificate_url",
+					),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www12", "www13", false),
+				),
+			},
+			{
+				Config: testAccACMECertificateConfigP12Password("changeitagain"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrPair(
+						"acme_certificate.certificate", "id",
+						"acme_certificate.certificate", "certificate_url",
+					),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www12", "www13", false),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckACMECertificateValid(n, cn, san string, mustStaple bool) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
@@ -382,7 +411,6 @@ resource "acme_certificate" "certificate" {
   account_key_pem           = "${acme_registration.reg.account_key_pem}"
   common_name               = "www.${var.domain}"
   subject_alternative_names = ["www2.${var.domain}"]
-  certificate_p12_password  = "changeit"
 
   dns_challenge {
     provider = "route53"
@@ -604,4 +632,44 @@ resource "acme_certificate" "certificate" {
   }
 }
 `, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"), nameserver)
+}
+
+func testAccACMECertificateConfigP12Password(password string) string {
+	return fmt.Sprintf(`
+variable "email_address" {
+  default = "%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+variable "password" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "www12.${var.domain}"
+  subject_alternative_names = ["www13.${var.domain}"]
+  certificate_p12_password  = "${var.password}"
+
+  dns_challenge {
+    provider = "route53"
+  }
+}
+`,
+		os.Getenv("ACME_EMAIL_ADDRESS"),
+		os.Getenv("ACME_CERT_DOMAIN"),
+		password,
+	)
 }

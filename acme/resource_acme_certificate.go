@@ -112,6 +112,15 @@ func resourceACMECertificateCustomizeDiff(d *schema.ResourceDiff, meta interface
 func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) error {
 	// We don't need to do anything else here if the certificate hasn't been diffed
 	if !d.HasChange("certificate_pem") {
+		// when the certificate hasn't changed but the p12 password has, we still need to regenerate the p12
+		if d.HasChange("certificate_p12_password") {
+			cert := expandCertificateResource(d)
+			d.SetId(cert.CertURL)
+			password := d.Get("certificate_p12_password").(string)
+			if err := saveCertificateResource(d, cert, password); err != nil {
+				return err
+			}
+		}
 		return nil
 	}
 

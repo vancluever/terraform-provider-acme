@@ -335,10 +335,11 @@ func expandCertificateResource(d certificateResourceExpander) *certificate.Resou
 	// signifies that the certificate needs to be renewed. In this case, we need
 	// the old value here, versus the new one.
 	oldCertPEM, newCertPEM := d.GetChange("certificate_pem")
+	issuerPEM := d.Get("issuer_pem")
 	if newCertPEM.(string) != "" {
-		cert.Certificate = []byte(newCertPEM.(string))
+		cert.Certificate = []byte(newCertPEM.(string) + issuerPEM.(string))
 	} else {
-		cert.Certificate = []byte(oldCertPEM.(string))
+		cert.Certificate = []byte(oldCertPEM.(string) + issuerPEM.(string))
 	}
 	return cert
 }
