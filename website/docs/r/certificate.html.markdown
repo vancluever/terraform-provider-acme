@@ -274,5 +274,6 @@ The following attributes are exported:
 * `issuer_pem` - The intermediate certificate of the issuer.
 * `certificate_p12` - The certificate, intermediate, and the private key
   archived as a PFX file (PKCS12 format, generally used by Microsoft products).
-  The data is base64 encoded (including padding) and has no password. This field
-  is empty if creating a certificate from a CSR.
+  The data is base64 encoded (including padding), and its password is
+  configurable via the [`certificate_p12_password`](#certificate_p12_password)
+  argument. This field is empty if creating a certificate from a CSR.
