@@ -397,7 +397,7 @@ func certSecondsRemaining(cert *certificate.Resource) (int64, error) {
 func certDaysRemaining(cert *certificate.Resource) (int64, error) {
 	remaining, err := certSecondsRemaining(cert)
 	if err != nil {
-    return 0, fmt.Errorf("unable to calculate time to certificate expiry: %s", err)
+		return 0, fmt.Errorf("unable to calculate time to certificate expiry: %s", err)
 	}
 
 	return remaining / 86400, nil
