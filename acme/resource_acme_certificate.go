@@ -156,8 +156,10 @@ func resourceACMECertificateDelete(d *schema.ResourceData, meta interface{}) err
 	}
 
 	cert, ok := d.GetOk("certificate_pem")
+	certificate := expandCertificateResource(d)
+	remaining, err := certSecondsRemaining(certificate)
 
-	if ok {
+	if ok && remaining >= 0 {
 		if err := client.Certificate.Revoke([]byte(cert.(string))); err != nil {
 			return err
 		}
