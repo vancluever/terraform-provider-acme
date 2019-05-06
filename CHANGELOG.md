@@ -1,9 +1,9 @@
-## 1.1.2 (Unreleased)
+## 1.1.2 (May 06, 2019)
 
 BUG FIXES:
 
 * `resource/acme_certificate`: Revocation on destroy now skips expired
-  certificates. [GH-42]
+  certificates. ([#42](https://github.com/terraform-providers/terraform-provider-acme/issues/42))
 
 ## 1.1.1 (March 12, 2019)
 
