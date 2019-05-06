@@ -1,4 +1,10 @@
 ## 1.1.2 (Unreleased)
+
+BUG FIXES:
+
+* `resource/acme_certificate`: Revocation on destroy now skips expired
+  certificates. [GH-42]
+
 ## 1.1.1 (March 12, 2019)
 
 BUG FIXES:
