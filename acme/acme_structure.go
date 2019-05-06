@@ -373,9 +373,9 @@ func saveCertificateResource(d *schema.ResourceData, cert *certificate.Resource,
 	return nil
 }
 
-// certDaysRemaining takes an certificate.Resource, parses the
-// certificate, and computes the days that it has remaining.
-func certDaysRemaining(cert *certificate.Resource) (int64, error) {
+// certSecondsRemaining takes an certificate.Resource, parses the
+// certificate, and computes the seconds that it has remaining.
+func certSecondsRemaining(cert *certificate.Resource) (int64, error) {
 	x509Certs, err := parsePEMBundle(cert.Certificate)
 	if err != nil {
 		return 0, err
@@ -389,7 +389,18 @@ func certDaysRemaining(cert *certificate.Resource) (int64, error) {
 	expiry := c.NotAfter.Unix()
 	now := time.Now().Unix()
 
-	return (expiry - now) / 86400, nil
+	return (expiry - now), nil
+}
+
+// certDaysRemaining takes an certificate.Resource, parses the
+// certificate, and computes the days that it has remaining.
+func certDaysRemaining(cert *certificate.Resource) (int64, error) {
+	remaining, err := certSecondsRemaining(cert)
+	if err != nil {
+		return 0, fmt.Errorf("unable to calculate time to certificate expiry: %s", err)
+	}
+
+	return remaining / 86400, nil
 }
 
 // splitPEMBundle gets a slice of x509 certificates from parsePEMBundle,
