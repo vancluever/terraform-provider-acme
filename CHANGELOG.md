@@ -1,4 +1,11 @@
-## 1.1.3 (Unreleased)
+## 1.2.0 (Unreleased)
+
+FEATURES:
+
+* The plugin has been updated to support Terraform 0.12 and higher. Backwards
+  compatibility has been maintained to Terraform 0.11.x and earlier versions
+  that support plugin protocol version 4. [GH-45]
+
 ## 1.1.2 (May 06, 2019)
 
 BUG FIXES:
