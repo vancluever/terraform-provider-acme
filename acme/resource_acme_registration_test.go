@@ -46,7 +46,7 @@ func testAccCheckACMERegistrationValid(n string, exists bool) resource.TestCheck
 
 		client, _, err := expandACMEClient(d, testAccProvider.Meta(), true)
 		if err != nil {
-			if strings.Contains(err.Error(), `has status "deactivated"`) && !exists {
+			if strings.Contains(err.Error(), `An account with the provided public key exists but is deactivated`) && !exists {
 				return nil
 			}
 			return fmt.Errorf("Could not build ACME client off reg: %s", err.Error())
