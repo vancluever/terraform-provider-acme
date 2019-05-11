@@ -40,6 +40,12 @@ directly through the `config` block in the
 [`acme_certificate`][resource-acme-certificate] resource. For more details, see
 [here][resource-acme-certificate-dns-challenges].
 
+In addition, arguments can also be stored in a local file, with the path
+supplied by supplying the argument with the `_FILE` suffix. See
+[here][acme-certificate-file-arg-example] for more information.
+
+[acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
+
 -> **NOTE:** Several other options exist for configuring the AWS credential
 chain. For more details, see the [AWS SDK documentation][aws-sdk-docs].
 

@@ -1,8 +1,8 @@
 module github.com/terraform-providers/terraform-provider-acme
 
 require (
-	cloud.google.com/go v0.38.0 // indirect
-	contrib.go.opencensus.io/exporter/ocagent v0.5.0 // indirect
+	cloud.google.com/go v0.37.4 // indirect
+	contrib.go.opencensus.io/exporter/ocagent v0.4.11 // indirect
 	github.com/Azure/azure-sdk-for-go v29.0.0+incompatible // indirect
 	github.com/Azure/go-autorest v12.0.0+incompatible // indirect
 	github.com/JamesClonk/vultr v0.0.0-20181227165352-882c666acc57 // indirect
@@ -17,8 +17,9 @@ require (
 	github.com/dimchansky/utfbom v1.1.0 // indirect
 	github.com/dnaeon/go-vcr v1.0.1 // indirect
 	github.com/dnsimple/dnsimple-go v0.23.0 // indirect
-	github.com/exoscale/egoscale v0.13.3 // indirect
+	github.com/exoscale/egoscale v0.14.0 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
+	github.com/go-acme/lego v2.5.0+incompatible
 	github.com/go-ini/ini v1.42.0 // indirect
 	github.com/go-test/deep v1.0.2-0.20181118220953-042da051cf31 // indirect
 	github.com/golang/mock v1.3.0 // indirect
@@ -54,9 +55,10 @@ require (
 	github.com/namedotcom/go v0.0.0-20180403034216-08470befbe04 // indirect
 	github.com/nrdcg/auroradns v1.0.0 // indirect
 	github.com/nrdcg/goinwx v0.6.0 // indirect
+	github.com/oracle/oci-go-sdk v4.0.0+incompatible // indirect
 	github.com/ovh/go-ovh v0.0.0-20181109152953-ba5adb4cf014 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
-	github.com/sacloud/libsacloud v1.13.0 // indirect
+	github.com/sacloud/libsacloud v1.19.0 // indirect
 	github.com/sirupsen/logrus v1.4.1 // indirect
 	github.com/smartystreets/assertions v0.0.0-20190401211740-f487f9de1cd3 // indirect
 	github.com/smartystreets/goconvey v0.0.0-20190330032615-68dc04aab96a // indirect
@@ -67,13 +69,13 @@ require (
 	github.com/transip/gotransip v5.8.1+incompatible // indirect
 	github.com/ulikunitz/xz v0.5.6 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
-	github.com/xenolf/lego v2.2.0+incompatible
 	golang.org/x/crypto v0.0.0-20190510104115-cbcb75029529 // indirect
 	golang.org/x/net v0.0.0-20190509222800-a4d6f7feada5 // indirect
 	golang.org/x/oauth2 v0.0.0-20190402181905-9f3314589c9a // indirect
 	golang.org/x/sys v0.0.0-20190509141414-a5b02f93d862 // indirect
-	google.golang.org/api v0.5.0 // indirect
+	google.golang.org/api v0.3.2 // indirect
 	google.golang.org/genproto v0.0.0-20190508193815-b515fa19cec8 // indirect
+	google.golang.org/grpc v1.20.1 // indirect
 	gopkg.in/ini.v1 v1.42.0 // indirect
 	gopkg.in/ns1/ns1-go.v2 v2.0.0-20181211201113-a57b2a18aab6 // indirect
 	gopkg.in/square/go-jose.v2 v2.3.1 // indirect

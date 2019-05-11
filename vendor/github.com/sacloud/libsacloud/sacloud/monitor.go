@@ -27,7 +27,9 @@ type MonitorValue struct {
 	FreeDiskSize      *float64 `json:"Free-Disk-Size,omitempty"`    // 空きディスクサイズ(NFS)
 	ResponseTimeSec   *float64 `json:"responsetimesec,omitempty"`   // レスポンスタイム(シンプル監視)
 	UplinkBPS         *float64 `json:"UplinkBps,omitempty"`         // 上り方向トラフィック
-	DownlinkBPS       *float64 `json:"DownlinkBps"`                 // 下り方向トラフィック
+	DownlinkBPS       *float64 `json:"DownlinkBps,omitempty"`       // 下り方向トラフィック
+	ActiveConnections *float64 `json:"activeConnections,omitempty"` // アクティブコネクション(プロキシLB)
+	ConnectionsPerSec *float64 `json:"connectionsPerSec,omitempty"` // 秒間コネクション数
 }
 
 // UnmarshalJSON JSONアンマーシャル(配列、オブジェクトが混在するためここで対応)
@@ -56,7 +58,9 @@ func (m *MonitorValue) UnmarshalJSON(data []byte) error {
 		FreeDiskSize      *float64 `json:"Free-Disk-Size,omitempty"`
 		ResponseTimeSec   *float64 `json:"responsetimesec,omitempty"`
 		UplinkBPS         *float64 `json:"UplinkBps,omitempty"`
-		DownlinkBPS       *float64 `json:"DownlinkBps"`
+		DownlinkBPS       *float64 `json:"DownlinkBps,omitempty"`
+		ActiveConnections *float64 `json:"activeConnections,omitempty"`
+		ConnectionsPerSec *float64 `json:"connectionsPerSec,omitempty"`
 	}{}
 	if err := json.Unmarshal(data, &tmp); err != nil {
 		return err
@@ -81,6 +85,8 @@ func (m *MonitorValue) UnmarshalJSON(data []byte) error {
 	m.ResponseTimeSec = tmp.ResponseTimeSec
 	m.UplinkBPS = tmp.UplinkBPS
 	m.DownlinkBPS = tmp.DownlinkBPS
+	m.ActiveConnections = tmp.ActiveConnections
+	m.ConnectionsPerSec = tmp.ConnectionsPerSec
 
 	return nil
 }
@@ -295,6 +301,16 @@ func (m *MonitorValues) FlattenDownlinkBPSValue() ([]FlatMonitorValue, error) {
 	return m.flattenValue(func(v *MonitorValue) *float64 { return v.DownlinkBPS })
 }
 
+// FlattenActiveConnections フラット化 アクティブコネクション
+func (m *MonitorValues) FlattenActiveConnections() ([]FlatMonitorValue, error) {
+	return m.flattenValue(func(v *MonitorValue) *float64 { return v.ActiveConnections })
+}
+
+// FlattenConnectionsPerSec フラット化 秒間接続数
+func (m *MonitorValues) FlattenConnectionsPerSec() ([]FlatMonitorValue, error) {
+	return m.flattenValue(func(v *MonitorValue) *float64 { return v.ConnectionsPerSec })
+}
+
 func (m *MonitorValues) flattenValue(f func(*MonitorValue) *float64) ([]FlatMonitorValue, error) {
 	var res []FlatMonitorValue
 
@@ -329,6 +345,7 @@ func (m *MonitorValue) HasValue() bool {
 		m.BinlogUsedSizeKiB, m.DelayTimeSec,
 		m.FreeDiskSize, m.ResponseTimeSec,
 		m.UplinkBPS, m.DownlinkBPS,
+		m.ActiveConnections, m.ConnectionsPerSec,
 	}
 	for _, v := range values {
 		if v != nil {

@@ -42,6 +42,12 @@ directly through the `config` block in the
 
 [resource-acme-certificate-dns-challenge-arg]: /docs/providers/acme/r/certificate.html#dns_challenge
 
+In addition, arguments can also be stored in a local file, with the path
+supplied by supplying the argument with the `_FILE` suffix. See
+[here][acme-certificate-file-arg-example] for more information.
+
+[acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
+
 * `CONOHA_TENANT_ID` - The tenant ID to use.
 * `CONOHA_API_USERNAME` - The API username to use.
 * `CONOHA_API_PASSWORD` - The API password to use.
