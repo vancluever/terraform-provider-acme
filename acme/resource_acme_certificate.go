@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/go-acme/lego/certificate"
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/xenolf/lego/certificate"
 )
 
 func resourceACMECertificate() *schema.Resource {

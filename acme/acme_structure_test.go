@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/go-acme/lego/certificate"
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/xenolf/lego/certificate"
 )
 
 const testDirResponseText = `

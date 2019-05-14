@@ -21,6 +21,17 @@ For complete information on how to use these providers with the
 
 Refer to a specific provider on the left sidebar for more details.
 
+## Using Variable Files for Provider Arguments
+
+Most provider arguments can be suffixed with `_FILE` to specify that you wish to
+store that value in a local file. This can be useful if local storage for these
+values is desired over configuration as variables or within the environment.
+
+See the [example][acme-certificate-file-arg-example] in the `acme_certificate`
+resource for more details.
+
+[acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
+
 ## Relation to Terraform provider configuration
 
 The DNS provider configuration specified in the

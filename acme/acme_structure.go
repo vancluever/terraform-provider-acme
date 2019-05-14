@@ -11,64 +11,67 @@ import (
 	"os"
 	"time"
 
+	"github.com/go-acme/lego/certcrypto"
+	"github.com/go-acme/lego/certificate"
+	"github.com/go-acme/lego/challenge"
+	"github.com/go-acme/lego/challenge/dns01"
+	"github.com/go-acme/lego/lego"
+	"github.com/go-acme/lego/providers/dns/acmedns"
+	"github.com/go-acme/lego/providers/dns/alidns"
+	"github.com/go-acme/lego/providers/dns/auroradns"
+	"github.com/go-acme/lego/providers/dns/azure"
+	"github.com/go-acme/lego/providers/dns/bluecat"
+	"github.com/go-acme/lego/providers/dns/cloudflare"
+	"github.com/go-acme/lego/providers/dns/cloudns"
+	"github.com/go-acme/lego/providers/dns/cloudxns"
+	"github.com/go-acme/lego/providers/dns/conoha"
+	"github.com/go-acme/lego/providers/dns/designate"
+	"github.com/go-acme/lego/providers/dns/digitalocean"
+	"github.com/go-acme/lego/providers/dns/dnsimple"
+	"github.com/go-acme/lego/providers/dns/dnsmadeeasy"
+	"github.com/go-acme/lego/providers/dns/dnspod"
+	"github.com/go-acme/lego/providers/dns/dode"
+	"github.com/go-acme/lego/providers/dns/dreamhost"
+	"github.com/go-acme/lego/providers/dns/duckdns"
+	"github.com/go-acme/lego/providers/dns/dyn"
+	"github.com/go-acme/lego/providers/dns/exec"
+	"github.com/go-acme/lego/providers/dns/exoscale"
+	"github.com/go-acme/lego/providers/dns/fastdns"
+	"github.com/go-acme/lego/providers/dns/gandi"
+	"github.com/go-acme/lego/providers/dns/gandiv5"
+	"github.com/go-acme/lego/providers/dns/gcloud"
+	"github.com/go-acme/lego/providers/dns/glesys"
+	"github.com/go-acme/lego/providers/dns/godaddy"
+	"github.com/go-acme/lego/providers/dns/hostingde"
+	"github.com/go-acme/lego/providers/dns/httpreq"
+	"github.com/go-acme/lego/providers/dns/iij"
+	"github.com/go-acme/lego/providers/dns/inwx"
+	"github.com/go-acme/lego/providers/dns/lightsail"
+	"github.com/go-acme/lego/providers/dns/linode"
+	"github.com/go-acme/lego/providers/dns/linodev4"
+	"github.com/go-acme/lego/providers/dns/mydnsjp"
+	"github.com/go-acme/lego/providers/dns/namecheap"
+	"github.com/go-acme/lego/providers/dns/namedotcom"
+	"github.com/go-acme/lego/providers/dns/netcup"
+	"github.com/go-acme/lego/providers/dns/nifcloud"
+	"github.com/go-acme/lego/providers/dns/ns1"
+	"github.com/go-acme/lego/providers/dns/oraclecloud"
+	"github.com/go-acme/lego/providers/dns/otc"
+	"github.com/go-acme/lego/providers/dns/ovh"
+	"github.com/go-acme/lego/providers/dns/pdns"
+	"github.com/go-acme/lego/providers/dns/rackspace"
+	"github.com/go-acme/lego/providers/dns/rfc2136"
+	"github.com/go-acme/lego/providers/dns/route53"
+	"github.com/go-acme/lego/providers/dns/sakuracloud"
+	"github.com/go-acme/lego/providers/dns/selectel"
+	"github.com/go-acme/lego/providers/dns/stackpath"
+	"github.com/go-acme/lego/providers/dns/transip"
+	"github.com/go-acme/lego/providers/dns/vegadns"
+	"github.com/go-acme/lego/providers/dns/vscale"
+	"github.com/go-acme/lego/providers/dns/vultr"
+	"github.com/go-acme/lego/providers/dns/zoneee"
+	"github.com/go-acme/lego/registration"
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/xenolf/lego/certcrypto"
-	"github.com/xenolf/lego/certificate"
-	"github.com/xenolf/lego/challenge"
-	"github.com/xenolf/lego/challenge/dns01"
-	"github.com/xenolf/lego/lego"
-	"github.com/xenolf/lego/providers/dns/acmedns"
-	"github.com/xenolf/lego/providers/dns/alidns"
-	"github.com/xenolf/lego/providers/dns/auroradns"
-	"github.com/xenolf/lego/providers/dns/azure"
-	"github.com/xenolf/lego/providers/dns/bluecat"
-	"github.com/xenolf/lego/providers/dns/cloudflare"
-	"github.com/xenolf/lego/providers/dns/cloudxns"
-	"github.com/xenolf/lego/providers/dns/conoha"
-	"github.com/xenolf/lego/providers/dns/designate"
-	"github.com/xenolf/lego/providers/dns/digitalocean"
-	"github.com/xenolf/lego/providers/dns/dnsimple"
-	"github.com/xenolf/lego/providers/dns/dnsmadeeasy"
-	"github.com/xenolf/lego/providers/dns/dnspod"
-	"github.com/xenolf/lego/providers/dns/dreamhost"
-	"github.com/xenolf/lego/providers/dns/duckdns"
-	"github.com/xenolf/lego/providers/dns/dyn"
-	"github.com/xenolf/lego/providers/dns/exec"
-	"github.com/xenolf/lego/providers/dns/exoscale"
-	"github.com/xenolf/lego/providers/dns/fastdns"
-	"github.com/xenolf/lego/providers/dns/gandi"
-	"github.com/xenolf/lego/providers/dns/gandiv5"
-	"github.com/xenolf/lego/providers/dns/gcloud"
-	"github.com/xenolf/lego/providers/dns/glesys"
-	"github.com/xenolf/lego/providers/dns/godaddy"
-	"github.com/xenolf/lego/providers/dns/hostingde"
-	"github.com/xenolf/lego/providers/dns/httpreq"
-	"github.com/xenolf/lego/providers/dns/iij"
-	"github.com/xenolf/lego/providers/dns/inwx"
-	"github.com/xenolf/lego/providers/dns/lightsail"
-	"github.com/xenolf/lego/providers/dns/linode"
-	"github.com/xenolf/lego/providers/dns/linodev4"
-	"github.com/xenolf/lego/providers/dns/mydnsjp"
-	"github.com/xenolf/lego/providers/dns/namecheap"
-	"github.com/xenolf/lego/providers/dns/namedotcom"
-	"github.com/xenolf/lego/providers/dns/netcup"
-	"github.com/xenolf/lego/providers/dns/nifcloud"
-	"github.com/xenolf/lego/providers/dns/ns1"
-	"github.com/xenolf/lego/providers/dns/otc"
-	"github.com/xenolf/lego/providers/dns/ovh"
-	"github.com/xenolf/lego/providers/dns/pdns"
-	"github.com/xenolf/lego/providers/dns/rackspace"
-	"github.com/xenolf/lego/providers/dns/rfc2136"
-	"github.com/xenolf/lego/providers/dns/route53"
-	"github.com/xenolf/lego/providers/dns/sakuracloud"
-	"github.com/xenolf/lego/providers/dns/selectel"
-	"github.com/xenolf/lego/providers/dns/stackpath"
-	"github.com/xenolf/lego/providers/dns/transip"
-	"github.com/xenolf/lego/providers/dns/vegadns"
-	"github.com/xenolf/lego/providers/dns/vscale"
-	"github.com/xenolf/lego/providers/dns/vultr"
-	"github.com/xenolf/lego/providers/dns/zoneee"
-	"github.com/xenolf/lego/registration"
 	"software.sslmate.com/src/go-pkcs12"
 )
 
@@ -547,6 +550,8 @@ func setDNSChallenge(client *lego.Client, m map[string]interface{}) error {
 		provider, err = bluecat.NewDNSProvider()
 	case "cloudflare":
 		provider, err = cloudflare.NewDNSProvider()
+	case "cloudns":
+		provider, err = cloudns.NewDNSProvider()
 	case "cloudxns":
 		provider, err = cloudxns.NewDNSProvider()
 	case "conoha":
@@ -561,6 +566,8 @@ func setDNSChallenge(client *lego.Client, m map[string]interface{}) error {
 		provider, err = dnsmadeeasy.NewDNSProvider()
 	case "dnspod":
 		provider, err = dnspod.NewDNSProvider()
+	case "dode":
+		provider, err = dode.NewDNSProvider()
 	case "dreamhost":
 		provider, err = dreamhost.NewDNSProvider()
 	case "duckdns":
@@ -609,6 +616,8 @@ func setDNSChallenge(client *lego.Client, m map[string]interface{}) error {
 		provider, err = nifcloud.NewDNSProvider()
 	case "ns1":
 		provider, err = ns1.NewDNSProvider()
+	case "oraclecloud":
+		provider, err = oraclecloud.NewDNSProvider()
 	case "otc":
 		provider, err = otc.NewDNSProvider()
 	case "ovh":

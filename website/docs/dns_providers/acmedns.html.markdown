@@ -42,5 +42,11 @@ directly through the `config` block in the
 
 [resource-acme-certificate-dns-challenge-arg]: /docs/providers/acme/r/certificate.html#dns_challenge
 
+In addition, arguments can also be stored in a local file, with the path
+supplied by supplying the argument with the `_FILE` suffix. See
+[here][acme-certificate-file-arg-example] for more information.
+
+[acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
+
 * `ACME_DNS_API_BASE` - The ACME-DNS API addres to use.
 * `ACME_DNS_STORAGE_PATH` - The ACME-DNS JSON account data file to use.

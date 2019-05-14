@@ -42,6 +42,12 @@ directly through the `config` block in the
 
 [resource-acme-certificate-dns-challenge-arg]: /docs/providers/acme/r/certificate.html#dns_challenge
 
+In addition, arguments can also be stored in a local file, with the path
+supplied by supplying the argument with the `_FILE` suffix. See
+[here][acme-certificate-file-arg-example] for more information.
+
+[acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
+
 * `BLUECAT_SERVER_URL` - The URL for the address manager to use.
 * `BLUECAT_USER_NAME` - The user name to use.
 * `BLUECAT_PASSWORD` - The password to use for the supplied user name.

@@ -1,8 +1,8 @@
 package acme
 
 import (
+	"github.com/go-acme/lego/registration"
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/xenolf/lego/registration"
 )
 
 func resourceACMERegistration() *schema.Resource {

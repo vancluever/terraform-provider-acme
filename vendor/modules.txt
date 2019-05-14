@@ -1,4 +1,4 @@
-# cloud.google.com/go v0.38.0
+# cloud.google.com/go v0.37.4
 cloud.google.com/go/compute/metadata
 cloud.google.com/go/storage
 cloud.google.com/go/iam
@@ -6,7 +6,7 @@ cloud.google.com/go/internal
 cloud.google.com/go/internal/optional
 cloud.google.com/go/internal/trace
 cloud.google.com/go/internal/version
-# contrib.go.opencensus.io/exporter/ocagent v0.5.0
+# contrib.go.opencensus.io/exporter/ocagent v0.4.11
 contrib.go.opencensus.io/exporter/ocagent
 # github.com/Azure/azure-sdk-for-go v29.0.0+incompatible
 github.com/Azure/azure-sdk-for-go/services/dns/mgmt/2017-09-01/dns
@@ -118,12 +118,92 @@ github.com/dgrijalva/jwt-go
 github.com/dimchansky/utfbom
 # github.com/dnsimple/dnsimple-go v0.23.0
 github.com/dnsimple/dnsimple-go/dnsimple
-# github.com/exoscale/egoscale v0.13.3
+# github.com/exoscale/egoscale v0.14.0
 github.com/exoscale/egoscale
 # github.com/fatih/color v1.7.0
 github.com/fatih/color
 # github.com/fatih/structs v1.1.0
 github.com/fatih/structs
+# github.com/go-acme/lego v2.5.0+incompatible
+github.com/go-acme/lego/certcrypto
+github.com/go-acme/lego/certificate
+github.com/go-acme/lego/challenge
+github.com/go-acme/lego/challenge/dns01
+github.com/go-acme/lego/lego
+github.com/go-acme/lego/providers/dns/acmedns
+github.com/go-acme/lego/providers/dns/alidns
+github.com/go-acme/lego/providers/dns/auroradns
+github.com/go-acme/lego/providers/dns/azure
+github.com/go-acme/lego/providers/dns/bluecat
+github.com/go-acme/lego/providers/dns/cloudflare
+github.com/go-acme/lego/providers/dns/cloudns
+github.com/go-acme/lego/providers/dns/cloudxns
+github.com/go-acme/lego/providers/dns/conoha
+github.com/go-acme/lego/providers/dns/designate
+github.com/go-acme/lego/providers/dns/digitalocean
+github.com/go-acme/lego/providers/dns/dnsimple
+github.com/go-acme/lego/providers/dns/dnsmadeeasy
+github.com/go-acme/lego/providers/dns/dnspod
+github.com/go-acme/lego/providers/dns/dode
+github.com/go-acme/lego/providers/dns/dreamhost
+github.com/go-acme/lego/providers/dns/duckdns
+github.com/go-acme/lego/providers/dns/dyn
+github.com/go-acme/lego/providers/dns/exec
+github.com/go-acme/lego/providers/dns/exoscale
+github.com/go-acme/lego/providers/dns/fastdns
+github.com/go-acme/lego/providers/dns/gandi
+github.com/go-acme/lego/providers/dns/gandiv5
+github.com/go-acme/lego/providers/dns/gcloud
+github.com/go-acme/lego/providers/dns/glesys
+github.com/go-acme/lego/providers/dns/godaddy
+github.com/go-acme/lego/providers/dns/hostingde
+github.com/go-acme/lego/providers/dns/httpreq
+github.com/go-acme/lego/providers/dns/iij
+github.com/go-acme/lego/providers/dns/inwx
+github.com/go-acme/lego/providers/dns/lightsail
+github.com/go-acme/lego/providers/dns/linode
+github.com/go-acme/lego/providers/dns/linodev4
+github.com/go-acme/lego/providers/dns/mydnsjp
+github.com/go-acme/lego/providers/dns/namecheap
+github.com/go-acme/lego/providers/dns/namedotcom
+github.com/go-acme/lego/providers/dns/netcup
+github.com/go-acme/lego/providers/dns/nifcloud
+github.com/go-acme/lego/providers/dns/ns1
+github.com/go-acme/lego/providers/dns/oraclecloud
+github.com/go-acme/lego/providers/dns/otc
+github.com/go-acme/lego/providers/dns/ovh
+github.com/go-acme/lego/providers/dns/pdns
+github.com/go-acme/lego/providers/dns/rackspace
+github.com/go-acme/lego/providers/dns/rfc2136
+github.com/go-acme/lego/providers/dns/route53
+github.com/go-acme/lego/providers/dns/sakuracloud
+github.com/go-acme/lego/providers/dns/selectel
+github.com/go-acme/lego/providers/dns/stackpath
+github.com/go-acme/lego/providers/dns/transip
+github.com/go-acme/lego/providers/dns/vegadns
+github.com/go-acme/lego/providers/dns/vscale
+github.com/go-acme/lego/providers/dns/vultr
+github.com/go-acme/lego/providers/dns/zoneee
+github.com/go-acme/lego/registration
+github.com/go-acme/lego/acme
+github.com/go-acme/lego/acme/api
+github.com/go-acme/lego/log
+github.com/go-acme/lego/platform/wait
+github.com/go-acme/lego/challenge/resolver
+github.com/go-acme/lego/platform/config/env
+github.com/go-acme/lego/providers/dns/cloudns/internal
+github.com/go-acme/lego/providers/dns/cloudxns/internal
+github.com/go-acme/lego/providers/dns/conoha/internal
+github.com/go-acme/lego/providers/dns/dnsmadeeasy/internal
+github.com/go-acme/lego/providers/dns/netcup/internal
+github.com/go-acme/lego/providers/dns/nifcloud/internal
+github.com/go-acme/lego/providers/dns/selectel/internal
+github.com/go-acme/lego/providers/dns/vscale/internal
+github.com/go-acme/lego/acme/api/internal/nonces
+github.com/go-acme/lego/acme/api/internal/secure
+github.com/go-acme/lego/acme/api/internal/sender
+github.com/go-acme/lego/challenge/http01
+github.com/go-acme/lego/challenge/tlsalpn01
 # github.com/go-ini/ini v1.42.0
 github.com/go-ini/ini
 # github.com/golang/protobuf v1.3.1
@@ -316,6 +396,9 @@ github.com/nrdcg/auroradns
 github.com/nrdcg/goinwx
 # github.com/oklog/run v1.0.0
 github.com/oklog/run
+# github.com/oracle/oci-go-sdk v4.0.0+incompatible
+github.com/oracle/oci-go-sdk/common
+github.com/oracle/oci-go-sdk/dns
 # github.com/ovh/go-ovh v0.0.0-20181109152953-ba5adb4cf014
 github.com/ovh/go-ovh/ovh
 # github.com/pkg/errors v0.8.1
@@ -325,11 +408,12 @@ github.com/posener/complete
 github.com/posener/complete/cmd/install
 github.com/posener/complete/cmd
 github.com/posener/complete/match
-# github.com/sacloud/libsacloud v1.13.0
+# github.com/sacloud/libsacloud v1.19.0
 github.com/sacloud/libsacloud/api
 github.com/sacloud/libsacloud/sacloud
 github.com/sacloud/libsacloud
 github.com/sacloud/libsacloud/sacloud/ostype
+github.com/sacloud/libsacloud/utils/mutexkv
 # github.com/satori/go.uuid v1.2.0
 github.com/satori/go.uuid
 # github.com/sirupsen/logrus v1.4.1
@@ -354,82 +438,6 @@ github.com/ulikunitz/xz/internal/hash
 # github.com/vmihailenco/msgpack v4.0.4+incompatible
 github.com/vmihailenco/msgpack
 github.com/vmihailenco/msgpack/codes
-# github.com/xenolf/lego v2.2.0+incompatible
-github.com/xenolf/lego/certcrypto
-github.com/xenolf/lego/certificate
-github.com/xenolf/lego/challenge
-github.com/xenolf/lego/challenge/dns01
-github.com/xenolf/lego/lego
-github.com/xenolf/lego/providers/dns/acmedns
-github.com/xenolf/lego/providers/dns/alidns
-github.com/xenolf/lego/providers/dns/auroradns
-github.com/xenolf/lego/providers/dns/azure
-github.com/xenolf/lego/providers/dns/bluecat
-github.com/xenolf/lego/providers/dns/cloudflare
-github.com/xenolf/lego/providers/dns/cloudxns
-github.com/xenolf/lego/providers/dns/conoha
-github.com/xenolf/lego/providers/dns/designate
-github.com/xenolf/lego/providers/dns/digitalocean
-github.com/xenolf/lego/providers/dns/dnsimple
-github.com/xenolf/lego/providers/dns/dnsmadeeasy
-github.com/xenolf/lego/providers/dns/dnspod
-github.com/xenolf/lego/providers/dns/dreamhost
-github.com/xenolf/lego/providers/dns/duckdns
-github.com/xenolf/lego/providers/dns/dyn
-github.com/xenolf/lego/providers/dns/exec
-github.com/xenolf/lego/providers/dns/exoscale
-github.com/xenolf/lego/providers/dns/fastdns
-github.com/xenolf/lego/providers/dns/gandi
-github.com/xenolf/lego/providers/dns/gandiv5
-github.com/xenolf/lego/providers/dns/gcloud
-github.com/xenolf/lego/providers/dns/glesys
-github.com/xenolf/lego/providers/dns/godaddy
-github.com/xenolf/lego/providers/dns/hostingde
-github.com/xenolf/lego/providers/dns/httpreq
-github.com/xenolf/lego/providers/dns/iij
-github.com/xenolf/lego/providers/dns/inwx
-github.com/xenolf/lego/providers/dns/lightsail
-github.com/xenolf/lego/providers/dns/linode
-github.com/xenolf/lego/providers/dns/linodev4
-github.com/xenolf/lego/providers/dns/mydnsjp
-github.com/xenolf/lego/providers/dns/namecheap
-github.com/xenolf/lego/providers/dns/namedotcom
-github.com/xenolf/lego/providers/dns/netcup
-github.com/xenolf/lego/providers/dns/nifcloud
-github.com/xenolf/lego/providers/dns/ns1
-github.com/xenolf/lego/providers/dns/otc
-github.com/xenolf/lego/providers/dns/ovh
-github.com/xenolf/lego/providers/dns/pdns
-github.com/xenolf/lego/providers/dns/rackspace
-github.com/xenolf/lego/providers/dns/rfc2136
-github.com/xenolf/lego/providers/dns/route53
-github.com/xenolf/lego/providers/dns/sakuracloud
-github.com/xenolf/lego/providers/dns/selectel
-github.com/xenolf/lego/providers/dns/stackpath
-github.com/xenolf/lego/providers/dns/transip
-github.com/xenolf/lego/providers/dns/vegadns
-github.com/xenolf/lego/providers/dns/vscale
-github.com/xenolf/lego/providers/dns/vultr
-github.com/xenolf/lego/providers/dns/zoneee
-github.com/xenolf/lego/registration
-github.com/xenolf/lego/acme
-github.com/xenolf/lego/acme/api
-github.com/xenolf/lego/log
-github.com/xenolf/lego/platform/wait
-github.com/xenolf/lego/challenge/resolver
-github.com/xenolf/lego/platform/config/env
-github.com/xenolf/lego/providers/dns/cloudxns/internal
-github.com/xenolf/lego/providers/dns/conoha/internal
-github.com/xenolf/lego/providers/dns/dnsmadeeasy/internal
-github.com/xenolf/lego/providers/dns/netcup/internal
-github.com/xenolf/lego/providers/dns/nifcloud/internal
-github.com/xenolf/lego/providers/dns/selectel/internal
-github.com/xenolf/lego/providers/dns/vscale/internal
-github.com/xenolf/lego/acme/api/internal/nonces
-github.com/xenolf/lego/acme/api/internal/secure
-github.com/xenolf/lego/acme/api/internal/sender
-github.com/xenolf/lego/challenge/http01
-github.com/xenolf/lego/challenge/tlsalpn01
 # github.com/zclconf/go-cty v0.0.0-20190430221426-d36a6f0dbffd
 github.com/zclconf/go-cty/cty
 github.com/zclconf/go-cty/cty/msgpack
@@ -439,7 +447,7 @@ github.com/zclconf/go-cty/cty/gocty
 github.com/zclconf/go-cty/cty/set
 github.com/zclconf/go-cty/cty/function
 github.com/zclconf/go-cty/cty/function/stdlib
-# go.opencensus.io v0.21.0
+# go.opencensus.io v0.20.1
 go.opencensus.io/plugin/ochttp
 go.opencensus.io/plugin/ochttp/propagation/tracecontext
 go.opencensus.io/stats/view
@@ -461,17 +469,17 @@ go.opencensus.io/trace/internal
 # golang.org/x/crypto v0.0.0-20190510104115-cbcb75029529
 golang.org/x/crypto/ocsp
 golang.org/x/crypto/openpgp
-golang.org/x/crypto/bcrypt
 golang.org/x/crypto/ed25519
 golang.org/x/crypto/pkcs12
+golang.org/x/crypto/bcrypt
 golang.org/x/crypto/ssh
 golang.org/x/crypto/openpgp/armor
 golang.org/x/crypto/openpgp/errors
 golang.org/x/crypto/openpgp/packet
 golang.org/x/crypto/openpgp/s2k
-golang.org/x/crypto/blowfish
 golang.org/x/crypto/ed25519/internal/edwards25519
 golang.org/x/crypto/pkcs12/internal/rc2
+golang.org/x/crypto/blowfish
 golang.org/x/crypto/curve25519
 golang.org/x/crypto/internal/chacha20
 golang.org/x/crypto/poly1305
@@ -513,15 +521,15 @@ golang.org/x/text/unicode/bidi
 golang.org/x/text/transform
 # golang.org/x/time v0.0.0-20190308202827-9d24e82272b4
 golang.org/x/time/rate
-# google.golang.org/api v0.5.0
+# google.golang.org/api v0.3.2
 google.golang.org/api/dns/v1
 google.golang.org/api/googleapi
-google.golang.org/api/gensupport
 google.golang.org/api/option
+google.golang.org/api/gensupport
 google.golang.org/api/transport/http
 google.golang.org/api/googleapi/internal/uritemplates
-google.golang.org/api/iterator
 google.golang.org/api/internal
+google.golang.org/api/iterator
 google.golang.org/api/googleapi/transport
 google.golang.org/api/transport/http/internal/propagation
 google.golang.org/api/storage/v1

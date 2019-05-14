@@ -199,6 +199,34 @@ resource "acme_certificate" "certificate" {
 }
 ```
 
+#### Using Variable Files for Provider Arguments
+
+Most provider arguments can be suffixed with `_FILE` to specify that you wish to
+store that value in a local file. This can be useful if local storage for these
+values is desired over configuration as variables or within the environment.
+
+Building on the above [Route 53 provider][route53-dns-provider] example, the
+following example uses local files to get the access key ID and secret access
+key.
+
+```hcl
+resource "acme_certificate" "certificate" {
+  #...
+
+  dns_challenge {
+    provider = "route53"
+
+    config {
+      AWS_ACCESS_KEY_ID_FILE     = "/data/secrets/aws_access_key_id"
+      AWS_SECRET_ACCESS_KEY_FILE = "/data/secrets/aws_secret_access_key"
+      AWS_DEFAULT_REGION         = "us-east-1"
+    }
+  }
+
+  #...
+}
+```
+
 #### Manually specifying recursive nameservers for propagation checks
 
 The ACME provider will normally use your system-configured DNS resolvers to
