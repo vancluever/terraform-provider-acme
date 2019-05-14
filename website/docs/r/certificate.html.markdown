@@ -152,8 +152,9 @@ when using `must_staple`, and only enable it if you are sure your webserver or
 service provider can be configured correctly.
 
 * `min_days_remaining` (Optional) - The minimum amount of days remaining on the
-   expiration of a certificate before a renewal is attempted. The default is
-   `7`. A value of less than `0` means that the certificate will never be renewed.
+  expiration of a certificate before a renewal is attempted. The default is
+  `30`. A value of less than `0` means that the certificate will never be
+  renewed.
 * `certificate_p12_password` - (Optional) Password to be used when generating
   the PFX file stored in [`certificate_p12`](#certificate_p12). Defaults to an
   empty string.

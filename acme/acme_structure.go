@@ -140,7 +140,7 @@ func certificateSchema() map[string]*schema.Schema {
 		"min_days_remaining": {
 			Type:     schema.TypeInt,
 			Optional: true,
-			Default:  7,
+			Default:  30,
 		},
 		"dns_challenge": {
 			Type:     schema.TypeList,
