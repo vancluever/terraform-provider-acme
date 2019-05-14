@@ -1,4 +1,11 @@
 ## 1.2.1 (Unreleased)
+
+FEATURES:
+
+* The plugin has been updated to support Terraform 0.12 and higher. Backwards
+  compatibility has been maintained to Terraform 0.11.x and earlier versions
+  that support plugin protocol version 4. ([#45](https://github.com/terraform-providers/terraform-provider-acme/issues/45))
+
 ## 1.2.0 (May 14, 2019)
 
 LEGO UPDATE AND NEW DNS PROVIDERS:
@@ -14,12 +21,6 @@ The update brings the following new DNS providers:
 * `cloudns`
 * `dode`
 * `oraclecloud`
-
-FEATURES:
-
-* The plugin has been updated to support Terraform 0.12 and higher. Backwards
-  compatibility has been maintained to Terraform 0.11.x and earlier versions
-  that support plugin protocol version 4. ([#45](https://github.com/terraform-providers/terraform-provider-acme/issues/45))
 
 IMPROVEMENTS:
 
