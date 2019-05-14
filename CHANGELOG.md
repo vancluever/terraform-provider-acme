@@ -1,9 +1,9 @@
-## 1.2.0 (Unreleased)
+## 1.2.0 (May 14, 2019)
 
 LEGO UPDATE AND NEW DNS PROVIDERS:
 
 [lego][lego-url] has been updated to v2.5.0. See the lego
-[CHANGELOG.md][lego-changelog] for more details. [GH-47]
+[CHANGELOG.md][lego-changelog] for more details. ([#47](https://github.com/terraform-providers/terraform-provider-acme/issues/47))
 
 [lego-url]: https://github.com/go-acme/lego
 [lego-changelog]: https://github.com/go-acme/lego/blob/master/CHANGELOG.md#v250---2019-04-17
@@ -18,12 +18,12 @@ FEATURES:
 
 * The plugin has been updated to support Terraform 0.12 and higher. Backwards
   compatibility has been maintained to Terraform 0.11.x and earlier versions
-  that support plugin protocol version 4. [GH-45]
+  that support plugin protocol version 4. ([#45](https://github.com/terraform-providers/terraform-provider-acme/issues/45))
 
 IMPROVEMENTS:
 
 * `resource/acme_certificate`: The default `min_days_remaining` is now set to 30
-  days, up from 7. [GH-48]
+  days, up from 7. ([#48](https://github.com/terraform-providers/terraform-provider-acme/issues/48))
 
 ## 1.1.2 (May 06, 2019)
 
