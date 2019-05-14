@@ -489,7 +489,7 @@ resource "acme_certificate" "certificate" {
   dns_challenge {
     provider = "route53"
 
-    config {
+    config = {
       AWS_PROFILE           = "%s"
       AWS_ACCESS_KEY_ID     = "%s"
       AWS_SECRET_ACCESS_KEY = "%s"
