@@ -1,10 +1,29 @@
 ## 1.2.0 (Unreleased)
 
+LEGO UPDATE AND NEW DNS PROVIDERS:
+
+[lego][lego-url] has been updated to v2.5.0. See the lego
+[CHANGELOG.md][lego-changelog] for more details. [GH-47]
+
+[lego-url]: https://github.com/go-acme/lego
+[lego-changelog]: https://github.com/go-acme/lego/blob/master/CHANGELOG.md#v250---2019-04-17
+
+The update brings the following new DNS providers:
+
+* `cloudns`
+* `dode`
+* `oraclecloud`
+
 FEATURES:
 
 * The plugin has been updated to support Terraform 0.12 and higher. Backwards
   compatibility has been maintained to Terraform 0.11.x and earlier versions
   that support plugin protocol version 4. [GH-45]
+
+IMPROVEMENTS:
+
+* `resource/acme_certificate`: The default `min_days_remaining` is now set to 30
+  days, up from 7. [GH-48]
 
 ## 1.1.2 (May 06, 2019)
 
@@ -27,8 +46,6 @@ BUG FIXES:
 LEGO UPDATE AND NEW DNS PROVIDERS:
 
 [lego][lego-url] has been updated to v2.2.0.
-
-[lego-url]: https://github.com/xenolf/lego
 
 As part of this update, a number of new DNS providers have been added for
 `acme_certificate`:
