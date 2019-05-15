@@ -284,7 +284,7 @@ func TestACME_setDNSChallenge_noProvider(t *testing.T) {
 		t.Fatalf("fatal: %s", err.Error())
 	}
 
-	err = setDNSChallenge(client, m)
+	_, _, err = setDNSChallenge(client, m)
 	if err == nil {
 		t.Fatalf("should have errored due to no provider supplied")
 	}
@@ -301,7 +301,7 @@ func TestACME_setDNSChallenge_unsuppotedProvider(t *testing.T) {
 		t.Fatalf("fatal: %s", err.Error())
 	}
 
-	err = setDNSChallenge(client, m)
+	_, _, err = setDNSChallenge(client, m)
 	if err == nil {
 		t.Fatalf("should have errored due to unknown provider")
 	}

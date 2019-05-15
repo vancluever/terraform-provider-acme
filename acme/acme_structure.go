@@ -148,7 +148,6 @@ func certificateSchema() map[string]*schema.Schema {
 		"dns_challenge": {
 			Type:     schema.TypeList,
 			Required: true,
-			MaxItems: 1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"provider": {
@@ -509,7 +508,7 @@ func mapEnvironmentVariableValues(keyMapping map[string]string) {
 // setDNSChallenge takes a *lego.Client and the DNS challenge complex
 // structure as a map[string]interface{}, and configues the client to
 // only allow a DNS challenge with the configured provider.
-func setDNSChallenge(client *lego.Client, m map[string]interface{}) error {
+func setDNSChallenge(client *lego.Client, m map[string]interface{}) (challenge.Provider, []dns01.ChallengeOption, error) {
 	var provider challenge.Provider
 	var err error
 	var providerName string
@@ -517,7 +516,7 @@ func setDNSChallenge(client *lego.Client, m map[string]interface{}) error {
 	if v, ok := m["provider"]; ok && v.(string) != "" {
 		providerName = v.(string)
 	} else {
-		return fmt.Errorf("DNS challenge provider not defined")
+		return nil, nil, fmt.Errorf("DNS challenge provider not defined")
 	}
 	// Config only needs to be set if it's defined, otherwise existing env/SDK
 	// defaults are fine.
@@ -647,10 +646,10 @@ func setDNSChallenge(client *lego.Client, m map[string]interface{}) error {
 	case "zoneee":
 		provider, err = zoneee.NewDNSProvider()
 	default:
-		return fmt.Errorf("%s: unsupported DNS challenge provider", providerName)
+		return nil, nil, fmt.Errorf("%s: unsupported DNS challenge provider", providerName)
 	}
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 
 	var opts []dns01.ChallengeOption
@@ -663,11 +662,7 @@ func setDNSChallenge(client *lego.Client, m map[string]interface{}) error {
 		opts = append(opts, dns01.AddRecursiveNameservers(s))
 	}
 
-	if err := client.Challenge.SetDNS01Provider(provider, opts...); err != nil {
-		return err
-	}
-
-	return nil
+	return provider, opts, nil
 }
 
 // stringSlice converts an interface slice to a string slice.

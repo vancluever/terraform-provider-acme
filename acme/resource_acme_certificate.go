@@ -6,8 +6,43 @@ import (
 	"log"
 
 	"github.com/go-acme/lego/certificate"
+	"github.com/go-acme/lego/challenge"
+	"github.com/go-acme/lego/challenge/dns01"
+	"github.com/hashicorp/go-multierror"
 	"github.com/hashicorp/terraform/helper/schema"
 )
+
+type DNSProviderWrapper struct {
+	providers []challenge.Provider
+}
+
+func NewDNSProviderWrapper() (*DNSProviderWrapper, error) {
+	return &DNSProviderWrapper{}, nil
+}
+
+func (d *DNSProviderWrapper) Present(domain, token, keyAuth string) error {
+	var err error
+	for _, p := range d.providers {
+		err = p.Present(domain, token, keyAuth)
+		if err != nil {
+			err = multierror.Append(err, fmt.Errorf("error encountered while presenting token for DNS challenge: %s", err.Error()))
+		}
+	}
+
+	return err
+}
+
+func (d *DNSProviderWrapper) CleanUp(domain, token, keyAuth string) error {
+	var err error
+	for _, p := range d.providers {
+		err = p.CleanUp(domain, token, keyAuth)
+		if err != nil {
+			err = multierror.Append(err, fmt.Errorf("error encountered while cleaning token for DNS challenge: %s", err.Error()))
+		}
+	}
+
+	return err
+}
 
 func resourceACMECertificate() *schema.Resource {
 	return &schema.Resource{
@@ -29,9 +64,22 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		return err
 	}
 
-	if err = setDNSChallenge(client, d.Get("dns_challenge").([]interface{})[0].(map[string]interface{})); err != nil {
+	provider, err := NewDNSProviderWrapper()
+	if err != nil {
 		return err
 	}
+
+	var challenge_opts []dns01.ChallengeOption
+	for _, v := range d.Get("dns_challenge").([]interface{}) {
+		if p, opts, err := setDNSChallenge(client, v.(map[string]interface{})); err == nil {
+			provider.providers = append(provider.providers, p)
+			challenge_opts = append(challenge_opts, opts...)
+		} else {
+			return err
+		}
+	}
+
+	client.Challenge.SetDNS01Provider(provider)
 
 	var cert *certificate.Resource
 
@@ -83,6 +131,22 @@ func resourceACMECertificateRead(d *schema.ResourceData, meta interface{}) error
 // resourceACMECertificateCustomizeDiff checks the certificate for renewal and
 // flags it as NewComputed if it needs a renewal.
 func resourceACMECertificateCustomizeDiff(d *schema.ResourceDiff, meta interface{}) error {
+	// Ensure duplicate providers for dns_challenge are not provided.
+	provider_map := make(map[string]bool)
+	for _, v := range d.Get("dns_challenge").([]interface{}) {
+		m := v.(map[string]interface{})
+		if v, ok := m["provider"]; ok && v.(string) != "" {
+			provider := v.(string)
+			if _, ok := provider_map[provider]; ok {
+				return fmt.Errorf("duplicate dns_challenge providers: %s", provider)
+			} else {
+				provider_map[provider] = true
+			}
+		} else {
+			return fmt.Errorf("DNS challenge provider not defined")
+		}
+	}
+
 	// There's nothing for us to do in a Create diff, so if there's no ID yet,
 	// just pass this part.
 	if d.Id() == "" {
@@ -130,9 +194,23 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 	}
 
 	cert := expandCertificateResource(d)
-	if err := setDNSChallenge(client, d.Get("dns_challenge").([]interface{})[0].(map[string]interface{})); err != nil {
+
+	provider, err := NewDNSProviderWrapper()
+	if err != nil {
 		return err
 	}
+
+	var challenge_opts []dns01.ChallengeOption
+	for _, v := range d.Get("dns_challenge").([]interface{}) {
+		if p, opts, err := setDNSChallenge(client, v.(map[string]interface{})); err == nil {
+			provider.providers = append(provider.providers, p)
+			challenge_opts = append(challenge_opts, opts...)
+		} else {
+			return err
+		}
+	}
+
+	client.Challenge.SetDNS01Provider(provider)
 
 	newCert, err := client.Certificate.Renew(*cert, true, d.Get("must_staple").(bool))
 	if err != nil {
