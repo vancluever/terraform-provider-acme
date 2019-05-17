@@ -662,9 +662,10 @@ resource "acme_certificate" "certificate" {
   subject_alternative_names = ["www11.${var.domain}"]
 
   dns_challenge {
-    provider              = "route53"
-    recursive_nameservers = ["%s"]
+    provider = "route53"
   }
+
+  recursive_nameservers = ["%s"]
 }
 `, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"), nameserver)
 }
