@@ -136,8 +136,12 @@ The resource takes the following arguments:
   from [`tls_cert_request`][tls-cert-request], or one from an external source,
   in PEM format.  Either this, or the in-resource request options (`common_name`,
   `key_type`, and optionally `subject_alternative_names`) need to be specified.
-* `dns_challenge` (Required) - The [DNS challenge](#using-dns-challenges) to use
-  in fulfilling the request.
+* `dns_challenge` (Required) - The [DNS challenges](#using-dns-challenges) to
+  use in fulfilling the request.
+* `recursive_nameservers` (Optional) - The [recursive
+  nameservers](#manually-specifying-recursive-nameservers-for-propagation-checks)
+  that will be used to check for propagation of the challenge record. Defaults
+  to your system-configured DNS resolvers.
 * `must_staple` (Optional) Enables the [OCSP Stapling Required][ocsp-stapling]
   TLS Security Policy extension. Certificates with this extension must include a
   valid OCSP Staple in the TLS handshake for the connection to succeed.
@@ -242,14 +246,50 @@ a list in `host:port` form within the `dns_challenge` block:
 resource "acme_certificate" "certificate" {
   #...
 
+  recursive_nameservers = ["8.8.8.8:53"]
+
   dns_challenge {
-    provider              = "route53"
-    recursive_nameservers = ["8.8.8.8:53"]
+    provider = "route53"
   }
 
   #...
 }
 ```
+
+#### Using multiple primary DNS providers
+
+The ACME provider will allow you to configure multiple DNS challenges in the
+event that you have more than one primary DNS provider.
+
+```hcl
+resource "acme_certificate" "certificate" {
+  #...
+
+  dns_challenge {
+    provider = "azure"
+  }
+
+  dns_challenge {
+    provider = "gcloud"
+  }
+
+  dns_challenge {
+    provider = "route53"
+  }
+
+  #...
+}
+```
+
+Some considerations need to be kept in mind when using multiple providers:
+
+* You cannot use more than one provider of the same type at once.
+* Your NS records must be correctly configured so that each DNS challenge
+  provider can correctly discover the appropriate zone to update.
+* DNS propagation checks are conducted once per configured common name and
+  subject alternative name, using the highest configured or default propagation
+  timeout (`*_PROPAGATION_TIMEOUT`) and polling interval (`*_POLLING_INTERVAL`)
+  settings.
 
 #### Relation to Terraform provider configuration
 

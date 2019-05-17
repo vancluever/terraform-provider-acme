@@ -34,8 +34,8 @@ resource for more details.
 
 ## Relation to Terraform provider configuration
 
-The DNS provider configuration specified in the
-[`acme_certificate`][resource-acme-certificate] resource is separate from any
+The DNS provider configurations specified in the
+[`acme_certificate`][resource-acme-certificate] resource are separate from any
 that you supply in a corresponding provider whose functionality overlaps with
 the certificate's DNS providers.  This ensures that there are no hard
 dependencies between any of these providers and the ACME provider, but it is
