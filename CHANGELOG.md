@@ -1,16 +1,16 @@
-## 1.3.0 (Unreleased)
+## 1.3.0 (May 17, 2019)
 
 BREAKING CHANGES: 
 
 * `resource/acme_certificate`: The `recursive_nameservers` option for checking
   propagation of DNS challenge records has been promoted to a top-level option
   and is no longer provided as part of an individual `dns_challenge` block.
-  [GH-49]
+  ([#49](https://github.com/terraform-providers/terraform-provider-acme/issues/49))
 
 FEATURES:
 
 * `resource/acme_certificate`: This resource now supports multiple DNS
-  challenges for working with multiple primary DNS providers. [GH-49]
+  challenges for working with multiple primary DNS providers. ([#49](https://github.com/terraform-providers/terraform-provider-acme/issues/49))
 
 ## 1.2.1 (May 14, 2019)
 
