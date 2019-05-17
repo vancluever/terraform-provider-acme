@@ -200,6 +200,7 @@ func TestACME_certificateSchema(t *testing.T) {
 		"certificate_request_pem",
 		"min_days_remaining",
 		"dns_challenge",
+		"recursive_nameservers",
 		"must_staple",
 		"certificate_domain",
 		"private_key_pem",
@@ -284,7 +285,7 @@ func TestACME_setDNSChallenge_noProvider(t *testing.T) {
 		t.Fatalf("fatal: %s", err.Error())
 	}
 
-	_, _, err = setDNSChallenge(client, m)
+	_, err = setDNSChallenge(client, m)
 	if err == nil {
 		t.Fatalf("should have errored due to no provider supplied")
 	}
@@ -301,7 +302,7 @@ func TestACME_setDNSChallenge_unsuppotedProvider(t *testing.T) {
 		t.Fatalf("fatal: %s", err.Error())
 	}
 
-	_, _, err = setDNSChallenge(client, m)
+	_, err = setDNSChallenge(client, m)
 	if err == nil {
 		t.Fatalf("should have errored due to unknown provider")
 	}

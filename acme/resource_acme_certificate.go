@@ -53,7 +53,7 @@ func resourceACMECertificate() *schema.Resource {
 		Delete:        resourceACMECertificateDelete,
 
 		Schema:        certificateSchemaFull(),
-		SchemaVersion: 3,
+		SchemaVersion: 4,
 		MigrateState:  resourceACMECertificateMigrateState,
 	}
 }
@@ -69,17 +69,25 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		return err
 	}
 
-	var challenge_opts []dns01.ChallengeOption
 	for _, v := range d.Get("dns_challenge").([]interface{}) {
-		if p, opts, err := setDNSChallenge(client, v.(map[string]interface{})); err == nil {
+		if p, err := setDNSChallenge(client, v.(map[string]interface{})); err == nil {
 			provider.providers = append(provider.providers, p)
-			challenge_opts = append(challenge_opts, opts...)
 		} else {
 			return err
 		}
 	}
 
-	client.Challenge.SetDNS01Provider(provider)
+	var opts []dns01.ChallengeOption
+	if nameservers := d.Get("recursive_nameservers").([]interface{}); len(nameservers) > 0 {
+		var s []string
+		for _, ns := range nameservers {
+			s = append(s, ns.(string))
+		}
+
+		opts = append(opts, dns01.AddRecursiveNameservers(s))
+	}
+
+	client.Challenge.SetDNS01Provider(provider, opts...)
 
 	var cert *certificate.Resource
 
@@ -200,17 +208,25 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 		return err
 	}
 
-	var challenge_opts []dns01.ChallengeOption
 	for _, v := range d.Get("dns_challenge").([]interface{}) {
-		if p, opts, err := setDNSChallenge(client, v.(map[string]interface{})); err == nil {
+		if p, err := setDNSChallenge(client, v.(map[string]interface{})); err == nil {
 			provider.providers = append(provider.providers, p)
-			challenge_opts = append(challenge_opts, opts...)
 		} else {
 			return err
 		}
 	}
 
-	client.Challenge.SetDNS01Provider(provider)
+	var opts []dns01.ChallengeOption
+	if nameservers := d.Get("recursive_nameservers").([]interface{}); len(nameservers) > 0 {
+		var s []string
+		for _, ns := range nameservers {
+			s = append(s, ns.(string))
+		}
+
+		opts = append(opts, dns01.AddRecursiveNameservers(s))
+	}
+
+	client.Challenge.SetDNS01Provider(provider, opts...)
 
 	newCert, err := client.Certificate.Renew(*cert, true, d.Get("must_staple").(bool))
 	if err != nil {

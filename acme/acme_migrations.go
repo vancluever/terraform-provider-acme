@@ -66,6 +66,9 @@ func resourceACMECertificateMigrateState(version int, os *terraform.InstanceStat
 
 	var migrateFunc func(*terraform.InstanceState, interface{}) error
 	switch version {
+	case 3:
+		log.Printf("[DEBUG] Migrating acme_certificate state: old v%d state: %#v", version, os)
+		migrateFunc = migrateACMECertificateStateV4
 	case 2:
 		log.Printf("[DEBUG] Migrating acme_certificate state: old v%d state: %#v", version, os)
 		migrateFunc = migrateACMECertificateStateV3
@@ -86,6 +89,31 @@ func resourceACMECertificateMigrateState(version int, os *terraform.InstanceStat
 	version++
 	log.Printf("[DEBUG] Migrating acme_certificate state: new v%d state: %#v", version, os)
 	return resourceACMECertificateMigrateState(version, os, meta)
+}
+
+// migrateACMECertificateStateV4 handles migration of
+// acme_certificate from schema version 3 to version 4.
+func migrateACMECertificateStateV4(is *terraform.InstanceState, meta interface{}) error {
+	// There has ever only been one "dns_challenge" key allowed in
+	// state, so we should be safe to just iterate over every key and
+	// look for the set hash, and re-write that back to zero.
+	for k, v := range is.Attributes {
+		path := strings.Split(k, ".")
+		if len(path) < 3 {
+			// Top- or second-level key; not what we are looking for.
+			continue
+		}
+
+		if path[2] != "recursive_nameservers" {
+			continue
+		}
+
+		// Re-write recursive_nameservers to the root scope.
+		delete(is.Attributes, k)
+		is.Attributes[strings.Join(path[2:], ".")] = v
+	}
+
+	return nil
 }
 
 // migrateACMECertificateStateV1 handles migration of

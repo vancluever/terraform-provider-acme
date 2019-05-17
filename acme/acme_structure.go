@@ -14,7 +14,6 @@ import (
 	"github.com/go-acme/lego/certcrypto"
 	"github.com/go-acme/lego/certificate"
 	"github.com/go-acme/lego/challenge"
-	"github.com/go-acme/lego/challenge/dns01"
 	"github.com/go-acme/lego/lego"
 	"github.com/go-acme/lego/providers/dns/acmedns"
 	"github.com/go-acme/lego/providers/dns/alidns"
@@ -160,13 +159,13 @@ func certificateSchema() map[string]*schema.Schema {
 						ValidateFunc: validateDNSChallengeConfig,
 						Sensitive:    true,
 					},
-					"recursive_nameservers": {
-						Type:     schema.TypeList,
-						Optional: true,
-						Elem:     &schema.Schema{Type: schema.TypeString},
-					},
 				},
 			},
+		},
+		"recursive_nameservers": {
+			Type:     schema.TypeList,
+			Optional: true,
+			Elem:     &schema.Schema{Type: schema.TypeString},
 		},
 		"must_staple": {
 			Type:     schema.TypeBool,
@@ -508,7 +507,7 @@ func mapEnvironmentVariableValues(keyMapping map[string]string) {
 // setDNSChallenge takes a *lego.Client and the DNS challenge complex
 // structure as a map[string]interface{}, and configues the client to
 // only allow a DNS challenge with the configured provider.
-func setDNSChallenge(client *lego.Client, m map[string]interface{}) (challenge.Provider, []dns01.ChallengeOption, error) {
+func setDNSChallenge(client *lego.Client, m map[string]interface{}) (challenge.Provider, error) {
 	var provider challenge.Provider
 	var err error
 	var providerName string
@@ -516,7 +515,7 @@ func setDNSChallenge(client *lego.Client, m map[string]interface{}) (challenge.P
 	if v, ok := m["provider"]; ok && v.(string) != "" {
 		providerName = v.(string)
 	} else {
-		return nil, nil, fmt.Errorf("DNS challenge provider not defined")
+		return nil, fmt.Errorf("DNS challenge provider not defined")
 	}
 	// Config only needs to be set if it's defined, otherwise existing env/SDK
 	// defaults are fine.
@@ -646,23 +645,13 @@ func setDNSChallenge(client *lego.Client, m map[string]interface{}) (challenge.P
 	case "zoneee":
 		provider, err = zoneee.NewDNSProvider()
 	default:
-		return nil, nil, fmt.Errorf("%s: unsupported DNS challenge provider", providerName)
+		return nil, fmt.Errorf("%s: unsupported DNS challenge provider", providerName)
 	}
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	var opts []dns01.ChallengeOption
-	if nameservers := m["recursive_nameservers"].([]interface{}); len(nameservers) > 0 {
-		var s []string
-		for _, ns := range nameservers {
-			s = append(s, ns.(string))
-		}
-
-		opts = append(opts, dns01.AddRecursiveNameservers(s))
-	}
-
-	return provider, opts, nil
+	return provider, nil
 }
 
 // stringSlice converts an interface slice to a string slice.
