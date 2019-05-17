@@ -711,6 +711,14 @@ resource "acme_certificate" "certificate" {
 
 func testAccACMECertificateConfigMultiProviders() string {
 	providers := strings.Split(os.Getenv("ACME_MULTI_PROVIDERS"), ",")
+	if len(providers) < 2 {
+		// This is a workaround just to make sure we don't get a panic
+		// when the config is generated for the TestCase literal. This
+		// test should be skipped or error out if ACME_MULTI_PROVIDERS is
+		// not properly defiend.
+		providers = make([]string, 2)
+	}
+
 	return fmt.Sprintf(`
 variable "email_address" {
   default = "%s"
