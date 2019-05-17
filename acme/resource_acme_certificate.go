@@ -4,6 +4,7 @@ import (
 	"crypto/x509"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/go-acme/lego/certificate"
 	"github.com/go-acme/lego/challenge"
@@ -12,14 +13,19 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
+// DNSProviderWrapper is a multi-provider wrapper to support multiple
+// DNS challenges.
 type DNSProviderWrapper struct {
 	providers []challenge.Provider
 }
 
+// NewDNSProviderWrapper returns an freshly initialized
+// DNSProviderWrapper.
 func NewDNSProviderWrapper() (*DNSProviderWrapper, error) {
 	return &DNSProviderWrapper{}, nil
 }
 
+// Present implements challenge.Provider for DNSProviderWrapper.
 func (d *DNSProviderWrapper) Present(domain, token, keyAuth string) error {
 	var err error
 	for _, p := range d.providers {
@@ -32,6 +38,7 @@ func (d *DNSProviderWrapper) Present(domain, token, keyAuth string) error {
 	return err
 }
 
+// CleanUp implements challenge.Provider for DNSProviderWrapper.
 func (d *DNSProviderWrapper) CleanUp(domain, token, keyAuth string) error {
 	var err error
 	for _, p := range d.providers {
@@ -42,6 +49,37 @@ func (d *DNSProviderWrapper) CleanUp(domain, token, keyAuth string) error {
 	}
 
 	return err
+}
+
+// Timeout implements challenge.ProviderTimeout for
+// DNSProviderWrapper.
+//
+// The highest polling interval and timeout values defined across all
+// providers is used.
+func (d *DNSProviderWrapper) Timeout() (time.Duration, time.Duration) {
+	var timeout, interval time.Duration
+	for _, p := range d.providers {
+		if pt, ok := p.(challenge.ProviderTimeout); ok {
+			t, i := pt.Timeout()
+			if t > timeout {
+				timeout = t
+			}
+
+			if i > interval {
+				interval = i
+			}
+		}
+	}
+
+	if timeout < 1 {
+		timeout = dns01.DefaultPropagationTimeout
+	}
+
+	if interval < 1 {
+		interval = dns01.DefaultPollingInterval
+	}
+
+	return timeout, interval
 }
 
 func resourceACMECertificate() *schema.Resource {
@@ -87,7 +125,9 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		opts = append(opts, dns01.AddRecursiveNameservers(s))
 	}
 
-	client.Challenge.SetDNS01Provider(provider, opts...)
+	if err := client.Challenge.SetDNS01Provider(provider, opts...); err != nil {
+		return err
+	}
 
 	var cert *certificate.Resource
 
@@ -140,16 +180,16 @@ func resourceACMECertificateRead(d *schema.ResourceData, meta interface{}) error
 // flags it as NewComputed if it needs a renewal.
 func resourceACMECertificateCustomizeDiff(d *schema.ResourceDiff, meta interface{}) error {
 	// Ensure duplicate providers for dns_challenge are not provided.
-	provider_map := make(map[string]bool)
+	providerMap := make(map[string]bool)
 	for _, v := range d.Get("dns_challenge").([]interface{}) {
 		m := v.(map[string]interface{})
 		if v, ok := m["provider"]; ok && v.(string) != "" {
 			provider := v.(string)
-			if _, ok := provider_map[provider]; ok {
+			if _, ok := providerMap[provider]; ok {
 				return fmt.Errorf("duplicate dns_challenge providers: %s", provider)
-			} else {
-				provider_map[provider] = true
 			}
+
+			providerMap[provider] = true
 		} else {
 			return fmt.Errorf("DNS challenge provider not defined")
 		}
@@ -226,7 +266,9 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 		opts = append(opts, dns01.AddRecursiveNameservers(s))
 	}
 
-	client.Challenge.SetDNS01Provider(provider, opts...)
+	if err := client.Challenge.SetDNS01Provider(provider, opts...); err != nil {
+		return err
+	}
 
 	newCert, err := client.Certificate.Renew(*cert, true, d.Get("must_staple").(bool))
 	if err != nil {
