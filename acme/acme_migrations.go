@@ -104,13 +104,17 @@ func migrateACMECertificateStateV4(is *terraform.InstanceState, meta interface{}
 			continue
 		}
 
+		if path[0] != "dns_challenge" {
+			continue
+		}
+
 		if path[2] != "recursive_nameservers" {
 			continue
 		}
 
 		// Re-write recursive_nameservers to the root scope.
 		delete(is.Attributes, k)
-		is.Attributes[strings.Join(path[2:], ".")] = v
+		is.Attributes["recursive_nameservers"] = v
 	}
 
 	return nil
