@@ -1,4 +1,17 @@
-## 1.2.2 (Unreleased)
+## 1.3.0 (Unreleased)
+
+BREAKING CHANGES: 
+
+* `resource/acme_certificate`: The `recursive_nameservers` option for checking
+  propagation of DNS challenge records has been promoted to a top-level option
+  and is no longer provided as part of an individual `dns_challenge` block.
+  [GH-49]
+
+FEATURES:
+
+* `resource/acme_certificate`: This resource now supports multiple DNS
+  challenges for working with multiple primary DNS providers. [GH-49]
+
 ## 1.2.1 (May 14, 2019)
 
 FEATURES:
