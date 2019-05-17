@@ -13,6 +13,7 @@ require (
 	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
 	github.com/cloudflare/cloudflare-go v0.8.5 // indirect
 	github.com/cpu/goacmedns v0.0.1 // indirect
+	github.com/davecgh/go-spew v1.1.1
 	github.com/decker502/dnspod-go v0.0.0-20180416134550-83a3ba562b04 // indirect
 	github.com/dimchansky/utfbom v1.1.0 // indirect
 	github.com/dnaeon/go-vcr v1.0.1 // indirect
@@ -32,6 +33,7 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.1 // indirect
 	github.com/hashicorp/go-getter v1.2.0 // indirect
 	github.com/hashicorp/go-hclog v0.9.1 // indirect
+	github.com/hashicorp/go-multierror v1.0.0
 	github.com/hashicorp/go-version v1.2.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect

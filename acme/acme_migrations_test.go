@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform/terraform"
 )
 
@@ -48,15 +49,18 @@ func testACMECertificateStateDataV0() *terraform.InstanceState {
 			"min_days_remaining":          "30",
 			"dns_challenge.#":             "1",
 			"dns_challenge.1234.provider": "route53",
-			"http_challenge_port":         "80",
-			"tls_challenge_port":          "443",
-			"registration_url":            "regurl",
-			"must_staple":                 "0",
-			"certificate_domain":          "foobar",
-			"certificate_url":             "certurl",
-			"account_ref":                 "regurl",
-			"private_key_pem":             "certkey",
-			"certificate_pem":             "certpem",
+			// Workaround for E2E migration test. recursive_nameservers is
+			// not a part of schema at this version.
+			"dns_challenge.1234.recursive_nameservers": "my.name.server",
+			"http_challenge_port":                      "80",
+			"tls_challenge_port":                       "443",
+			"registration_url":                         "regurl",
+			"must_staple":                              "0",
+			"certificate_domain":                       "foobar",
+			"certificate_url":                          "certurl",
+			"account_ref":                              "regurl",
+			"private_key_pem":                          "certkey",
+			"certificate_pem":                          "certpem",
 		},
 	}
 }
@@ -75,12 +79,15 @@ func testACMECertificateStateDataV1() *terraform.InstanceState {
 			"min_days_remaining":          "30",
 			"dns_challenge.#":             "1",
 			"dns_challenge.1234.provider": "route53",
-			"must_staple":                 "0",
-			"certificate_domain":          "foobar",
-			"account_ref":                 "regurl",
-			"private_key_pem":             "certkey",
-			"certificate_pem":             "certpem",
-			"certificate_url":             "certurl",
+			// Workaround for E2E migration test. recursive_nameservers is
+			// not a part of schema at this version.
+			"dns_challenge.1234.recursive_nameservers": "my.name.server",
+			"must_staple":        "0",
+			"certificate_domain": "foobar",
+			"account_ref":        "regurl",
+			"private_key_pem":    "certkey",
+			"certificate_pem":    "certpem",
+			"certificate_url":    "certurl",
 		},
 	}
 }
@@ -99,16 +106,43 @@ func testACMECertificateStateDataV2() *terraform.InstanceState {
 			"min_days_remaining":          "30",
 			"dns_challenge.#":             "1",
 			"dns_challenge.1234.provider": "route53",
-			"must_staple":                 "0",
-			"certificate_domain":          "foobar",
-			"private_key_pem":             "certkey",
-			"certificate_pem":             "certpem",
-			"certificate_url":             "certurl",
+			// Workaround for E2E migration test. recursive_nameservers is
+			// not a part of schema at this version.
+			"dns_challenge.1234.recursive_nameservers": "my.name.server",
+			"must_staple":        "0",
+			"certificate_domain": "foobar",
+			"private_key_pem":    "certkey",
+			"certificate_pem":    "certpem",
+			"certificate_url":    "certurl",
 		},
 	}
 }
 
 func testACMECertificateStateDataV3() *terraform.InstanceState {
+	return &terraform.InstanceState{
+		ID: "certurl",
+		Attributes: map[string]string{
+			"account_key_pem":                       "key",
+			"common_name":                           "foobar",
+			"subject_alternative_names.#":           "2",
+			"subject_alternative_names.0":           "barbar",
+			"subject_alternative_names.1":           "bazbar",
+			"key_type":                              "2048",
+			"certificate_request_pem":               "req",
+			"min_days_remaining":                    "30",
+			"dns_challenge.#":                       "1",
+			"dns_challenge.0.provider":              "route53",
+			"dns_challenge.0.recursive_nameservers": "my.name.server",
+			"must_staple":                           "0",
+			"certificate_domain":                    "foobar",
+			"private_key_pem":                       "certkey",
+			"certificate_pem":                       "certpem",
+			"certificate_url":                       "certurl",
+		},
+	}
+}
+
+func testACMECertificateStateDataV4() *terraform.InstanceState {
 	return &terraform.InstanceState{
 		ID: "certurl",
 		Attributes: map[string]string{
@@ -122,6 +156,7 @@ func testACMECertificateStateDataV3() *terraform.InstanceState {
 			"min_days_remaining":          "30",
 			"dns_challenge.#":             "1",
 			"dns_challenge.0.provider":    "route53",
+			"recursive_nameservers":       "my.name.server",
 			"must_staple":                 "0",
 			"certificate_domain":          "foobar",
 			"private_key_pem":             "certkey",
@@ -139,7 +174,7 @@ func TestResourceACMERegistrationMigrateState(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(expected, actual) {
-		t.Fatalf("expected %#v, got %#v", expected, actual)
+		t.Fatalf("\n\nexpected:\n\n%s\n\ngot:\n\n%s\n\n", spew.Sdump(expected), spew.Sdump(actual))
 	}
 }
 
@@ -151,19 +186,31 @@ func TestMigrateACMERegistrationStateV1(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(expected, actual) {
-		t.Fatalf("expected %#v, got %#v", expected, actual)
+		t.Fatalf("\n\nexpected:\n\n%s\n\ngot:\n\n%s\n\n", spew.Sdump(expected), spew.Sdump(actual))
 	}
 }
 
 func TestResourceACMECertificateMigrateState(t *testing.T) {
-	expected := testACMECertificateStateDataV3()
+	expected := testACMECertificateStateDataV4()
 	actual, err := resourceACMECertificateMigrateState(0, testACMECertificateStateDataV0(), nil)
 	if err != nil {
 		t.Fatalf("error migrating state: %s", err)
 	}
 
 	if !reflect.DeepEqual(expected, actual) {
-		t.Fatalf("expected %#v, got %#v", expected, actual)
+		t.Fatalf("\n\nexpected:\n\n%s\n\ngot:\n\n%s\n\n", spew.Sdump(expected), spew.Sdump(actual))
+	}
+}
+
+func TestMigrateACMECertificateStateV4(t *testing.T) {
+	expected := testACMECertificateStateDataV4()
+	actual := testACMECertificateStateDataV3()
+	if err := migrateACMECertificateStateV4(actual, nil); err != nil {
+		t.Fatalf("error migrating state: %s", err)
+	}
+
+	if !reflect.DeepEqual(expected, actual) {
+		t.Fatalf("\n\nexpected:\n\n%s\n\ngot:\n\n%s\n\n", spew.Sdump(expected), spew.Sdump(actual))
 	}
 }
 
@@ -175,7 +222,7 @@ func TestMigrateACMECertificateStateV3(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(expected, actual) {
-		t.Fatalf("expected %#v, got %#v", expected, actual)
+		t.Fatalf("\n\nexpected:\n\n%s\n\ngot:\n\n%s\n\n", spew.Sdump(expected), spew.Sdump(actual))
 	}
 }
 
@@ -187,7 +234,7 @@ func TestMigrateACMECertificateStateV2(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(expected, actual) {
-		t.Fatalf("expected %#v, got %#v", expected, actual)
+		t.Fatalf("\n\nexpected:\n\n%s\n\ngot:\n\n%s\n\n", spew.Sdump(expected), spew.Sdump(actual))
 	}
 }
 
@@ -199,6 +246,6 @@ func TestMigrateACMECertificateStateV1(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(expected, actual) {
-		t.Fatalf("expected %#v, got %#v", expected, actual)
+		t.Fatalf("\n\nexpected:\n\n%s\n\ngot:\n\n%s\n\n", spew.Sdump(expected), spew.Sdump(actual))
 	}
 }

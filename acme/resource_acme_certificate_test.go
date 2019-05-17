@@ -11,6 +11,7 @@ import (
 	"log"
 	"os"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/resource"
@@ -215,6 +216,29 @@ func TestAccACMECertificate_p12Password(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_multiProviders(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			testAccPreCheck(t)
+			testAccPreCheckCert(t)
+			testAccPreCheckCertMultiProviders(t)
+		},
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigMultiProviders(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrPair(
+						"acme_certificate.certificate", "id",
+						"acme_certificate.certificate", "certificate_url",
+					),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www14", "www15", false),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckACMECertificateValid(n, cn, san string, mustStaple bool) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
@@ -385,6 +409,17 @@ func testAccPreCheckCert(t *testing.T) {
 func testAccPreCheckCertZoneID(t *testing.T) {
 	if v := os.Getenv("ACME_R53_ZONE_ID"); v == "" {
 		t.Skip("ACME_R53_ZONE_ID must be set for the static configuration certificate acceptance test")
+	}
+}
+
+func testAccPreCheckCertMultiProviders(t *testing.T) {
+	if v := os.Getenv("ACME_MULTI_PROVIDERS"); v == "" {
+		t.Skip("ACME_MULTI_PROVIDERS must be set for the multiple providers certificate acceptance test")
+	} else {
+		providers := strings.Split(os.Getenv("ACME_MULTI_PROVIDERS"), ",")
+		if len(providers) != 2 {
+			t.Fatal("ACME_MULTI_PROVIDERS must specify exactly two providers")
+		}
 	}
 }
 
@@ -672,4 +707,48 @@ resource "acme_certificate" "certificate" {
 		os.Getenv("ACME_CERT_DOMAIN"),
 		password,
 	)
+}
+
+func testAccACMECertificateConfigMultiProviders() string {
+	providers := strings.Split(os.Getenv("ACME_MULTI_PROVIDERS"), ",")
+	if len(providers) < 2 {
+		// This is a workaround just to make sure we don't get a panic
+		// when the config is generated for the TestCase literal. This
+		// test should be skipped or error out if ACME_MULTI_PROVIDERS is
+		// not properly defiend.
+		providers = make([]string, 2)
+	}
+
+	return fmt.Sprintf(`
+variable "email_address" {
+  default = "%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "www14.${var.domain}"
+  subject_alternative_names = ["www15.${var.domain}"]
+
+  dns_challenge {
+    provider = "%s"
+  }
+
+  dns_challenge {
+    provider = "%s"
+  }
+}
+`, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"), providers[0], providers[1])
 }
