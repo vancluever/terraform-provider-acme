@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
+	initLegoLogger()
 	plugin.Serve(&plugin.ServeOpts{
 		ProviderFunc: acme.Provider,
 	})
