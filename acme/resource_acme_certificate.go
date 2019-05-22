@@ -13,86 +13,236 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-// DNSProviderWrapper is a multi-provider wrapper to support multiple
-// DNS challenges.
-type DNSProviderWrapper struct {
-	providers []challenge.Provider
-}
+// resourceACMECertificate returns the current version of the
+// acme_registration resource and needs to be updated when the schema
+// version is incremented.
+func resourceACMECertificate() *schema.Resource { return resourceACMECertificateV4() }
 
-// NewDNSProviderWrapper returns an freshly initialized
-// DNSProviderWrapper.
-func NewDNSProviderWrapper() (*DNSProviderWrapper, error) {
-	return &DNSProviderWrapper{}, nil
-}
-
-// Present implements challenge.Provider for DNSProviderWrapper.
-func (d *DNSProviderWrapper) Present(domain, token, keyAuth string) error {
-	var err error
-	for _, p := range d.providers {
-		err = p.Present(domain, token, keyAuth)
-		if err != nil {
-			err = multierror.Append(err, fmt.Errorf("error encountered while presenting token for DNS challenge: %s", err.Error()))
-		}
-	}
-
-	return err
-}
-
-// CleanUp implements challenge.Provider for DNSProviderWrapper.
-func (d *DNSProviderWrapper) CleanUp(domain, token, keyAuth string) error {
-	var err error
-	for _, p := range d.providers {
-		err = p.CleanUp(domain, token, keyAuth)
-		if err != nil {
-			err = multierror.Append(err, fmt.Errorf("error encountered while cleaning token for DNS challenge: %s", err.Error()))
-		}
-	}
-
-	return err
-}
-
-// Timeout implements challenge.ProviderTimeout for
-// DNSProviderWrapper.
-//
-// The highest polling interval and timeout values defined across all
-// providers is used.
-func (d *DNSProviderWrapper) Timeout() (time.Duration, time.Duration) {
-	var timeout, interval time.Duration
-	for _, p := range d.providers {
-		if pt, ok := p.(challenge.ProviderTimeout); ok {
-			t, i := pt.Timeout()
-			if t > timeout {
-				timeout = t
-			}
-
-			if i > interval {
-				interval = i
-			}
-		}
-	}
-
-	if timeout < 1 {
-		timeout = dns01.DefaultPropagationTimeout
-	}
-
-	if interval < 1 {
-		interval = dns01.DefaultPollingInterval
-	}
-
-	return timeout, interval
-}
-
-func resourceACMECertificate() *schema.Resource {
+func resourceACMECertificateV4() *schema.Resource {
 	return &schema.Resource{
 		Create:        resourceACMECertificateCreate,
 		Read:          resourceACMECertificateRead,
 		CustomizeDiff: resourceACMECertificateCustomizeDiff,
 		Update:        resourceACMECertificateUpdate,
 		Delete:        resourceACMECertificateDelete,
-
-		Schema:        certificateSchemaFull(),
-		SchemaVersion: 4,
 		MigrateState:  resourceACMECertificateMigrateState,
+		SchemaVersion: 4,
+		Schema: map[string]*schema.Schema{
+			"account_key_pem": {
+				Type:      schema.TypeString,
+				Required:  true,
+				ForceNew:  true,
+				Sensitive: true,
+			},
+			"common_name": {
+				Type:          schema.TypeString,
+				Optional:      true,
+				ForceNew:      true,
+				ConflictsWith: []string{"certificate_request_pem"},
+			},
+			"subject_alternative_names": {
+				Type:          schema.TypeSet,
+				Optional:      true,
+				Elem:          &schema.Schema{Type: schema.TypeString},
+				Set:           schema.HashString,
+				ForceNew:      true,
+				ConflictsWith: []string{"certificate_request_pem"},
+			},
+			"key_type": {
+				Type:          schema.TypeString,
+				Optional:      true,
+				ForceNew:      true,
+				Default:       "2048",
+				ConflictsWith: []string{"certificate_request_pem"},
+				ValidateFunc:  validateKeyType,
+			},
+			"certificate_request_pem": {
+				Type:          schema.TypeString,
+				Optional:      true,
+				ForceNew:      true,
+				ConflictsWith: []string{"common_name", "subject_alternative_names", "key_type"},
+			},
+			"min_days_remaining": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  30,
+			},
+			"dns_challenge": {
+				Type:     schema.TypeList,
+				Required: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"provider": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"config": {
+							Type:         schema.TypeMap,
+							Optional:     true,
+							ValidateFunc: validateDNSChallengeConfig,
+							Sensitive:    true,
+						},
+					},
+				},
+			},
+			"recursive_nameservers": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
+			"must_staple": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+				ForceNew: true,
+			},
+			"certificate_url": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"certificate_domain": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"private_key_pem": {
+				Type:      schema.TypeString,
+				Computed:  true,
+				Sensitive: true,
+			},
+			"certificate_pem": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"issuer_pem": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"certificate_p12": {
+				Type:      schema.TypeString,
+				Computed:  true,
+				Sensitive: true,
+			},
+			"certificate_p12_password": {
+				Type:      schema.TypeString,
+				Optional:  true,
+				Default:   "",
+				Sensitive: true,
+			},
+		},
+	}
+}
+
+func resourceACMECertificateV3() *schema.Resource {
+	return &schema.Resource{
+		Create:        resourceACMECertificateCreate,
+		Read:          resourceACMECertificateRead,
+		CustomizeDiff: resourceACMECertificateCustomizeDiff,
+		Update:        resourceACMECertificateUpdate,
+		Delete:        resourceACMECertificateDelete,
+		MigrateState:  resourceACMECertificateMigrateState,
+		SchemaVersion: 3,
+		Schema: map[string]*schema.Schema{
+			"account_key_pem": {
+				Type:      schema.TypeString,
+				Required:  true,
+				ForceNew:  true,
+				Sensitive: true,
+			},
+			"common_name": {
+				Type:          schema.TypeString,
+				Optional:      true,
+				ForceNew:      true,
+				ConflictsWith: []string{"certificate_request_pem"},
+			},
+			"subject_alternative_names": {
+				Type:          schema.TypeSet,
+				Optional:      true,
+				Elem:          &schema.Schema{Type: schema.TypeString},
+				Set:           schema.HashString,
+				ForceNew:      true,
+				ConflictsWith: []string{"certificate_request_pem"},
+			},
+			"key_type": {
+				Type:          schema.TypeString,
+				Optional:      true,
+				ForceNew:      true,
+				Default:       "2048",
+				ConflictsWith: []string{"certificate_request_pem"},
+				ValidateFunc:  validateKeyType,
+			},
+			"certificate_request_pem": {
+				Type:          schema.TypeString,
+				Optional:      true,
+				ForceNew:      true,
+				ConflictsWith: []string{"common_name", "subject_alternative_names", "key_type"},
+			},
+			"min_days_remaining": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  30,
+			},
+			"dns_challenge": {
+				Type:     schema.TypeList,
+				Required: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"provider": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"config": {
+							Type:         schema.TypeMap,
+							Optional:     true,
+							ValidateFunc: validateDNSChallengeConfig,
+							Sensitive:    true,
+						},
+						"recursive_nameservers": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem:     &schema.Schema{Type: schema.TypeString},
+						},
+					},
+				},
+			},
+			"must_staple": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+				ForceNew: true,
+			},
+			"certificate_url": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"certificate_domain": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"private_key_pem": {
+				Type:      schema.TypeString,
+				Computed:  true,
+				Sensitive: true,
+			},
+			"certificate_pem": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"issuer_pem": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"certificate_p12": {
+				Type:      schema.TypeString,
+				Computed:  true,
+				Sensitive: true,
+			},
+			"certificate_p12_password": {
+				Type:      schema.TypeString,
+				Optional:  true,
+				Default:   "",
+				Sensitive: true,
+			},
+		},
 	}
 }
 
@@ -304,4 +454,73 @@ func resourceACMECertificateDelete(d *schema.ResourceData, meta interface{}) err
 	}
 
 	return nil
+}
+
+// DNSProviderWrapper is a multi-provider wrapper to support multiple
+// DNS challenges.
+type DNSProviderWrapper struct {
+	providers []challenge.Provider
+}
+
+// NewDNSProviderWrapper returns an freshly initialized
+// DNSProviderWrapper.
+func NewDNSProviderWrapper() (*DNSProviderWrapper, error) {
+	return &DNSProviderWrapper{}, nil
+}
+
+// Present implements challenge.Provider for DNSProviderWrapper.
+func (d *DNSProviderWrapper) Present(domain, token, keyAuth string) error {
+	var err error
+	for _, p := range d.providers {
+		err = p.Present(domain, token, keyAuth)
+		if err != nil {
+			err = multierror.Append(err, fmt.Errorf("error encountered while presenting token for DNS challenge: %s", err.Error()))
+		}
+	}
+
+	return err
+}
+
+// CleanUp implements challenge.Provider for DNSProviderWrapper.
+func (d *DNSProviderWrapper) CleanUp(domain, token, keyAuth string) error {
+	var err error
+	for _, p := range d.providers {
+		err = p.CleanUp(domain, token, keyAuth)
+		if err != nil {
+			err = multierror.Append(err, fmt.Errorf("error encountered while cleaning token for DNS challenge: %s", err.Error()))
+		}
+	}
+
+	return err
+}
+
+// Timeout implements challenge.ProviderTimeout for
+// DNSProviderWrapper.
+//
+// The highest polling interval and timeout values defined across all
+// providers is used.
+func (d *DNSProviderWrapper) Timeout() (time.Duration, time.Duration) {
+	var timeout, interval time.Duration
+	for _, p := range d.providers {
+		if pt, ok := p.(challenge.ProviderTimeout); ok {
+			t, i := pt.Timeout()
+			if t > timeout {
+				timeout = t
+			}
+
+			if i > interval {
+				interval = i
+			}
+		}
+	}
+
+	if timeout < 1 {
+		timeout = dns01.DefaultPropagationTimeout
+	}
+
+	if interval < 1 {
+		interval = dns01.DefaultPollingInterval
+	}
+
+	return timeout, interval
 }

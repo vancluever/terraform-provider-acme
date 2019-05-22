@@ -147,9 +147,7 @@ iITbUq4IV5mAI5yceK+3rYWGYG47cu0BG9ngevUZ
 -----END CERTIFICATE-----`
 
 func registrationResourceData() *schema.ResourceData {
-	r := &schema.Resource{
-		Schema: registrationSchemaFull(),
-	}
+	r := resourceACMERegistration()
 	d := r.TestResourceData()
 
 	d.SetId("regurl")
@@ -159,66 +157,11 @@ func registrationResourceData() *schema.ResourceData {
 	return d
 }
 
-func blankBaseResource() *schema.ResourceData {
-	r := &schema.Resource{
-		Schema: baseACMESchema(),
-	}
+func blankCertificateResource() *schema.ResourceData {
+	r := resourceACMECertificate()
 	d := r.TestResourceData()
 	d.Set("account_key_pem", testPrivateKeyText)
 	return d
-}
-
-func blankCertificateResource() *schema.ResourceData {
-	r := &schema.Resource{
-		Schema: certificateSchemaFull(),
-	}
-	d := r.TestResourceData()
-	return d
-}
-
-func TestACME_registrationSchemaFull(t *testing.T) {
-	m := registrationSchemaFull()
-	fields := []string{"account_key_pem", "email_address", "registration_url"}
-	for _, v := range fields {
-		if _, ok := m[v]; ok == false {
-			t.Fatalf("Expected %s to be present", v)
-		}
-		delete(m, v)
-	}
-	if len(m) > 0 {
-		t.Fatalf("unaccounted for schema fields: %#v", m)
-	}
-}
-
-func TestACME_certificateSchema(t *testing.T) {
-	m := certificateSchemaFull()
-	fields := []string{
-		"account_key_pem",
-		"common_name",
-		"subject_alternative_names",
-		"key_type",
-		"certificate_request_pem",
-		"min_days_remaining",
-		"dns_challenge",
-		"recursive_nameservers",
-		"must_staple",
-		"certificate_domain",
-		"private_key_pem",
-		"certificate_pem",
-		"issuer_pem",
-		"certificate_url",
-		"certificate_p12",
-		"certificate_p12_password",
-	}
-	for _, v := range fields {
-		if _, ok := m[v]; ok == false {
-			t.Fatalf("Expected %s to be present", v)
-		}
-		delete(m, v)
-	}
-	if len(m) > 0 {
-		t.Fatalf("unaccounted for schema fields: %#v", m)
-	}
 }
 
 func TestACME_expandACMEUser(t *testing.T) {
@@ -278,7 +221,7 @@ func TestACME_parsePEMBundle_noData(t *testing.T) {
 
 func TestACME_setDNSChallenge_noProvider(t *testing.T) {
 	m := make(map[string]interface{})
-	d := blankBaseResource()
+	d := blankCertificateResource()
 	ts := httpDirTestServer()
 	client, _, err := expandACMEClient(d, &Config{ServerURL: ts.URL}, false)
 	if err != nil {
@@ -295,7 +238,7 @@ func TestACME_setDNSChallenge_unsuppotedProvider(t *testing.T) {
 	m := map[string]interface{}{
 		"provider": "foo",
 	}
-	d := blankBaseResource()
+	d := blankCertificateResource()
 	ts := httpDirTestServer()
 	client, _, err := expandACMEClient(d, &Config{ServerURL: ts.URL}, false)
 	if err != nil {
