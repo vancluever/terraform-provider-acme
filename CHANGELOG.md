@@ -7,9 +7,11 @@ IMPROVEMENTS:
 
 BUG FIXES:
 
+* `resource/acme_certificate`: Corrected state migration issues that were
+  causing the resource to not function at all in Terraform 0.12. [GH-57]
 * `resource/acme_certificate`: Corrected state migration issues that may have
   triggered an update of settings due to incorrect migration of the
-  `recursive_nameservers` attribute. [GH-55]
+  `recursive_nameservers` attribute on Terraform 0.11. [GH-55]
 
 ## 1.3.0 (May 17, 2019)
 
