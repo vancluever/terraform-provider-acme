@@ -5,15 +5,35 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-func resourceACMERegistration() *schema.Resource {
-	return &schema.Resource{
-		Create: resourceACMERegistrationCreate,
-		Read:   resourceACMERegistrationRead,
-		Delete: resourceACMERegistrationDelete,
+// resourceACMERegistration returns the current version of the
+// acme_registration resource and needs to be updated when the schema
+// version is incremented.
+func resourceACMERegistration() *schema.Resource { return resourceACMERegistrationV1() }
 
-		Schema:        registrationSchemaFull(),
-		SchemaVersion: 1,
+func resourceACMERegistrationV1() *schema.Resource {
+	return &schema.Resource{
+		Create:        resourceACMERegistrationCreate,
+		Read:          resourceACMERegistrationRead,
+		Delete:        resourceACMERegistrationDelete,
 		MigrateState:  resourceACMERegistrationMigrateState,
+		SchemaVersion: 1,
+		Schema: map[string]*schema.Schema{
+			"account_key_pem": {
+				Type:      schema.TypeString,
+				Required:  true,
+				ForceNew:  true,
+				Sensitive: true,
+			},
+			"email_address": {
+				Type:     schema.TypeString,
+				Required: true,
+				ForceNew: true,
+			},
+			"registration_url": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+		},
 	}
 }
 

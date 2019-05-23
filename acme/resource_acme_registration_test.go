@@ -70,9 +70,7 @@ func testAccCheckACMERegistrationValid(n string, exists bool) resource.TestCheck
 // testAccCheckACMERegistrationResourceData returns a *schema.ResourceData that should match a
 // acme_registration resource.
 func testAccCheckACMERegistrationResourceData(rs *terraform.ResourceState) *schema.ResourceData {
-	r := &schema.Resource{
-		Schema: registrationSchemaFull(),
-	}
+	r := resourceACMERegistration()
 	d := r.TestResourceData()
 
 	d.SetId(rs.Primary.ID)
