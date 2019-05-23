@@ -125,6 +125,7 @@ github.com/fatih/color
 # github.com/fatih/structs v1.1.0
 github.com/fatih/structs
 # github.com/go-acme/lego v2.5.0+incompatible
+github.com/go-acme/lego/log
 github.com/go-acme/lego/certcrypto
 github.com/go-acme/lego/certificate
 github.com/go-acme/lego/challenge
@@ -187,7 +188,6 @@ github.com/go-acme/lego/providers/dns/zoneee
 github.com/go-acme/lego/registration
 github.com/go-acme/lego/acme
 github.com/go-acme/lego/acme/api
-github.com/go-acme/lego/log
 github.com/go-acme/lego/platform/wait
 github.com/go-acme/lego/challenge/resolver
 github.com/go-acme/lego/platform/config/env
