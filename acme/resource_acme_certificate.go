@@ -27,6 +27,9 @@ func resourceACMECertificateV4() *schema.Resource {
 		Delete:        resourceACMECertificateDelete,
 		MigrateState:  resourceACMECertificateMigrateState,
 		SchemaVersion: 4,
+		StateUpgraders: []schema.StateUpgrader{
+			resourceACMECertificateStateUpgraderV3(),
+		},
 		Schema: map[string]*schema.Schema{
 			"account_key_pem": {
 				Type:      schema.TypeString,
