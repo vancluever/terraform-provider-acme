@@ -1,17 +1,17 @@
-## 1.3.1 (Unreleased)
+## 1.3.1 (May 23, 2019)
 
 IMPROVEMENTS:
 
 * The provider now will log lego's log messages when `TF_LOG=debug` or higher is
-  set. [GH-53]
+  set. ([#53](https://github.com/terraform-providers/terraform-provider-acme/issues/53))
 
 BUG FIXES:
 
 * `resource/acme_certificate`: Corrected state migration issues that were
-  causing the resource to not function at all in Terraform 0.12. [GH-57]
+  causing the resource to not function at all in Terraform 0.12. ([#57](https://github.com/terraform-providers/terraform-provider-acme/issues/57))
 * `resource/acme_certificate`: Corrected state migration issues that may have
   triggered an update of settings due to incorrect migration of the
-  `recursive_nameservers` attribute on Terraform 0.11. [GH-55]
+  `recursive_nameservers` attribute on Terraform 0.11. ([#55](https://github.com/terraform-providers/terraform-provider-acme/issues/55))
 
 ## 1.3.0 (May 17, 2019)
 
