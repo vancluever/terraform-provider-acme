@@ -2,6 +2,8 @@
 
 BUG FIXES:
 
+* `resource/acme_certificate`: Corrected an issue where `certificate_pem` would
+  be deleted from state on certificate renew failure. [GH-60]
 * `resource/acme_certificate`: The resource will now attempt to recover the
   `certificate_pem` field from the CA if it is missing in state. [GH-59]
 
