@@ -416,6 +416,9 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 		return nil
 	}
 
+	// Enable partial mode to protect the certificate during renewal
+	d.Partial(true)
+
 	client, _, err := expandACMEClient(d, meta, true)
 	if err != nil {
 		return err
@@ -461,6 +464,8 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 		return err
 	}
 
+	// Complete, safe to turn off partial mode now.
+	d.Partial(false)
 	return nil
 }
 
