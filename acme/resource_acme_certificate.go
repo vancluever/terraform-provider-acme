@@ -323,9 +323,36 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 	return resourceACMECertificateRead(d, meta)
 }
 
-// resourceACMECertificateRead is a noop. See
-// resourceACMECertificateCustomizeDiff for most of the renewal check logic.
 func resourceACMECertificateRead(d *schema.ResourceData, meta interface{}) error {
+	// This is a workaround to correct issues with some versions of the
+	// resource prior to 1.3.2 where a renewal failure would possibly
+	// delete the certificate.
+	if _, ok := d.GetOk("certificate_pem"); !ok {
+		// Try to recover the certificate from the ACME API.
+		client, _, err := expandACMEClient(d, meta, true)
+		if err != nil {
+			return err
+		}
+
+		srcCR, err := client.Certificate.Get(d.Id(), true)
+		if err != nil {
+			// There are probably some cases that we will want to just drop
+			// the resource if there's been an issue, but seeing as this is
+			// mainly being used to recover for a bug that will be gone in
+			// 1.3.2, this will probably be rare. If we start relying on
+			// this behavior on a more general level, we may need to
+			// investigate this more. Just error on everything for now.
+			return err
+		}
+
+		dstCR := expandCertificateResource(d)
+		dstCR.Certificate = srcCR.Certificate
+		password := d.Get("certificate_p12_password").(string)
+		if err := saveCertificateResource(d, dstCR, password); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 

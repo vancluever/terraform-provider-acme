@@ -20,7 +20,7 @@ require (
 	github.com/dnsimple/dnsimple-go v0.23.0 // indirect
 	github.com/exoscale/egoscale v0.14.0 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
-	github.com/go-acme/lego v2.5.0+incompatible
+	github.com/go-acme/lego v0.0.0-00010101000000-000000000000
 	github.com/go-ini/ini v1.42.0 // indirect
 	github.com/go-test/deep v1.0.2-0.20181118220953-042da051cf31 // indirect
 	github.com/golang/mock v1.3.0 // indirect
@@ -90,3 +90,5 @@ replace github.com/h2non/gock => gopkg.in/h2non/gock.v1 v1.0.14
 replace sourcegraph.com/sourcegraph/go-diff => github.com/sourcegraph/go-diff v0.5.1
 
 replace github.com/golang/lint => golang.org/x/lint v0.0.0-20190409202823-959b441ac422
+
+replace github.com/go-acme/lego => github.com/vancluever/lego v2.5.1+incompatible
