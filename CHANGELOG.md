@@ -1,4 +1,10 @@
 ## 1.3.2 (Unreleased)
+
+BUG FIXES:
+
+* `resource/acme_certificate`: The resource will now attempt to recover the
+  `certificate_pem` field from the CA if it is missing in state. [GH-59]
+
 ## 1.3.1 (May 23, 2019)
 
 IMPROVEMENTS:
