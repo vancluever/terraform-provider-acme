@@ -1,11 +1,11 @@
-## 1.3.2 (Unreleased)
+## 1.3.2 (May 28, 2019)
 
 BUG FIXES:
 
 * `resource/acme_certificate`: Corrected an issue where `certificate_pem` would
-  be deleted from state on certificate renew failure. [GH-60]
+  be deleted from state on certificate renew failure. ([#60](https://github.com/terraform-providers/terraform-provider-acme/issues/60))
 * `resource/acme_certificate`: The resource will now attempt to recover the
-  `certificate_pem` field from the CA if it is missing in state. [GH-59]
+  `certificate_pem` field from the CA if it is missing in state. ([#59](https://github.com/terraform-providers/terraform-provider-acme/issues/59))
 
 ## 1.3.1 (May 23, 2019)
 
