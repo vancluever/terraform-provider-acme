@@ -1,4 +1,7 @@
 ## 1.3.3 (Unreleased)
+
+This update is a Terraform 0.12 support build for the changes from 1.3.2.
+
 ## 1.3.2 (May 28, 2019)
 
 BUG FIXES:
