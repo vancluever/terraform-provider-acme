@@ -128,8 +128,9 @@ func (codec *clientCodec) ReadResponseBody(v interface{}) (err error) {
 }
 
 func (codec *clientCodec) Close() error {
-	transport := codec.httpClient.Transport.(*http.Transport)
-	transport.CloseIdleConnections()
+	if transport, ok := codec.httpClient.Transport.(*http.Transport); ok {
+		transport.CloseIdleConnections()
+	}
 
 	close(codec.close)
 

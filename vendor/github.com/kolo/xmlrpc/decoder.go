@@ -130,8 +130,9 @@ func (dec *decoder) decodeValue(val reflect.Value) error {
 				ismap = true
 			} else if checkType(val, reflect.Interface) == nil && val.IsNil() {
 				var dummy map[string]interface{}
-				pmap = reflect.New(reflect.TypeOf(dummy)).Elem()
-				valType = pmap.Type()
+				valType = reflect.TypeOf(dummy)
+				pmap = reflect.New(valType).Elem()
+				val.Set(pmap)
 				ismap = true
 			} else {
 				return err
@@ -223,10 +224,9 @@ func (dec *decoder) decodeValue(val reflect.Value) error {
 			}
 		}
 	case "array":
-		pslice := val
+		slice := val
 		if checkType(val, reflect.Interface) == nil && val.IsNil() {
-			var dummy []interface{}
-			pslice = reflect.New(reflect.TypeOf(dummy)).Elem()
+			slice = reflect.ValueOf([]interface{}{})
 		} else if err = checkType(val, reflect.Slice); err != nil {
 			return err
 		}
@@ -239,12 +239,10 @@ func (dec *decoder) decodeValue(val reflect.Value) error {
 
 			switch t := tok.(type) {
 			case xml.StartElement:
+				var index int
 				if t.Name.Local != "data" {
 					return invalidXmlError
 				}
-
-				slice := reflect.MakeSlice(pslice.Type(), 0, 0)
-
 			DataLoop:
 				for {
 					if tok, err = dec.Token(); err != nil {
@@ -257,20 +255,32 @@ func (dec *decoder) decodeValue(val reflect.Value) error {
 							return invalidXmlError
 						}
 
-						v := reflect.New(pslice.Type().Elem())
-						if err = dec.decodeValue(v); err != nil {
-							return err
+						if index < slice.Len() {
+							v := slice.Index(index)
+							if v.Kind() == reflect.Interface {
+								v = v.Elem()
+							}
+							if v.Kind() != reflect.Ptr {
+								return errors.New("error: cannot write to non-pointer array element")
+							}
+							if err = dec.decodeValue(v); err != nil {
+								return err
+							}
+						} else {
+							v := reflect.New(slice.Type().Elem())
+							if err = dec.decodeValue(v); err != nil {
+								return err
+							}
+							slice = reflect.Append(slice, v.Elem())
 						}
-
-						slice = reflect.Append(slice, v.Elem())
 
 						// </value>
 						if err = dec.Skip(); err != nil {
 							return err
 						}
+						index++
 					case xml.EndElement:
-						pslice.Set(slice)
-						val.Set(pslice)
+						val.Set(slice)
 						break DataLoop
 					}
 				}

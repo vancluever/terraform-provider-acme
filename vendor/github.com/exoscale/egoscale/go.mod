@@ -1,3 +1,3 @@
 module github.com/exoscale/egoscale
 
-require github.com/satori/go.uuid v1.2.0
+require github.com/gofrs/uuid v3.2.0+incompatible

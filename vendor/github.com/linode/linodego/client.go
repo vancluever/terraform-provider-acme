@@ -15,12 +15,14 @@ import (
 const (
 	// APIHost Linode API hostname
 	APIHost = "api.linode.com"
+	// APIHostVar environment var to check for alternate API URL
+	APIHostVar = "LINODE_URL"
 	// APIVersion Linode API version
 	APIVersion = "v4"
 	// APIProto connect to API with http(s)
 	APIProto = "https"
 	// Version of linodego
-	Version = "0.7.0"
+	Version = "0.9.0"
 	// APIEnvVar environment var to check for API token
 	APIEnvVar = "LINODE_TOKEN"
 	// APISecondsPerPoll how frequently to poll for new Events or Status in WaitFor functions
@@ -48,6 +50,7 @@ type Client struct {
 	InstanceSnapshots     *Resource
 	InstanceIPs           *Resource
 	InstanceVolumes       *Resource
+	InstanceStats         *Resource
 	Instances             *Resource
 	IPAddresses           *Resource
 	IPv6Pools             *Resource
@@ -70,14 +73,17 @@ type Client struct {
 	Tokens                *Resource
 	Token                 *Resource
 	Account               *Resource
+	AccountSettings       *Resource
 	Invoices              *Resource
 	InvoiceItems          *Resource
 	Events                *Resource
 	Notifications         *Resource
+	OAuthClients          *Resource
 	Profile               *Resource
 	Managed               *Resource
 	Tags                  *Resource
 	Users                 *Resource
+	Payments              *Resource
 }
 
 func init() {
@@ -144,7 +150,12 @@ func NewClient(hc *http.Client) (client Client) {
 	restyClient := resty.NewWithClient(hc)
 	client.resty = restyClient
 	client.SetUserAgent(DefaultUserAgent)
-	client.SetBaseURL(fmt.Sprintf("%s://%s/%s", APIProto, APIHost, APIVersion))
+	baseURL, baseURLExists := os.LookupEnv(APIHostVar)
+	if baseURLExists {
+		client.SetBaseURL(baseURL)
+	} else {
+		client.SetBaseURL(fmt.Sprintf("%s://%s/%s", APIProto, APIHost, APIVersion))
+	}
 	client.SetPollDelay(1000 * APISecondsPerPoll)
 
 	resources := map[string]*Resource{
@@ -156,8 +167,9 @@ func NewClient(hc *http.Client) (client Client) {
 		instanceSnapshotsName:     NewResource(&client, instanceSnapshotsName, instanceSnapshotsEndpoint, true, InstanceSnapshot{}, nil),
 		instanceIPsName:           NewResource(&client, instanceIPsName, instanceIPsEndpoint, true, InstanceIP{}, nil),                           // really?
 		instanceVolumesName:       NewResource(&client, instanceVolumesName, instanceVolumesEndpoint, true, nil, InstanceVolumesPagedResponse{}), // really?
-		ipaddressesName:           NewResource(&client, ipaddressesName, ipaddressesEndpoint, false, nil, IPAddressesPagedResponse{}),            // really?
-		ipv6poolsName:             NewResource(&client, ipv6poolsName, ipv6poolsEndpoint, false, nil, IPv6PoolsPagedResponse{}),                  // really?
+		instanceStatsName:         NewResource(&client, instanceStatsName, instanceStatsEndpoint, true, InstanceStats{}, nil),
+		ipaddressesName:           NewResource(&client, ipaddressesName, ipaddressesEndpoint, false, nil, IPAddressesPagedResponse{}), // really?
+		ipv6poolsName:             NewResource(&client, ipv6poolsName, ipv6poolsEndpoint, false, nil, IPv6PoolsPagedResponse{}),       // really?
 		ipv6rangesName:            NewResource(&client, ipv6rangesName, ipv6rangesEndpoint, false, IPv6Range{}, IPv6RangesPagedResponse{}),
 		regionsName:               NewResource(&client, regionsName, regionsEndpoint, false, Region{}, RegionsPagedResponse{}),
 		volumesName:               NewResource(&client, volumesName, volumesEndpoint, false, Volume{}, VolumesPagedResponse{}),
@@ -172,10 +184,12 @@ func NewClient(hc *http.Client) (client Client) {
 		nodebalancerconfigsName:   NewResource(&client, nodebalancerconfigsName, nodebalancerconfigsEndpoint, true, NodeBalancerConfig{}, NodeBalancerConfigsPagedResponse{}),
 		nodebalancernodesName:     NewResource(&client, nodebalancernodesName, nodebalancernodesEndpoint, true, NodeBalancerNode{}, NodeBalancerNodesPagedResponse{}),
 		notificationsName:         NewResource(&client, notificationsName, notificationsEndpoint, false, Notification{}, NotificationsPagedResponse{}),
+		oauthClientsName:          NewResource(&client, oauthClientsName, oauthClientsEndpoint, false, OAuthClient{}, OAuthClientsPagedResponse{}),
 		sshkeysName:               NewResource(&client, sshkeysName, sshkeysEndpoint, false, SSHKey{}, SSHKeysPagedResponse{}),
 		ticketsName:               NewResource(&client, ticketsName, ticketsEndpoint, false, Ticket{}, TicketsPagedResponse{}),
 		tokensName:                NewResource(&client, tokensName, tokensEndpoint, false, Token{}, TokensPagedResponse{}),
-		accountName:               NewResource(&client, accountName, accountEndpoint, false, Account{}, nil), // really?
+		accountName:               NewResource(&client, accountName, accountEndpoint, false, Account{}, nil),                         // really?
+		accountSettingsName:       NewResource(&client, accountSettingsName, accountSettingsEndpoint, false, AccountSettings{}, nil), // really?
 		eventsName:                NewResource(&client, eventsName, eventsEndpoint, false, Event{}, EventsPagedResponse{}),
 		invoicesName:              NewResource(&client, invoicesName, invoicesEndpoint, false, Invoice{}, InvoicesPagedResponse{}),
 		invoiceItemsName:          NewResource(&client, invoiceItemsName, invoiceItemsEndpoint, true, InvoiceItem{}, InvoiceItemsPagedResponse{}),
@@ -183,6 +197,7 @@ func NewClient(hc *http.Client) (client Client) {
 		managedName:               NewResource(&client, managedName, managedEndpoint, false, nil, nil), // really?
 		tagsName:                  NewResource(&client, tagsName, tagsEndpoint, false, Tag{}, TagsPagedResponse{}),
 		usersName:                 NewResource(&client, usersName, usersEndpoint, false, User{}, UsersPagedResponse{}),
+		paymentsName:              NewResource(&client, paymentsName, paymentsEndpoint, false, Payment{}, PaymentsPagedResponse{}),
 	}
 
 	client.resources = resources
@@ -197,6 +212,7 @@ func NewClient(hc *http.Client) (client Client) {
 	client.InstanceSnapshots = resources[instanceSnapshotsName]
 	client.InstanceIPs = resources[instanceIPsName]
 	client.InstanceVolumes = resources[instanceVolumesName]
+	client.InstanceStats = resources[instanceStatsName]
 	client.IPAddresses = resources[ipaddressesName]
 	client.IPv6Pools = resources[ipv6poolsName]
 	client.IPv6Ranges = resources[ipv6rangesName]
@@ -211,6 +227,7 @@ func NewClient(hc *http.Client) (client Client) {
 	client.NodeBalancerConfigs = resources[nodebalancerconfigsName]
 	client.NodeBalancerNodes = resources[nodebalancernodesName]
 	client.Notifications = resources[notificationsName]
+	client.OAuthClients = resources[oauthClientsName]
 	client.SSHKeys = resources[sshkeysName]
 	client.Tickets = resources[ticketsName]
 	client.Tokens = resources[tokensName]
@@ -221,6 +238,7 @@ func NewClient(hc *http.Client) (client Client) {
 	client.Managed = resources[managedName]
 	client.Tags = resources[tagsName]
 	client.Users = resources[usersName]
+	client.Payments = resources[paymentsName]
 	return
 }
 

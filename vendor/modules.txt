@@ -1,4 +1,4 @@
-# cloud.google.com/go v0.37.4
+# cloud.google.com/go v0.36.0
 cloud.google.com/go/compute/metadata
 cloud.google.com/go/storage
 cloud.google.com/go/iam
@@ -6,39 +6,37 @@ cloud.google.com/go/internal
 cloud.google.com/go/internal/optional
 cloud.google.com/go/internal/trace
 cloud.google.com/go/internal/version
-# contrib.go.opencensus.io/exporter/ocagent v0.4.11
-contrib.go.opencensus.io/exporter/ocagent
-# github.com/Azure/azure-sdk-for-go v29.0.0+incompatible
+# github.com/Azure/azure-sdk-for-go v21.3.0+incompatible
 github.com/Azure/azure-sdk-for-go/services/dns/mgmt/2017-09-01/dns
 github.com/Azure/azure-sdk-for-go/version
-# github.com/Azure/go-autorest v12.0.0+incompatible
+# github.com/Azure/go-autorest v10.15.4+incompatible
 github.com/Azure/go-autorest/autorest
 github.com/Azure/go-autorest/autorest/adal
 github.com/Azure/go-autorest/autorest/azure
 github.com/Azure/go-autorest/autorest/azure/auth
 github.com/Azure/go-autorest/autorest/to
 github.com/Azure/go-autorest/autorest/validation
-github.com/Azure/go-autorest/tracing
 github.com/Azure/go-autorest/logger
+github.com/Azure/go-autorest/version
 github.com/Azure/go-autorest/autorest/date
-github.com/Azure/go-autorest/autorest/azure/cli
-# github.com/JamesClonk/vultr v0.0.0-20181227165352-882c666acc57
+# github.com/JamesClonk/vultr v2.0.0+incompatible
 github.com/JamesClonk/vultr/lib
 # github.com/OpenDNS/vegadns2client v0.0.0-20180418235048-a3fa4a771d87
 github.com/OpenDNS/vegadns2client
 # github.com/agext/levenshtein v1.2.2
 github.com/agext/levenshtein
-# github.com/akamai/AkamaiOPEN-edgegrid-golang v0.7.3
+# github.com/akamai/AkamaiOPEN-edgegrid-golang v0.7.4
 github.com/akamai/AkamaiOPEN-edgegrid-golang/configdns-v1
 github.com/akamai/AkamaiOPEN-edgegrid-golang/edgegrid
 github.com/akamai/AkamaiOPEN-edgegrid-golang/client-v1
 github.com/akamai/AkamaiOPEN-edgegrid-golang/jsonhooks-v1
-# github.com/aliyun/alibaba-cloud-sdk-go v0.0.0-20190203032130-408505a5fba8
+# github.com/aliyun/alibaba-cloud-sdk-go v0.0.0-20190528170004-94d45b526697
 github.com/aliyun/alibaba-cloud-sdk-go/sdk
 github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth/credentials
 github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests
 github.com/aliyun/alibaba-cloud-sdk-go/services/alidns
 github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth
+github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth/credentials/provider
 github.com/aliyun/alibaba-cloud-sdk-go/sdk/endpoints
 github.com/aliyun/alibaba-cloud-sdk-go/sdk/errors
 github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses
@@ -50,7 +48,7 @@ github.com/apparentlymart/go-cidr/cidr
 github.com/apparentlymart/go-textseg/textseg
 # github.com/armon/go-radix v1.0.0
 github.com/armon/go-radix
-# github.com/aws/aws-sdk-go v1.19.28
+# github.com/aws/aws-sdk-go v1.19.18
 github.com/aws/aws-sdk-go/aws
 github.com/aws/aws-sdk-go/aws/client
 github.com/aws/aws-sdk-go/aws/request
@@ -97,28 +95,21 @@ github.com/bgentry/speakeasy
 github.com/blang/semver
 # github.com/cenkalti/backoff v2.1.1+incompatible
 github.com/cenkalti/backoff
-# github.com/census-instrumentation/opencensus-proto v0.2.0
-github.com/census-instrumentation/opencensus-proto/gen-go/agent/common/v1
-github.com/census-instrumentation/opencensus-proto/gen-go/agent/metrics/v1
-github.com/census-instrumentation/opencensus-proto/gen-go/agent/trace/v1
-github.com/census-instrumentation/opencensus-proto/gen-go/metrics/v1
-github.com/census-instrumentation/opencensus-proto/gen-go/resource/v1
-github.com/census-instrumentation/opencensus-proto/gen-go/trace/v1
-# github.com/cloudflare/cloudflare-go v0.8.5
+# github.com/cloudflare/cloudflare-go v0.9.1
 github.com/cloudflare/cloudflare-go
 # github.com/cpu/goacmedns v0.0.1
 github.com/cpu/goacmedns
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
-# github.com/decker502/dnspod-go v0.0.0-20180416134550-83a3ba562b04
+# github.com/decker502/dnspod-go v0.2.0
 github.com/decker502/dnspod-go
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
 github.com/dgrijalva/jwt-go
-# github.com/dimchansky/utfbom v1.1.0
+# github.com/dimchansky/utfbom v1.0.0
 github.com/dimchansky/utfbom
 # github.com/dnsimple/dnsimple-go v0.23.0
 github.com/dnsimple/dnsimple-go/dnsimple
-# github.com/exoscale/egoscale v0.14.0
+# github.com/exoscale/egoscale v0.18.0
 github.com/exoscale/egoscale
 # github.com/fatih/color v1.7.0
 github.com/fatih/color
@@ -206,32 +197,27 @@ github.com/go-acme/lego/challenge/http01
 github.com/go-acme/lego/challenge/tlsalpn01
 # github.com/go-ini/ini v1.42.0
 github.com/go-ini/ini
-# github.com/golang/protobuf v1.3.1
+# github.com/gofrs/uuid v3.2.0+incompatible
+github.com/gofrs/uuid
+# github.com/golang/protobuf v1.3.0
 github.com/golang/protobuf/proto
 github.com/golang/protobuf/ptypes
 github.com/golang/protobuf/ptypes/any
 github.com/golang/protobuf/ptypes/duration
 github.com/golang/protobuf/ptypes/timestamp
-github.com/golang/protobuf/ptypes/wrappers
 github.com/golang/protobuf/protoc-gen-go/descriptor
-github.com/golang/protobuf/jsonpb
-github.com/golang/protobuf/protoc-gen-go/generator
-github.com/golang/protobuf/ptypes/struct
-github.com/golang/protobuf/protoc-gen-go/generator/internal/remap
-github.com/golang/protobuf/protoc-gen-go/plugin
-# github.com/google/go-cmp v0.3.0
+# github.com/google/go-cmp v0.2.0
 github.com/google/go-cmp/cmp
 github.com/google/go-cmp/cmp/internal/diff
-github.com/google/go-cmp/cmp/internal/flags
 github.com/google/go-cmp/cmp/internal/function
 github.com/google/go-cmp/cmp/internal/value
 # github.com/google/go-querystring v1.0.0
 github.com/google/go-querystring/query
 # github.com/google/uuid v1.1.1
 github.com/google/uuid
-# github.com/googleapis/gax-go/v2 v2.0.4
+# github.com/googleapis/gax-go/v2 v2.0.3
 github.com/googleapis/gax-go/v2
-# github.com/gophercloud/gophercloud v0.0.0-20190215023200-9e57e2f8ff0c
+# github.com/gophercloud/gophercloud v0.0.0-20190208042652-bc37892e1968
 github.com/gophercloud/gophercloud
 github.com/gophercloud/gophercloud/openstack
 github.com/gophercloud/gophercloud/openstack/dns/v2/recordsets
@@ -241,18 +227,14 @@ github.com/gophercloud/gophercloud/openstack/identity/v3/tokens
 github.com/gophercloud/gophercloud/openstack/utils
 github.com/gophercloud/gophercloud/pagination
 github.com/gophercloud/gophercloud/openstack/identity/v2/tenants
-# github.com/grpc-ecosystem/grpc-gateway v1.8.6
-github.com/grpc-ecosystem/grpc-gateway/runtime
-github.com/grpc-ecosystem/grpc-gateway/utilities
-github.com/grpc-ecosystem/grpc-gateway/internal
 # github.com/hashicorp/errwrap v1.0.0
 github.com/hashicorp/errwrap
-# github.com/hashicorp/go-cleanhttp v0.5.1
+# github.com/hashicorp/go-cleanhttp v0.5.0
 github.com/hashicorp/go-cleanhttp
 # github.com/hashicorp/go-getter v1.3.0
 github.com/hashicorp/go-getter
 github.com/hashicorp/go-getter/helper/url
-# github.com/hashicorp/go-hclog v0.9.1
+# github.com/hashicorp/go-hclog v0.0.0-20181001195459-61d530d6c27f
 github.com/hashicorp/go-hclog
 # github.com/hashicorp/go-multierror v1.0.0
 github.com/hashicorp/go-multierror
@@ -263,11 +245,9 @@ github.com/hashicorp/go-plugin/internal/plugin
 github.com/hashicorp/go-safetemp
 # github.com/hashicorp/go-uuid v1.0.1
 github.com/hashicorp/go-uuid
-# github.com/hashicorp/go-version v1.2.0
+# github.com/hashicorp/go-version v1.1.0
 github.com/hashicorp/go-version
-# github.com/hashicorp/golang-lru v0.5.1
-github.com/hashicorp/golang-lru/simplelru
-# github.com/hashicorp/hcl v1.0.0
+# github.com/hashicorp/hcl v0.0.0-20170504190234-a4b07c25de5f
 github.com/hashicorp/hcl
 github.com/hashicorp/hcl/hcl/ast
 github.com/hashicorp/hcl/hcl/parser
@@ -288,7 +268,7 @@ github.com/hashicorp/hcl2/ext/dynblock
 github.com/hashicorp/hcl2/hclwrite
 github.com/hashicorp/hcl2/hcl/json
 github.com/hashicorp/hcl2/hcled
-# github.com/hashicorp/hil v0.0.0-20190212132231-97b3a9cdfa93
+# github.com/hashicorp/hil v0.0.0-20190212112733-ab17b08d6590
 github.com/hashicorp/hil
 github.com/hashicorp/hil/ast
 github.com/hashicorp/hil/parser
@@ -343,28 +323,28 @@ github.com/hashicorp/terraform/internal/modsdir
 github.com/hashicorp/terraform/internal/earlyconfig
 # github.com/hashicorp/terraform-config-inspect v0.0.0-20190327195015-8022a2663a70
 github.com/hashicorp/terraform-config-inspect/tfconfig
-# github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d
+# github.com/hashicorp/yamux v0.0.0-20180604194846-3520598351bb
 github.com/hashicorp/yamux
-# github.com/iij/doapi v0.0.0-20180911005243-8803795a9b7b
+# github.com/iij/doapi v0.0.0-20190504054126-0bbf12d6d7df
 github.com/iij/doapi
 github.com/iij/doapi/protocol
 # github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af
 github.com/jmespath/go-jmespath
-# github.com/json-iterator/go v1.1.6
+# github.com/json-iterator/go v1.1.5
 github.com/json-iterator/go
 # github.com/juju/ratelimit v1.0.1
 github.com/juju/ratelimit
-# github.com/kolo/xmlrpc v0.0.0-20181023172212-16bdd962781d
+# github.com/kolo/xmlrpc v0.0.0-20190514182600-74b23a09d7ea
 github.com/kolo/xmlrpc
-# github.com/konsorten/go-windows-terminal-sequences v1.0.2
+# github.com/konsorten/go-windows-terminal-sequences v0.0.0-20180402223658-b729f2633dfe
 github.com/konsorten/go-windows-terminal-sequences
-# github.com/linode/linodego v0.7.1
+# github.com/linode/linodego v0.9.0
 github.com/linode/linodego
 # github.com/mattn/go-colorable v0.1.1
 github.com/mattn/go-colorable
-# github.com/mattn/go-isatty v0.0.7
+# github.com/mattn/go-isatty v0.0.5
 github.com/mattn/go-isatty
-# github.com/miekg/dns v1.1.9
+# github.com/miekg/dns v1.1.13
 github.com/miekg/dns
 # github.com/mitchellh/cli v1.0.0
 github.com/mitchellh/cli
@@ -372,7 +352,7 @@ github.com/mitchellh/cli
 github.com/mitchellh/colorstring
 # github.com/mitchellh/copystructure v1.0.0
 github.com/mitchellh/copystructure
-# github.com/mitchellh/go-homedir v1.1.0
+# github.com/mitchellh/go-homedir v1.0.0
 github.com/mitchellh/go-homedir
 # github.com/mitchellh/go-testing-interface v1.0.0
 github.com/mitchellh/go-testing-interface
@@ -382,11 +362,11 @@ github.com/mitchellh/go-wordwrap
 github.com/mitchellh/hashstructure
 # github.com/mitchellh/mapstructure v1.1.2
 github.com/mitchellh/mapstructure
-# github.com/mitchellh/reflectwalk v1.0.1
+# github.com/mitchellh/reflectwalk v1.0.0
 github.com/mitchellh/reflectwalk
 # github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
 github.com/modern-go/concurrent
-# github.com/modern-go/reflect2 v1.0.1
+# github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742
 github.com/modern-go/reflect2
 # github.com/namedotcom/go v0.0.0-20180403034216-08470befbe04
 github.com/namedotcom/go/namecom
@@ -396,29 +376,27 @@ github.com/nrdcg/auroradns
 github.com/nrdcg/goinwx
 # github.com/oklog/run v1.0.0
 github.com/oklog/run
-# github.com/oracle/oci-go-sdk v4.0.0+incompatible
+# github.com/oracle/oci-go-sdk v5.8.0+incompatible
 github.com/oracle/oci-go-sdk/common
 github.com/oracle/oci-go-sdk/dns
 # github.com/ovh/go-ovh v0.0.0-20181109152953-ba5adb4cf014
 github.com/ovh/go-ovh/ovh
-# github.com/pkg/errors v0.8.1
+# github.com/pkg/errors v0.8.0
 github.com/pkg/errors
 # github.com/posener/complete v1.2.1
 github.com/posener/complete
 github.com/posener/complete/cmd/install
 github.com/posener/complete/cmd
 github.com/posener/complete/match
-# github.com/sacloud/libsacloud v1.19.0
+# github.com/sacloud/libsacloud v1.22.3
 github.com/sacloud/libsacloud/api
 github.com/sacloud/libsacloud/sacloud
 github.com/sacloud/libsacloud
 github.com/sacloud/libsacloud/sacloud/ostype
 github.com/sacloud/libsacloud/utils/mutexkv
-# github.com/satori/go.uuid v1.2.0
-github.com/satori/go.uuid
-# github.com/sirupsen/logrus v1.4.2-0.20190510074101-f0375eb5b588
+# github.com/sirupsen/logrus v1.1.1
 github.com/sirupsen/logrus
-# github.com/spf13/afero v1.2.2
+# github.com/spf13/afero v1.2.1
 github.com/spf13/afero
 github.com/spf13/afero/mem
 # github.com/terraform-providers/terraform-provider-tls v1.2.0
@@ -426,16 +404,16 @@ github.com/terraform-providers/terraform-provider-tls/tls
 # github.com/timewasted/linode v0.0.0-20160829202747-37e84520dcf7
 github.com/timewasted/linode/dns
 github.com/timewasted/linode
-# github.com/transip/gotransip v5.8.1+incompatible
+# github.com/transip/gotransip v5.8.2+incompatible
 github.com/transip/gotransip
 github.com/transip/gotransip/domain
 github.com/transip/gotransip/util
-# github.com/ulikunitz/xz v0.5.6
+# github.com/ulikunitz/xz v0.5.5
 github.com/ulikunitz/xz
 github.com/ulikunitz/xz/internal/xlog
 github.com/ulikunitz/xz/lzma
 github.com/ulikunitz/xz/internal/hash
-# github.com/vmihailenco/msgpack v4.0.4+incompatible
+# github.com/vmihailenco/msgpack v4.0.1+incompatible
 github.com/vmihailenco/msgpack
 github.com/vmihailenco/msgpack/codes
 # github.com/zclconf/go-cty v0.0.0-20190516203816-4fecf87372ec
@@ -447,26 +425,25 @@ github.com/zclconf/go-cty/cty/gocty
 github.com/zclconf/go-cty/cty/set
 github.com/zclconf/go-cty/cty/function
 github.com/zclconf/go-cty/cty/function/stdlib
-# go.opencensus.io v0.20.1
-go.opencensus.io/plugin/ochttp
-go.opencensus.io/plugin/ochttp/propagation/tracecontext
-go.opencensus.io/stats/view
+# go.opencensus.io v0.18.0
 go.opencensus.io/trace
-go.opencensus.io
-go.opencensus.io/plugin/ocgrpc
-go.opencensus.io/resource
-go.opencensus.io/stats
-go.opencensus.io/tag
-go.opencensus.io/trace/tracestate
-go.opencensus.io/plugin/ochttp/propagation/b3
-go.opencensus.io/trace/propagation
-go.opencensus.io/internal/tagencoding
-go.opencensus.io/metric/metricdata
-go.opencensus.io/metric/metricproducer
-go.opencensus.io/stats/internal
+go.opencensus.io/plugin/ochttp
+go.opencensus.io/exemplar
 go.opencensus.io/internal
 go.opencensus.io/trace/internal
-# golang.org/x/crypto v0.0.0-20190510104115-cbcb75029529
+go.opencensus.io/trace/tracestate
+go.opencensus.io/plugin/ochttp/propagation/b3
+go.opencensus.io/stats
+go.opencensus.io/stats/view
+go.opencensus.io/tag
+go.opencensus.io/trace/propagation
+go.opencensus.io
+go.opencensus.io/stats/internal
+go.opencensus.io/internal/tagencoding
+# go.uber.org/ratelimit v0.0.0-20180316092928-c15da0234277
+go.uber.org/ratelimit
+go.uber.org/ratelimit/internal/clock
+# golang.org/x/crypto v0.0.0-20190426145343-a29dc8fdc734
 golang.org/x/crypto/ocsp
 golang.org/x/crypto/openpgp
 golang.org/x/crypto/ed25519
@@ -479,6 +456,7 @@ golang.org/x/crypto/openpgp/packet
 golang.org/x/crypto/openpgp/s2k
 golang.org/x/crypto/ed25519/internal/edwards25519
 golang.org/x/crypto/pkcs12/internal/rc2
+golang.org/x/crypto/ssh/terminal
 golang.org/x/crypto/blowfish
 golang.org/x/crypto/curve25519
 golang.org/x/crypto/internal/chacha20
@@ -487,7 +465,7 @@ golang.org/x/crypto/cast5
 golang.org/x/crypto/openpgp/elgamal
 golang.org/x/crypto/pbkdf2
 golang.org/x/crypto/internal/subtle
-# golang.org/x/net v0.0.0-20190509222800-a4d6f7feada5
+# golang.org/x/net v0.0.0-20190502183928-7f726cade0ab
 golang.org/x/net/idna
 golang.org/x/net/context
 golang.org/x/net/publicsuffix
@@ -502,17 +480,16 @@ golang.org/x/net/internal/iana
 golang.org/x/net/internal/socket
 golang.org/x/net/context/ctxhttp
 golang.org/x/net/http/httpguts
-# golang.org/x/oauth2 v0.0.0-20190402181905-9f3314589c9a
+# golang.org/x/oauth2 v0.0.0-20190220154721-9b3c75971fc9
 golang.org/x/oauth2
 golang.org/x/oauth2/google
 golang.org/x/oauth2/clientcredentials
 golang.org/x/oauth2/internal
 golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
-# golang.org/x/sync v0.0.0-20190423024810-112230192c58
-golang.org/x/sync/semaphore
-# golang.org/x/sys v0.0.0-20190514135907-3a4b5fb9f71f
+# golang.org/x/sys v0.0.0-20190502175342-a43fa875dd82
 golang.org/x/sys/unix
+golang.org/x/sys/windows
 golang.org/x/sys/cpu
 # golang.org/x/text v0.3.2
 golang.org/x/text/unicode/norm
@@ -521,20 +498,19 @@ golang.org/x/text/unicode/bidi
 golang.org/x/text/transform
 # golang.org/x/time v0.0.0-20190308202827-9d24e82272b4
 golang.org/x/time/rate
-# google.golang.org/api v0.3.2
+# google.golang.org/api v0.1.0
 google.golang.org/api/dns/v1
 google.golang.org/api/googleapi
 google.golang.org/api/option
 google.golang.org/api/gensupport
-google.golang.org/api/transport/http
 google.golang.org/api/googleapi/internal/uritemplates
 google.golang.org/api/internal
 google.golang.org/api/iterator
+google.golang.org/api/storage/v1
+google.golang.org/api/transport/http
 google.golang.org/api/googleapi/transport
 google.golang.org/api/transport/http/internal/propagation
-google.golang.org/api/storage/v1
-google.golang.org/api/support/bundler
-# google.golang.org/appengine v1.5.0
+# google.golang.org/appengine v1.4.0
 google.golang.org/appengine
 google.golang.org/appengine/datastore
 google.golang.org/appengine/urlfetch
@@ -546,15 +522,12 @@ google.golang.org/appengine/internal/urlfetch
 google.golang.org/appengine/internal/base
 google.golang.org/appengine/internal/log
 google.golang.org/appengine/internal/remote_api
-# google.golang.org/genproto v0.0.0-20190508193815-b515fa19cec8
+# google.golang.org/genproto v0.0.0-20190201180003-4b09977fb922
 google.golang.org/genproto/googleapis/rpc/status
 google.golang.org/genproto/googleapis/iam/v1
 google.golang.org/genproto/googleapis/rpc/code
 google.golang.org/genproto/googleapis/api/annotations
-google.golang.org/genproto/googleapis/type/expr
-google.golang.org/genproto/googleapis/api/httpbody
-google.golang.org/genproto/protobuf/field_mask
-# google.golang.org/grpc v1.20.1
+# google.golang.org/grpc v1.18.0
 google.golang.org/grpc
 google.golang.org/grpc/credentials
 google.golang.org/grpc/health
@@ -568,7 +541,6 @@ google.golang.org/grpc/encoding/proto
 google.golang.org/grpc/grpclog
 google.golang.org/grpc/internal
 google.golang.org/grpc/internal/backoff
-google.golang.org/grpc/internal/balancerload
 google.golang.org/grpc/internal/binarylog
 google.golang.org/grpc/internal/channelz
 google.golang.org/grpc/internal/envconfig
@@ -592,19 +564,19 @@ google.golang.org/grpc/binarylog/grpc_binarylog_v1
 google.golang.org/grpc/internal/syscall
 # gopkg.in/ini.v1 v1.42.0
 gopkg.in/ini.v1
-# gopkg.in/ns1/ns1-go.v2 v2.0.0-20181211201113-a57b2a18aab6
+# gopkg.in/ns1/ns1-go.v2 v2.0.0-20190430170845-6c599e5e5790
 gopkg.in/ns1/ns1-go.v2/rest
 gopkg.in/ns1/ns1-go.v2/rest/model/dns
 gopkg.in/ns1/ns1-go.v2/rest/model/account
 gopkg.in/ns1/ns1-go.v2/rest/model/data
 gopkg.in/ns1/ns1-go.v2/rest/model/monitor
 gopkg.in/ns1/ns1-go.v2/rest/model/filter
-# gopkg.in/resty.v1 v1.12.0
+# gopkg.in/resty.v1 v1.9.1
 gopkg.in/resty.v1
 # gopkg.in/square/go-jose.v2 v2.3.1
 gopkg.in/square/go-jose.v2
 gopkg.in/square/go-jose.v2/cipher
 gopkg.in/square/go-jose.v2/json
-# software.sslmate.com/src/go-pkcs12 v0.0.0-20190209200317-47dd539968c4
+# software.sslmate.com/src/go-pkcs12 v0.0.0-20190322163127-6e380ad96778
 software.sslmate.com/src/go-pkcs12
 software.sslmate.com/src/go-pkcs12/internal/rc2

@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2019 Jeevanandam M (jeeva@myjeeva.com), All rights reserved.
+// Copyright (c) 2015-2018 Jeevanandam M (jeeva@myjeeva.com), All rights reserved.
 // resty source code and usage is governed by a MIT style
 // license that can be found in the LICENSE file.
 
@@ -58,7 +58,7 @@ var (
 	jsonContentType = "application/json; charset=utf-8"
 	formContentType = "application/x-www-form-urlencoded"
 
-	jsonCheck = regexp.MustCompile(`(?i:(application|text)/(json|.*\+json|json\-.*)(;|$))`)
+	jsonCheck = regexp.MustCompile(`(?i:(application|text)/(json|.*\+json)(;|$))`)
 	xmlCheck  = regexp.MustCompile(`(?i:(application|text)/(xml|.*\+xml)(;|$))`)
 
 	hdrUserAgentValue = "go-resty/%s (https://github.com/go-resty/resty)"
@@ -103,8 +103,6 @@ type Client struct {
 	udBeforeRequest    []func(*Client, *Request) error
 	preReqHook         func(*Client, *Request) error
 	afterResponse      []func(*Client, *Response) error
-	requestLog         func(*RequestLog) error
-	responseLog        func(*ResponseLog) error
 }
 
 // User type is to hold an username and password information
@@ -311,7 +309,7 @@ func (c *Client) R() *Request {
 
 		client:          c,
 		multipartFiles:  []*File{},
-		multipartFields: []*MultipartField{},
+		multipartFields: []*multipartField{},
 		pathParams:      map[string]string{},
 		jsonEscapeHTML:  true,
 	}
@@ -382,26 +380,6 @@ func (c *Client) SetDebug(d bool) *Client {
 //
 func (c *Client) SetDebugBodyLimit(sl int64) *Client {
 	c.debugBodySizeLimit = sl
-	return c
-}
-
-// OnRequestLog method used to set request log callback into resty. Registered callback gets
-// called before the resty actually logs the information.
-func (c *Client) OnRequestLog(rl func(*RequestLog) error) *Client {
-	if c.requestLog != nil {
-		c.Log.Printf("Overwriting an existing on-request-log callback from=%s to=%s", functionName(c.requestLog), functionName(rl))
-	}
-	c.requestLog = rl
-	return c
-}
-
-// OnResponseLog method used to set response log callback into resty. Registered callback gets
-// called before the resty actually logs the information.
-func (c *Client) OnResponseLog(rl func(*ResponseLog) error) *Client {
-	if c.responseLog != nil {
-		c.Log.Printf("Overwriting an existing on-response-log callback from=%s to=%s", functionName(c.responseLog), functionName(rl))
-	}
-	c.responseLog = rl
 	return c
 }
 
@@ -815,10 +793,6 @@ func (c *Client) execute(req *Request) (*Response, error) {
 		req.RawRequest.Host = hostHeader
 	}
 
-	if err = requestLogger(c, req); err != nil {
-		return nil, err
-	}
-
 	req.Time = time.Now()
 	resp, err := c.httpClient.Do(req.RawRequest)
 
@@ -836,8 +810,8 @@ func (c *Client) execute(req *Request) (*Response, error) {
 		defer closeq(resp.Body)
 		body := resp.Body
 
-		// GitHub #142 & #187
-		if strings.EqualFold(resp.Header.Get(hdrContentEncodingKey), "gzip") && resp.ContentLength != 0 {
+		// GitHub #142
+		if strings.EqualFold(resp.Header.Get(hdrContentEncodingKey), "gzip") && resp.ContentLength > 0 {
 			if _, ok := body.(*gzip.Reader); !ok {
 				body, err = gzip.NewReader(body)
 				if err != nil {
@@ -917,8 +891,8 @@ func (f *File) String() string {
 	return fmt.Sprintf("ParamName: %v; FileName: %v", f.ParamName, f.Name)
 }
 
-// MultipartField represent custom data part for multipart request
-type MultipartField struct {
+// multipartField represent custom data part for multipart request
+type multipartField struct {
 	Param       string
 	FileName    string
 	ContentType string
