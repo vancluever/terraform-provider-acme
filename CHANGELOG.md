@@ -1,4 +1,12 @@
 ## 1.3.4 (Unreleased)
+
+BUG FIXES:
+
+* `resource/acme_certificate`: All computed attributes associated with a
+  certificate are now marked for re-generation when a certificate needs to be
+  renewed. While this was previously happening in reality, this was not being
+  reflected in the plan. [GH-64]
+
 ## 1.3.3 (May 29, 2019)
 
 This update is a Terraform 0.12 support build for the changes from 1.3.2.
