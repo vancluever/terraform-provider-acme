@@ -396,6 +396,10 @@ func resourceACMECertificateCustomizeDiff(d *schema.ResourceDiff, meta interface
 	if int64(mindays) >= remaining {
 		d.SetNewComputed("certificate_pem")
 		d.SetNewComputed("certificate_p12")
+		d.SetNewComputed("certificate_url")
+		d.SetNewComputed("certificate_domain")
+		d.SetNewComputed("private_key_pem")
+		d.SetNewComputed("issuer_pem")
 	}
 
 	return nil
