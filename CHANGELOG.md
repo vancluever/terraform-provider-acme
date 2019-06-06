@@ -1,11 +1,11 @@
-## 1.3.4 (Unreleased)
+## 1.3.4 (June 06, 2019)
 
 BUG FIXES:
 
 * `resource/acme_certificate`: All computed attributes associated with a
   certificate are now marked for re-generation when a certificate needs to be
   renewed. While this was previously happening in reality, this was not being
-  reflected in the plan. [GH-64]
+  reflected in the plan. ([#64](https://github.com/terraform-providers/terraform-provider-acme/issues/64))
 
 ## 1.3.3 (May 29, 2019)
 
