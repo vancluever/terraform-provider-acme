@@ -13,7 +13,7 @@ certificate.
 
 -> **NOTE:** As the usage model of Terraform generally sees it as being run on
 a different server than a certificate would normally be placed on, the
-`acme_certifiate` resource only supports DNS challenges.
+`acme_certificate` resource only supports DNS challenges.
 
 ## Example
 
@@ -166,7 +166,7 @@ service provider can be configured correctly.
 ### Using DNS challenges
 
 As the usage model of Terraform generally sees it as being run on a different
-server than a certificate would normally be placed on, the `acme_certifiate`
+server than a certificate would normally be placed on, the `acme_certificate`
 resource only supports DNS challenges. This method authenticates certificate
 domains by requiring the requester to place a TXT record on the FQDNs in the
 certificate.
