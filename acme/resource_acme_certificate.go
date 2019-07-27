@@ -381,19 +381,12 @@ func resourceACMECertificateCustomizeDiff(d *schema.ResourceDiff, meta interface
 		return nil
 	}
 
-	mindays := d.Get("min_days_remaining").(int)
-	if mindays < 0 {
-		log.Printf("[WARN] min_days_remaining is set to less than 0, certificate will never be renewed")
-		return nil
-	}
-
-	cert := expandCertificateResource(d)
-	remaining, err := certDaysRemaining(cert)
+	expired, err := resourceACMECertificateHasExpired(d)
 	if err != nil {
 		return err
 	}
 
-	if int64(mindays) >= remaining {
+	if expired {
 		d.SetNewComputed("certificate_pem")
 		d.SetNewComputed("certificate_p12")
 		d.SetNewComputed("certificate_url")
@@ -408,7 +401,12 @@ func resourceACMECertificateCustomizeDiff(d *schema.ResourceDiff, meta interface
 // resourceACMECertificateUpdate renews a certificate if it has been flagged as changed.
 func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) error {
 	// We don't need to do anything else here if the certificate hasn't been diffed
-	if !d.HasChange("certificate_pem") {
+	expired, err := resourceACMECertificateHasExpired(d)
+	if err != nil {
+		return err
+	}
+
+	if !expired {
 		// when the certificate hasn't changed but the p12 password has, we still need to regenerate the p12
 		if d.HasChange("certificate_p12_password") {
 			cert := expandCertificateResource(d)
@@ -494,6 +492,28 @@ func resourceACMECertificateDelete(d *schema.ResourceData, meta interface{}) err
 	}
 
 	return nil
+}
+
+// resourceACMECertificateHasExpired checks the acme_certificate
+// resource to see if it has expired.
+func resourceACMECertificateHasExpired(d certificateResourceExpander) (bool, error) {
+	mindays := d.Get("min_days_remaining").(int)
+	if mindays < 0 {
+		log.Printf("[WARN] min_days_remaining is set to less than 0, certificate will never be renewed")
+		return false, nil
+	}
+
+	cert := expandCertificateResource(d)
+	remaining, err := certDaysRemaining(cert)
+	if err != nil {
+		return false, err
+	}
+
+	if int64(mindays) >= remaining {
+		return true, nil
+	}
+
+	return false, nil
 }
 
 // DNSProviderWrapper is a multi-provider wrapper to support multiple

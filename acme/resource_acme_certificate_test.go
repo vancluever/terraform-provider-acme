@@ -7,6 +7,7 @@ import (
 	"encoding/asn1"
 	"encoding/base64"
 	"encoding/pem"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -100,6 +101,7 @@ func TestAccACMECertificate_withDNSProviderConfig(t *testing.T) {
 }
 
 func TestAccACMECertificate_forceRenewal(t *testing.T) {
+	var certID string
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckCert(t) },
 		Providers: testAccProviders,
@@ -107,6 +109,10 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 			{
 				Config: testAccACMECertificateForceRenewalConfig(),
 				Check: resource.ComposeTestCheckFunc(
+					func(s *terraform.State) error {
+						certID = s.Modules[0].Resources["acme_certificate.certificate"].Primary.ID
+						return nil
+					},
 					resource.TestCheckResourceAttrPair(
 						"acme_certificate.certificate", "id",
 						"acme_certificate.certificate", "certificate_url",
@@ -118,6 +124,17 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 			{
 				Config: testAccACMECertificateForceRenewalConfig(),
 				Check: resource.ComposeTestCheckFunc(
+					func(s *terraform.State) error {
+						if certID == s.Modules[0].Resources["acme_certificate.certificate"].Primary.ID {
+							return errors.New("certificate ID did not change")
+						}
+
+						return nil
+					},
+					resource.TestCheckResourceAttrPair(
+						"acme_certificate.certificate", "id",
+						"acme_certificate.certificate", "certificate_url",
+					),
 					resource.TestCheckResourceAttrPair(
 						"acme_certificate.certificate", "id",
 						"acme_certificate.certificate", "certificate_url",
