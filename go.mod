@@ -8,8 +8,6 @@ require (
 	github.com/JamesClonk/vultr v0.0.0-20181227165352-882c666acc57 // indirect
 	github.com/OpenDNS/vegadns2client v0.0.0-20180418235048-a3fa4a771d87 // indirect
 	github.com/akamai/AkamaiOPEN-edgegrid-golang v0.7.3 // indirect
-	github.com/aliyun/alibaba-cloud-sdk-go v0.0.0-20190203032130-408505a5fba8 // indirect
-	github.com/aws/aws-sdk-go v1.19.28 // indirect
 	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
 	github.com/cloudflare/cloudflare-go v0.8.5 // indirect
 	github.com/cpu/goacmedns v0.0.1 // indirect
@@ -23,8 +21,6 @@ require (
 	github.com/go-acme/lego v0.0.0-00010101000000-000000000000
 	github.com/go-ini/ini v1.42.0 // indirect
 	github.com/go-test/deep v1.0.2-0.20181118220953-042da051cf31 // indirect
-	github.com/golang/mock v1.3.0 // indirect
-	github.com/google/go-cmp v0.3.0 // indirect
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/gophercloud/gophercloud v0.0.0-20190215023200-9e57e2f8ff0c // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20190430165422-3e4dfb77656c // indirect
@@ -37,7 +33,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/hil v0.0.0-20190212132231-97b3a9cdfa93 // indirect
-	github.com/hashicorp/terraform v0.12.0
+	github.com/hashicorp/terraform v0.12.5
 	github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d // indirect
 	github.com/iij/doapi v0.0.0-20180911005243-8803795a9b7b // indirect
 	github.com/json-iterator/go v1.1.6 // indirect
@@ -51,8 +47,6 @@ require (
 	github.com/mitchellh/copystructure v1.0.0
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
-	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
-	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/namedotcom/go v0.0.0-20180403034216-08470befbe04 // indirect
 	github.com/nrdcg/auroradns v1.0.0 // indirect
 	github.com/nrdcg/goinwx v0.6.0 // indirect
@@ -70,14 +64,13 @@ require (
 	github.com/transip/gotransip v5.8.1+incompatible // indirect
 	github.com/ulikunitz/xz v0.5.6 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
-	golang.org/x/crypto v0.0.0-20190510104115-cbcb75029529 // indirect
 	golang.org/x/net v0.0.0-20190509222800-a4d6f7feada5 // indirect
 	golang.org/x/oauth2 v0.0.0-20190402181905-9f3314589c9a // indirect
 	golang.org/x/sys v0.0.0-20190514135907-3a4b5fb9f71f // indirect
 	google.golang.org/api v0.3.2 // indirect
+	google.golang.org/appengine v1.5.0 // indirect
 	google.golang.org/genproto v0.0.0-20190508193815-b515fa19cec8 // indirect
 	google.golang.org/grpc v1.20.1 // indirect
-	gopkg.in/ini.v1 v1.42.0 // indirect
 	gopkg.in/ns1/ns1-go.v2 v2.0.0-20181211201113-a57b2a18aab6 // indirect
 	gopkg.in/square/go-jose.v2 v2.3.1 // indirect
 	software.sslmate.com/src/go-pkcs12 v0.0.0-20190209200317-47dd539968c4
