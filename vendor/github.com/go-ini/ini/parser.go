@@ -100,7 +100,7 @@ func cleanComment(in []byte) ([]byte, bool) {
 	return in[i:], true
 }
 
-func readKeyName(delimiters string, in []byte) (string, int, error) {
+func readKeyName(in []byte) (string, int, error) {
 	line := string(in)
 
 	// Check if key name surrounded by quotes.
@@ -127,7 +127,7 @@ func readKeyName(delimiters string, in []byte) (string, int, error) {
 		pos += startIdx
 
 		// Find key-value delimiter
-		i := strings.IndexAny(line[pos+startIdx:], delimiters)
+		i := strings.IndexAny(line[pos+startIdx:], "=:")
 		if i < 0 {
 			return "", -1, ErrDelimiterNotFound{line}
 		}
@@ -135,7 +135,7 @@ func readKeyName(delimiters string, in []byte) (string, int, error) {
 		return strings.TrimSpace(line[startIdx:pos]), endIdx + startIdx + 1, nil
 	}
 
-	endIdx = strings.IndexAny(line, delimiters)
+	endIdx = strings.IndexAny(line, "=:")
 	if endIdx < 0 {
 		return "", -1, ErrDelimiterNotFound{line}
 	}
@@ -198,7 +198,7 @@ func hasSurroundedQuote(in string, quote byte) bool {
 
 func (p *parser) readValue(in []byte,
 	parserBufferSize int,
-	ignoreContinuation, ignoreInlineComment, unescapeValueDoubleQuotes, unescapeValueCommentSymbols, allowPythonMultilines, spaceBeforeInlineComment, preserveSurroundedQuote bool) (string, error) {
+	ignoreContinuation, ignoreInlineComment, unescapeValueDoubleQuotes, unescapeValueCommentSymbols, allowPythonMultilines, spaceBeforeInlineComment bool) (string, error) {
 
 	line := strings.TrimLeftFunc(string(in), unicode.IsSpace)
 	if len(line) == 0 {
@@ -259,8 +259,8 @@ func (p *parser) readValue(in []byte,
 	}
 
 	// Trim single and double quotes
-	if (hasSurroundedQuote(line, '\'') ||
-		hasSurroundedQuote(line, '"')) && !preserveSurroundedQuote {
+	if hasSurroundedQuote(line, '\'') ||
+		hasSurroundedQuote(line, '"') {
 		line = line[1 : len(line)-1]
 	} else if len(valQuote) == 0 && unescapeValueCommentSymbols {
 		if strings.Contains(line, `\;`) {
@@ -273,6 +273,7 @@ func (p *parser) readValue(in []byte,
 		parserBufferPeekResult, _ := p.buf.Peek(parserBufferSize)
 		peekBuffer := bytes.NewBuffer(parserBufferPeekResult)
 
+		identSize := -1
 		val := line
 
 		for {
@@ -289,11 +290,12 @@ func (p *parser) readValue(in []byte,
 				return val, nil
 			}
 
-			// NOTE: Return if not a python-ini multi-line value.
 			currentIdentSize := len(peekMatches[1])
-			if currentIdentSize <= 0 {
+			// NOTE: Return if not a python-ini multi-line value.
+			if currentIdentSize < 0 {
 				return val, nil
 			}
+			identSize = currentIdentSize
 
 			// NOTE: Just advance the parser reader (buffer) in-sync with the peek buffer.
 			_, err := p.readUntil('\n')
@@ -302,6 +304,12 @@ func (p *parser) readValue(in []byte,
 			}
 
 			val += fmt.Sprintf("\n%s", peekMatches[2])
+		}
+
+		// NOTE: If it was a Python multi-line value,
+		// return the appended value.
+		if identSize > 0 {
+			return val, nil
 		}
 	}
 
@@ -420,7 +428,7 @@ func (f *File) parse(reader io.Reader) (err error) {
 			continue
 		}
 
-		kname, offset, err := readKeyName(f.options.KeyValueDelimiters, line)
+		kname, offset, err := readKeyName(line)
 		if err != nil {
 			// Treat as boolean key when desired, and whole line is key name.
 			if IsErrDelimiterNotFound(err) {
@@ -433,8 +441,7 @@ func (f *File) parse(reader io.Reader) (err error) {
 						f.options.UnescapeValueDoubleQuotes,
 						f.options.UnescapeValueCommentSymbols,
 						f.options.AllowPythonMultilineValues,
-						f.options.SpaceBeforeInlineComment,
-						f.options.PreserveSurroundedQuote)
+						f.options.SpaceBeforeInlineComment)
 					if err != nil {
 						return err
 					}
@@ -468,8 +475,7 @@ func (f *File) parse(reader io.Reader) (err error) {
 			f.options.UnescapeValueDoubleQuotes,
 			f.options.UnescapeValueCommentSymbols,
 			f.options.AllowPythonMultilineValues,
-			f.options.SpaceBeforeInlineComment,
-			f.options.PreserveSurroundedQuote)
+			f.options.SpaceBeforeInlineComment)
 		if err != nil {
 			return err
 		}

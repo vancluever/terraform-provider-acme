@@ -119,7 +119,11 @@ func unmarshal(in []byte, out interface{}) error {
 	return nil
 }
 
-// ConvertToPEM converts all "safe bags" contained in pfxData to PEM blocks.
+// ToPEM converts all "safe bags" contained in pfxData to PEM blocks.
+// DO NOT USE THIS FUNCTION. ToPEM creates invalid PEM blocks; private keys
+// are encoded as raw RSA or EC private keys rather than PKCS#8 despite being
+// labeled "PRIVATE KEY".  To decode a PKCS#12 file, use DecodeChain instead,
+// and use the encoding/pem package to convert to PEM if necessary.
 func ToPEM(pfxData []byte, password string) ([]*pem.Block, error) {
 	encodedPassword, err := bmpString(password)
 	if err != nil {
@@ -227,60 +231,71 @@ func convertAttribute(attribute *pkcs12Attribute) (key, value string, err error)
 
 // Decode extracts a certificate and private key from pfxData. This function
 // assumes that there is only one certificate and only one private key in the
-// pfxData.
+// pfxData.  Since PKCS#12 files often contain more than one certificate, you
+// probably want to use DecodeChain instead.
 func Decode(pfxData []byte, password string) (privateKey interface{}, certificate *x509.Certificate, err error) {
+	var caCerts []*x509.Certificate
+	privateKey, certificate, caCerts, err = DecodeChain(pfxData, password)
+	if len(caCerts) != 0 {
+		err = errors.New("pkcs12: expected exactly two safe bags in the PFX PDU")
+	}
+	return
+}
+
+// DecodeChain extracts a certificate, a CA certificate chain, and private key
+// from pfxData. This function assumes that there is at least one certificate
+// and only one private key in the pfxData.  The first certificate is assumed to
+// be the leaf certificate, and subsequent certificates, if any, are assumed to
+// comprise the CA certificate chain.
+func DecodeChain(pfxData []byte, password string) (privateKey interface{}, certificate *x509.Certificate, caCerts []*x509.Certificate, err error) {
 	encodedPassword, err := bmpString(password)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
 	bags, encodedPassword, err := getSafeContents(pfxData, encodedPassword)
 	if err != nil {
-		return nil, nil, err
-	}
-
-	if len(bags) != 2 {
-		err = errors.New("pkcs12: expected exactly two safe bags in the PFX PDU")
-		return
+		return nil, nil, nil, err
 	}
 
 	for _, bag := range bags {
 		switch {
 		case bag.Id.Equal(oidCertBag):
-			if certificate != nil {
-				err = errors.New("pkcs12: expected exactly one certificate bag")
-			}
-
 			certsData, err := decodeCertBag(bag.Value.Bytes)
 			if err != nil {
-				return nil, nil, err
+				return nil, nil, nil, err
 			}
 			certs, err := x509.ParseCertificates(certsData)
 			if err != nil {
-				return nil, nil, err
+				return nil, nil, nil, err
 			}
 			if len(certs) != 1 {
 				err = errors.New("pkcs12: expected exactly one certificate in the certBag")
-				return nil, nil, err
+				return nil, nil, nil, err
 			}
-			certificate = certs[0]
+			if certificate == nil {
+				certificate = certs[0]
+			} else {
+				caCerts = append(caCerts, certs[0])
+			}
 
 		case bag.Id.Equal(oidPKCS8ShroundedKeyBag):
 			if privateKey != nil {
 				err = errors.New("pkcs12: expected exactly one key bag")
+				return nil, nil, nil, err
 			}
 
 			if privateKey, err = decodePkcs8ShroudedKeyBag(bag.Value.Bytes, encodedPassword); err != nil {
-				return nil, nil, err
+				return nil, nil, nil, err
 			}
 		}
 	}
 
 	if certificate == nil {
-		return nil, nil, errors.New("pkcs12: certificate missing")
+		return nil, nil, nil, errors.New("pkcs12: certificate missing")
 	}
 	if privateKey == nil {
-		return nil, nil, errors.New("pkcs12: private key missing")
+		return nil, nil, nil, errors.New("pkcs12: private key missing")
 	}
 
 	return

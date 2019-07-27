@@ -14,7 +14,7 @@ A wrapper for the [Exoscale public cloud](https://www.exoscale.com) API.
 - [Exoscale CLI](https://github.com/exoscale/cli)
 - [Exoscale Terraform provider](https://github.com/exoscale/terraform-provider-exoscale)
 - [ExoIP](https://github.com/exoscale/exoip): IP Watchdog
-- [Lego](https://github.com/xenolf/lego): Let's Encrypt and ACME library
+- [Lego](https://github.com/go-acme/lego): Let's Encrypt and ACME library
 - Kubernetes Incubator: [External DNS](https://github.com/kubernetes-incubator/external-dns)
 - [Docker machine](https://docs.docker.com/machine/drivers/exoscale/)
 - [etc.](https://godoc.org/github.com/exoscale/egoscale?importers)

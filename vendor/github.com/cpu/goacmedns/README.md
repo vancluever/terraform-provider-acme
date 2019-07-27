@@ -84,10 +84,9 @@ initial ACME-DNS account creation and CNAME delegation ahead of time  The
 `goacmedns-register` command line utility provides an easy way to do this:
 
      go install github.com/cpu/goacmedns/...
-     goacmedns-register -api http://10.0.0.1:4443 -domain example.com -allowFrom 192.168.100.1/24,1.2.3.4/32,2002:c0a8:2a00::0/40 -storage /tmp/example.storage.json
+     goacmedns-register -api http://10.0.0.1:4443 -domain example.com -storage /tmp/example.storage.json
 
-This will register an account for `example.com` that is only usable from the
-specified CIDR `-allowFrom` networks with the ACME-DNS server at
+This will register an account for `example.com` with the ACME-DNS server at
 `http://10.0.0.1:4443`, saving the account details in
 `/tmp/example.storage.json` and printing the required CNAME record for the
 `example.com` DNS zone to stdout.

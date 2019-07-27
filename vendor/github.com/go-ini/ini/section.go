@@ -238,7 +238,6 @@ func (s *Section) DeleteKey(name string) {
 		if k == name {
 			s.keyList = append(s.keyList[:i], s.keyList[i+1:]...)
 			delete(s.keys, name)
-			delete(s.keysHash, name)
 			return
 		}
 	}
