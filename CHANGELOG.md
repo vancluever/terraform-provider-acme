@@ -1,4 +1,11 @@
 ## 1.3.5 (Unreleased)
+
+BUG FIXES:
+
+* `resource/acme_certificate`: Expired certificates flagged for renewal will now
+  properly renew on the next `terraform apply` on Terraform 0.12.0 and higher.
+  [GH-77]
+
 ## 1.3.4 (June 06, 2019)
 
 BUG FIXES:
