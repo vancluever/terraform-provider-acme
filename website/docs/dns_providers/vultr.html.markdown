@@ -48,15 +48,13 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `VULTR_API_KEY` - The API key to use.
+* `VULTR_API_KEY` - API key.
 
 The following additional optional variables are available:
 
-* `VULTR_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `60`).
-* `VULTR_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
-* `VULTR_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `120`).
-* `VULTR_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  no timeout).
+* `VULTR_HTTP_TIMEOUT` - API request timeout.
+* `VULTR_POLLING_INTERVAL` - Time between DNS propagation check.
+* `VULTR_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `VULTR_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

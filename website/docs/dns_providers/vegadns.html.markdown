@@ -48,15 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `SECRET_VEGADNS_KEY` - The API key to use.
-* `SECRET_VEGADNS_SECRET` - The API secret to use.
-* `VEGADNS_URL` - The base URL to use.
+* `SECRET_VEGADNS_KEY` - API key.
+* `SECRET_VEGADNS_SECRET` - API secret.
+* `VEGADNS_URL` - API endpoint URL.
 
 The following additional optional variables are available:
 
-* `VEGADNS_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `1`).
-* `VEGADNS_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `720`).
-* `VEGADNS_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `10`).
+* `VEGADNS_POLLING_INTERVAL` - Time between DNS propagation check.
+* `VEGADNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `VEGADNS_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

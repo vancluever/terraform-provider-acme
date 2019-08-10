@@ -48,17 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `VSCALE_API_TOKEN` - The API token to use.
+* `VSCALE_API_TOKEN` - API token.
 
 The following additional optional variables are available:
 
-* `VSCALE_BASE_URL` - The base URL to use (default:
-  `https://api.vscale.io/v1/domains`).
-* `VSCALE_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `2`).
-* `VSCALE_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `120`).
-* `VSCALE_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `60`).
-* `VSCALE_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `30`).
+* `VSCALE_BASE_URL` - API enddpoint URL.
+* `VSCALE_HTTP_TIMEOUT` - API request timeout.
+* `VSCALE_POLLING_INTERVAL` - Time between DNS propagation check.
+* `VSCALE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `VSCALE_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

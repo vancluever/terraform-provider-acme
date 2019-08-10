@@ -7,6 +7,22 @@ export ACME_SERVER_URL ?= https://acme-staging-v02.api.letsencrypt.org/directory
 
 default: build
 
+tools:
+	cd $(shell go env GOROOT) && go get -u github.com/hashicorp/go-bindata/go-bindata
+
+template-generate:
+	@echo "==> Re-generating templates..."
+	@go generate ./build-support/generate-dns-providers
+
+provider-generate:
+	@echo "==> Re-generating Go DNS provider factory in ./acme..."
+	@go generate ./acme
+	@go build ./acme
+	@go mod tidy && go mod vendor
+	@echo "==> Re-genrating documentation..."
+	@find website/docs/dns_providers -type f -not -name index.html.markdown | xargs rm
+	@go run ./build-support/generate-dns-providers doc website/
+
 build: fmtcheck
 	go install
 
@@ -61,4 +77,4 @@ ifeq (,$(wildcard $(GOPATH)/src/$(WEBSITE_REPO)))
 endif
 	@$(MAKE) -C $(GOPATH)/src/$(WEBSITE_REPO) website-provider-test PROVIDER_PATH=$(shell pwd) PROVIDER_NAME=$(PKG_NAME)
 
-.PHONY: build test testacc vet fmt fmtcheck errcheck test-compile website website-test
+.PHONY: build test testacc vet fmt fmtcheck errcheck test-compile website website-test tools provider-generate template-generate

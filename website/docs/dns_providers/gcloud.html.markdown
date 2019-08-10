@@ -1,19 +1,19 @@
 ---
 layout: "acme"
-page_title: "ACME: Google Cloud DNS DNS Challenge Provider"
+page_title: "ACME: Google Cloud DNS Challenge Provider"
 sidebar_current: "docs-acme-dns-providers-gcloud"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
 
-# Google Cloud DNS DNS Challenge Provider
+# Google Cloud DNS Challenge Provider
 
 The `gcloud` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Google Cloud DNS][provider-service-page].
+[Google Cloud][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://cloud.google.com/dns/docs/
+[provider-service-page]: https://cloud.google.com
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -48,22 +48,15 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `GCE_PROJECT` - The project name.
-* `GCE_SERVICE_ACCOUNT_FILE` - The path to the service account file. This is
-  the same file referenced by the
-  [`credentials`][tf-provider-google-credentials] option in the [Terraform
-  Google provider][tf-provider-google].
-* `GCE_SERVICE_ACCOUNT` - The contents of the service account file, if passed
-  in directly.
-
-[tf-provider-google-credentials]: /docs/providers/google/index.html#credentials
-[tf-provider-google]: /docs/providers/google/index.html
+* `Application Default Credentials` - [Documentation](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application).
+* `GCE_PROJECT` - Project name.
+* `GCE_SERVICE_ACCOUNT` - Account.
+* `GCE_SERVICE_ACCOUNT_FILE` - Account file path.
 
 The following additional optional variables are available:
 
-* `GCE_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `5`).
-* `GCE_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `180`).
-* `GCE_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `120`).
+* `GCE_POLLING_INTERVAL` - Time between DNS propagation check.
+* `GCE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `GCE_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

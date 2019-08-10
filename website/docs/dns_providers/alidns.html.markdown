@@ -1,19 +1,19 @@
 ---
 layout: "acme"
-page_title: "ACME: Alibaba Cloud DNS Challenge Provider"
+page_title: "ACME: Alibaba Cloud DNS DNS Challenge Provider"
 sidebar_current: "docs-acme-dns-providers-alidns"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
 
-# Alibaba Cloud DNS Challenge Provider
+# Alibaba Cloud DNS DNS Challenge Provider
 
 The `alidns` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Alibaba Cloud][provider-service-page].
+[Alibaba Cloud DNS][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.alibabacloud.com/
+[provider-service-page]: https://www.alibabacloud.com/product/dns
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -48,16 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `ALICLOUD_ACCESS_KEY` - The API key to use.
-* `ALICLOUD_SECRET_KEY` - The secret key to use.
+* `ALICLOUD_ACCESS_KEY` - Access key ID.
+* `ALICLOUD_SECRET_KEY` - Access Key secret.
 
 The following additional optional variables are available:
 
-* `ALICLOUD_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `60`).
-* `ALICLOUD_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
-* `ALICLOUD_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `600`).
-* `ALICLOUD_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `10`).
+* `ALICLOUD_HTTP_TIMEOUT` - API request timeout.
+* `ALICLOUD_POLLING_INTERVAL` - Time between DNS propagation check.
+* `ALICLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `ALICLOUD_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

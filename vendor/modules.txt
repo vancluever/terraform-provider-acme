@@ -30,6 +30,8 @@ github.com/Azure/go-autorest/autorest/validation
 github.com/Azure/go-autorest/logger
 # github.com/Azure/go-autorest/tracing v0.1.0
 github.com/Azure/go-autorest/tracing
+# github.com/BurntSushi/toml v0.3.1
+github.com/BurntSushi/toml
 # github.com/OpenDNS/vegadns2client v0.0.0-20180418235048-a3fa4a771d87
 github.com/OpenDNS/vegadns2client
 # github.com/agext/levenshtein v1.2.2
@@ -143,6 +145,7 @@ github.com/go-acme/lego/v3/providers/dns/acmedns
 github.com/go-acme/lego/v3/providers/dns/alidns
 github.com/go-acme/lego/v3/providers/dns/auroradns
 github.com/go-acme/lego/v3/providers/dns/azure
+github.com/go-acme/lego/v3/providers/dns/bindman
 github.com/go-acme/lego/v3/providers/dns/bluecat
 github.com/go-acme/lego/v3/providers/dns/cloudflare
 github.com/go-acme/lego/v3/providers/dns/cloudns
@@ -157,6 +160,7 @@ github.com/go-acme/lego/v3/providers/dns/dode
 github.com/go-acme/lego/v3/providers/dns/dreamhost
 github.com/go-acme/lego/v3/providers/dns/duckdns
 github.com/go-acme/lego/v3/providers/dns/dyn
+github.com/go-acme/lego/v3/providers/dns/easydns
 github.com/go-acme/lego/v3/providers/dns/exec
 github.com/go-acme/lego/v3/providers/dns/exoscale
 github.com/go-acme/lego/v3/providers/dns/fastdns
@@ -169,12 +173,14 @@ github.com/go-acme/lego/v3/providers/dns/hostingde
 github.com/go-acme/lego/v3/providers/dns/httpreq
 github.com/go-acme/lego/v3/providers/dns/iij
 github.com/go-acme/lego/v3/providers/dns/inwx
+github.com/go-acme/lego/v3/providers/dns/joker
 github.com/go-acme/lego/v3/providers/dns/lightsail
 github.com/go-acme/lego/v3/providers/dns/linode
 github.com/go-acme/lego/v3/providers/dns/linodev4
 github.com/go-acme/lego/v3/providers/dns/mydnsjp
 github.com/go-acme/lego/v3/providers/dns/namecheap
 github.com/go-acme/lego/v3/providers/dns/namedotcom
+github.com/go-acme/lego/v3/providers/dns/namesilo
 github.com/go-acme/lego/v3/providers/dns/netcup
 github.com/go-acme/lego/v3/providers/dns/nifcloud
 github.com/go-acme/lego/v3/providers/dns/ns1
@@ -190,6 +196,7 @@ github.com/go-acme/lego/v3/providers/dns/selectel
 github.com/go-acme/lego/v3/providers/dns/stackpath
 github.com/go-acme/lego/v3/providers/dns/transip
 github.com/go-acme/lego/v3/providers/dns/vegadns
+github.com/go-acme/lego/v3/providers/dns/versio
 github.com/go-acme/lego/v3/providers/dns/vscale
 github.com/go-acme/lego/v3/providers/dns/vultr
 github.com/go-acme/lego/v3/providers/dns/zoneee
@@ -212,6 +219,8 @@ github.com/go-acme/lego/v3/acme/api/internal/secure
 github.com/go-acme/lego/v3/acme/api/internal/sender
 github.com/go-acme/lego/v3/challenge/http01
 github.com/go-acme/lego/v3/challenge/tlsalpn01
+# github.com/go-errors/errors v1.0.1
+github.com/go-errors/errors
 # github.com/go-ini/ini v1.44.0
 github.com/go-ini/ini
 # github.com/gofrs/uuid v3.2.0+incompatible
@@ -359,12 +368,17 @@ github.com/iij/doapi
 github.com/iij/doapi/protocol
 # github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af
 github.com/jmespath/go-jmespath
-# github.com/json-iterator/go v1.1.6
+# github.com/json-iterator/go v1.1.5
 github.com/json-iterator/go
 # github.com/kolo/xmlrpc v0.0.0-20190717152603-07c4ee3fd181
 github.com/kolo/xmlrpc
 # github.com/konsorten/go-windows-terminal-sequences v1.0.2
 github.com/konsorten/go-windows-terminal-sequences
+# github.com/labbsr0x/bindman-dns-webhook v1.0.0
+github.com/labbsr0x/bindman-dns-webhook/src/client
+github.com/labbsr0x/bindman-dns-webhook/src/types
+# github.com/labbsr0x/goh v0.0.0-20190417202808-8b16b4848295
+github.com/labbsr0x/goh/gohclient
 # github.com/linode/linodego v0.10.0
 github.com/linode/linodego
 # github.com/mattn/go-colorable v0.1.1
@@ -401,6 +415,8 @@ github.com/namedotcom/go/namecom
 github.com/nrdcg/auroradns
 # github.com/nrdcg/goinwx v0.6.1
 github.com/nrdcg/goinwx
+# github.com/nrdcg/namesilo v0.2.1
+github.com/nrdcg/namesilo
 # github.com/oklog/run v1.0.0
 github.com/oklog/run
 # github.com/oracle/oci-go-sdk v6.1.0+incompatible
@@ -431,7 +447,7 @@ github.com/terraform-providers/terraform-provider-tls/tls
 # github.com/timewasted/linode v0.0.0-20160829202747-37e84520dcf7
 github.com/timewasted/linode/dns
 github.com/timewasted/linode
-# github.com/transip/gotransip v5.8.1+incompatible
+# github.com/transip/gotransip v0.0.0-20190614113603-efb64632cab7
 github.com/transip/gotransip
 github.com/transip/gotransip/domain
 github.com/transip/gotransip/util

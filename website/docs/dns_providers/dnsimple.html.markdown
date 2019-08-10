@@ -48,13 +48,13 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `DNSIMPLE_OAUTH_TOKEN` - The OAuth token to use.
+* `DNSIMPLE_BASE_URL` - API endpoint URL.
+* `DNSIMPLE_OAUTH_TOKEN` - OAuth token.
 
 The following additional optional variables are available:
 
-* `DNSIMPLE_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `60`).
-* `DNSIMPLE_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
-* `DNSIMPLE_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `120`).
+* `DNSIMPLE_POLLING_INTERVAL` - Time between DNS propagation check.
+* `DNSIMPLE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `DNSIMPLE_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

@@ -1,18 +1,19 @@
 ---
 layout: "acme"
-page_title: "ACME: HTTP DNS Challenge Provider"
+page_title: "ACME: HTTP request DNS Challenge Provider"
 sidebar_current: "docs-acme-dns-providers-httpreq"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
 
-# HTTP DNS Challenge Provider
+# HTTP request DNS Challenge Provider
 
 The `httpreq` DNS challenge provider can be used to perform DNS challenges for
-the [`acme_certificate`][resource-acme-certificate] resource by interacting with
-a generic HTTP endpoint.
+the [`acme_certificate`][resource-acme-certificate] resource with
+[HTTP request][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
+[provider-service-page]: /dns/httpreq/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -31,45 +32,6 @@ resource "acme_certificate" "certificate" {
 }
 ```
 
-## Usage Details
-
-The server must provide the endpoints outlined below. With the exception of
-anything specified below, the client follows the default behavior outlined in
-Go's [`net/http` `Client` documentation][net-http-client-doc].
-
-[net-http-client-doc]: https://golang.org/pkg/net/http/#Client
-
-### `POST /present`
-
-This endpoint is used when presenting the TXT record to create. The payload can
-be either in default mode, or raw mode. This is defined by the `HTTPREQ_MODE`
-argument supplied to the DNS challenge. The Content-Type sent is
-`application/json`. 
-
-#### Default mode payload
-
-```json
-{
-  "fqdn": "_acme-challenge.domain.",
-  "value": "LHDhK3oGRvkiefQnx7OOczTY5Tic_xZ6HcMOc_gmtoM"
-}
-```
-
-#### Raw mode payload
-
-```json
-{
-  "domain": "domain",
-  "token": "token",
-  "keyAuth": "key"
-}
-```
-
-### `POST /cleanup`
-
-This endpoint is used to clean up the DNS challenge records during teardown. The
-payload is exactly the same as outlined above.
-
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -86,20 +48,52 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `HTTPREQ_ENDPOINT` - The base URL path to use. This can include an URI base,
-  example: `https://example.com/foobar`.
-* `HTTPREQ_MODE` - The payload mode to use. If set to `RAW`, raw mode is used,
-  otherwise the default mode is used.
-* `HTTPREQ_USERNAME` - The username to use for HTTP basic authentication, if
-  any.
-* `HTTPREQ_PASSWORD` - The password to use for HTTP basic authentication, if
-  any.
+* `HTTPREQ_ENDPOINT` - The URL of the server.
+* `HTTPREQ_MODE` - `RAW`, none.
 
 The following additional optional variables are available:
 
-* `HTTP_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `60`).
-* `HTTP_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
-* `HTTP_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `30`).
+* `HTTPREQ_HTTP_TIMEOUT` - API request timeout.
+* `HTTPREQ_PASSWORD` - Basic authentication password.
+* `HTTPREQ_POLLING_INTERVAL` - Time between DNS propagation check.
+* `HTTPREQ_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `HTTPREQ_USERNAME` - Basic authentication username.
+
+## Description
+
+The server must provide:
+
+- `POST` `/present`
+- `POST` `/cleanup`
+
+The URL of the server must be define by `HTTPREQ_ENDPOINT`.
+
+### Mode
+
+There are 2 modes (`HTTPREQ_MODE`):
+
+- default mode:
+```json
+{
+  "fqdn": "_acme-challenge.domain.",
+  "value": "LHDhK3oGRvkiefQnx7OOczTY5Tic_xZ6HcMOc_gmtoM"
+}
+```
+
+- `RAW`
+```json
+{
+  "domain": "domain",
+  "token": "token",
+  "keyAuth": "key"
+}
+```
+
+### Authentication
+
+Basic authentication (optional) can be set with some environment variables:
+
+- `HTTPREQ_USERNAME` and `HTTPREQ_PASSWORD`
+- both values must be set, otherwise basic authentication is not defined.
+
+

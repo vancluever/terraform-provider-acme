@@ -1,5 +1,6 @@
 <% wrap_layout :inner do %>
   <% content_for :sidebar do %>
+    <!-- auto-generated from acme-provider-sidebar-template.tmpl -->
     <div class="docs-sidebar hidden-print affix-top" role="complementary">
       <ul class="nav docs-sidenav">
         <li<%= sidebar_current("docs-home") %>>
@@ -21,12 +22,11 @@
             </li>
           </ul>
         </li>
-        
         <li<%= sidebar_current("docs-acme-dns-providers") %>>
           <a href="/docs/providers/acme/dns_providers/index.html">DNS Providers</a>
           <ul class="nav nav-visible">
-            <li<%= sidebar_current("docs-acme-dns-providers-acmedns") %>>
-              <a href="/docs/providers/acme/dns_providers/acmedns.html">acmedns</a>
+            <li<%= sidebar_current("docs-acme-dns-providers-acme-dns") %>>
+              <a href="/docs/providers/acme/dns_providers/acme-dns.html">acme-dns</a>
             </li>
             <li<%= sidebar_current("docs-acme-dns-providers-alidns") %>>
               <a href="/docs/providers/acme/dns_providers/alidns.html">alidns</a>
@@ -36,6 +36,9 @@
             </li>
             <li<%= sidebar_current("docs-acme-dns-providers-azure") %>>
               <a href="/docs/providers/acme/dns_providers/azure.html">azure</a>
+            </li>
+            <li<%= sidebar_current("docs-acme-dns-providers-bindman") %>>
+              <a href="/docs/providers/acme/dns_providers/bindman.html">bindman</a>
             </li>
             <li<%= sidebar_current("docs-acme-dns-providers-bluecat") %>>
               <a href="/docs/providers/acme/dns_providers/bluecat.html">bluecat</a>
@@ -79,6 +82,9 @@
             <li<%= sidebar_current("docs-acme-dns-providers-dyn") %>>
               <a href="/docs/providers/acme/dns_providers/dyn.html">dyn</a>
             </li>
+            <li<%= sidebar_current("docs-acme-dns-providers-easydns") %>>
+              <a href="/docs/providers/acme/dns_providers/easydns.html">easydns</a>
+            </li>
             <li<%= sidebar_current("docs-acme-dns-providers-exec") %>>
               <a href="/docs/providers/acme/dns_providers/exec.html">exec</a>
             </li>
@@ -91,7 +97,7 @@
             <li<%= sidebar_current("docs-acme-dns-providers-gandi") %>>
               <a href="/docs/providers/acme/dns_providers/gandi.html">gandi</a>
             </li>
-            <li<%= sidebar_current("docs-acme-dns-providers-v5-gandi") %>>
+            <li<%= sidebar_current("docs-acme-dns-providers-gandiv5") %>>
               <a href="/docs/providers/acme/dns_providers/gandiv5.html">gandiv5</a>
             </li>
             <li<%= sidebar_current("docs-acme-dns-providers-gcloud") %>>
@@ -115,13 +121,16 @@
             <li<%= sidebar_current("docs-acme-dns-providers-inwx") %>>
               <a href="/docs/providers/acme/dns_providers/inwx.html">inwx</a>
             </li>
+            <li<%= sidebar_current("docs-acme-dns-providers-joker") %>>
+              <a href="/docs/providers/acme/dns_providers/joker.html">joker</a>
+            </li>
             <li<%= sidebar_current("docs-acme-dns-providers-lightsail") %>>
               <a href="/docs/providers/acme/dns_providers/lightsail.html">lightsail</a>
             </li>
             <li<%= sidebar_current("docs-acme-dns-providers-linode") %>>
               <a href="/docs/providers/acme/dns_providers/linode.html">linode</a>
             </li>
-            <li<%= sidebar_current("docs-acme-dns-providers-v4-linode") %>>
+            <li<%= sidebar_current("docs-acme-dns-providers-linodev4") %>>
               <a href="/docs/providers/acme/dns_providers/linodev4.html">linodev4</a>
             </li>
             <li<%= sidebar_current("docs-acme-dns-providers-mydnsjp") %>>
@@ -132,6 +141,9 @@
             </li>
             <li<%= sidebar_current("docs-acme-dns-providers-namedotcom") %>>
               <a href="/docs/providers/acme/dns_providers/namedotcom.html">namedotcom</a>
+            </li>
+            <li<%= sidebar_current("docs-acme-dns-providers-namesilo") %>>
+              <a href="/docs/providers/acme/dns_providers/namesilo.html">namesilo</a>
             </li>
             <li<%= sidebar_current("docs-acme-dns-providers-netcup") %>>
               <a href="/docs/providers/acme/dns_providers/netcup.html">netcup</a>
@@ -178,6 +190,9 @@
             <li<%= sidebar_current("docs-acme-dns-providers-vegadns") %>>
               <a href="/docs/providers/acme/dns_providers/vegadns.html">vegadns</a>
             </li>
+            <li<%= sidebar_current("docs-acme-dns-providers-versio") %>>
+              <a href="/docs/providers/acme/dns_providers/versio.html">versio</a>
+            </li>
             <li<%= sidebar_current("docs-acme-dns-providers-vscale") %>>
               <a href="/docs/providers/acme/dns_providers/vscale.html">vscale</a>
             </li>
@@ -194,3 +209,4 @@
   <% end %>
   <%= yield %>
 <% end %>
+

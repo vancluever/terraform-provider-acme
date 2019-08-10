@@ -1,19 +1,19 @@
 ---
 layout: "acme"
-page_title: "ACME: Akamai FastDNS DNS Challenge Provider"
+page_title: "ACME: FastDNS DNS Challenge Provider"
 sidebar_current: "docs-acme-dns-providers-fastdns"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
 
-# Akamai FastDNS DNS Challenge Provider
+# FastDNS DNS Challenge Provider
 
 The `fastdns` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Akamai FastDNS][provider-service-page].
+[FastDNS][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.akamai.com/us/en/products/cloud-security/fast-dns.jsp
+[provider-service-page]: https://www.akamai.com/us/en/products/security/fast-dns.jsp
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -48,16 +48,15 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `AKAMAI_HOST` - The host to use.
-* `AKAMAI_CLIENT_TOKEN` - The client token to use.
-* `AKAMAI_CLIENT_SECRET` - The client secret to use.
-* `AKAMAI_ACCESS_TOKEN` - The access token to use.
+* `AKAMAI_ACCESS_TOKEN` - Access token.
+* `AKAMAI_CLIENT_SECRET` - Client secret.
+* `AKAMAI_CLIENT_TOKEN` - Client token.
+* `AKAMAI_HOST` - API host.
 
 The following additional optional variables are available:
 
-* `AKAMAI_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `60`).
-* `AKAMAI_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
-* `AKAMAI_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `120`).
+* `AKAMAI_POLLING_INTERVAL` - Time between DNS propagation check.
+* `AKAMAI_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `AKAMAI_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

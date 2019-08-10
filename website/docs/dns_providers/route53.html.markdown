@@ -13,7 +13,7 @@ the [`acme_certificate`][resource-acme-certificate] resource with
 [Amazon Route 53][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://route53.microsoft.com/en-ca/
+[provider-service-page]: https://aws.amazon.com/route53/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -40,33 +40,67 @@ directly through the `config` block in the
 [`acme_certificate`][resource-acme-certificate] resource. For more details, see
 [here][resource-acme-certificate-dns-challenges].
 
+[resource-acme-certificate-dns-challenge-arg]: /docs/providers/acme/r/certificate.html#dns_challenge
+
 In addition, arguments can also be stored in a local file, with the path
 supplied by supplying the argument with the `_FILE` suffix. See
 [here][acme-certificate-file-arg-example] for more information.
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
--> **NOTE:** Several other options exist for configuring the AWS credential
-chain. For more details, see the [AWS SDK documentation][aws-sdk-docs].
-
-[resource-acme-certificate-dns-challenge-arg]: /docs/providers/acme/r/certificate.html#dns_challenge
-[aws-sdk-docs]: https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html
-
-* `AWS_ACCESS_KEY_ID` - The AWS access key ID.
-* `AWS_SECRET_ACCESS_KEY` - The AWS secret access key.
-* `AWS_SESSION_TOKEN` - The session token to use, if necessary.
-* `AWS_HOSTED_ZONE_ID` - The hosted zone ID to use. This can be used to
-  override ACME's default domain discovery and force the provider to use a
-  specific hosted zone.
-* `AWS_SDK_LOAD_CONFIG` - Load settings from `~/.aws/config`. Useful
-  when using AssumeRole with cross-account auth.
-* `AWS_PROFILE` - The profile to use.
+* `AWS_ACCESS_KEY_ID` - Managed by the AWS client.
+* `AWS_HOSTED_ZONE_ID` - Override the hosted zone ID.
+* `AWS_REGION` - Managed by the AWS client.
+* `AWS_SECRET_ACCESS_KEY` - Managed by the AWS client.
 
 The following additional optional variables are available:
 
-* `AWS_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `4`).
-* `AWS_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `120`).
-* `AWS_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `10`).
+* `AWS_MAX_RETRIES` - The number of maximum returns the service will use to make an individual API request.
+* `AWS_POLLING_INTERVAL` - Time between DNS propagation check.
+* `AWS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `AWS_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+## Description
+
+AWS Credentials are automatically detected in the following locations and prioritized in the following order:
+
+1. Environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, [`AWS_SESSION_TOKEN`]
+2. Shared credentials file (defaults to `~/.aws/credentials`)
+3. Amazon EC2 IAM role
+
+If `AWS_HOSTED_ZONE_ID` is not set, Lego tries to determine the correct public hosted zone via the FQDN.
+
+See also: [sessions](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/sessions.html)
+
+## Policy
+
+The following AWS IAM policy document describes the permissions required for lego to complete the DNS challenge.
+
+```json
+{
+   "Version": "2012-10-17",
+   "Statement": [
+       {
+           "Sid": "",
+           "Effect": "Allow",
+           "Action": [
+               "route53:GetChange",
+               "route53:ChangeResourceRecordSets",
+               "route53:ListResourceRecordSets"
+           ],
+           "Resource": [
+               "arn:aws:route53:::hostedzone/*",
+               "arn:aws:route53:::change/*"
+           ]
+       },
+       {
+           "Sid": "",
+           "Effect": "Allow",
+           "Action": "route53:ListHostedZonesByName",
+           "Resource": "*"
+       }
+   ]
+}
+```
+
+

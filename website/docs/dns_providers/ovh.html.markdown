@@ -48,18 +48,16 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `OVH_ENDPOINT` - The API endpoint to use. Can be one of `ovh-eu` or `ovh-ca`.
-* `OVH_APPLICATION_KEY ` - The application key to use.
-* `OVH_APPLICATION_SECRET` - The application secret to use.
-* `OVH_CONSUMER_KEY` - The consumer key to use.
+* `OVH_APPLICATION_KEY` - Application key.
+* `OVH_APPLICATION_SECRET` - Application secret.
+* `OVH_CONSUMER_KEY` - Consumer key.
+* `OVH_ENDPOINT` - Endpoint URL (ovh-eu or ovh-ca).
 
 The following additional optional variables are available:
 
-* `OVH_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `60`).
-* `OVH_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
-* `OVH_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `120`).
-* `OVH_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `180`).
+* `OVH_HTTP_TIMEOUT` - API request timeout.
+* `OVH_POLLING_INTERVAL` - Time between DNS propagation check.
+* `OVH_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `OVH_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

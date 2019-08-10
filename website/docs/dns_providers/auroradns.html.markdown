@@ -1,19 +1,19 @@
 ---
 layout: "acme"
-page_title: "ACME: AuroraDNS DNS Challenge Provider"
+page_title: "ACME: Aurora DNS DNS Challenge Provider"
 sidebar_current: "docs-acme-dns-providers-auroradns"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
 
-# AuroraDNS DNS Challenge Provider
+# Aurora DNS DNS Challenge Provider
 
 The `auroradns` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[AuroraDNS][provider-service-page].
+[Aurora DNS][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://auroradns.microsoft.com/en-ca/
+[provider-service-page]: https://www.pcextreme.com/aurora/dns
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -48,14 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `AURORA_USER_ID` - The user ID to use.
-* `AURORA_KEY` - The key to use.
+* `AURORA_ENDPOINT` - API endpoint URL.
+* `AURORA_KEY` - User API key.
+* `AURORA_USER_ID` - User ID.
 
 The following additional optional variables are available:
 
-* `AURORA_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `60`).
-* `AURORA_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
-* `AURORA_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `300`).
+* `AURORA_POLLING_INTERVAL` - Time between DNS propagation check.
+* `AURORA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `AURORA_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

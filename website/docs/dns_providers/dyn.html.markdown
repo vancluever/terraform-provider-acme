@@ -48,6 +48,15 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `DYN_CUSTOMER_NAME` - The customer name to use.
-* `DYN_USER_NAME` - The user name to use.
-* `DYN_PASSWORD` - The password for the supplied user.
+* `DYN_CUSTOMER_NAME` - Customer name.
+* `DYN_PASSWORD` - Paswword.
+* `DYN_USER_NAME` - User name.
+
+The following additional optional variables are available:
+
+* `DYN_HTTP_TIMEOUT` - API request timeout.
+* `DYN_POLLING_INTERVAL` - Time between DNS propagation check.
+* `DYN_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `DYN_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

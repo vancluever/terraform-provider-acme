@@ -1,16 +1,16 @@
 ---
 layout: "acme"
-page_title: "ACME: GleSYS DNS Challenge Provider"
+page_title: "ACME: Glesys DNS Challenge Provider"
 sidebar_current: "docs-acme-dns-providers-glesys"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
 
-# GleSYS DNS Challenge Provider
+# Glesys DNS Challenge Provider
 
 The `glesys` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[GleSYS][provider-service-page].
+[Glesys][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 [provider-service-page]: https://glesys.com/
@@ -48,16 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `GLESYS_API_USER` - The API user to use.
-* `GLESYS_API_KEY` - The API key to use.
+* `GLESYS_API_KEY` - API key.
+* `GLESYS_API_USER` - API user.
 
 The following additional optional variables are available:
 
-* `GLESYS_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `20`).
-* `GLESYS_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `1200`).
-* `GLESYS_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `60`).
-* `GLESYS_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `10`).
+* `GLESYS_HTTP_TIMEOUT` - API request timeout.
+* `GLESYS_POLLING_INTERVAL` - Time between DNS propagation check.
+* `GLESYS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `GLESYS_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

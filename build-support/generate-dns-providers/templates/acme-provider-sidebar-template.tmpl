@@ -1,0 +1,40 @@
+<% wrap_layout :inner do %>
+  <% content_for :sidebar do %>
+    <!-- auto-generated from acme-provider-sidebar-template.tmpl -->
+    <div class="docs-sidebar hidden-print affix-top" role="complementary">
+      <ul class="nav docs-sidenav">
+        <li<%= sidebar_current("docs-home") %>>
+          <a href="/docs/providers/index.html">All Providers</a>
+        </li>
+
+        <li<%= sidebar_current("docs-acme-index") %>>
+          <a href="/docs/providers/acme/index.html">ACME Provider</a>
+        </li>
+
+        <li<%= sidebar_current("docs-acme-resource") %>>
+          <a href="#">Resources</a>
+          <ul class="nav nav-visible">
+            <li<%= sidebar_current("docs-acme-resource-registration") %>>
+              <a href="/docs/providers/acme/r/registration.html">acme_registration</a>
+            </li>
+            <li<%= sidebar_current("docs-acme-resource-certificate") %>>
+              <a href="/docs/providers/acme/r/certificate.html">acme_certificate</a>
+            </li>
+          </ul>
+        </li>
+        <li<%= sidebar_current("docs-acme-dns-providers") %>>
+          <a href="/docs/providers/acme/dns_providers/index.html">DNS Providers</a>
+          <ul class="nav nav-visible">
+            {{- range .}}
+            <li<%= sidebar_current("docs-acme-dns-providers-{{.Code}}") %>>
+              <a href="/docs/providers/acme/dns_providers/{{.Code}}.html">{{.Code}}</a>
+            </li>
+            {{- end}}
+          </ul>
+        </li>
+      </ul>
+    </div>
+  <% end %>
+  <%= yield %>
+<% end %>
+

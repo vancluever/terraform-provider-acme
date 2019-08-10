@@ -13,7 +13,7 @@ the [`acme_certificate`][resource-acme-certificate] resource with
 [Exoscale][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.exoscale.com/dns/
+[provider-service-page]: https://www.exoscale.com/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -48,17 +48,15 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `EXOSCALE_API_KEY` - The API key to use.
-* `EXOSCALE_API_SECRET` - The API secret to use.
-* `EXOSCALE_ENDPOINT` - The API endpoint to use.
+* `EXOSCALE_API_KEY` - API key.
+* `EXOSCALE_API_SECRET` - API secret.
+* `EXOSCALE_ENDPOINT` - API endpoint URL.
 
 The following additional optional variables are available:
 
-* `EXOSCALE_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `60`).
-* `EXOSCALE_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
-* `EXOSCALE_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `120`).
-* `EXOSCALE_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  no timeout).
+* `EXOSCALE_HTTP_TIMEOUT` - API request timeout.
+* `EXOSCALE_POLLING_INTERVAL` - Time between DNS propagation check.
+* `EXOSCALE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `EXOSCALE_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

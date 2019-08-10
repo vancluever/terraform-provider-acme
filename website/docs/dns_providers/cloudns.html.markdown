@@ -13,7 +13,7 @@ the [`acme_certificate`][resource-acme-certificate] resource with
 [ClouDNS][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.cloudns.net/
+[provider-service-page]: https://www.cloudns.net
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -49,15 +49,13 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
 * `CLOUDNS_AUTH_ID` - The API user ID.
-* `CLOUDNS_AUTH_PASSWORD` - The password for the API user ID.
+* `CLOUDNS_AUTH_PASSWORD` - The password for API user ID.
 
 The following additional optional variables are available:
 
-* `CLOUDNS_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `4`).
-* `CLOUDNS_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `120`).
-* `CLOUDNS_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `60`).
-* `CLOUDNS_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `30`).
+* `CLOUDNS_HTTP_TIMEOUT` - API request timeout.
+* `CLOUDNS_POLLING_INTERVAL` - Time between DNS propagation check.
+* `CLOUDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `CLOUDNS_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

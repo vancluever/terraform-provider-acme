@@ -1,0 +1,53 @@
+[run]
+  deadline = "5m"
+  skip-files = [
+    "^scrapper"
+  ]
+
+[linters-settings]
+
+  [linters-settings.govet]
+    check-shadowing = true
+
+  [linters-settings.gocyclo]
+    min-complexity = 12.0
+
+  [linters-settings.maligned]
+    suggest-new = true
+
+  [linters-settings.goconst]
+    min-len = 3.0
+    min-occurrences = 3.0
+
+  [linters-settings.misspell]
+    locale = "US"
+
+[linters]
+  enable-all = true
+  disable = [
+    "maligned",
+    "lll",
+    "gas",
+    "dupl",
+    "prealloc",
+    "scopelint",
+  ]
+
+[issues]
+  exclude-use-default = false
+  max-per-linter = 0
+  max-same-issues = 0
+  exclude = []
+
+  [[issues.exclude-rules]]
+    path = "model.go"
+    text = "type `Dns(.+)` should be `DNS(.+)`"
+  [[issues.exclude-rules]]
+    path = "params.go"
+    text = "type `Dns(.+)` should be `DNS(.+)`"
+  [[issues.exclude-rules]]
+    path = "zz_gen_client.go"
+    text = "method Dns(.+) should be DNS(.+)"
+  [[issues.exclude-rules]]
+    path = "zz_gen_client_test.go"
+    text = "string `1234` has 56 occurrences, make it a constant"

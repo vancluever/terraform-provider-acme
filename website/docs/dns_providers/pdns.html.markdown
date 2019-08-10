@@ -1,16 +1,16 @@
 ---
 layout: "acme"
 page_title: "ACME: PowerDNS DNS Challenge Provider"
-sidebar_current: "docs-acme-dns-providers-powerdns"
+sidebar_current: "docs-acme-dns-providers-pdns"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
 
 # PowerDNS DNS Challenge Provider
 
-The `powerdns` DNS challenge provider can be used to perform DNS challenges
-for the [`acme_certificate`][resource-acme-certificate] resource with a
-[PowerDNS][provider-service-page] name server.
+The `pdns` DNS challenge provider can be used to perform DNS challenges for
+the [`acme_certificate`][resource-acme-certificate] resource with
+[PowerDNS][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 [provider-service-page]: https://www.powerdns.com/
@@ -27,7 +27,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "powerdns"
+    provider = "pdns"
   }
 }
 ```
@@ -48,16 +48,21 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `PDNS_API_URL` - The API URL to use.
-* `PDNS_API_KEY` - The API key to use.
+* `PDNS_API_KEY` - API key.
+* `PDNS_API_URL` - API url.
 
 The following additional optional variables are available:
 
-* `PDNS_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `2`).
-* `PDNS_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `120`).
-* `PDNS_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `120`).
-* `PDNS_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `30`).
+* `PDNS_HTTP_TIMEOUT` - API request timeout.
+* `PDNS_POLLING_INTERVAL` - Time between DNS propagation check.
+* `PDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `PDNS_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+## Information
+
+Tested and confirmed to work with PowerDNS authoritative server 3.4.8 and 4.0.1. Refer to [PowerDNS documentation](https://doc.powerdns.com/md/httpapi/README/) instructions on how to enable the built-in API interface.
+
+PowerDNS Notes:
+- PowerDNS API does not currently support SSL, therefore you should take care to ensure that traffic between lego and the PowerDNS API is over a trusted network, VPN etc.
+- In order to have the SOA serial automatically increment each time the `_acme-challenge` record is added/modified via the API, set `SOA-EDIT-API` to `INCEPTION-INCREMENT` for the zone in the `domainmetadata` table
+

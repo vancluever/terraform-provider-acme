@@ -9,11 +9,11 @@ description: |-
 # ConoHa DNS Challenge Provider
 
 The `conoha` DNS challenge provider can be used to perform DNS challenges for
-the [`acme_certificate`][resource-acme-certificate] resource with [ConoHa
-DNS][provider-service-page].
+the [`acme_certificate`][resource-acme-certificate] resource with
+[ConoHa][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.conoha.jp/conoha/features/dns/
+[provider-service-page]: https://www.conoha.jp/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -48,18 +48,16 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `CONOHA_TENANT_ID` - The tenant ID to use.
-* `CONOHA_API_USERNAME` - The API username to use.
-* `CONOHA_API_PASSWORD` - The API password to use.
+* `CONOHA_API_PASSWORD` - The API password.
+* `CONOHA_API_USERNAME` - The API username.
+* `CONOHA_TENANT_ID` - Tenant ID.
 
 The following additional optional variables are available:
 
-* `CONOHA_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `60`).
-* `CONOHA_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
-* `CONOHA_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `60`).
-* `CONOHA_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `30`).
-* `CONOHA_REGION` - The region to connect to (default: `tyo1`).
+* `CONOHA_HTTP_TIMEOUT` - API request timeout.
+* `CONOHA_POLLING_INTERVAL` - Time between DNS propagation check.
+* `CONOHA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `CONOHA_REGION` - The region.
+* `CONOHA_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

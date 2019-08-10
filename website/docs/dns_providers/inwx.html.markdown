@@ -8,12 +8,12 @@ description: |-
 
 # INWX DNS Challenge Provider
 
-The `inwx` DNS challenge provider can be used to perform DNS challenges for the
-[`acme_certificate`][resource-acme-certificate] resource with
+The `inwx` DNS challenge provider can be used to perform DNS challenges for
+the [`acme_certificate`][resource-acme-certificate] resource with
 [INWX][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.inwx.com/en/
+[provider-service-page]: https://www.inwx.de/en
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -48,15 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `INWX_USERNAME` - The API username to use.
-* `INWX_PASSWORD` - The API password to use.
+* `INWX_PASSWORD` - Password.
+* `INWX_USERNAME` - Username.
 
 The following additional optional variables are available:
 
-* `INWX_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `60`).
-* `INWX_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
-* `INWX_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `300`).
-* `INWX_SANDBOX` - Whether or not to use sandbox mode (default: `false`).
+* `INWX_POLLING_INTERVAL` - Time between DNS propagation check.
+* `INWX_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `INWX_SANDBOX` - Activate the sandbox (boolean).
+* `INWX_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+
