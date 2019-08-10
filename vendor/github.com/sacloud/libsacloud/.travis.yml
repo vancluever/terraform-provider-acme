@@ -1,5 +1,5 @@
 language: go
-go: "1.11"
+go: "1.12"
 
 install:
   - go get -u golang.org/x/lint/golint
@@ -8,5 +8,5 @@ install:
 
 script:
   - make vet goimports
-  - go test -v ./sacloud
-  - travis_wait 120 go test -v ./builder -timeout 120m
+  - make test
+  - travis_wait 120 make test-builder

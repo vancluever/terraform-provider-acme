@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/go-acme/lego/certificate"
+	"github.com/go-acme/lego/v3/certificate"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 

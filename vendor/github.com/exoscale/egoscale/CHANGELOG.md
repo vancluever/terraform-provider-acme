@@ -1,6 +1,64 @@
 Changelog
 =========
 
+0.18.1
+------
+
+- change: make the "User-Agent" HTTP request header more informative and exposed
+
+0.18.0
+------
+
+- feature: add method `DeepCopy` on type `AsyncJobResult` (#403)
+
+0.17.2
+------
+
+- remove: remove the `IsFeatured` parameter from call `RegisterCustomTemplate` (#402)
+
+0.17.1
+------
+
+- feature: add parameter `RescueProfile` to call `StartVirtualMachine` (#401)
+
+0.17.0
+------
+
+- feature: add new call `RegisterCustomTemplate` (#400)
+- feature: add new call `DeleteTemplate` (#399)
+
+0.16.0
+------
+
+- feature: Add `Healthcheck*` parameters to call `UpdateIPAddress`
+- change: Replace satori/go.uuid by gofrs/uuid
+
+0.15.0
+------
+
+- change: prefix the healthcheck-related params with `Healthcheck` on call `AssociateIPAddress`
+- EIP: the healthcheck should be a pointer
+- ip addresses: Add the Healthcheck parameters
+- readme: point to new lego org (#395)
+- dns: user_id is not sent back (#394)
+
+0.14.3
+------
+
+- fix: `AffinityGroup` lists virtual machines with `UUID` rather than string
+
+0.14.2
+------
+
+- fix: `ListVirtualMachines` by `IDs` to accept `UUID` rather than string
+
+0.14.1
+------
+
+- fix: `GetRunstatusPage` to always contain the subresources
+- fix: `ListRunstatus*` to fetch all the subresources
+- feature: `PaginateRunstatus*` used by list
+
 0.14.0
 ------
 
