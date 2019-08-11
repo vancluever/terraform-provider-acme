@@ -168,6 +168,7 @@ func expandACMEClient(d *schema.ResourceData, meta interface{}, loadReg bool) (*
 // function that is in ResourceData and ResourceDiff under the same function.
 type certificateResourceExpander interface {
 	Get(string) interface{}
+	GetOk(string) (interface{}, bool)
 	GetChange(string) (interface{}, interface{})
 }
 
@@ -175,11 +176,18 @@ type certificateResourceExpander interface {
 // and returns an certificate.Resource.
 func expandCertificateResource(d certificateResourceExpander) *certificate.Resource {
 	cert := &certificate.Resource{
-		Domain:     d.Get("certificate_domain").(string),
-		CertURL:    d.Get("certificate_url").(string),
-		PrivateKey: []byte(d.Get("private_key_pem").(string)),
-		CSR:        []byte(d.Get("certificate_request_pem").(string)),
+		Domain:  d.Get("certificate_domain").(string),
+		CertURL: d.Get("certificate_url").(string),
 	}
+
+	// Only populate the PrivateKey or CSR fields if we have them
+	if pk, ok := d.GetOk("private_key_pem"); ok {
+		cert.PrivateKey = []byte(pk.(string))
+	}
+	if csr, ok := d.GetOk("certificate_request_pem"); ok {
+		cert.CSR = []byte(csr.(string))
+	}
+
 	// There are situations now where the new certificate may be blank, which
 	// signifies that the certificate needs to be renewed. In this case, we need
 	// the old value here, versus the new one.
