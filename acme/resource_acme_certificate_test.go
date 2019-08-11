@@ -110,7 +110,7 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 				Config: testAccACMECertificateForceRenewalConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					func(s *terraform.State) error {
-						certID = s.Modules[0].Resources["acme_certificate.certificate"].Primary.ID
+						certID = s.RootModule().Resources["acme_certificate.certificate"].Primary.ID
 						return nil
 					},
 					resource.TestCheckResourceAttrPair(
