@@ -1,4 +1,10 @@
 ## 1.3.6 (Unreleased)
+
+BUG FIXES:
+
+* `resource/acme_certificate`: Unknown or deactivated registrations will now be
+  removed from state on refresh. [GH-85]
+
 ## 1.3.5 (July 30, 2019)
 
 BUG FIXES:
