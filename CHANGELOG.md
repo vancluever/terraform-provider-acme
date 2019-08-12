@@ -1,4 +1,12 @@
-## 1.3.6 (Unreleased)
+## 1.4.0 (Unreleased)
+
+LEGO UPDATE:
+
+[lego](https://github.com/go-acme/lego) has been updated to v3.0.0 (from v2.5.0
+in provider version 1.2.0). See the lego
+[CHANGELOG.md](https://github.com/go-acme/lego/blob/v3.0.0/CHANGELOG.md) for
+more details on additions and changes to DNS providers, and other minor changes
+to the library. [GH-82]
 
 BUG FIXES:
 
@@ -76,11 +84,8 @@ FEATURES:
 
 LEGO UPDATE AND NEW DNS PROVIDERS:
 
-[lego][lego-url] has been updated to v2.5.0. See the lego
-[CHANGELOG.md][lego-changelog] for more details. ([#47](https://github.com/terraform-providers/terraform-provider-acme/issues/47))
-
-[lego-url]: https://github.com/go-acme/lego
-[lego-changelog]: https://github.com/go-acme/lego/blob/master/CHANGELOG.md#v250---2019-04-17
+[lego](https://github.com/go-acme/lego) has been updated to v2.5.0. See the lego
+[CHANGELOG.md](https://github.com/go-acme/lego/blob/master/CHANGELOG.md#v250---2019-04-17) for more details. ([#47](https://github.com/terraform-providers/terraform-provider-acme/issues/47))
 
 The update brings the following new DNS providers:
 
@@ -113,7 +118,7 @@ BUG FIXES:
 
 LEGO UPDATE AND NEW DNS PROVIDERS:
 
-[lego][lego-url] has been updated to v2.2.0.
+[lego](https://github.com/go-acme/lego) has been updated to v2.2.0.
 
 As part of this update, a number of new DNS providers have been added for
 `acme_certificate`:
