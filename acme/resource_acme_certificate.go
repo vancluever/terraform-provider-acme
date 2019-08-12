@@ -6,9 +6,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/go-acme/lego/certificate"
-	"github.com/go-acme/lego/challenge"
-	"github.com/go-acme/lego/challenge/dns01"
+	"github.com/go-acme/lego/v3/certificate"
+	"github.com/go-acme/lego/v3/challenge"
+	"github.com/go-acme/lego/v3/challenge/dns01"
 	"github.com/hashicorp/go-multierror"
 	"github.com/hashicorp/terraform/helper/schema"
 )

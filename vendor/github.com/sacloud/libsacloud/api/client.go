@@ -76,8 +76,11 @@ func (c *Client) Clone() *Client {
 		DefaultTimeoutDuration: c.DefaultTimeoutDuration,
 		UserAgent:              c.UserAgent,
 		AcceptLanguage:         c.AcceptLanguage,
+		RequestTracer:          c.RequestTracer,
+		ResponseTracer:         c.ResponseTracer,
 		RetryMax:               c.RetryMax,
 		RetryInterval:          c.RetryInterval,
+		HTTPClient:             c.HTTPClient,
 	}
 	n.API = newAPI(n)
 	return n
@@ -105,6 +108,7 @@ func (c *Client) isOkStatus(code int) bool {
 		411: false,
 		413: false,
 		415: false,
+		423: false,
 		500: false,
 		503: false,
 	}
@@ -254,7 +258,7 @@ func (c *retryableHTTPClient) Do(req *request) (*http.Response, error) {
 		}
 
 		res, err := c.Client.Do(req.Request)
-		if res != nil && res.StatusCode != 503 {
+		if res != nil && res.StatusCode != 503 && res.StatusCode != 423 {
 			return res, err
 		}
 		if res != nil && res.Body != nil {
