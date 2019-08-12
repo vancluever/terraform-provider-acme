@@ -10,7 +10,10 @@ to the library. [GH-82]
 
 BUG FIXES:
 
-* `resource/acme_certificate`: Unknown or deactivated registrations will now be
+* `resource/acme_certificate`: When renewing certificate, private keys and CSRs
+  will now only be set if they are present in the state. This may correct some
+  library-related issues during the renewal process. [GH-84]
+* `resource/acme_registration`: Unknown or deactivated registrations will now be
   removed from state on refresh. [GH-85]
 
 ## 1.3.5 (July 30, 2019)
