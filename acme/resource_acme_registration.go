@@ -1,6 +1,7 @@
 package acme
 
 import (
+	"github.com/go-acme/lego/acme"
 	"github.com/go-acme/lego/registration"
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -58,6 +59,11 @@ func resourceACMERegistrationCreate(d *schema.ResourceData, meta interface{}) er
 func resourceACMERegistrationRead(d *schema.ResourceData, meta interface{}) error {
 	_, user, err := expandACMEClient(d, meta, true)
 	if err != nil {
+		if regGone(err) {
+			d.SetId("")
+			return nil
+		}
+
 		return err
 	}
 
@@ -72,4 +78,27 @@ func resourceACMERegistrationDelete(d *schema.ResourceData, meta interface{}) er
 	}
 
 	return client.Registration.DeleteRegistration()
+}
+
+func regGone(err error) bool {
+	e, ok := err.(*acme.ProblemDetails)
+	if !ok {
+		return false
+	}
+
+	switch {
+	case e.HTTPStatus == 400 && e.Type == "urn:ietf:params:acme:error:accountDoesNotExist":
+		// As per RFC8555, see: no account exists when onlyReturnExisting
+		// is set to true.
+		return true
+
+	case e.HTTPStatus == 403 && e.Type == "urn:ietf:params:acme:error:unauthorized":
+		// Usually happens when the account has been deactivated. The URN
+		// is a bit general for my liking, but it should be fine given
+		// the specific nature of the request this error would be
+		// returned for.
+		return true
+	}
+
+	return false
 }

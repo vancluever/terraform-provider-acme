@@ -3,7 +3,6 @@ package acme
 import (
 	"fmt"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/resource"
@@ -31,6 +30,47 @@ func TestAccACMERegistration_basic(t *testing.T) {
 	})
 }
 
+func TestAccACMERegistration_refreshDeactivated(t *testing.T) {
+	var state *terraform.State
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckReg(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMERegistrationConfig(),
+				Check: resource.ComposeTestCheckFunc(
+					func(s *terraform.State) error {
+						state = s
+						return nil
+					},
+					resource.TestCheckResourceAttrPair(
+						"acme_registration.reg", "id",
+						"acme_registration.reg", "registration_url",
+					),
+					testAccCheckACMERegistrationValid("acme_registration.reg", true),
+				),
+			},
+			{
+				PreConfig: func() {
+					rs := state.RootModule().Resources["acme_registration.reg"]
+					d := testAccCheckACMERegistrationResourceData(rs)
+					client, _, err := expandACMEClient(d, testAccProvider.Meta(), true)
+					if err != nil {
+						panic(err)
+					}
+
+					if err := client.Registration.DeleteRegistration(); err != nil {
+						panic(err)
+					}
+				},
+				Config:             testAccACMERegistrationConfig(),
+				PlanOnly:           true,
+				ExpectNonEmptyPlan: true,
+			},
+		},
+	})
+}
+
 func testAccCheckACMERegistrationValid(n string, exists bool) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
@@ -46,7 +86,7 @@ func testAccCheckACMERegistrationValid(n string, exists bool) resource.TestCheck
 
 		client, _, err := expandACMEClient(d, testAccProvider.Meta(), true)
 		if err != nil {
-			if strings.Contains(err.Error(), `An account with the provided public key exists but is deactivated`) && !exists {
+			if regGone(err) && !exists {
 				return nil
 			}
 			return fmt.Errorf("Could not build ACME client off reg: %s", err.Error())
