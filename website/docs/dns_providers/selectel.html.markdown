@@ -13,7 +13,7 @@ the [`acme_certificate`][resource-acme-certificate] resource with
 [Selectel][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://selectel.ru/
+[provider-service-page]: https://kb.selectel.com/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -48,17 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `SELECTEL_API_TOKEN` - The API token to use.
+* `SELECTEL_API_TOKEN` - API token.
 
 The following additional optional variables are available:
 
-* `SELECTEL_BASE_URL` - The base URL to use (default:
-  `https://api.selectel.ru/domains/v1`).
-* `SELECTEL_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `2`).
-* `SELECTEL_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for
-  DNS propagation (default: `120`).
-* `SELECTEL_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `60`).
-* `SELECTEL_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `30`).
+* `SELECTEL_BASE_URL` - API endpoint URL.
+* `SELECTEL_HTTP_TIMEOUT` - API request timeout.
+* `SELECTEL_POLLING_INTERVAL` - Time between DNS propagation check.
+* `SELECTEL_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `SELECTEL_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

@@ -9,11 +9,11 @@ description: |-
 # Bluecat DNS Challenge Provider
 
 The `bluecat` DNS challenge provider can be used to perform DNS challenges for
-the [`acme_certificate`][resource-acme-certificate] resource with [Bluecat
-Address Manager][provider-service-page].
+the [`acme_certificate`][resource-acme-certificate] resource with
+[Bluecat][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.bluecatnetworks.com/platform/management/bluecat-address-manager/
+[provider-service-page]: https://www.bluecatnetworks.com
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -48,19 +48,17 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `BLUECAT_SERVER_URL` - The URL for the address manager to use.
-* `BLUECAT_USER_NAME` - The user name to use.
-* `BLUECAT_PASSWORD` - The password to use for the supplied user name.
-* `BLUECAT_CONFIG_NAME` - The configuration name to use.
-* `BLUECAT_DNS_VIEW` - The DNS view to use.
+* `BLUECAT_CONFIG_NAME` - Configuration name.
+* `BLUECAT_DNS_VIEW` - External DNS View Name.
+* `BLUECAT_PASSWORD` - API password.
+* `BLUECAT_SERVER_URL` - The server URL, should have scheme, hostname, and port (if required) of the authoritative Bluecat BAM serve.
+* `BLUECAT_USER_NAME` - API username.
 
 The following additional optional variables are available:
 
-* `BLUECAT_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `60`).
-* `BLUECAT_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
-* `BLUECAT_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `120`).
-* `BLUECAT_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `30`).
+* `BLUECAT_HTTP_TIMEOUT` - API request timeout.
+* `BLUECAT_POLLING_INTERVAL` - Time between DNS propagation check.
+* `BLUECAT_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `BLUECAT_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

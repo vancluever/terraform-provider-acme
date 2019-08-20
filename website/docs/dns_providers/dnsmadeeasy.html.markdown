@@ -48,16 +48,15 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `DNSMADEEASY_API_KEY` - The API key to use.
-* `DNSMADEEASY_API_SECRET` - The secret key to use.
+* `DNSMADEEASY_API_KEY` - The API key.
+* `DNSMADEEASY_API_SECRET` - The API Secret key.
 
 The following additional optional variables are available:
 
-* `DNSMADEEASY_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `60`).
-* `DNSMADEEASY_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
-* `DNSMADEEASY_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `120`).
-* `DNSMADEEASY_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `10`).
+* `DNSMADEEASY_HTTP_TIMEOUT` - API request timeout.
+* `DNSMADEEASY_POLLING_INTERVAL` - Time between DNS propagation check.
+* `DNSMADEEASY_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `DNSMADEEASY_SANDBOX` - Activate the sandbox (boolean).
+* `DNSMADEEASY_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

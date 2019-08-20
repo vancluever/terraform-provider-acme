@@ -1,0 +1,35 @@
+// Auto-generated file. Do not edit.
+package acme
+
+import (
+"{{$.PkgPath}}/challenge"
+{{- range .Providers}}
+"{{$.PkgPath}}/providers/dns/{{.GoPkg}}"
+{{- end}}
+)
+
+// dnsProviderFactoryFunc is a function that calls a provider's
+// constructor and returns the provider interface.
+type dnsProviderFactoryFunc func() (challenge.Provider, error)
+
+// dnsProviderFactory is a factory for all of the valid DNS providers
+// supported by ACME provider.
+var dnsProviderFactory = map[string]dnsProviderFactoryFunc {
+{{- range .Providers}}
+"{{.Code}}": func() (challenge.Provider, error) {
+{{- if .EnvVarAliases}}
+mapEnvironmentVariableValues(map[string]string{
+{{- range $k, $v := .EnvVarAliases}}
+"{{$k}}": "{{$v}}",
+{{- end}}
+})
+{{- end}}
+p, err := {{.GoPkg}}.NewDNSProvider()
+if err != nil {
+return nil, err
+}
+
+return p, nil
+},
+{{- end}}
+}

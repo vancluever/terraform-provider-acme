@@ -13,7 +13,7 @@ the [`acme_certificate`][resource-acme-certificate] resource with
 [Stackpath][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.stackpath.com
+[provider-service-page]: https://www.stackpath.com/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -48,15 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `STACKPATH_CLIENT_ID` - The client ID to use.
-* `STACKPATH_CLIENT_SECRET` - The client secret to use.
-* `STACKPATH_STACK_ID` - The stack ID to use.
+* `STACKPATH_CLIENT_ID` - Client ID.
+* `STACKPATH_CLIENT_SECRET` - Client secret.
+* `STACKPATH_STACK_ID` - Stack ID.
 
 The following additional optional variables are available:
 
-* `STACKPATH_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `60`).
-* `STACKPATH_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
-* `STACKPATH_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `120`).
+* `STACKPATH_POLLING_INTERVAL` - Time between DNS propagation check.
+* `STACKPATH_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `STACKPATH_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

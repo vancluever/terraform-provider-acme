@@ -1,16 +1,16 @@
 ---
 layout: "acme"
-page_title: "ACME: RFC 2136 DNS Challenge Provider"
+page_title: "ACME: RFC2136 DNS Challenge Provider"
 sidebar_current: "docs-acme-dns-providers-rfc2136"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
 
-# RFC 2136 DNS Challenge Provider
+# RFC2136 DNS Challenge Provider
 
 The `rfc2136` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-an [RFC 2136][provider-service-page]-compatible DNS server.
+[RFC2136][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 [provider-service-page]: https://tools.ietf.org/html/rfc2136
@@ -48,26 +48,17 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
--> To disable TSIG authentication, leave the specific TSIG variables unset.
-
-* `RFC2136_NAMESERVER` - The network address of the DNS server to send the
-  updates to. Can be in the form of `HOST` or `HOST:PORT`.
-* `RFC2136_TSIG_ALGORITHM` - The TSIG algorithm to use. Can be one of
-  `hmac-md5.sig-alg.reg.int.` (HMAC-MD5), `hmac-sha1.` (HMAC-SHA1),
-  `hmac-sha256.` (HMAC-SHA256), or `hmac-sha512.` (HMAC-SHA512). Default:
-  `hmac-md5.sig-alg.reg.int.`
-* `RFC2136_TSIG_KEY` - The TSIG secret key name.
-* `RFC2136_TSIG_SECRET` - The TSIG secret key payload.
+* `RFC2136_NAMESERVER` - Network address in the form "host" or "host:port".
+* `RFC2136_TSIG_ALGORITHM` - TSIG algorythm. See [miekg/dns#tsig.go](https://github.com/miekg/dns/blob/master/tsig.go) for supported values. To disable TSIG authentication, leave the `RFC2136_TSIG*` variables unset..
+* `RFC2136_TSIG_KEY` - Name of the secret key as defined in DNS server configuration. To disable TSIG authentication, leave the `RFC2136_TSIG*` variables unset..
+* `RFC2136_TSIG_SECRET` - Secret key payload. To disable TSIG authentication, leave the` RFC2136_TSIG*` variables unset..
 
 The following additional optional variables are available:
 
-* `RFC2136_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `2`).
-* `RFC2136_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`). Can also be specified by `RFC2136_TIMEOUT`.
-* `RFC2136_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `120`).
-* `RFC2136_DNS_TIMEOUT` - The timeout on DNS UPDATE requests (default:
-  `10`).
-* `RFC2136_SEQUENCE_INTERVAL` - The time to wait between DNS challenges (default:
-  `60`).
+* `RFC2136_DNS_TIMEOUT` - API request timeout.
+* `RFC2136_POLLING_INTERVAL` - Time between DNS propagation check.
+* `RFC2136_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `RFC2136_SEQUENCE_INTERVAL` - Interval between iteration.
+* `RFC2136_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

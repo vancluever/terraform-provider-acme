@@ -40,26 +40,21 @@ directly through the `config` block in the
 [`acme_certificate`][resource-acme-certificate] resource. For more details, see
 [here][resource-acme-certificate-dns-challenges].
 
+[resource-acme-certificate-dns-challenge-arg]: /docs/providers/acme/r/certificate.html#dns_challenge
+
 In addition, arguments can also be stored in a local file, with the path
 supplied by supplying the argument with the `_FILE` suffix. See
 [here][acme-certificate-file-arg-example] for more information.
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
--> **NOTE:** Several other options exist for configuring the AWS credential
-chain. For more details, see the [AWS SDK documentation][aws-sdk-docs].
-
-[resource-acme-certificate-dns-challenge-arg]: /docs/providers/acme/r/certificate.html#dns_challenge
-[aws-sdk-docs]: https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html
-
-* `AWS_ACCESS_KEY_ID` - The AWS access key ID.
-* `AWS_SECRET_ACCESS_KEY` - The AWS secret access key.
-* `AWS_SESSION_TOKEN` - The session token to use, if necessary.
-* `DNS_ZONE` - The hosted zone ID to use.
+* `AWS_ACCESS_KEY_ID` - Access key ID.
+* `AWS_SECRET_ACCESS_KEY` - Secret access key.
+* `DNS_ZONE` - DNS zone.
 
 The following additional optional variables are available:
 
-* `LIGHTSAIL_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `60`).
-* `LIGHTSAIL_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
+* `LIGHTSAIL_POLLING_INTERVAL` - Time between DNS propagation check.
+* `LIGHTSAIL_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+
+

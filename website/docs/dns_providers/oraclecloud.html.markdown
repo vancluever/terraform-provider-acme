@@ -48,21 +48,18 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `OCI_COMPARTMENT_OCID` - The Compartment OCID.
-* `OCI_PRIVKEY_FILE` - The Private key file.
-* `OCI_PRIVKEY_PASS` - The Private key password.
-* `OCI_PUBKEY_FINGERPRINT` - The Public key fingerprint.
-* `OCI_REGION` - The region to use.
-* `OCI_TENANCY_OCID` - The Tenanct OCID.
-* `OCI_USER_OCID` - The User OCID.
+* `OCI_COMPARTMENT_OCID` - Compartment OCID.
+* `OCI_PRIVKEY_FILE` - Private key file.
+* `OCI_PRIVKEY_PASS` - Private key password.
+* `OCI_PUBKEY_FINGERPRINT` - Public key fingerprint.
+* `OCI_REGION` - Region.
+* `OCI_TENANCY_OCID` - Tenanct OCID.
+* `OCI_USER_OCID` - User OCID.
 
 The following additional optional variables are available:
 
-* `OCI_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `2`).
-* `OCI_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
-* `OCI_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `120`).
-* `OCI_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `60`).
+* `OCI_POLLING_INTERVAL` - Time between DNS propagation check.
+* `OCI_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `OCI_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

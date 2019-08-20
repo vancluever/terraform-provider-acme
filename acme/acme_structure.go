@@ -1,5 +1,7 @@
 package acme
 
+//go:generate go run ../build-support/generate-dns-providers go dns_provider_factory.go
+
 import (
 	"crypto"
 	"crypto/rand"
@@ -15,60 +17,6 @@ import (
 	"github.com/go-acme/lego/v3/certificate"
 	"github.com/go-acme/lego/v3/challenge"
 	"github.com/go-acme/lego/v3/lego"
-	"github.com/go-acme/lego/v3/providers/dns/acmedns"
-	"github.com/go-acme/lego/v3/providers/dns/alidns"
-	"github.com/go-acme/lego/v3/providers/dns/auroradns"
-	"github.com/go-acme/lego/v3/providers/dns/azure"
-	"github.com/go-acme/lego/v3/providers/dns/bluecat"
-	"github.com/go-acme/lego/v3/providers/dns/cloudflare"
-	"github.com/go-acme/lego/v3/providers/dns/cloudns"
-	"github.com/go-acme/lego/v3/providers/dns/cloudxns"
-	"github.com/go-acme/lego/v3/providers/dns/conoha"
-	"github.com/go-acme/lego/v3/providers/dns/designate"
-	"github.com/go-acme/lego/v3/providers/dns/digitalocean"
-	"github.com/go-acme/lego/v3/providers/dns/dnsimple"
-	"github.com/go-acme/lego/v3/providers/dns/dnsmadeeasy"
-	"github.com/go-acme/lego/v3/providers/dns/dnspod"
-	"github.com/go-acme/lego/v3/providers/dns/dode"
-	"github.com/go-acme/lego/v3/providers/dns/dreamhost"
-	"github.com/go-acme/lego/v3/providers/dns/duckdns"
-	"github.com/go-acme/lego/v3/providers/dns/dyn"
-	"github.com/go-acme/lego/v3/providers/dns/exec"
-	"github.com/go-acme/lego/v3/providers/dns/exoscale"
-	"github.com/go-acme/lego/v3/providers/dns/fastdns"
-	"github.com/go-acme/lego/v3/providers/dns/gandi"
-	"github.com/go-acme/lego/v3/providers/dns/gandiv5"
-	"github.com/go-acme/lego/v3/providers/dns/gcloud"
-	"github.com/go-acme/lego/v3/providers/dns/glesys"
-	"github.com/go-acme/lego/v3/providers/dns/godaddy"
-	"github.com/go-acme/lego/v3/providers/dns/hostingde"
-	"github.com/go-acme/lego/v3/providers/dns/httpreq"
-	"github.com/go-acme/lego/v3/providers/dns/iij"
-	"github.com/go-acme/lego/v3/providers/dns/inwx"
-	"github.com/go-acme/lego/v3/providers/dns/lightsail"
-	"github.com/go-acme/lego/v3/providers/dns/linode"
-	"github.com/go-acme/lego/v3/providers/dns/linodev4"
-	"github.com/go-acme/lego/v3/providers/dns/mydnsjp"
-	"github.com/go-acme/lego/v3/providers/dns/namecheap"
-	"github.com/go-acme/lego/v3/providers/dns/namedotcom"
-	"github.com/go-acme/lego/v3/providers/dns/netcup"
-	"github.com/go-acme/lego/v3/providers/dns/nifcloud"
-	"github.com/go-acme/lego/v3/providers/dns/ns1"
-	"github.com/go-acme/lego/v3/providers/dns/oraclecloud"
-	"github.com/go-acme/lego/v3/providers/dns/otc"
-	"github.com/go-acme/lego/v3/providers/dns/ovh"
-	"github.com/go-acme/lego/v3/providers/dns/pdns"
-	"github.com/go-acme/lego/v3/providers/dns/rackspace"
-	"github.com/go-acme/lego/v3/providers/dns/rfc2136"
-	"github.com/go-acme/lego/v3/providers/dns/route53"
-	"github.com/go-acme/lego/v3/providers/dns/sakuracloud"
-	"github.com/go-acme/lego/v3/providers/dns/selectel"
-	"github.com/go-acme/lego/v3/providers/dns/stackpath"
-	"github.com/go-acme/lego/v3/providers/dns/transip"
-	"github.com/go-acme/lego/v3/providers/dns/vegadns"
-	"github.com/go-acme/lego/v3/providers/dns/vscale"
-	"github.com/go-acme/lego/v3/providers/dns/vultr"
-	"github.com/go-acme/lego/v3/providers/dns/zoneee"
 	"github.com/go-acme/lego/v3/registration"
 	"github.com/hashicorp/terraform/helper/schema"
 	"software.sslmate.com/src/go-pkcs12"
@@ -364,8 +312,6 @@ func mapEnvironmentVariableValues(keyMapping map[string]string) {
 // structure as a map[string]interface{}, and configues the client to
 // only allow a DNS challenge with the configured provider.
 func setDNSChallenge(client *lego.Client, m map[string]interface{}) (challenge.Provider, error) {
-	var provider challenge.Provider
-	var err error
 	var providerName string
 
 	if v, ok := m["provider"]; ok && v.(string) != "" {
@@ -381,133 +327,12 @@ func setDNSChallenge(client *lego.Client, m map[string]interface{}) (challenge.P
 		}
 	}
 
-	// The below list is manually kept in sync with
-	// lego/providers/dns/dns_providers.go
-	switch providerName {
-	case "acme-dns":
-		provider, err = acmedns.NewDNSProvider()
-	case "alidns":
-		provider, err = alidns.NewDNSProvider()
-	case "auroradns":
-		provider, err = auroradns.NewDNSProvider()
-	case "azure":
-		// map terraform provider environment variables if present
-		mapEnvironmentVariableValues(map[string]string{
-			"ARM_CLIENT_ID":       "AZURE_CLIENT_ID",
-			"ARM_CLIENT_SECRET":   "AZURE_CLIENT_SECRET",
-			"ARM_SUBSCRIPTION_ID": "AZURE_SUBSCRIPTION_ID",
-			"ARM_TENANT_ID":       "AZURE_TENANT_ID",
-			"ARM_RESOURCE_GROUP":  "AZURE_RESOURCE_GROUP",
-		})
-		provider, err = azure.NewDNSProvider()
-	case "bluecat":
-		provider, err = bluecat.NewDNSProvider()
-	case "cloudflare":
-		provider, err = cloudflare.NewDNSProvider()
-	case "cloudns":
-		provider, err = cloudns.NewDNSProvider()
-	case "cloudxns":
-		provider, err = cloudxns.NewDNSProvider()
-	case "conoha":
-		provider, err = conoha.NewDNSProvider()
-	case "designate":
-		provider, err = designate.NewDNSProvider()
-	case "digitalocean":
-		provider, err = digitalocean.NewDNSProvider()
-	case "dnsimple":
-		provider, err = dnsimple.NewDNSProvider()
-	case "dnsmadeeasy":
-		provider, err = dnsmadeeasy.NewDNSProvider()
-	case "dnspod":
-		provider, err = dnspod.NewDNSProvider()
-	case "dode":
-		provider, err = dode.NewDNSProvider()
-	case "dreamhost":
-		provider, err = dreamhost.NewDNSProvider()
-	case "duckdns":
-		provider, err = duckdns.NewDNSProvider()
-	case "dyn":
-		provider, err = dyn.NewDNSProvider()
-	case "exec":
-		provider, err = exec.NewDNSProvider()
-	case "exoscale":
-		provider, err = exoscale.NewDNSProvider()
-	case "fastdns":
-		provider, err = fastdns.NewDNSProvider()
-	case "gandi":
-		provider, err = gandi.NewDNSProvider()
-	case "gandiv5":
-		provider, err = gandiv5.NewDNSProvider()
-	case "glesys":
-		provider, err = glesys.NewDNSProvider()
-	case "gcloud":
-		provider, err = gcloud.NewDNSProvider()
-	case "godaddy":
-		provider, err = godaddy.NewDNSProvider()
-	case "hostingde":
-		provider, err = hostingde.NewDNSProvider()
-	case "httpreq":
-		provider, err = httpreq.NewDNSProvider()
-	case "iij":
-		provider, err = iij.NewDNSProvider()
-	case "inwx":
-		provider, err = inwx.NewDNSProvider()
-	case "lightsail":
-		provider, err = lightsail.NewDNSProvider()
-	case "linode":
-		provider, err = linode.NewDNSProvider()
-	case "linodev4":
-		provider, err = linodev4.NewDNSProvider()
-	case "mydnsjp":
-		provider, err = mydnsjp.NewDNSProvider()
-	case "namecheap":
-		provider, err = namecheap.NewDNSProvider()
-	case "namedotcom":
-		provider, err = namedotcom.NewDNSProvider()
-	case "netcup":
-		provider, err = netcup.NewDNSProvider()
-	case "nifcloud":
-		provider, err = nifcloud.NewDNSProvider()
-	case "ns1":
-		provider, err = ns1.NewDNSProvider()
-	case "oraclecloud":
-		provider, err = oraclecloud.NewDNSProvider()
-	case "otc":
-		provider, err = otc.NewDNSProvider()
-	case "ovh":
-		provider, err = ovh.NewDNSProvider()
-	case "pdns":
-		provider, err = pdns.NewDNSProvider()
-	case "rackspace":
-		provider, err = rackspace.NewDNSProvider()
-	case "rfc2136":
-		provider, err = rfc2136.NewDNSProvider()
-	case "route53":
-		provider, err = route53.NewDNSProvider()
-	case "sakuracloud":
-		provider, err = sakuracloud.NewDNSProvider()
-	case "selectel":
-		provider, err = selectel.NewDNSProvider()
-	case "stackpath":
-		provider, err = stackpath.NewDNSProvider()
-	case "transip":
-		provider, err = transip.NewDNSProvider()
-	case "vegadns":
-		provider, err = vegadns.NewDNSProvider()
-	case "vscale":
-		provider, err = vscale.NewDNSProvider()
-	case "vultr":
-		provider, err = vultr.NewDNSProvider()
-	case "zoneee":
-		provider, err = zoneee.NewDNSProvider()
-	default:
+	providerFunc, ok := dnsProviderFactory[providerName]
+	if !ok {
 		return nil, fmt.Errorf("%s: unsupported DNS challenge provider", providerName)
 	}
-	if err != nil {
-		return nil, err
-	}
 
-	return provider, nil
+	return providerFunc()
 }
 
 // stringSlice converts an interface slice to a string slice.

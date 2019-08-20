@@ -1,16 +1,16 @@
 ---
 layout: "acme"
-page_title: "ACME: Linode DNS Challenge Provider"
+page_title: "ACME: Linode (deprecated) DNS Challenge Provider"
 sidebar_current: "docs-acme-dns-providers-linode"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
 
-# Linode DNS Challenge Provider
+# Linode (deprecated) DNS Challenge Provider
 
 The `linode` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Linode][provider-service-page].
+[Linode (deprecated)][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 [provider-service-page]: https://www.linode.com/
@@ -48,11 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `LINODE_API_KEY` - The API key to use.
+* `LINODE_API_KEY` - API key.
 
 The following additional optional variables are available:
 
-* `LINODE_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `15`).
-* `LINODE_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `300`).
+* `LINODE_HTTP_TIMEOUT` - API request timeout.
+* `LINODE_POLLING_INTERVAL` - Time between DNS propagation check.
+* `LINODE_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

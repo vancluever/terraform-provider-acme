@@ -13,7 +13,7 @@ the [`acme_certificate`][resource-acme-certificate] resource with
 [Namecheap][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.namecheap.com/
+[provider-service-page]: https://www.namecheap.com
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -48,16 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `NAMECHEAP_API_USER` - The API user to use.
-* `NAMECHEAP_API_KEY` - The API key to use.
+* `NAMECHEAP_API_KEY` - API key.
+* `NAMECHEAP_API_USER` - API user.
 
 The following additional optional variables are available:
 
-* `NAMECHEAP_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `15`).
-* `NAMECHEAP_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `3600`).
-* `NAMECHEAP_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `120`).
-* `NAMECHEAP_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `60`).
+* `NAMECHEAP_HTTP_TIMEOUT` - API request timeout.
+* `NAMECHEAP_POLLING_INTERVAL` - Time between DNS propagation check.
+* `NAMECHEAP_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `NAMECHEAP_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

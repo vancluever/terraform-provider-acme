@@ -13,7 +13,7 @@ the [`acme_certificate`][resource-acme-certificate] resource with
 [Netcup][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.netcup.eu
+[provider-service-page]: https://www.netcup.eu/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -48,17 +48,15 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `NETCUP_CUSTOMER_NUMBER` - The customer number to use.
-* `NETCUP_API_KEY` - The API key to use.
-* `NETCUP_API_PASSWORD` - The API password to use.
+* `NETCUP_API_KEY` - API key.
+* `NETCUP_API_PASSWORD` - API password.
+* `NETCUP_CUSTOMER_NUMBER` - Customer number.
 
 The following additional optional variables are available:
 
-* `NETCUP_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `5`).
-* `NETCUP_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `120`).
-* `NETCUP_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `120`).
-* `NETCUP_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `10`).
+* `NETCUP_HTTP_TIMEOUT` - API request timeout.
+* `NETCUP_POLLING_INTERVAL` - Time between DNS propagation check.
+* `NETCUP_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `NETCUP_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

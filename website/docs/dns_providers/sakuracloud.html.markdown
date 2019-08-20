@@ -1,19 +1,19 @@
 ---
 layout: "acme"
-page_title: "ACME: SakuraCloud DNS Challenge Provider"
+page_title: "ACME: Sakura Cloud DNS Challenge Provider"
 sidebar_current: "docs-acme-dns-providers-sakuracloud"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
 
-# SakuraCloud DNS Challenge Provider
+# Sakura Cloud DNS Challenge Provider
 
 The `sakuracloud` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[SakuraCloud][provider-service-page].
+[Sakura Cloud][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://cloud.sakura.ad.jp
+[provider-service-page]: https://cloud.sakura.ad.jp/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -48,14 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `SAKURACLOUD_ACCESS_TOKEN` - The access token to use.
-* `SAKURACLOUD_ACCESS_TOKEN_SECRET` - The access token secret to use.
+* `SAKURACLOUD_ACCESS_TOKEN` - Access token.
+* `SAKURACLOUD_ACCESS_TOKEN_SECRET` - Access token secret.
 
 The following additional optional variables are available:
 
-* `SAKURACLOUD_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `60`).
-* `SAKURACLOUD_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
-* `SAKURACLOUD_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `120`).
+* `SAKURACLOUD_HTTP_TIMEOUT` - API request timeout.
+* `SAKURACLOUD_POLLING_INTERVAL` - Time between DNS propagation check.
+* `SAKURACLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `SAKURACLOUD_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

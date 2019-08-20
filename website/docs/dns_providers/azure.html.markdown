@@ -9,11 +9,11 @@ description: |-
 # Azure DNS Challenge Provider
 
 The `azure` DNS challenge provider can be used to perform DNS challenges for
-the [`acme_certificate`][resource-acme-certificate] resource with [Microsoft
-Azure][provider-service-page].
+the [`acme_certificate`][resource-acme-certificate] resource with
+[Azure][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://azure.microsoft.com/en-ca/
+[provider-service-page]: https://azure.microsoft.com/services/dns/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -48,23 +48,28 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `AZURE_CLIENT_ID` - The Client ID of the Service Principal. Can also be
-  supplied with `ARM_CLIENT_ID`.
-* `AZURE_CLIENT_SECRET` - The Client Secret associated with the Service
-  Principal. Can also be supplied with `ARM_CLIENT_SECRET`.
-* `AZURE_SUBSCRIPTION_ID` - The ID of the Azure Subscription. Can also be
-  supplied with `ARM_SUBSCRIPTION_ID`.
-* `AZURE_TENANT_ID` - The Tenant ID to use. Can also be
-  supplied with `ARM_TENANT_ID`.
-* `AZURE_RESOURCE_GROUP` - The resource group to use to place the DNS records
-  in. Can also be supplied with `ARM_RESOURCE_GROUP`.
+* `AZURE_CLIENT_ID` - Client ID.
+* `AZURE_CLIENT_SECRET` - Client secret.
+* `AZURE_RESOURCE_GROUP` - Resource group.
+* `AZURE_SUBSCRIPTION_ID` - Subscription ID.
+* `AZURE_TENANT_ID` - Tenant ID.
+* `instance metadata service` - If the credentials are **not** set via the environment, then it will attempt to get a bearer token via the [instance metadata service](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/instance-metadata-service)..
 
 The following additional optional variables are available:
 
-* `AZURE_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `2`).
-* `AZURE_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `120`).
-* `AZURE_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `60`).
-* `AZURE_METADATA_ENDPOINT` - The metadata endpoint to use.
+* `AZURE_METADATA_ENDPOINT` - Metadata Service endpoint URL.
+* `AZURE_POLLING_INTERVAL` - Time between DNS propagation check.
+* `AZURE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `AZURE_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+The following variables are **Terraform-specific** aliases for the above
+configuration values:
+
+
+* `ARM_CLIENT_ID` - alias for `AZURE_CLIENT_ID`.
+* `ARM_CLIENT_SECRET` - alias for `AZURE_CLIENT_SECRET`.
+* `ARM_RESOURCE_GROUP` - alias for `AZURE_RESOURCE_GROUP`.
+* `ARM_SUBSCRIPTION_ID` - alias for `AZURE_SUBSCRIPTION_ID`.
+* `ARM_TENANT_ID` - alias for `AZURE_TENANT_ID`.
+
+

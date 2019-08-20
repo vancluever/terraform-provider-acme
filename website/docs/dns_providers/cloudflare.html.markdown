@@ -10,7 +10,7 @@ description: |-
 
 The `cloudflare` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Cloudflare DNS][provider-service-page].
+[Cloudflare][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 [provider-service-page]: https://www.cloudflare.com/dns/
@@ -48,16 +48,17 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `CLOUDFLARE_EMAIL` - The email address to use.
-* `CLOUDFLARE_API_KEY` - The API key to use.
+* `CF_API_EMAIL` - Account email.
+* `CF_API_KEY` - API key.
+* `CLOUDFLARE_API_KEY` - Alias to CLOUDFLARE_API_KEY.
+* `CLOUDFLARE_EMAIL` - Alias to CF_API_EMAIL.
 
 The following additional optional variables are available:
 
-* `CLOUDFLARE_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `2`).
-* `CLOUDFLARE_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `120`).
-* `CLOUDFLARE_TTL` - The TTL to set on DNS challenge records, in seconds (default:
-  `120`).
-* `CLOUDFLARE_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `30`).
+* `CLOUDFLARE_HTTP_TIMEOUT` - API request timeout.
+* `CLOUDFLARE_POLLING_INTERVAL` - Time between DNS propagation check.
+* `CLOUDFLARE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `CLOUDFLARE_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+The Global API Key needs to be used, not the Origin CA Key.
+

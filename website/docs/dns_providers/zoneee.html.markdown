@@ -1,16 +1,16 @@
 ---
 layout: "acme"
-page_title: "ACME: Zone DNS Challenge Provider"
+page_title: "ACME: Zone.ee DNS Challenge Provider"
 sidebar_current: "docs-acme-dns-providers-zoneee"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
 
-# Zone DNS Challenge Provider
+# Zone.ee DNS Challenge Provider
 
 The `zoneee` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Zone][provider-service-page].
+[Zone.ee][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 [provider-service-page]: https://www.zone.ee/
@@ -48,16 +48,15 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `ZONEEE_API_USER` - The API user to use.
-* `ZONEEE_API_KEY` - The API key to use.
+* `ZONEEE_API_KEY` - API key.
+* `ZONEEE_API_USER` - API user.
 
 The following additional optional variables are available:
 
-* `ZONEEE_ENDPOINT` - The API endpoint to use (default:
-  `https://api.zone.eu/v2/dns/`).
-* `ZONEEE_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `5`).
-* `ZONEEE_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `300`).
-* `ZONEEE_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `30`).
+* `ZONEEE_ENDPOINT` - API endpoint URL.
+* `ZONEEE_HTTP_TIMEOUT` - API request timeout.
+* `ZONEEE_POLLING_INTERVAL` - Time between DNS propagation check.
+* `ZONEEE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `ZONEEE_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

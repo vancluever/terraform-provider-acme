@@ -1,19 +1,19 @@
 ---
 layout: "acme"
-page_title: "ACME: DuckDNS DNS Challenge Provider"
+page_title: "ACME: Duck DNS DNS Challenge Provider"
 sidebar_current: "docs-acme-dns-providers-duckdns"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
 
-# DuckDNS DNS Challenge Provider
+# Duck DNS DNS Challenge Provider
 
 The `duckdns` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[DuckDNS][provider-service-page].
+[Duck DNS][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: http://www.duckdns.org/
+[provider-service-page]: https://www.duckdns.org/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -48,15 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `DUCKDNS_TOKEN` - The auth token to use.
+* `DUCKDNS_TOKEN` - Account token.
 
 The following additional optional variables are available:
 
-* `DUCKDNS_POLLING_INTERVAL` - The amount of time, in seconds, to wait between
-  DNS propagation checks (default: `60`).
-* `DUCKDNS_PROPAGATION_TIMEOUT` - The amount of time, in seconds, to wait for DNS
-  propagation (default: `60`).
-* `DUCKDNS_HTTP_TIMEOUT` - The timeout on HTTP requests to the API (default:
-  `30`).
-* `DUCKDNS_SEQUENCE_INTERVAL` - The time between each DNS challenge (default:
-  `60`).
+* `DUCKDNS_HTTP_TIMEOUT` - API request timeout.
+* `DUCKDNS_POLLING_INTERVAL` - Time between DNS propagation check.
+* `DUCKDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `DUCKDNS_SEQUENCE_INTERVAL` - Interval between iteration.
+* `DUCKDNS_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

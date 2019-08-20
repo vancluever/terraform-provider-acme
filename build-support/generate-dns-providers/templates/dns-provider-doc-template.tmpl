@@ -1,19 +1,19 @@
 ---
 layout: "acme"
-page_title: "ACME: ACME-DNS Challenge Provider"
-sidebar_current: "docs-acme-dns-providers-acmedns"
+page_title: "ACME: {{.Name}} DNS Challenge Provider"
+sidebar_current: "docs-acme-dns-providers-{{.Code}}"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
 
-# ACME-DNS DNS Challenge Provider
+# {{.Name}} DNS Challenge Provider
 
-The `acme-dns` DNS challenge provider can be used to perform DNS challenges for
+The `{{.Code}}` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[ACME-DNS][provider-service-page].
+[{{.Name}}][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://github.com/joohoi/acme-dns
+[provider-service-page]: {{.URL}}
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -27,7 +27,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "acme-dns"
+    provider = "{{.Code}}"
   }
 }
 ```
@@ -47,6 +47,20 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [here][acme-certificate-file-arg-example] for more information.
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
+{{range $k, $v := .Configuration.Credentials}}
+* `{{$k}}` - {{$v}}.
+{{- end}}
 
-* `ACME_DNS_API_BASE` - The ACME-DNS API addres to use.
-* `ACME_DNS_STORAGE_PATH` - The ACME-DNS JSON account data file to use.
+The following additional optional variables are available:
+{{range $k, $v := .Configuration.Additional}}
+* `{{$k}}` - {{$v}}.
+{{- end}}
+{{if .EnvVarAliases}}
+The following variables are **Terraform-specific** aliases for the above
+configuration values:
+
+{{range $k, $v := .EnvVarAliases}}
+* `{{$k}}` - alias for `{{$v}}`.
+{{- end}}
+{{end}}
+{{.Additional}}
