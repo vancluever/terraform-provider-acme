@@ -1,4 +1,4 @@
-## 1.4.0 (Unreleased)
+## 1.4.0 (August 20, 2019)
 
 LEGO UPDATE:
 
@@ -6,7 +6,7 @@ LEGO UPDATE:
 in provider version 1.2.0). See the lego
 [CHANGELOG.md](https://github.com/go-acme/lego/blob/v3.0.0/CHANGELOG.md) for
 more details on additions and changes to DNS providers, and other minor changes
-to the library. [GH-82]
+to the library. ([#82](https://github.com/terraform-providers/terraform-provider-acme/issues/82))
 
 Starting with this release, all DNS providers and documentation for the DNS
 providers will be auto-generated, so the lego CHANGELOG will be the place to
@@ -16,9 +16,9 @@ BUG FIXES:
 
 * `resource/acme_certificate`: When renewing certificate, private keys and CSRs
   will now only be set if they are present in the state. This may correct some
-  library-related issues during the renewal process. [GH-84]
+  library-related issues during the renewal process. ([#84](https://github.com/terraform-providers/terraform-provider-acme/issues/84))
 * `resource/acme_registration`: Unknown or deactivated registrations will now be
-  removed from state on refresh. [GH-85]
+  removed from state on refresh. ([#85](https://github.com/terraform-providers/terraform-provider-acme/issues/85))
 
 ## 1.3.5 (July 30, 2019)
 
