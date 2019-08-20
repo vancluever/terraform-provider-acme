@@ -2,6 +2,7 @@ module github.com/terraform-providers/terraform-provider-acme
 
 require (
 	github.com/BurntSushi/toml v0.3.1
+	github.com/aws/aws-sdk-go v1.22.0 // indirect
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-acme/lego/v3 v3.0.0
 	github.com/go-test/deep v1.0.2-0.20181118220953-042da051cf31 // indirect
@@ -11,7 +12,7 @@ require (
 	github.com/hashicorp/go-version v1.2.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/hil v0.0.0-20190212132231-97b3a9cdfa93 // indirect
-	github.com/hashicorp/terraform v0.12.7-0.20190809221052-a64707272cbd
+	github.com/hashicorp/terraform v0.12.6
 	github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d // indirect
 	github.com/kr/pty v1.1.3 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect

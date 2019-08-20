@@ -549,9 +549,8 @@ func (n *EvalApplyProvisioners) apply(ctx EvalContext, provs []*configs.Provisio
 		provisioner := ctx.Provisioner(prov.Type)
 		schema := ctx.ProvisionerSchema(prov.Type)
 
-		forEach, forEachDiags := evaluateResourceForEachExpression(n.ResourceConfig.ForEach, ctx)
-		diags = diags.Append(forEachDiags)
-		keyData := EvalDataForInstanceKey(instanceAddr.Key, forEach)
+		// TODO the for_each val is not added here, which might causes issues with provisioners
+		keyData := EvalDataForInstanceKey(instanceAddr.Key, nil)
 
 		// Evaluate the main provisioner configuration.
 		config, _, configDiags := ctx.EvaluateBlock(prov.Config, schema, instanceAddr, keyData)

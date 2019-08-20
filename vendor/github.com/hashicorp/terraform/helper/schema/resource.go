@@ -6,28 +6,10 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/hashicorp/terraform/config"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/zclconf/go-cty/cty"
 )
-
-var ReservedDataSourceFields = []string{
-	"connection",
-	"count",
-	"depends_on",
-	"lifecycle",
-	"provider",
-	"provisioner",
-}
-
-var ReservedResourceFields = []string{
-	"connection",
-	"count",
-	"depends_on",
-	"id",
-	"lifecycle",
-	"provider",
-	"provisioner",
-}
 
 // Resource represents a thing in Terraform that has a set of configurable
 // attributes and a lifecycle (create, read, update, delete).
@@ -700,7 +682,7 @@ func (r *Resource) InternalValidate(topSchemaMap schemaMap, writable bool) error
 }
 
 func isReservedDataSourceFieldName(name string) bool {
-	for _, reservedName := range ReservedDataSourceFields {
+	for _, reservedName := range config.ReservedDataSourceFields {
 		if name == reservedName {
 			return true
 		}
@@ -715,7 +697,7 @@ func isReservedResourceFieldName(name string, s *Schema) bool {
 		return false
 	}
 
-	for _, reservedName := range ReservedResourceFields {
+	for _, reservedName := range config.ReservedResourceFields {
 		if name == reservedName {
 			return true
 		}

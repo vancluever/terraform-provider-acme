@@ -136,6 +136,7 @@ github.com/fatih/color
 github.com/fatih/structs
 # github.com/go-acme/lego/v3 v3.0.0
 github.com/go-acme/lego/v3/log
+github.com/go-acme/lego/v3/acme
 github.com/go-acme/lego/v3/certcrypto
 github.com/go-acme/lego/v3/certificate
 github.com/go-acme/lego/v3/challenge
@@ -201,7 +202,6 @@ github.com/go-acme/lego/v3/providers/dns/vscale
 github.com/go-acme/lego/v3/providers/dns/vultr
 github.com/go-acme/lego/v3/providers/dns/zoneee
 github.com/go-acme/lego/v3/registration
-github.com/go-acme/lego/v3/acme
 github.com/go-acme/lego/v3/acme/api
 github.com/go-acme/lego/v3/platform/wait
 github.com/go-acme/lego/v3/challenge/resolver
@@ -308,13 +308,13 @@ github.com/hashicorp/hcl2/hclwrite
 github.com/hashicorp/hcl2/hcl/json
 github.com/hashicorp/hcl2/hcled
 # github.com/hashicorp/hil v0.0.0-20190212132231-97b3a9cdfa93
-github.com/hashicorp/hil/ast
 github.com/hashicorp/hil
+github.com/hashicorp/hil/ast
 github.com/hashicorp/hil/parser
 github.com/hashicorp/hil/scanner
 # github.com/hashicorp/logutils v1.0.0
 github.com/hashicorp/logutils
-# github.com/hashicorp/terraform v0.12.7-0.20190809221052-a64707272cbd
+# github.com/hashicorp/terraform v0.12.6
 github.com/hashicorp/terraform/plugin
 github.com/hashicorp/terraform/helper/schema
 github.com/hashicorp/terraform/terraform
@@ -326,13 +326,15 @@ github.com/hashicorp/terraform/plugin/discovery
 github.com/hashicorp/terraform/providers
 github.com/hashicorp/terraform/provisioners
 github.com/hashicorp/terraform/version
-github.com/hashicorp/terraform/configs/hcl2shim
+github.com/hashicorp/terraform/config
+github.com/hashicorp/terraform/config/hcl2shim
 github.com/hashicorp/terraform/helper/hashcode
 github.com/hashicorp/terraform/tfdiags
 github.com/hashicorp/terraform/addrs
-github.com/hashicorp/terraform/config
+github.com/hashicorp/terraform/config/module
 github.com/hashicorp/terraform/configs
 github.com/hashicorp/terraform/dag
+github.com/hashicorp/terraform/flatmap
 github.com/hashicorp/terraform/helper/didyoumean
 github.com/hashicorp/terraform/httpclient
 github.com/hashicorp/terraform/lang
@@ -357,7 +359,6 @@ github.com/hashicorp/terraform/internal/initwd
 github.com/hashicorp/terraform/svchost
 github.com/hashicorp/terraform/svchost/auth
 github.com/hashicorp/terraform/internal/modsdir
-github.com/hashicorp/terraform/flatmap
 github.com/hashicorp/terraform/internal/earlyconfig
 # github.com/hashicorp/terraform-config-inspect v0.0.0-20190327195015-8022a2663a70
 github.com/hashicorp/terraform-config-inspect/tfconfig
@@ -437,6 +438,8 @@ github.com/sacloud/libsacloud/sacloud
 github.com/sacloud/libsacloud
 github.com/sacloud/libsacloud/sacloud/ostype
 github.com/sacloud/libsacloud/utils/mutexkv
+# github.com/satori/go.uuid v1.2.0
+github.com/satori/go.uuid
 # github.com/sirupsen/logrus v1.4.2
 github.com/sirupsen/logrus
 # github.com/spf13/afero v1.2.2
