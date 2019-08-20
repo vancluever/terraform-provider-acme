@@ -8,6 +8,10 @@ in provider version 1.2.0). See the lego
 more details on additions and changes to DNS providers, and other minor changes
 to the library. [GH-82]
 
+Starting with this release, all DNS providers and documentation for the DNS
+providers will be auto-generated, so the lego CHANGELOG will be the place to
+look for lego-specific changes in the future.
+
 BUG FIXES:
 
 * `resource/acme_certificate`: When renewing certificate, private keys and CSRs
