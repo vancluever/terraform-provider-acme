@@ -13,7 +13,7 @@ the [`acme_certificate`][resource-acme-certificate] resource with
 [HTTP request][provider-service-page].
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: /dns/httpreq/
+[provider-service-page]: #
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
