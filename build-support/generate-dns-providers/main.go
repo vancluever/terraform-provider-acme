@@ -28,6 +28,15 @@ var envVarAliases = map[string]map[string]string{
 	},
 }
 
+// providerURLs is a list of providers to override provider pages
+// for. Usually this is just used to provide blank links for
+// anything that would normally just link back to the provider page
+// in lego.
+var providerURLs = map[string]string{
+	"exec":    "#",
+	"httpreq": "#",
+}
+
 // dnsProviderGoTemplate is the template for
 // dnsProviderGoTemplateText.
 var dnsProviderGoTemplate = template.Must(
@@ -215,6 +224,11 @@ func loadProviders() []dnsProviderInfo {
 		// Environment variable aliases if we have them (ie: azure)
 		if aliases, ok := envVarAliases[p.Code]; ok {
 			p.EnvVarAliases = aliases
+		}
+
+		// Check for a provider URL override
+		if url, ok := providerURLs[p.Code]; ok {
+			p.URL = url
 		}
 
 		result = append(result, p)
