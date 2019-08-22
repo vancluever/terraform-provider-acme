@@ -5,15 +5,20 @@ sidebar_current: "docs-acme-dns-providers-gcloud"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
+<br>
+
+-> **NOTE:** The following documentation is auto-generated from the
+ACME provider's API library [lego](https://go-acme.github.io/lego/).
+Some sections may refer to lego directly - in most cases, these
+sections apply to the Terraform provider as well.
 
 # Google Cloud DNS Challenge Provider
 
 The `gcloud` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Google Cloud][provider-service-page].
+[Google Cloud](https://cloud.google.com).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://cloud.google.com
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -31,7 +36,6 @@ resource "acme_certificate" "certificate" {
   }
 }
 ```
-
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -52,8 +56,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `GCE_PROJECT` - Project name.
 * `GCE_SERVICE_ACCOUNT` - Account.
 * `GCE_SERVICE_ACCOUNT_FILE` - Account file path.
-
-The following additional optional variables are available:
 
 * `GCE_POLLING_INTERVAL` - Time between DNS propagation check.
 * `GCE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.

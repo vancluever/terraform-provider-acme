@@ -5,15 +5,20 @@ sidebar_current: "docs-acme-dns-providers-netcup"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
+<br>
+
+-> **NOTE:** The following documentation is auto-generated from the
+ACME provider's API library [lego](https://go-acme.github.io/lego/).
+Some sections may refer to lego directly - in most cases, these
+sections apply to the Terraform provider as well.
 
 # Netcup DNS Challenge Provider
 
 The `netcup` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Netcup][provider-service-page].
+[Netcup](https://www.netcup.eu/).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.netcup.eu/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -31,7 +36,6 @@ resource "acme_certificate" "certificate" {
   }
 }
 ```
-
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -51,8 +55,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `NETCUP_API_KEY` - API key.
 * `NETCUP_API_PASSWORD` - API password.
 * `NETCUP_CUSTOMER_NUMBER` - Customer number.
-
-The following additional optional variables are available:
 
 * `NETCUP_HTTP_TIMEOUT` - API request timeout.
 * `NETCUP_POLLING_INTERVAL` - Time between DNS propagation check.

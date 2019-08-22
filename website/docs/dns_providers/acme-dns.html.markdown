@@ -5,15 +5,20 @@ sidebar_current: "docs-acme-dns-providers-acme-dns"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
+<br>
+
+-> **NOTE:** The following documentation is auto-generated from the
+ACME provider's API library [lego](https://go-acme.github.io/lego/).
+Some sections may refer to lego directly - in most cases, these
+sections apply to the Terraform provider as well.
 
 # Joohoi's ACME-DNS DNS Challenge Provider
 
 The `acme-dns` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Joohoi's ACME-DNS][provider-service-page].
+[Joohoi's ACME-DNS](https://github.com/joohoi/acme-dns).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://github.com/joohoi/acme-dns
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -31,7 +36,6 @@ resource "acme_certificate" "certificate" {
   }
 }
 ```
-
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -50,8 +54,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `ACME_DNS_API_BASE` - The ACME-DNS API address.
 * `ACME_DNS_STORAGE_PATH` - The ACME-DNS JSON account data file. A per-domain account will be registered/persisted to this file and used for TXT updates..
-
-The following additional optional variables are available:
 
 
 

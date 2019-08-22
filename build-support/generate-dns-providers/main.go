@@ -33,8 +33,8 @@ var envVarAliases = map[string]map[string]string{
 // anything that would normally just link back to the provider page
 // in lego.
 var providerURLs = map[string]string{
-	"exec":    "#",
-	"httpreq": "#",
+	"exec":    "",
+	"httpreq": "",
 }
 
 // dnsProviderGoTemplate is the template for
@@ -99,6 +99,10 @@ type dnsProviderInfo struct {
 type dnsProviderConfig struct {
 	Credentials map[string]string
 	Additional  map[string]string
+}
+
+func (c dnsProviderConfig) Present() bool {
+	return len(c.Credentials) > 0 || len(c.Additional) > 0
 }
 
 // execCommand is a exec.Cmd builder that just sets the error stream
@@ -231,6 +235,14 @@ func loadProviders() []dnsProviderInfo {
 			p.URL = url
 		}
 
+		// A couple of docs have hugo template artifacts that could use
+		// stripping, just do this for "notice" for now which seems to be
+		// the only one that's in use.
+		p.Additional = strings.ReplaceAll(
+			p.Additional, "{{% notice note %}}\n", "-> **NOTE**: ")
+		p.Additional = strings.ReplaceAll(
+			p.Additional, "{{% /notice %}}\n", "")
+
 		result = append(result, p)
 		return nil
 	}); err != nil {
@@ -240,7 +252,7 @@ func loadProviders() []dnsProviderInfo {
 	return result
 }
 
-// generateGo generates the factor template file.
+// generateGo generates the factory template file.
 func generateGo(providers []dnsProviderInfo) {
 	b := new(bytes.Buffer)
 	if err := dnsProviderGoTemplate.Execute(b, struct {

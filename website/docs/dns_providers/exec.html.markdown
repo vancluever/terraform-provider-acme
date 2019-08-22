@@ -5,15 +5,20 @@ sidebar_current: "docs-acme-dns-providers-exec"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
+<br>
+
+-> **NOTE:** The following documentation is auto-generated from the
+ACME provider's API library [lego](https://go-acme.github.io/lego/).
+Some sections may refer to lego directly - in most cases, these
+sections apply to the Terraform provider as well.
 
 # External program DNS Challenge Provider
 
 The `exec` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[External program][provider-service-page].
+External program.
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: #
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -31,27 +36,6 @@ resource "acme_certificate" "certificate" {
   }
 }
 ```
-
-## Argument Reference
-
-The following arguments can be either passed as environment variables, or
-directly through the `config` block in the
-[`dns_challenge`][resource-acme-certificate-dns-challenge-arg] argument in the
-[`acme_certificate`][resource-acme-certificate] resource. For more details, see
-[here][resource-acme-certificate-dns-challenges].
-
-[resource-acme-certificate-dns-challenge-arg]: /docs/providers/acme/r/certificate.html#dns_challenge
-
-In addition, arguments can also be stored in a local file, with the path
-supplied by supplying the argument with the `_FILE` suffix. See
-[here][acme-certificate-file-arg-example] for more information.
-
-[acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
-
-
-The following additional optional variables are available:
-
-
 
 ## Base Configuration
 
@@ -115,11 +99,9 @@ It will then call the program `./update-dns.sh` like this:
 
 ## Commands
 
-{{% notice note %}}
-The `--` is because the token MAY start with a `-`, and the called program may try and interpret a `-` as indicating a flag.
+-> **NOTE**: The `--` is because the token MAY start with a `-`, and the called program may try and interpret a `-` as indicating a flag.
 In the case of urfave, which is commonly used,
 you can use the `--` delimiter to specify the start of positional arguments, and handle such a string safely.
-{{% /notice %}}
 
 ### Present
 

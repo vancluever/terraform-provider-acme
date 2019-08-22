@@ -5,15 +5,20 @@ sidebar_current: "docs-acme-dns-providers-digitalocean"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
+<br>
+
+-> **NOTE:** The following documentation is auto-generated from the
+ACME provider's API library [lego](https://go-acme.github.io/lego/).
+Some sections may refer to lego directly - in most cases, these
+sections apply to the Terraform provider as well.
 
 # Digital Ocean DNS Challenge Provider
 
 The `digitalocean` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Digital Ocean][provider-service-page].
+[Digital Ocean](https://www.digitalocean.com/docs/networking/dns/).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.digitalocean.com/docs/networking/dns/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -31,7 +36,6 @@ resource "acme_certificate" "certificate" {
   }
 }
 ```
-
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -49,8 +53,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
 * `DO_AUTH_TOKEN` - Authentication token.
-
-The following additional optional variables are available:
 
 * `DO_HTTP_TIMEOUT` - API request timeout.
 * `DO_POLLING_INTERVAL` - Time between DNS propagation check.

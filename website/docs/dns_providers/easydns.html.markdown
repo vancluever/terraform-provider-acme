@@ -5,15 +5,20 @@ sidebar_current: "docs-acme-dns-providers-easydns"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
+<br>
+
+-> **NOTE:** The following documentation is auto-generated from the
+ACME provider's API library [lego](https://go-acme.github.io/lego/).
+Some sections may refer to lego directly - in most cases, these
+sections apply to the Terraform provider as well.
 
 # EasyDNS DNS Challenge Provider
 
 The `easydns` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[EasyDNS][provider-service-page].
+[EasyDNS](https://easydns.com/).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://easydns.com/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -31,7 +36,6 @@ resource "acme_certificate" "certificate" {
   }
 }
 ```
-
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -50,8 +54,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `EASYDNS_KEY` - API Key.
 * `EASYDNS_TOKEN` - API Token.
-
-The following additional optional variables are available:
 
 * `EASYDNS_ENDPOINT` - The endpoint URL of the API Server.
 * `EASYDNS_HTTP_TIMEOUT` - API request timeout.

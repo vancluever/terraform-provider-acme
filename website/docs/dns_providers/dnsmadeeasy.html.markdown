@@ -5,15 +5,20 @@ sidebar_current: "docs-acme-dns-providers-dnsmadeeasy"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
+<br>
+
+-> **NOTE:** The following documentation is auto-generated from the
+ACME provider's API library [lego](https://go-acme.github.io/lego/).
+Some sections may refer to lego directly - in most cases, these
+sections apply to the Terraform provider as well.
 
 # DNS Made Easy DNS Challenge Provider
 
 The `dnsmadeeasy` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[DNS Made Easy][provider-service-page].
+[DNS Made Easy](https://dnsmadeeasy.com/).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://dnsmadeeasy.com/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -31,7 +36,6 @@ resource "acme_certificate" "certificate" {
   }
 }
 ```
-
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -50,8 +54,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `DNSMADEEASY_API_KEY` - The API key.
 * `DNSMADEEASY_API_SECRET` - The API Secret key.
-
-The following additional optional variables are available:
 
 * `DNSMADEEASY_HTTP_TIMEOUT` - API request timeout.
 * `DNSMADEEASY_POLLING_INTERVAL` - Time between DNS propagation check.

@@ -5,15 +5,20 @@ sidebar_current: "docs-acme-dns-providers-bluecat"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
+<br>
+
+-> **NOTE:** The following documentation is auto-generated from the
+ACME provider's API library [lego](https://go-acme.github.io/lego/).
+Some sections may refer to lego directly - in most cases, these
+sections apply to the Terraform provider as well.
 
 # Bluecat DNS Challenge Provider
 
 The `bluecat` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Bluecat][provider-service-page].
+[Bluecat](https://www.bluecatnetworks.com).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.bluecatnetworks.com
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -31,7 +36,6 @@ resource "acme_certificate" "certificate" {
   }
 }
 ```
-
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -53,8 +57,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `BLUECAT_PASSWORD` - API password.
 * `BLUECAT_SERVER_URL` - The server URL, should have scheme, hostname, and port (if required) of the authoritative Bluecat BAM serve.
 * `BLUECAT_USER_NAME` - API username.
-
-The following additional optional variables are available:
 
 * `BLUECAT_HTTP_TIMEOUT` - API request timeout.
 * `BLUECAT_POLLING_INTERVAL` - Time between DNS propagation check.

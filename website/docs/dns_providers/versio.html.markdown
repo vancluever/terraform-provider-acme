@@ -5,15 +5,20 @@ sidebar_current: "docs-acme-dns-providers-versio"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
+<br>
+
+-> **NOTE:** The following documentation is auto-generated from the
+ACME provider's API library [lego](https://go-acme.github.io/lego/).
+Some sections may refer to lego directly - in most cases, these
+sections apply to the Terraform provider as well.
 
 # Versio.[nl|eu|uk] DNS Challenge Provider
 
 The `versio` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Versio.[nl|eu|uk]][provider-service-page].
+[Versio.[nl|eu|uk]](https://www.versio.nl/domeinnamen).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.versio.nl/domeinnamen
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -31,7 +36,6 @@ resource "acme_certificate" "certificate" {
   }
 }
 ```
-
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -50,8 +54,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `VERSIO_PASSWORD` - Basic authentication password.
 * `VERSIO_USERNAME` - Basic authentication username.
-
-The following additional optional variables are available:
 
 * `VERSIO_ENDPOINT` - The endpoint URL of the API Server.
 * `VERSIO_HTTP_TIMEOUT` - API request timeout.

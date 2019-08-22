@@ -5,15 +5,20 @@ sidebar_current: "docs-acme-dns-providers-pdns"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
+<br>
+
+-> **NOTE:** The following documentation is auto-generated from the
+ACME provider's API library [lego](https://go-acme.github.io/lego/).
+Some sections may refer to lego directly - in most cases, these
+sections apply to the Terraform provider as well.
 
 # PowerDNS DNS Challenge Provider
 
 The `pdns` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[PowerDNS][provider-service-page].
+[PowerDNS](https://www.powerdns.com/).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.powerdns.com/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -31,7 +36,6 @@ resource "acme_certificate" "certificate" {
   }
 }
 ```
-
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -50,8 +54,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `PDNS_API_KEY` - API key.
 * `PDNS_API_URL` - API url.
-
-The following additional optional variables are available:
 
 * `PDNS_HTTP_TIMEOUT` - API request timeout.
 * `PDNS_POLLING_INTERVAL` - Time between DNS propagation check.

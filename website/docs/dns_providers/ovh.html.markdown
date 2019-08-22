@@ -5,15 +5,20 @@ sidebar_current: "docs-acme-dns-providers-ovh"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
+<br>
+
+-> **NOTE:** The following documentation is auto-generated from the
+ACME provider's API library [lego](https://go-acme.github.io/lego/).
+Some sections may refer to lego directly - in most cases, these
+sections apply to the Terraform provider as well.
 
 # OVH DNS Challenge Provider
 
 The `ovh` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[OVH][provider-service-page].
+[OVH](https://www.ovh.com/).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.ovh.com/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -31,7 +36,6 @@ resource "acme_certificate" "certificate" {
   }
 }
 ```
-
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -52,8 +56,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `OVH_APPLICATION_SECRET` - Application secret.
 * `OVH_CONSUMER_KEY` - Consumer key.
 * `OVH_ENDPOINT` - Endpoint URL (ovh-eu or ovh-ca).
-
-The following additional optional variables are available:
 
 * `OVH_HTTP_TIMEOUT` - API request timeout.
 * `OVH_POLLING_INTERVAL` - Time between DNS propagation check.

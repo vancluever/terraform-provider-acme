@@ -5,15 +5,20 @@ sidebar_current: "docs-acme-dns-providers-cloudns"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
+<br>
+
+-> **NOTE:** The following documentation is auto-generated from the
+ACME provider's API library [lego](https://go-acme.github.io/lego/).
+Some sections may refer to lego directly - in most cases, these
+sections apply to the Terraform provider as well.
 
 # ClouDNS DNS Challenge Provider
 
 The `cloudns` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[ClouDNS][provider-service-page].
+[ClouDNS](https://www.cloudns.net).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://www.cloudns.net
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -31,7 +36,6 @@ resource "acme_certificate" "certificate" {
   }
 }
 ```
-
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -50,8 +54,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `CLOUDNS_AUTH_ID` - The API user ID.
 * `CLOUDNS_AUTH_PASSWORD` - The password for API user ID.
-
-The following additional optional variables are available:
 
 * `CLOUDNS_HTTP_TIMEOUT` - API request timeout.
 * `CLOUDNS_POLLING_INTERVAL` - Time between DNS propagation check.

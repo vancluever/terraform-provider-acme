@@ -5,15 +5,20 @@ sidebar_current: "docs-acme-dns-providers-azure"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
+<br>
+
+-> **NOTE:** The following documentation is auto-generated from the
+ACME provider's API library [lego](https://go-acme.github.io/lego/).
+Some sections may refer to lego directly - in most cases, these
+sections apply to the Terraform provider as well.
 
 # Azure DNS Challenge Provider
 
 The `azure` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Azure][provider-service-page].
+[Azure](https://azure.microsoft.com/services/dns/).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
-[provider-service-page]: https://azure.microsoft.com/services/dns/
 
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
@@ -31,7 +36,6 @@ resource "acme_certificate" "certificate" {
   }
 }
 ```
-
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -54,8 +58,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `AZURE_SUBSCRIPTION_ID` - Subscription ID.
 * `AZURE_TENANT_ID` - Tenant ID.
 * `instance metadata service` - If the credentials are **not** set via the environment, then it will attempt to get a bearer token via the [instance metadata service](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/instance-metadata-service)..
-
-The following additional optional variables are available:
 
 * `AZURE_METADATA_ENDPOINT` - Metadata Service endpoint URL.
 * `AZURE_POLLING_INTERVAL` - Time between DNS propagation check.
