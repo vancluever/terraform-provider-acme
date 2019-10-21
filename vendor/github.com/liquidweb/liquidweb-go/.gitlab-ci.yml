@@ -1,0 +1,9 @@
+stages:
+  - build
+
+build:
+  tags:
+    - docker-with-registry
+  stage: build
+  script:
+    - docker build .

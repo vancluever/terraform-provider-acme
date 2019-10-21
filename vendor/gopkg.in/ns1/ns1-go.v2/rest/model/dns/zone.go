@@ -84,6 +84,9 @@ type ZoneSecondary struct {
 	PrimaryPort int    `json:"primary_port,omitempty"`
 	Enabled     bool   `json:"enabled"`
 
+	OtherIPs   []string `json:"other_ips,omitempty"`
+	OtherPorts []int    `json:"other_ports,omitempty"`
+
 	TSIG *TSIG `json:"tsig,omitempty"`
 }
 
@@ -122,7 +125,7 @@ func (z *Zone) MakePrimary(secondaries ...ZoneSecondaryServer) {
 }
 
 // MakeSecondary enables Secondary, disables Primary, and sets secondary's
-// Primary_ip to provided ip.
+// Primary_ip to provided ip.  Sets secondary's primary_port to default of 53.
 func (z *Zone) MakeSecondary(ip string) {
 	z.Secondary = &ZoneSecondary{
 		Enabled:     true,

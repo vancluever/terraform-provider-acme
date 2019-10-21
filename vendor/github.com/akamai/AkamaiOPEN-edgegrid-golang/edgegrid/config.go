@@ -17,6 +17,7 @@ type Config struct {
 	ClientToken  string   `ini:"client_token"`
 	ClientSecret string   `ini:"client_secret"`
 	AccessToken  string   `ini:"access_token"`
+	AccountKey   string   `ini:"account_key"`
 	HeaderToSign []string `ini:"headers_to_sign"`
 	MaxBody      int      `ini:"max_body"`
 	Debug        bool     `ini:"debug"`

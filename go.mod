@@ -2,10 +2,10 @@ module github.com/terraform-providers/terraform-provider-acme
 
 require (
 	github.com/BurntSushi/toml v0.3.1
-	github.com/aws/aws-sdk-go v1.22.0 // indirect
 	github.com/davecgh/go-spew v1.1.1
-	github.com/go-acme/lego/v3 v3.0.0
+	github.com/go-acme/lego/v3 v3.1.0
 	github.com/go-test/deep v1.0.2-0.20181118220953-042da051cf31 // indirect
+	github.com/grpc-ecosystem/grpc-gateway v1.9.5 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.1 // indirect
 	github.com/hashicorp/go-hclog v0.9.1 // indirect
 	github.com/hashicorp/go-multierror v1.0.0
@@ -24,8 +24,6 @@ require (
 	github.com/terraform-providers/terraform-provider-tls v1.2.0
 	github.com/ulikunitz/xz v0.5.6 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
-	golang.org/x/net v0.0.0-20190509222800-a4d6f7feada5 // indirect
-	golang.org/x/sys v0.0.0-20190514135907-3a4b5fb9f71f // indirect
 	google.golang.org/genproto v0.0.0-20190508193815-b515fa19cec8 // indirect
 	software.sslmate.com/src/go-pkcs12 v0.0.0-20190209200317-47dd539968c4
 )

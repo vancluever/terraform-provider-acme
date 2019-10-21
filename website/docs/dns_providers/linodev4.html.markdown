@@ -56,6 +56,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `LINODE_HTTP_TIMEOUT` - API request timeout.
 * `LINODE_POLLING_INTERVAL` - Time between DNS propagation check.
+* `LINODE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
 * `LINODE_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 
