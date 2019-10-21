@@ -339,7 +339,9 @@ The following attributes are exported:
   certificate was generated from scratch and not with
   [`certificate_request_pem`](#certificate_request_pem).  If
   `certificate_request_pem` was used, this will be blank.
-* `certificate_pem` - The certificate in PEM format.
+* `certificate_pem` - The certificate in PEM format. This does not include the
+  `issuer_pem`. This certificate can be concatenated with `issuer_pem` to form
+  a full chain.
 * `issuer_pem` - The intermediate certificate of the issuer.
 * `certificate_p12` - The certificate, intermediate, and the private key
   archived as a PFX file (PKCS12 format, generally used by Microsoft products).
