@@ -39,6 +39,7 @@ import (
 	"github.com/go-acme/lego/v3/providers/dns/lightsail"
 	"github.com/go-acme/lego/v3/providers/dns/linode"
 	"github.com/go-acme/lego/v3/providers/dns/linodev4"
+	"github.com/go-acme/lego/v3/providers/dns/liquidweb"
 	"github.com/go-acme/lego/v3/providers/dns/mydnsjp"
 	"github.com/go-acme/lego/v3/providers/dns/namecheap"
 	"github.com/go-acme/lego/v3/providers/dns/namedotcom"
@@ -360,6 +361,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"linodev4": func() (challenge.Provider, error) {
 		p, err := linodev4.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"liquidweb": func() (challenge.Provider, error) {
+		p, err := liquidweb.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

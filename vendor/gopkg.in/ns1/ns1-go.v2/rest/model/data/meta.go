@@ -291,15 +291,25 @@ func validateCidr(v reflect.Value) error {
 			return err
 		}
 	}
-	var last error
 	if v.Kind() == reflect.Slice {
+		if slc, ok := v.Interface().([]string); ok {
+			for _, s := range slc {
+				_, _, err := net.ParseCIDR(s)
+				if err != nil {
+					return fmt.Errorf("%s is not a valid CIDR block", s)
+				}
+			}
+			return nil
+		}
 		slc := v.Interface().([]interface{})
 		for _, s := range slc {
 			_, _, err := net.ParseCIDR(s.(string))
-			last = err
+			if err != nil {
+				return fmt.Errorf("%s is not a valid CIDR block", s.(string))
+			}
 		}
 	}
-	return last
+	return nil
 }
 
 // validatePositiveNumber makes sure that the given number (float or int) is positive

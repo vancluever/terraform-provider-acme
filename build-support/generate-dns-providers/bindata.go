@@ -85,7 +85,7 @@ func templatesAcmeProviderSidebarTemplateTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/acme-provider-sidebar-template.tmpl", size: 1530, mode: os.FileMode(420), modTime: time.Unix(1566318514, 0)}
+	info := bindataFileInfo{name: "templates/acme-provider-sidebar-template.tmpl", size: 1530, mode: os.FileMode(420), modTime: time.Unix(1571662474, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -105,7 +105,7 @@ func templatesDnsProviderDocTemplateTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/dns-provider-doc-template.tmpl", size: 2346, mode: os.FileMode(420), modTime: time.Unix(1566487685, 0)}
+	info := bindataFileInfo{name: "templates/dns-provider-doc-template.tmpl", size: 2346, mode: os.FileMode(420), modTime: time.Unix(1571662474, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -125,7 +125,7 @@ func templatesDnsProviderGoTemplateTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/dns-provider-go-template.tmpl", size: 831, mode: os.FileMode(420), modTime: time.Unix(1566318514, 0)}
+	info := bindataFileInfo{name: "templates/dns-provider-go-template.tmpl", size: 831, mode: os.FileMode(420), modTime: time.Unix(1571662474, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
