@@ -1,11 +1,11 @@
-## 1.5.0 (Unreleased)
+## 1.5.0 (October 21, 2019)
 
 LEGO UPDATE:
 
 [lego](https://github.com/go-acme/lego) has been updated to v3.1.0 See the lego
 [CHANGELOG.md](https://github.com/go-acme/lego/blob/v3.1.0/CHANGELOG.md) for
 more details on additions and changes to DNS providers, and other minor changes
-to the library. [GH-92]
+to the library. ([#92](https://github.com/terraform-providers/terraform-provider-acme/issues/92))
 
 ## 1.4.0 (August 20, 2019)
 
