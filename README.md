@@ -115,6 +115,18 @@ GOPATH, move the project outside of it.
 
 See [Building the Provider](#building-the-provider) for details on building the provider.
 
+## Auto-Generating Documentation and Supported DNS Providers
+
+There are a couple of commands that can help with updating the supported list of
+DNS providers and their accompanying documentation when lego is updated:
+
+* `make provider-generate` will update `acme/dns_provider_factory.go` with the
+  updated list of supported DNS providers, in addition to updating all of the
+  documentation in `website/`.
+* `make template-generate` only needs to be run if you are updating the
+  templates used for generating the factory or documentation, and does not
+  routinely need to be run.
+
 # Testing the Provider
 
 Testing the provider requires:
