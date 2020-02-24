@@ -4,8 +4,8 @@ import (
 	"crypto/x509"
 	"fmt"
 	"log"
-	"time"
 	"strings"
+	"time"
 
 	"github.com/go-acme/lego/v3/certificate"
 	"github.com/go-acme/lego/v3/challenge"
@@ -81,10 +81,10 @@ func resourceACMECertificateV4() *schema.Resource {
 							Required: true,
 						},
 						"zones": {
-							Type:          schema.TypeSet,
-							Optional:      true,
-							Elem:          &schema.Schema{Type: schema.TypeString},
-							Set:           schema.HashString,
+							Type:     schema.TypeSet,
+							Optional: true,
+							Elem:     &schema.Schema{Type: schema.TypeString},
+							Set:      schema.HashString,
 						},
 						"config": {
 							Type:         schema.TypeMap,
@@ -283,7 +283,7 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 			dnsProvider.provider = p
 
 			m := v.(map[string]interface{})
-			if z, ok :=  m["zones"]; ok && len(z.(*schema.Set).List()) > 0 {
+			if z, ok := m["zones"]; ok && len(z.(*schema.Set).List()) > 0 {
 				dnsProvider.zones = stringSlice(z.(*schema.Set).List())
 			} else {
 				if zonesRequired == true {
@@ -478,7 +478,7 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 			dnsProvider.provider = p
 
 			m := v.(map[string]interface{})
-			if z, ok :=  m["zones"]; ok && len(z.(*schema.Set).List()) > 0 {
+			if z, ok := m["zones"]; ok && len(z.(*schema.Set).List()) > 0 {
 				dnsProvider.zones = stringSlice(z.(*schema.Set).List())
 			} else {
 				if zonesRequired == true {
@@ -568,7 +568,7 @@ func resourceACMECertificateHasExpired(d certificateResourceExpander) (bool, err
 
 type DNSProvider struct {
 	provider challenge.Provider
-	zones []string
+	zones    []string
 }
 
 func NewDNSProvider() (*DNSProvider, error) {
@@ -587,11 +587,11 @@ func NewDNSProviderWrapper() (*DNSProviderWrapper, error) {
 	return &DNSProviderWrapper{}, nil
 }
 
-func useProviderForDomain(provider *DNSProvider, domain string) (bool) {
+func useProviderForDomain(provider *DNSProvider, domain string) bool {
 	if len(provider.zones) > 0 {
 		for _, zone := range provider.zones {
-			if strings.HasSuffix(domain, "." + zone) {
-				log.Printf("[DEBUG] useProviderForDomain: zone '%s' matches for domain '%s'", "." + zone, domain)
+			if strings.HasSuffix(domain, "."+zone) {
+				log.Printf("[DEBUG] useProviderForDomain: zone '%s' matches for domain '%s'", "."+zone, domain)
 				return true
 			}
 		}
