@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"time"
+	"strings"
 
 	"github.com/go-acme/lego/v3/certificate"
 	"github.com/go-acme/lego/v3/challenge"
@@ -78,6 +79,12 @@ func resourceACMECertificateV4() *schema.Resource {
 						"provider": {
 							Type:     schema.TypeString,
 							Required: true,
+						},
+						"zones": {
+							Type:          schema.TypeSet,
+							Optional:      true,
+							Elem:          &schema.Schema{Type: schema.TypeString},
+							Set:           schema.HashString,
 						},
 						"config": {
 							Type:         schema.TypeMap,
@@ -255,14 +262,36 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		return err
 	}
 
-	provider, err := NewDNSProviderWrapper()
+	wrapper, err := NewDNSProviderWrapper()
 	if err != nil {
 		return err
 	}
 
+	zonesRequired := false
+	if len(d.Get("dns_challenge").([]interface{})) > 1 {
+		zonesRequired = true
+	}
+
 	for _, v := range d.Get("dns_challenge").([]interface{}) {
+
+		dnsProvider, err := NewDNSProvider()
+		if err != nil {
+			return err
+		}
+
 		if p, err := setDNSChallenge(client, v.(map[string]interface{})); err == nil {
-			provider.providers = append(provider.providers, p)
+			dnsProvider.provider = p
+
+			m := v.(map[string]interface{})
+			if z, ok :=  m["zones"]; ok && len(z.(*schema.Set).List()) > 0 {
+				dnsProvider.zones = stringSlice(z.(*schema.Set).List())
+			} else {
+				if zonesRequired == true {
+					return fmt.Errorf("'zones' is required in every 'dns_challenge' when using multiple DNS challenges")
+				}
+			}
+
+			wrapper.providers = append(wrapper.providers, dnsProvider)
 		} else {
 			return err
 		}
@@ -278,7 +307,7 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		opts = append(opts, dns01.AddRecursiveNameservers(s))
 	}
 
-	if err := client.Challenge.SetDNS01Provider(provider, opts...); err != nil {
+	if err := client.Challenge.SetDNS01Provider(wrapper, opts...); err != nil {
 		return err
 	}
 
@@ -429,14 +458,35 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 
 	cert := expandCertificateResource(d)
 
-	provider, err := NewDNSProviderWrapper()
+	wrapper, err := NewDNSProviderWrapper()
 	if err != nil {
 		return err
 	}
 
+	zonesRequired := false
+	if len(d.Get("dns_challenge").([]interface{})) > 1 {
+		zonesRequired = true
+	}
+
 	for _, v := range d.Get("dns_challenge").([]interface{}) {
+		dnsProvider, err := NewDNSProvider()
+		if err != nil {
+			return err
+		}
+
 		if p, err := setDNSChallenge(client, v.(map[string]interface{})); err == nil {
-			provider.providers = append(provider.providers, p)
+			dnsProvider.provider = p
+
+			m := v.(map[string]interface{})
+			if z, ok :=  m["zones"]; ok && len(z.(*schema.Set).List()) > 0 {
+				dnsProvider.zones = stringSlice(z.(*schema.Set).List())
+			} else {
+				if zonesRequired == true {
+					return fmt.Errorf("'zones' is required in every 'dns_challenge' when using multiple DNS challenges")
+				}
+			}
+
+			wrapper.providers = append(wrapper.providers, dnsProvider)
 		} else {
 			return err
 		}
@@ -452,7 +502,7 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 		opts = append(opts, dns01.AddRecursiveNameservers(s))
 	}
 
-	if err := client.Challenge.SetDNS01Provider(provider, opts...); err != nil {
+	if err := client.Challenge.SetDNS01Provider(wrapper, opts...); err != nil {
 		return err
 	}
 
@@ -516,10 +566,19 @@ func resourceACMECertificateHasExpired(d certificateResourceExpander) (bool, err
 	return false, nil
 }
 
+type DNSProvider struct {
+	provider challenge.Provider
+	zones []string
+}
+
+func NewDNSProvider() (*DNSProvider, error) {
+	return &DNSProvider{}, nil
+}
+
 // DNSProviderWrapper is a multi-provider wrapper to support multiple
 // DNS challenges.
 type DNSProviderWrapper struct {
-	providers []challenge.Provider
+	providers []*DNSProvider
 }
 
 // NewDNSProviderWrapper returns an freshly initialized
@@ -528,13 +587,33 @@ func NewDNSProviderWrapper() (*DNSProviderWrapper, error) {
 	return &DNSProviderWrapper{}, nil
 }
 
+func useProviderForDomain(provider *DNSProvider, domain string) (bool) {
+	if len(provider.zones) > 0 {
+		for _, zone := range provider.zones {
+			if strings.HasSuffix(domain, "." + zone) {
+				log.Printf("[DEBUG] useProviderForDomain: zone '%s' matches for domain '%s'", "." + zone, domain)
+				return true
+			}
+		}
+		log.Printf("[DEBUG] useProviderForDomain: no matching zone found for domain '%s'", domain)
+		return false
+	}
+	log.Printf("[DEBUG] useProviderForDomain: no zone for provider")
+	return true
+}
+
 // Present implements challenge.Provider for DNSProviderWrapper.
 func (d *DNSProviderWrapper) Present(domain, token, keyAuth string) error {
 	var err error
 	for _, p := range d.providers {
-		err = p.Present(domain, token, keyAuth)
-		if err != nil {
-			err = multierror.Append(err, fmt.Errorf("error encountered while presenting token for DNS challenge: %s", err.Error()))
+		if useProviderForDomain(p, domain) {
+			log.Printf("[DEBUG] DNSProviderWrapper: Calling Present() for domain %s", domain)
+			err = p.provider.Present(domain, token, keyAuth)
+			if err != nil {
+				err = multierror.Append(err, fmt.Errorf("error encountered while presenting token for DNS challenge: %s", err.Error()))
+			}
+		} else {
+			log.Printf("[DEBUG] DNSProviderWrapper: Skipping Present() for domain %s", domain)
 		}
 	}
 
@@ -545,9 +624,14 @@ func (d *DNSProviderWrapper) Present(domain, token, keyAuth string) error {
 func (d *DNSProviderWrapper) CleanUp(domain, token, keyAuth string) error {
 	var err error
 	for _, p := range d.providers {
-		err = p.CleanUp(domain, token, keyAuth)
-		if err != nil {
-			err = multierror.Append(err, fmt.Errorf("error encountered while cleaning token for DNS challenge: %s", err.Error()))
+		if useProviderForDomain(p, domain) {
+			log.Printf("[DEBUG] DNSProviderWrapper: Calling Cleanup() for domain %s", domain)
+			err = p.provider.CleanUp(domain, token, keyAuth)
+			if err != nil {
+				err = multierror.Append(err, fmt.Errorf("error encountered while cleaning token for DNS challenge: %s", err.Error()))
+			}
+		} else {
+			log.Printf("[DEBUG] DNSProviderWrapper: Skipping Cleanup() for domain %s", domain)
 		}
 	}
 
@@ -562,7 +646,7 @@ func (d *DNSProviderWrapper) CleanUp(domain, token, keyAuth string) error {
 func (d *DNSProviderWrapper) Timeout() (time.Duration, time.Duration) {
 	var timeout, interval time.Duration
 	for _, p := range d.providers {
-		if pt, ok := p.(challenge.ProviderTimeout); ok {
+		if pt, ok := p.provider.(challenge.ProviderTimeout); ok {
 			t, i := pt.Timeout()
 			if t > timeout {
 				timeout = t
