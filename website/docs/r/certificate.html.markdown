@@ -240,7 +240,7 @@ machine running Terraform may not have visibility into these public DNS
 records.
 
 To override this default behavior, supply the `recursive_nameservers` to use as
-a list in `host:port` form within the `dns_challenge` block:
+a list in `host:port`:
 
 ```hcl
 resource "acme_certificate" "certificate" {
