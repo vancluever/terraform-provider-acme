@@ -21,7 +21,23 @@ const (
 	txtType    = "TXTRecord"
 )
 
-// Config is used to configure the creation of the DNSProvider
+// Environment variables names.
+const (
+	envNamespace = "BLUECAT_"
+
+	EnvServerURL  = envNamespace + "SERVER_URL"
+	EnvUserName   = envNamespace + "USER_NAME"
+	EnvPassword   = envNamespace + "PASSWORD"
+	EnvConfigName = envNamespace + "CONFIG_NAME"
+	EnvDNSView    = envNamespace + "DNS_VIEW"
+
+	EnvTTL                = envNamespace + "TTL"
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+	EnvHTTPTimeout        = envNamespace + "HTTP_TIMEOUT"
+)
+
+// Config is used to configure the creation of the DNSProvider.
 type Config struct {
 	BaseURL            string
 	UserName           string
@@ -34,20 +50,19 @@ type Config struct {
 	HTTPClient         *http.Client
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
-		TTL:                env.GetOrDefaultInt("BLUECAT_TTL", dns01.DefaultTTL),
-		PropagationTimeout: env.GetOrDefaultSecond("BLUECAT_PROPAGATION_TIMEOUT", dns01.DefaultPropagationTimeout),
-		PollingInterval:    env.GetOrDefaultSecond("BLUECAT_POLLING_INTERVAL", dns01.DefaultPollingInterval),
+		TTL:                env.GetOrDefaultInt(EnvTTL, dns01.DefaultTTL),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, dns01.DefaultPropagationTimeout),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, dns01.DefaultPollingInterval),
 		HTTPClient: &http.Client{
-			Timeout: env.GetOrDefaultSecond("BLUECAT_HTTP_TIMEOUT", 30*time.Second),
+			Timeout: env.GetOrDefaultSecond(EnvHTTPTimeout, 30*time.Second),
 		},
 	}
 }
 
-// DNSProvider is an implementation of the challenge.Provider interface that uses
-// Bluecat's Address Manager REST API to manage TXT records for a domain.
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	config *Config
 	token  string
@@ -57,19 +72,19 @@ type DNSProvider struct {
 // Credentials must be passed in the environment variables: BLUECAT_SERVER_URL, BLUECAT_USER_NAME and BLUECAT_PASSWORD.
 // BLUECAT_SERVER_URL should have the scheme, hostname, and port (if required) of the authoritative Bluecat BAM server.
 // The REST endpoint will be appended.
-// In addition, the Configuration name and external DNS View Name must be passed in BLUECAT_CONFIG_NAME and BLUECAT_DNS_VIEW
+// In addition, the Configuration name and external DNS View Name must be passed in BLUECAT_CONFIG_NAME and BLUECAT_DNS_VIEW.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get("BLUECAT_SERVER_URL", "BLUECAT_USER_NAME", "BLUECAT_PASSWORD", "BLUECAT_CONFIG_NAME", "BLUECAT_DNS_VIEW")
+	values, err := env.Get(EnvServerURL, EnvUserName, EnvPassword, EnvConfigName, EnvDNSView)
 	if err != nil {
-		return nil, fmt.Errorf("bluecat: %v", err)
+		return nil, fmt.Errorf("bluecat: %w", err)
 	}
 
 	config := NewDefaultConfig()
-	config.BaseURL = values["BLUECAT_SERVER_URL"]
-	config.UserName = values["BLUECAT_USER_NAME"]
-	config.Password = values["BLUECAT_PASSWORD"]
-	config.ConfigName = values["BLUECAT_CONFIG_NAME"]
-	config.DNSView = values["BLUECAT_DNS_VIEW"]
+	config.BaseURL = values[EnvServerURL]
+	config.UserName = values[EnvUserName]
+	config.Password = values[EnvPassword]
+	config.ConfigName = values[EnvConfigName]
+	config.DNSView = values[EnvDNSView]
 
 	return NewDNSProviderConfig(config)
 }
@@ -81,7 +96,7 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 	}
 
 	if config.BaseURL == "" || config.UserName == "" || config.Password == "" || config.ConfigName == "" || config.DNSView == "" {
-		return nil, fmt.Errorf("bluecat: credentials missing")
+		return nil, errors.New("bluecat: credentials missing")
 	}
 
 	return &DNSProvider{config: config}, nil
@@ -140,7 +155,7 @@ func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	return d.logout()
 }
 
-// CleanUp removes the TXT record matching the specified parameters
+// CleanUp removes the TXT record matching the specified parameters.
 func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	fqdn, _ := dns01.GetRecord(domain, keyAuth)
 
@@ -174,7 +189,7 @@ func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	var txtRec entityResponse
 	err = json.NewDecoder(resp.Body).Decode(&txtRec)
 	if err != nil {
-		return fmt.Errorf("bluecat: %v", err)
+		return fmt.Errorf("bluecat: %w", err)
 	}
 	queryArgs = map[string]string{
 		"objectId": strconv.FormatUint(uint64(txtRec.ID), 10),

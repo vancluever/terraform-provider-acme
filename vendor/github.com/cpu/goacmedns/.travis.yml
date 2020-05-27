@@ -3,16 +3,16 @@ language: go
 sudo: false
 
 go:
-  - "1.10.3"
+  - "stable"
 
 install:
-  - go get golang.org/x/tools/cmd/cover
-  - go get github.com/mattn/goveralls
-  - go get github.com/kisielk/errcheck
-  - go get ./...
+  - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.17.1
+  - GO111MODULE=off go get golang.org/x/tools/cmd/cover
+  - GO111MODULE=off go get github.com/mattn/goveralls
+  - go install -v ./...
 
 script:
-  - go vet ./...
-  - errcheck -exclude .errcheck_exclude ./...
+  - set -e
+  - golangci-lint run
   - go test -v -race -covermode=atomic -coverprofile=coverage.out ./...
-  - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
+  - goveralls -coverprofile=coverage.out -service=travis-ci

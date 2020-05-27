@@ -15,7 +15,21 @@ import (
 	"github.com/go-acme/lego/v3/platform/config/env"
 )
 
-// Config is used to configure the creation of the DNSProvider
+// Environment variables names.
+const (
+	envNamespace = "NETCUP_"
+
+	EnvCustomerNumber = envNamespace + "CUSTOMER_NUMBER"
+	EnvAPIKey         = envNamespace + "API_KEY"
+	EnvAPIPassword    = envNamespace + "API_PASSWORD"
+
+	EnvTTL                = envNamespace + "TTL"
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+	EnvHTTPTimeout        = envNamespace + "HTTP_TIMEOUT"
+)
+
+// Config is used to configure the creation of the DNSProvider.
 type Config struct {
 	Key                string
 	Password           string
@@ -26,19 +40,19 @@ type Config struct {
 	HTTPClient         *http.Client
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
-		TTL:                env.GetOrDefaultInt("NETCUP_TTL", dns01.DefaultTTL),
-		PropagationTimeout: env.GetOrDefaultSecond("NETCUP_PROPAGATION_TIMEOUT", 120*time.Second),
-		PollingInterval:    env.GetOrDefaultSecond("NETCUP_POLLING_INTERVAL", 5*time.Second),
+		TTL:                env.GetOrDefaultInt(EnvTTL, dns01.DefaultTTL),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, 120*time.Second),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, 5*time.Second),
 		HTTPClient: &http.Client{
-			Timeout: env.GetOrDefaultSecond("NETCUP_HTTP_TIMEOUT", 10*time.Second),
+			Timeout: env.GetOrDefaultSecond(EnvHTTPTimeout, 10*time.Second),
 		},
 	}
 }
 
-// DNSProvider is an implementation of the challenge.Provider interface
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	client *internal.Client
 	config *Config
@@ -46,17 +60,17 @@ type DNSProvider struct {
 
 // NewDNSProvider returns a DNSProvider instance configured for netcup.
 // Credentials must be passed in the environment variables:
-// NETCUP_CUSTOMER_NUMBER, NETCUP_API_KEY, NETCUP_API_PASSWORD
+// NETCUP_CUSTOMER_NUMBER, NETCUP_API_KEY, NETCUP_API_PASSWORD.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get("NETCUP_CUSTOMER_NUMBER", "NETCUP_API_KEY", "NETCUP_API_PASSWORD")
+	values, err := env.Get(EnvCustomerNumber, EnvAPIKey, EnvAPIPassword)
 	if err != nil {
-		return nil, fmt.Errorf("netcup: %v", err)
+		return nil, fmt.Errorf("netcup: %w", err)
 	}
 
 	config := NewDefaultConfig()
-	config.Customer = values["NETCUP_CUSTOMER_NUMBER"]
-	config.Key = values["NETCUP_API_KEY"]
-	config.Password = values["NETCUP_API_PASSWORD"]
+	config.Customer = values[EnvCustomerNumber]
+	config.Key = values[EnvAPIKey]
+	config.Password = values[EnvAPIPassword]
 
 	return NewDNSProviderConfig(config)
 }
@@ -69,7 +83,7 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 
 	client, err := internal.NewClient(config.Customer, config.Key, config.Password)
 	if err != nil {
-		return nil, fmt.Errorf("netcup: %v", err)
+		return nil, fmt.Errorf("netcup: %w", err)
 	}
 
 	client.HTTPClient = config.HTTPClient
@@ -77,18 +91,18 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 	return &DNSProvider{client: client, config: config}, nil
 }
 
-// Present creates a TXT record to fulfill the dns-01 challenge
+// Present creates a TXT record to fulfill the dns-01 challenge.
 func (d *DNSProvider) Present(domainName, token, keyAuth string) error {
 	fqdn, value := dns01.GetRecord(domainName, keyAuth)
 
 	zone, err := dns01.FindZoneByFqdn(fqdn)
 	if err != nil {
-		return fmt.Errorf("netcup: failed to find DNSZone, %v", err)
+		return fmt.Errorf("netcup: failed to find DNSZone, %w", err)
 	}
 
 	sessionID, err := d.client.Login()
 	if err != nil {
-		return fmt.Errorf("netcup: %v", err)
+		return fmt.Errorf("netcup: %w", err)
 	}
 
 	defer func() {
@@ -118,24 +132,24 @@ func (d *DNSProvider) Present(domainName, token, keyAuth string) error {
 
 	err = d.client.UpdateDNSRecord(sessionID, zone, records)
 	if err != nil {
-		return fmt.Errorf("netcup: failed to add TXT-Record: %v", err)
+		return fmt.Errorf("netcup: failed to add TXT-Record: %w", err)
 	}
 
 	return nil
 }
 
-// CleanUp removes the TXT record matching the specified parameters
+// CleanUp removes the TXT record matching the specified parameters.
 func (d *DNSProvider) CleanUp(domainName, token, keyAuth string) error {
 	fqdn, value := dns01.GetRecord(domainName, keyAuth)
 
 	zone, err := dns01.FindZoneByFqdn(fqdn)
 	if err != nil {
-		return fmt.Errorf("netcup: failed to find DNSZone, %v", err)
+		return fmt.Errorf("netcup: failed to find DNSZone, %w", err)
 	}
 
 	sessionID, err := d.client.Login()
 	if err != nil {
-		return fmt.Errorf("netcup: %v", err)
+		return fmt.Errorf("netcup: %w", err)
 	}
 
 	defer func() {
@@ -151,7 +165,7 @@ func (d *DNSProvider) CleanUp(domainName, token, keyAuth string) error {
 
 	records, err := d.client.GetDNSRecords(zone, sessionID)
 	if err != nil {
-		return fmt.Errorf("netcup: %v", err)
+		return fmt.Errorf("netcup: %w", err)
 	}
 
 	record := internal.DNSRecord{
@@ -162,14 +176,14 @@ func (d *DNSProvider) CleanUp(domainName, token, keyAuth string) error {
 
 	idx, err := internal.GetDNSRecordIdx(records, record)
 	if err != nil {
-		return fmt.Errorf("netcup: %v", err)
+		return fmt.Errorf("netcup: %w", err)
 	}
 
 	records[idx].DeleteRecord = true
 
 	err = d.client.UpdateDNSRecord(sessionID, zone, []internal.DNSRecord{records[idx]})
 	if err != nil {
-		return fmt.Errorf("netcup: %v", err)
+		return fmt.Errorf("netcup: %w", err)
 	}
 
 	return nil

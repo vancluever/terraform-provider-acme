@@ -12,7 +12,21 @@ import (
 	"github.com/go-acme/lego/v3/platform/config/env"
 )
 
-// Config is used to configure the creation of the DNSProvider
+// Environment variables names.
+const (
+	envNamespace = "DYN_"
+
+	EnvCustomerName = envNamespace + "CUSTOMER_NAME"
+	EnvUserName     = envNamespace + "USER_NAME"
+	EnvPassword     = envNamespace + "PASSWORD"
+
+	EnvTTL                = envNamespace + "TTL"
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+	EnvHTTPTimeout        = envNamespace + "HTTP_TIMEOUT"
+)
+
+// Config is used to configure the creation of the DNSProvider.
 type Config struct {
 	CustomerName       string
 	UserName           string
@@ -23,20 +37,19 @@ type Config struct {
 	TTL                int
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
-		TTL:                env.GetOrDefaultInt("DYN_TTL", dns01.DefaultTTL),
-		PropagationTimeout: env.GetOrDefaultSecond("DYN_PROPAGATION_TIMEOUT", dns01.DefaultPropagationTimeout),
-		PollingInterval:    env.GetOrDefaultSecond("DYN_POLLING_INTERVAL", dns01.DefaultPollingInterval),
+		TTL:                env.GetOrDefaultInt(EnvTTL, dns01.DefaultTTL),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, dns01.DefaultPropagationTimeout),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, dns01.DefaultPollingInterval),
 		HTTPClient: &http.Client{
-			Timeout: env.GetOrDefaultSecond("DYN_HTTP_TIMEOUT", 10*time.Second),
+			Timeout: env.GetOrDefaultSecond(EnvHTTPTimeout, 10*time.Second),
 		},
 	}
 }
 
-// DNSProvider is an implementation of the challenge.Provider interface that uses
-// Dyn's Managed DNS API to manage TXT records for a domain.
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	config *Config
 	token  string
@@ -46,44 +59,44 @@ type DNSProvider struct {
 // Credentials must be passed in the environment variables:
 // DYN_CUSTOMER_NAME, DYN_USER_NAME and DYN_PASSWORD.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get("DYN_CUSTOMER_NAME", "DYN_USER_NAME", "DYN_PASSWORD")
+	values, err := env.Get(EnvCustomerName, EnvUserName, EnvPassword)
 	if err != nil {
-		return nil, fmt.Errorf("dyn: %v", err)
+		return nil, fmt.Errorf("dyn: %w", err)
 	}
 
 	config := NewDefaultConfig()
-	config.CustomerName = values["DYN_CUSTOMER_NAME"]
-	config.UserName = values["DYN_USER_NAME"]
-	config.Password = values["DYN_PASSWORD"]
+	config.CustomerName = values[EnvCustomerName]
+	config.UserName = values[EnvUserName]
+	config.Password = values[EnvPassword]
 
 	return NewDNSProviderConfig(config)
 }
 
-// NewDNSProviderConfig return a DNSProvider instance configured for Dyn DNS
+// NewDNSProviderConfig return a DNSProvider instance configured for Dyn DNS.
 func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 	if config == nil {
 		return nil, errors.New("dyn: the configuration of the DNS provider is nil")
 	}
 
 	if config.CustomerName == "" || config.UserName == "" || config.Password == "" {
-		return nil, fmt.Errorf("dyn: credentials missing")
+		return nil, errors.New("dyn: credentials missing")
 	}
 
 	return &DNSProvider{config: config}, nil
 }
 
-// Present creates a TXT record using the specified parameters
+// Present creates a TXT record using the specified parameters.
 func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	fqdn, value := dns01.GetRecord(domain, keyAuth)
 
 	authZone, err := dns01.FindZoneByFqdn(fqdn)
 	if err != nil {
-		return fmt.Errorf("dyn: %v", err)
+		return fmt.Errorf("dyn: %w", err)
 	}
 
 	err = d.login()
 	if err != nil {
-		return fmt.Errorf("dyn: %v", err)
+		return fmt.Errorf("dyn: %w", err)
 	}
 
 	data := map[string]interface{}{
@@ -96,29 +109,29 @@ func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	resource := fmt.Sprintf("TXTRecord/%s/%s/", authZone, fqdn)
 	_, err = d.sendRequest(http.MethodPost, resource, data)
 	if err != nil {
-		return fmt.Errorf("dyn: %v", err)
+		return fmt.Errorf("dyn: %w", err)
 	}
 
 	err = d.publish(authZone, "Added TXT record for ACME dns-01 challenge using lego client")
 	if err != nil {
-		return fmt.Errorf("dyn: %v", err)
+		return fmt.Errorf("dyn: %w", err)
 	}
 
 	return d.logout()
 }
 
-// CleanUp removes the TXT record matching the specified parameters
+// CleanUp removes the TXT record matching the specified parameters.
 func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	fqdn, _ := dns01.GetRecord(domain, keyAuth)
 
 	authZone, err := dns01.FindZoneByFqdn(fqdn)
 	if err != nil {
-		return fmt.Errorf("dyn: %v", err)
+		return fmt.Errorf("dyn: %w", err)
 	}
 
 	err = d.login()
 	if err != nil {
-		return fmt.Errorf("dyn: %v", err)
+		return fmt.Errorf("dyn: %w", err)
 	}
 
 	resource := fmt.Sprintf("TXTRecord/%s/%s/", authZone, fqdn)
@@ -126,7 +139,7 @@ func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
-		return fmt.Errorf("dyn: %v", err)
+		return fmt.Errorf("dyn: %w", err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -134,7 +147,7 @@ func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 
 	resp, err := d.config.HTTPClient.Do(req)
 	if err != nil {
-		return fmt.Errorf("dyn: %v", err)
+		return fmt.Errorf("dyn: %w", err)
 	}
 	resp.Body.Close()
 
@@ -144,7 +157,7 @@ func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 
 	err = d.publish(authZone, "Removed TXT record for ACME dns-01 challenge using lego client")
 	if err != nil {
-		return fmt.Errorf("dyn: %v", err)
+		return fmt.Errorf("dyn: %w", err)
 	}
 
 	return d.logout()

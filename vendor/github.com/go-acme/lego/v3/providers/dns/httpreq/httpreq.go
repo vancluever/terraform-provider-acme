@@ -9,12 +9,25 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"os"
 	"path"
 	"time"
 
 	"github.com/go-acme/lego/v3/challenge/dns01"
 	"github.com/go-acme/lego/v3/platform/config/env"
+)
+
+// Environment variables names.
+const (
+	envNamespace = "HTTPREQ_"
+
+	EnvEndpoint = envNamespace + "ENDPOINT"
+	EnvMode     = envNamespace + "MODE"
+	EnvUsername = envNamespace + "USERNAME"
+	EnvPassword = envNamespace + "PASSWORD"
+
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+	EnvHTTPTimeout        = envNamespace + "HTTP_TIMEOUT"
 )
 
 type message struct {
@@ -28,7 +41,7 @@ type messageRaw struct {
 	KeyAuth string `json:"keyAuth"`
 }
 
-// Config is used to configure the creation of the DNSProvider
+// Config is used to configure the creation of the DNSProvider.
 type Config struct {
 	Endpoint           *url.URL
 	Mode               string
@@ -39,38 +52,38 @@ type Config struct {
 	HTTPClient         *http.Client
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
-		PropagationTimeout: env.GetOrDefaultSecond("HTTPREQ_PROPAGATION_TIMEOUT", dns01.DefaultPropagationTimeout),
-		PollingInterval:    env.GetOrDefaultSecond("HTTPREQ_POLLING_INTERVAL", dns01.DefaultPollingInterval),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, dns01.DefaultPropagationTimeout),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, dns01.DefaultPollingInterval),
 		HTTPClient: &http.Client{
-			Timeout: env.GetOrDefaultSecond("HTTPREQ_HTTP_TIMEOUT", 30*time.Second),
+			Timeout: env.GetOrDefaultSecond(EnvHTTPTimeout, 30*time.Second),
 		},
 	}
 }
 
-// DNSProvider describes a provider for acme-proxy
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	config *Config
 }
 
 // NewDNSProvider returns a DNSProvider instance.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get("HTTPREQ_ENDPOINT")
+	values, err := env.Get(EnvEndpoint)
 	if err != nil {
-		return nil, fmt.Errorf("httpreq: %v", err)
+		return nil, fmt.Errorf("httpreq: %w", err)
 	}
 
-	endpoint, err := url.Parse(values["HTTPREQ_ENDPOINT"])
+	endpoint, err := url.Parse(values[EnvEndpoint])
 	if err != nil {
-		return nil, fmt.Errorf("httpreq: %v", err)
+		return nil, fmt.Errorf("httpreq: %w", err)
 	}
 
 	config := NewDefaultConfig()
-	config.Mode = os.Getenv("HTTPREQ_MODE")
-	config.Username = os.Getenv("HTTPREQ_USERNAME")
-	config.Password = os.Getenv("HTTPREQ_PASSWORD")
+	config.Mode = env.GetOrFile(EnvMode)
+	config.Username = env.GetOrFile(EnvUsername)
+	config.Password = env.GetOrFile(EnvPassword)
 	config.Endpoint = endpoint
 	return NewDNSProviderConfig(config)
 }
@@ -94,7 +107,7 @@ func (d *DNSProvider) Timeout() (timeout, interval time.Duration) {
 	return d.config.PropagationTimeout, d.config.PollingInterval
 }
 
-// Present creates a TXT record to fulfill the dns-01 challenge
+// Present creates a TXT record to fulfill the dns-01 challenge.
 func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	if d.config.Mode == "RAW" {
 		msg := &messageRaw{
@@ -105,7 +118,7 @@ func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 
 		err := d.doPost("/present", msg)
 		if err != nil {
-			return fmt.Errorf("httpreq: %v", err)
+			return fmt.Errorf("httpreq: %w", err)
 		}
 		return nil
 	}
@@ -118,12 +131,12 @@ func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 
 	err := d.doPost("/present", msg)
 	if err != nil {
-		return fmt.Errorf("httpreq: %v", err)
+		return fmt.Errorf("httpreq: %w", err)
 	}
 	return nil
 }
 
-// CleanUp removes the TXT record matching the specified parameters
+// CleanUp removes the TXT record matching the specified parameters.
 func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	if d.config.Mode == "RAW" {
 		msg := &messageRaw{
@@ -134,7 +147,7 @@ func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 
 		err := d.doPost("/cleanup", msg)
 		if err != nil {
-			return fmt.Errorf("httpreq: %v", err)
+			return fmt.Errorf("httpreq: %w", err)
 		}
 		return nil
 	}
@@ -147,7 +160,7 @@ func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 
 	err := d.doPost("/cleanup", msg)
 	if err != nil {
-		return fmt.Errorf("httpreq: %v", err)
+		return fmt.Errorf("httpreq: %w", err)
 	}
 	return nil
 }
@@ -185,7 +198,7 @@ func (d *DNSProvider) doPost(uri string, msg interface{}) error {
 	if resp.StatusCode >= http.StatusBadRequest {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			return fmt.Errorf("%d: failed to read response body: %v", resp.StatusCode, err)
+			return fmt.Errorf("%d: failed to read response body: %w", resp.StatusCode, err)
 		}
 
 		return fmt.Errorf("%d: request failed: %v", resp.StatusCode, string(body))

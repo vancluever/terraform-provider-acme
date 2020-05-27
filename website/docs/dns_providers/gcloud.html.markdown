@@ -53,7 +53,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
 * `Application Default Credentials` - [Documentation](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application).
-* `GCE_PROJECT` - Project name.
+* `GCE_PROJECT` - Project name (by default, the project name is auto-detected by using the metadata service).
 * `GCE_SERVICE_ACCOUNT` - Account.
 * `GCE_SERVICE_ACCOUNT_FILE` - Account file path.
 

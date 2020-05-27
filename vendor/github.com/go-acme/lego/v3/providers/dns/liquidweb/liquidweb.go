@@ -16,7 +16,22 @@ import (
 
 const defaultBaseURL = "https://api.stormondemand.com"
 
-// Config is used to configure the creation of the DNSProvider
+// Environment variables names.
+const (
+	envNamespace = "LIQUID_WEB_"
+
+	EnvURL      = envNamespace + "URL"
+	EnvUsername = envNamespace + "USERNAME"
+	EnvPassword = envNamespace + "PASSWORD"
+	EnvZone     = envNamespace + "ZONE"
+
+	EnvTTL                = envNamespace + "TTL"
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+	EnvHTTPTimeout        = envNamespace + "HTTP_TIMEOUT"
+)
+
+// Config is used to configure the creation of the DNSProvider.
 type Config struct {
 	BaseURL            string
 	Username           string
@@ -28,21 +43,20 @@ type Config struct {
 	HTTPTimeout        time.Duration
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	config := &Config{
 		BaseURL:            defaultBaseURL,
-		TTL:                env.GetOrDefaultInt("LIQUID_WEB_TTL", 300),
-		PollingInterval:    env.GetOrDefaultSecond("LIQUID_WEB_POLLING_INTERVAL", 2*time.Second),
-		PropagationTimeout: env.GetOrDefaultSecond("LIQUID_WEB_PROPAGATION_TIMEOUT", 2*time.Minute),
-		HTTPTimeout:        env.GetOrDefaultSecond("LIQUID_WEB_HTTP_TIMEOUT", 1*time.Minute),
+		TTL:                env.GetOrDefaultInt(EnvTTL, 300),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, 2*time.Minute),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, 2*time.Second),
+		HTTPTimeout:        env.GetOrDefaultSecond(EnvHTTPTimeout, 1*time.Minute),
 	}
 
 	return config
 }
 
-// DNSProvider is an implementation of the challenge.Provider interface
-// that uses Liquid Web's REST API to manage TXT records for a domain.
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	config      *Config
 	client      *lw.API
@@ -52,16 +66,16 @@ type DNSProvider struct {
 
 // NewDNSProvider returns a DNSProvider instance configured for Liquid Web.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get("LIQUID_WEB_USERNAME", "LIQUID_WEB_PASSWORD", "LIQUID_WEB_ZONE")
+	values, err := env.Get(EnvUsername, EnvPassword, EnvZone)
 	if err != nil {
-		return nil, fmt.Errorf("liquidweb: %v", err)
+		return nil, fmt.Errorf("liquidweb: %w", err)
 	}
 
 	config := NewDefaultConfig()
-	config.BaseURL = env.GetOrFile("LIQUID_WEB_URL")
-	config.Username = values["LIQUID_WEB_USERNAME"]
-	config.Password = values["LIQUID_WEB_PASSWORD"]
-	config.Zone = values["LIQUID_WEB_ZONE"]
+	config.BaseURL = env.GetOrFile(EnvURL)
+	config.Username = values[EnvUsername]
+	config.Password = values[EnvPassword]
+	config.Zone = values[EnvZone]
 
 	return NewDNSProviderConfig(config)
 }
@@ -77,21 +91,21 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 	}
 
 	if config.Zone == "" {
-		return nil, fmt.Errorf("liquidweb: zone is missing")
+		return nil, errors.New("liquidweb: zone is missing")
 	}
 
 	if config.Username == "" {
-		return nil, fmt.Errorf("liquidweb: username is missing")
+		return nil, errors.New("liquidweb: username is missing")
 	}
 
 	if config.Password == "" {
-		return nil, fmt.Errorf("liquidweb: password is missing")
+		return nil, errors.New("liquidweb: password is missing")
 	}
 
 	// Initialize LW client.
 	client, err := lw.NewAPI(config.Username, config.Password, config.BaseURL, int(config.HTTPTimeout.Seconds()))
 	if err != nil {
-		return nil, fmt.Errorf("liquidweb: could not create Liquid Web API client: %v", err)
+		return nil, fmt.Errorf("liquidweb: could not create Liquid Web API client: %w", err)
 	}
 
 	return &DNSProvider{
@@ -107,7 +121,7 @@ func (d *DNSProvider) Timeout() (time.Duration, time.Duration) {
 	return d.config.PropagationTimeout, d.config.PollingInterval
 }
 
-// Present creates a TXT record using the specified parameters
+// Present creates a TXT record using the specified parameters.
 func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	fqdn, value := dns01.GetRecord(domain, keyAuth)
 
@@ -121,7 +135,7 @@ func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 
 	dnsEntry, err := d.client.NetworkDNS.Create(params)
 	if err != nil {
-		return fmt.Errorf("liquidweb: could not create TXT record: %v", err)
+		return fmt.Errorf("liquidweb: could not create TXT record: %w", err)
 	}
 
 	d.recordIDsMu.Lock()
@@ -131,7 +145,7 @@ func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	return nil
 }
 
-// CleanUp removes the TXT record matching the specified parameters
+// CleanUp removes the TXT record matching the specified parameters.
 func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	d.recordIDsMu.Lock()
 	recordID, ok := d.recordIDs[token]
@@ -144,7 +158,7 @@ func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	params := &network.DNSRecordParams{ID: recordID}
 	_, err := d.client.NetworkDNS.Delete(params)
 	if err != nil {
-		return fmt.Errorf("liquidweb: could not remove TXT record: %v", err)
+		return fmt.Errorf("liquidweb: could not remove TXT record: %w", err)
 	}
 
 	d.recordIDsMu.Lock()

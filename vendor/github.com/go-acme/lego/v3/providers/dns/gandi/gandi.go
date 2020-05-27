@@ -22,7 +22,19 @@ const (
 	minTTL         = 300
 )
 
-// Config is used to configure the creation of the DNSProvider
+// Environment variables names.
+const (
+	envNamespace = "GANDI_"
+
+	EnvAPIKey = envNamespace + "API_KEY"
+
+	EnvTTL                = envNamespace + "TTL"
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+	EnvHTTPTimeout        = envNamespace + "HTTP_TIMEOUT"
+)
+
+// Config is used to configure the creation of the DNSProvider.
 type Config struct {
 	BaseURL            string
 	APIKey             string
@@ -32,28 +44,26 @@ type Config struct {
 	HTTPClient         *http.Client
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
-		TTL:                env.GetOrDefaultInt("GANDI_TTL", minTTL),
-		PropagationTimeout: env.GetOrDefaultSecond("GANDI_PROPAGATION_TIMEOUT", 40*time.Minute),
-		PollingInterval:    env.GetOrDefaultSecond("GANDI_POLLING_INTERVAL", 60*time.Second),
+		TTL:                env.GetOrDefaultInt(EnvTTL, minTTL),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, 40*time.Minute),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, 60*time.Second),
 		HTTPClient: &http.Client{
-			Timeout: env.GetOrDefaultSecond("GANDI_HTTP_TIMEOUT", 60*time.Second),
+			Timeout: env.GetOrDefaultSecond(EnvHTTPTimeout, 60*time.Second),
 		},
 	}
 }
 
-// inProgressInfo contains information about an in-progress challenge
+// inProgressInfo contains information about an in-progress challenge.
 type inProgressInfo struct {
 	zoneID    int    // zoneID of gandi zone to restore in CleanUp
 	newZoneID int    // zoneID of temporary gandi zone containing TXT record
 	authZone  string // the domain name registered at gandi with trailing "."
 }
 
-// DNSProvider is an implementation of the
-// challenge.ProviderTimeout interface that uses Gandi's XML-RPC
-// API to manage TXT records for a domain.
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	inProgressFQDNs     map[string]inProgressInfo
 	inProgressAuthZones map[string]struct{}
@@ -66,13 +76,13 @@ type DNSProvider struct {
 // NewDNSProvider returns a DNSProvider instance configured for Gandi.
 // Credentials must be passed in the environment variable: GANDI_API_KEY.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get("GANDI_API_KEY")
+	values, err := env.Get(EnvAPIKey)
 	if err != nil {
-		return nil, fmt.Errorf("gandi: %v", err)
+		return nil, fmt.Errorf("gandi: %w", err)
 	}
 
 	config := NewDefaultConfig()
-	config.APIKey = values["GANDI_API_KEY"]
+	config.APIKey = values[EnvAPIKey]
 
 	return NewDNSProviderConfig(config)
 }
@@ -84,7 +94,7 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 	}
 
 	if config.APIKey == "" {
-		return nil, fmt.Errorf("gandi: no API Key given")
+		return nil, errors.New("gandi: no API Key given")
 	}
 
 	if config.BaseURL == "" {
@@ -112,12 +122,12 @@ func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	// find authZone and Gandi zone_id for fqdn
 	authZone, err := d.findZoneByFqdn(fqdn)
 	if err != nil {
-		return fmt.Errorf("gandi: findZoneByFqdn failure: %v", err)
+		return fmt.Errorf("gandi: findZoneByFqdn failure: %w", err)
 	}
 
 	zoneID, err := d.getZoneID(authZone)
 	if err != nil {
-		return fmt.Errorf("gandi: %v", err)
+		return fmt.Errorf("gandi: %w", err)
 	}
 
 	// determine name of TXT record
@@ -147,22 +157,22 @@ func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 
 	newZoneVersion, err := d.newZoneVersion(newZoneID)
 	if err != nil {
-		return fmt.Errorf("gandi: %v", err)
+		return fmt.Errorf("gandi: %w", err)
 	}
 
 	err = d.addTXTRecord(newZoneID, newZoneVersion, name, value, d.config.TTL)
 	if err != nil {
-		return fmt.Errorf("gandi: %v", err)
+		return fmt.Errorf("gandi: %w", err)
 	}
 
 	err = d.setZoneVersion(newZoneID, newZoneVersion)
 	if err != nil {
-		return fmt.Errorf("gandi: %v", err)
+		return fmt.Errorf("gandi: %w", err)
 	}
 
 	err = d.setZone(authZone, newZoneID)
 	if err != nil {
-		return fmt.Errorf("gandi: %v", err)
+		return fmt.Errorf("gandi: %w", err)
 	}
 
 	// save data necessary for CleanUp
@@ -200,7 +210,7 @@ func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	// perform API actions to restore old gandi zone for authZone
 	err := d.setZone(authZone, zoneID)
 	if err != nil {
-		return fmt.Errorf("gandi: %v", err)
+		return fmt.Errorf("gandi: %w", err)
 	}
 
 	return d.deleteZone(newZoneID)

@@ -25,13 +25,16 @@
   disable = [
     "maligned",
     "lll",
-    "gas",
     "dupl",
     "prealloc",
+    "bodyclose",
+    "gomnd",
+    "stylecheck",
+    "wsl",
   ]
 
 [issues]
   exclude-use-default = false
   max-per-linter = 0
-  max-same = 0
+  max-same-issues = 0
   exclude = []

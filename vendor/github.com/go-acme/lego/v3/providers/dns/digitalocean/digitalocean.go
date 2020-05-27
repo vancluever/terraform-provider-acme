@@ -12,7 +12,19 @@ import (
 	"github.com/go-acme/lego/v3/platform/config/env"
 )
 
-// Config is used to configure the creation of the DNSProvider
+// Environment variables names.
+const (
+	envNamespace = "DO_"
+
+	EnvAuthToken = envNamespace + "AUTH_TOKEN"
+
+	EnvTTL                = envNamespace + "TTL"
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+	EnvHTTPTimeout        = envNamespace + "HTTP_TIMEOUT"
+)
+
+// Config is used to configure the creation of the DNSProvider.
 type Config struct {
 	BaseURL            string
 	AuthToken          string
@@ -22,21 +34,20 @@ type Config struct {
 	HTTPClient         *http.Client
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
 		BaseURL:            defaultBaseURL,
-		TTL:                env.GetOrDefaultInt("DO_TTL", 30),
-		PropagationTimeout: env.GetOrDefaultSecond("DO_PROPAGATION_TIMEOUT", 60*time.Second),
-		PollingInterval:    env.GetOrDefaultSecond("DO_POLLING_INTERVAL", 5*time.Second),
+		TTL:                env.GetOrDefaultInt(EnvTTL, 30),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, 60*time.Second),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, 5*time.Second),
 		HTTPClient: &http.Client{
-			Timeout: env.GetOrDefaultSecond("DO_HTTP_TIMEOUT", 30*time.Second),
+			Timeout: env.GetOrDefaultSecond(EnvHTTPTimeout, 30*time.Second),
 		},
 	}
 }
 
-// DNSProvider is an implementation of the challenge.Provider interface
-// that uses DigitalOcean's REST API to manage TXT records for a domain.
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	config      *Config
 	recordIDs   map[string]int
@@ -47,13 +58,13 @@ type DNSProvider struct {
 // Ocean. Credentials must be passed in the environment variable:
 // DO_AUTH_TOKEN.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get("DO_AUTH_TOKEN")
+	values, err := env.Get(EnvAuthToken)
 	if err != nil {
-		return nil, fmt.Errorf("digitalocean: %v", err)
+		return nil, fmt.Errorf("digitalocean: %w", err)
 	}
 
 	config := NewDefaultConfig()
-	config.AuthToken = values["DO_AUTH_TOKEN"]
+	config.AuthToken = values[EnvAuthToken]
 
 	return NewDNSProviderConfig(config)
 }
@@ -65,7 +76,7 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 	}
 
 	if config.AuthToken == "" {
-		return nil, fmt.Errorf("digitalocean: credentials missing")
+		return nil, errors.New("digitalocean: credentials missing")
 	}
 
 	if config.BaseURL == "" {
@@ -84,34 +95,34 @@ func (d *DNSProvider) Timeout() (timeout, interval time.Duration) {
 	return d.config.PropagationTimeout, d.config.PollingInterval
 }
 
-// Present creates a TXT record using the specified parameters
+// Present creates a TXT record using the specified parameters.
 func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	fqdn, value := dns01.GetRecord(domain, keyAuth)
 
 	respData, err := d.addTxtRecord(fqdn, value)
 	if err != nil {
-		return fmt.Errorf("digitalocean: %v", err)
+		return fmt.Errorf("digitalocean: %w", err)
 	}
 
 	d.recordIDsMu.Lock()
-	d.recordIDs[fqdn] = respData.DomainRecord.ID
+	d.recordIDs[token] = respData.DomainRecord.ID
 	d.recordIDsMu.Unlock()
 
 	return nil
 }
 
-// CleanUp removes the TXT record matching the specified parameters
+// CleanUp removes the TXT record matching the specified parameters.
 func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	fqdn, _ := dns01.GetRecord(domain, keyAuth)
 
 	authZone, err := dns01.FindZoneByFqdn(fqdn)
 	if err != nil {
-		return fmt.Errorf("digitalocean: %v", err)
+		return fmt.Errorf("digitalocean: %w", err)
 	}
 
 	// get the record's unique ID from when we created it
 	d.recordIDsMu.Lock()
-	recordID, ok := d.recordIDs[fqdn]
+	recordID, ok := d.recordIDs[token]
 	d.recordIDsMu.Unlock()
 	if !ok {
 		return fmt.Errorf("digitalocean: unknown record ID for '%s'", fqdn)
@@ -119,12 +130,12 @@ func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 
 	err = d.removeTxtRecord(authZone, recordID)
 	if err != nil {
-		return fmt.Errorf("digitalocean: %v", err)
+		return fmt.Errorf("digitalocean: %w", err)
 	}
 
 	// Delete record ID from map
 	d.recordIDsMu.Lock()
-	delete(d.recordIDs, fqdn)
+	delete(d.recordIDs, token)
 	d.recordIDsMu.Unlock()
 
 	return nil

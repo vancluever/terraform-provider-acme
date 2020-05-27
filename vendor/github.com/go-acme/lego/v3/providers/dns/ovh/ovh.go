@@ -17,7 +17,22 @@ import (
 // OVH API reference:       https://eu.api.ovh.com/
 // Create a Token:					https://eu.api.ovh.com/createToken/
 
-// Record a DNS record
+// Environment variables names.
+const (
+	envNamespace = "OVH_"
+
+	EnvEndpoint          = envNamespace + "ENDPOINT"
+	EnvApplicationKey    = envNamespace + "APPLICATION_KEY"
+	EnvApplicationSecret = envNamespace + "APPLICATION_SECRET"
+	EnvConsumerKey       = envNamespace + "CONSUMER_KEY"
+
+	EnvTTL                = envNamespace + "TTL"
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+	EnvHTTPTimeout        = envNamespace + "HTTP_TIMEOUT"
+)
+
+// Record a DNS record.
 type Record struct {
 	ID        int64  `json:"id,omitempty"`
 	FieldType string `json:"fieldType,omitempty"`
@@ -27,7 +42,7 @@ type Record struct {
 	Zone      string `json:"zone,omitempty"`
 }
 
-// Config is used to configure the creation of the DNSProvider
+// Config is used to configure the creation of the DNSProvider.
 type Config struct {
 	APIEndpoint        string
 	ApplicationKey     string
@@ -39,20 +54,19 @@ type Config struct {
 	HTTPClient         *http.Client
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
-		TTL:                env.GetOrDefaultInt("OVH_TTL", dns01.DefaultTTL),
-		PropagationTimeout: env.GetOrDefaultSecond("OVH_PROPAGATION_TIMEOUT", dns01.DefaultPropagationTimeout),
-		PollingInterval:    env.GetOrDefaultSecond("OVH_POLLING_INTERVAL", dns01.DefaultPollingInterval),
+		TTL:                env.GetOrDefaultInt(EnvTTL, dns01.DefaultTTL),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, dns01.DefaultPropagationTimeout),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, dns01.DefaultPollingInterval),
 		HTTPClient: &http.Client{
-			Timeout: env.GetOrDefaultSecond("OVH_HTTP_TIMEOUT", ovh.DefaultTimeout),
+			Timeout: env.GetOrDefaultSecond(EnvHTTPTimeout, ovh.DefaultTimeout),
 		},
 	}
 }
 
-// DNSProvider is an implementation of the challenge.Provider interface
-// that uses OVH's REST API to manage TXT records for a domain.
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	config      *Config
 	client      *ovh.Client
@@ -61,22 +75,19 @@ type DNSProvider struct {
 }
 
 // NewDNSProvider returns a DNSProvider instance configured for OVH
-// Credentials must be passed in the environment variable:
-// OVH_ENDPOINT : it must be ovh-eu or ovh-ca
-// OVH_APPLICATION_KEY
-// OVH_APPLICATION_SECRET
-// OVH_CONSUMER_KEY
+// Credentials must be passed in the environment variables:
+// OVH_ENDPOINT (must be either "ovh-eu" or "ovh-ca"), OVH_APPLICATION_KEY, OVH_APPLICATION_SECRET, OVH_CONSUMER_KEY.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get("OVH_ENDPOINT", "OVH_APPLICATION_KEY", "OVH_APPLICATION_SECRET", "OVH_CONSUMER_KEY")
+	values, err := env.Get(EnvEndpoint, EnvApplicationKey, EnvApplicationSecret, EnvConsumerKey)
 	if err != nil {
-		return nil, fmt.Errorf("ovh: %v", err)
+		return nil, fmt.Errorf("ovh: %w", err)
 	}
 
 	config := NewDefaultConfig()
-	config.APIEndpoint = values["OVH_ENDPOINT"]
-	config.ApplicationKey = values["OVH_APPLICATION_KEY"]
-	config.ApplicationSecret = values["OVH_APPLICATION_SECRET"]
-	config.ConsumerKey = values["OVH_CONSUMER_KEY"]
+	config.APIEndpoint = values[EnvEndpoint]
+	config.ApplicationKey = values[EnvApplicationKey]
+	config.ApplicationSecret = values[EnvApplicationSecret]
+	config.ConsumerKey = values[EnvConsumerKey]
 
 	return NewDNSProviderConfig(config)
 }
@@ -88,7 +99,7 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 	}
 
 	if config.APIEndpoint == "" || config.ApplicationKey == "" || config.ApplicationSecret == "" || config.ConsumerKey == "" {
-		return nil, fmt.Errorf("ovh: credentials missing")
+		return nil, errors.New("ovh: credentials missing")
 	}
 
 	client, err := ovh.NewClient(
@@ -98,7 +109,7 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 		config.ConsumerKey,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("ovh: %v", err)
+		return nil, fmt.Errorf("ovh: %w", err)
 	}
 
 	client.Client = config.HTTPClient
@@ -117,7 +128,7 @@ func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	// Parse domain name
 	authZone, err := dns01.FindZoneByFqdn(dns01.ToFqdn(domain))
 	if err != nil {
-		return fmt.Errorf("ovh: could not determine zone for domain: '%s'. %s", domain, err)
+		return fmt.Errorf("ovh: could not determine zone for domain %q: %w", domain, err)
 	}
 
 	authZone = dns01.UnFqdn(authZone)
@@ -130,30 +141,30 @@ func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	var respData Record
 	err = d.client.Post(reqURL, reqData, &respData)
 	if err != nil {
-		return fmt.Errorf("ovh: error when call api to add record (%s): %v", reqURL, err)
+		return fmt.Errorf("ovh: error when call api to add record (%s): %w", reqURL, err)
 	}
 
 	// Apply the change
 	reqURL = fmt.Sprintf("/domain/zone/%s/refresh", authZone)
 	err = d.client.Post(reqURL, nil, nil)
 	if err != nil {
-		return fmt.Errorf("ovh: error when call api to refresh zone (%s): %v", reqURL, err)
+		return fmt.Errorf("ovh: error when call api to refresh zone (%s): %w", reqURL, err)
 	}
 
 	d.recordIDsMu.Lock()
-	d.recordIDs[fqdn] = respData.ID
+	d.recordIDs[token] = respData.ID
 	d.recordIDsMu.Unlock()
 
 	return nil
 }
 
-// CleanUp removes the TXT record matching the specified parameters
+// CleanUp removes the TXT record matching the specified parameters.
 func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	fqdn, _ := dns01.GetRecord(domain, keyAuth)
 
 	// get the record's unique ID from when we created it
 	d.recordIDsMu.Lock()
-	recordID, ok := d.recordIDs[fqdn]
+	recordID, ok := d.recordIDs[token]
 	d.recordIDsMu.Unlock()
 	if !ok {
 		return fmt.Errorf("ovh: unknown record ID for '%s'", fqdn)
@@ -161,7 +172,7 @@ func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 
 	authZone, err := dns01.FindZoneByFqdn(dns01.ToFqdn(domain))
 	if err != nil {
-		return fmt.Errorf("ovh: could not determine zone for domain: '%s'. %s", domain, err)
+		return fmt.Errorf("ovh: could not determine zone for domain %q: %w", domain, err)
 	}
 
 	authZone = dns01.UnFqdn(authZone)
@@ -170,19 +181,19 @@ func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 
 	err = d.client.Delete(reqURL, nil)
 	if err != nil {
-		return fmt.Errorf("ovh: error when call OVH api to delete challenge record (%s): %v", reqURL, err)
+		return fmt.Errorf("ovh: error when call OVH api to delete challenge record (%s): %w", reqURL, err)
 	}
 
 	// Apply the change
 	reqURL = fmt.Sprintf("/domain/zone/%s/refresh", authZone)
 	err = d.client.Post(reqURL, nil, nil)
 	if err != nil {
-		return fmt.Errorf("ovh: error when call api to refresh zone (%s): %v", reqURL, err)
+		return fmt.Errorf("ovh: error when call api to refresh zone (%s): %w", reqURL, err)
 	}
 
 	// Delete record ID from map
 	d.recordIDsMu.Lock()
-	delete(d.recordIDs, fqdn)
+	delete(d.recordIDs, token)
 	d.recordIDsMu.Unlock()
 
 	return nil

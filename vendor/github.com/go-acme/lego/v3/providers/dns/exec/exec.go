@@ -13,6 +13,17 @@ import (
 	"github.com/go-acme/lego/v3/platform/config/env"
 )
 
+// Environment variables names.
+const (
+	envNamespace = "EXEC_"
+
+	EnvPath = envNamespace + "PATH"
+	EnvMode = envNamespace + "MODE"
+
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+)
+
 // Config Provider configuration.
 type Config struct {
 	Program            string
@@ -21,16 +32,15 @@ type Config struct {
 	PollingInterval    time.Duration
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
-		PropagationTimeout: env.GetOrDefaultSecond("EXEC_PROPAGATION_TIMEOUT", dns01.DefaultPropagationTimeout),
-		PollingInterval:    env.GetOrDefaultSecond("EXEC_POLLING_INTERVAL", dns01.DefaultPollingInterval),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, dns01.DefaultPropagationTimeout),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, dns01.DefaultPollingInterval),
 	}
 }
 
-// DNSProvider adds and removes the record for the DNS challenge by calling a
-// program with command-line parameters.
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	config *Config
 }
@@ -38,14 +48,14 @@ type DNSProvider struct {
 // NewDNSProvider returns a new DNS provider which runs the program in the
 // environment variable EXEC_PATH for adding and removing the DNS record.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get("EXEC_PATH")
+	values, err := env.Get(EnvPath)
 	if err != nil {
-		return nil, fmt.Errorf("exec: %v", err)
+		return nil, fmt.Errorf("exec: %w", err)
 	}
 
 	config := NewDefaultConfig()
-	config.Program = values["EXEC_PATH"]
-	config.Mode = os.Getenv("EXEC_MODE")
+	config.Program = values[EnvPath]
+	config.Mode = os.Getenv(EnvMode)
 
 	return NewDNSProviderConfig(config)
 }
@@ -80,7 +90,7 @@ func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	return err
 }
 
-// CleanUp removes the TXT record matching the specified parameters
+// CleanUp removes the TXT record matching the specified parameters.
 func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	var args []string
 	if d.config.Mode == "RAW" {

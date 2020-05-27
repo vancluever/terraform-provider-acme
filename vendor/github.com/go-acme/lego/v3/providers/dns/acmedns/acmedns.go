@@ -14,12 +14,13 @@ import (
 const (
 	// envNamespace is the prefix for ACME-DNS environment variables.
 	envNamespace = "ACME_DNS_"
-	// apiBaseEnvVar is the environment variable name for the ACME-DNS API address
+
+	// EnvAPIBase is the environment variable name for the ACME-DNS API address
 	// (e.g. https://acmedns.your-domain.com).
-	apiBaseEnvVar = envNamespace + "API_BASE"
-	// storagePathEnvVar is the environment variable name for the ACME-DNS JSON account data file.
+	EnvAPIBase = envNamespace + "API_BASE"
+	// EnvStoragePath is the environment variable name for the ACME-DNS JSON account data file.
 	// A per-domain account will be registered/persisted to this file and used for TXT updates.
-	storagePathEnvVar = envNamespace + "STORAGE_PATH"
+	EnvStoragePath = envNamespace + "STORAGE_PATH"
 )
 
 // acmeDNSClient is an interface describing the goacmedns.Client functions the DNSProvider uses.
@@ -33,23 +34,22 @@ type acmeDNSClient interface {
 	RegisterAccount([]string) (goacmedns.Account, error)
 }
 
-// DNSProvider is an implementation of the challenge.Provider interface for
-// an ACME-DNS server.
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	client  acmeDNSClient
 	storage goacmedns.Storage
 }
 
 // NewDNSProvider creates an ACME-DNS provider using file based account storage.
-// Its configuration is loaded from the environment by reading apiBaseEnvVar and storagePathEnvVar.
+// Its configuration is loaded from the environment by reading EnvAPIBase and EnvStoragePath.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get(apiBaseEnvVar, storagePathEnvVar)
+	values, err := env.Get(EnvAPIBase, EnvStoragePath)
 	if err != nil {
-		return nil, fmt.Errorf("acme-dns: %v", err)
+		return nil, fmt.Errorf("acme-dns: %w", err)
 	}
 
-	client := goacmedns.NewClient(values[apiBaseEnvVar])
-	storage := goacmedns.NewFileStorage(values[storagePathEnvVar], 0600)
+	client := goacmedns.NewClient(values[EnvAPIBase])
+	storage := goacmedns.NewFileStorage(values[EnvStoragePath], 0600)
 	return NewDNSProviderClient(client, storage)
 }
 

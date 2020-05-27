@@ -43,11 +43,11 @@ func (t *TokenTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		timestamp := time.Now().UTC()
 
 		fmtTime := timestamp.Format("20060102T150405Z")
-		req.Header.Set("X-AuroraDNS-Date", fmtTime)
+		enrichedReq.Header.Set("X-AuroraDNS-Date", fmtTime)
 
 		token, err := newToken(t.userID, t.key, req.Method, req.URL.Path, timestamp)
 		if err == nil {
-			req.Header.Set("Authorization", fmt.Sprintf("AuroraDNSv1 %s", token))
+			enrichedReq.Header.Set("Authorization", fmt.Sprintf("AuroraDNSv1 %s", token))
 		}
 	}
 
@@ -59,6 +59,7 @@ func (t *TokenTransport) Wrap(client *http.Client) *http.Client {
 	backup := client.Transport
 	t.Transport = backup
 	client.Transport = t
+
 	return client
 }
 
@@ -74,6 +75,7 @@ func (t *TokenTransport) transport() http.RoundTripper {
 	if t.Transport != nil {
 		return t.Transport
 	}
+
 	return http.DefaultTransport
 }
 

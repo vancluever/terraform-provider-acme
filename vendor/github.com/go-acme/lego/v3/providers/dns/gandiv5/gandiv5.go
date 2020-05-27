@@ -21,13 +21,25 @@ const (
 	minTTL         = 300
 )
 
-// inProgressInfo contains information about an in-progress challenge
+// Environment variables names.
+const (
+	envNamespace = "GANDIV5_"
+
+	EnvAPIKey = envNamespace + "API_KEY"
+
+	EnvTTL                = envNamespace + "TTL"
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+	EnvHTTPTimeout        = envNamespace + "HTTP_TIMEOUT"
+)
+
+// inProgressInfo contains information about an in-progress challenge.
 type inProgressInfo struct {
 	fieldName string
 	authZone  string
 }
 
-// Config is used to configure the creation of the DNSProvider
+// Config is used to configure the creation of the DNSProvider.
 type Config struct {
 	BaseURL            string
 	APIKey             string
@@ -37,21 +49,19 @@ type Config struct {
 	HTTPClient         *http.Client
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
-		TTL:                env.GetOrDefaultInt("GANDIV5_TTL", minTTL),
-		PropagationTimeout: env.GetOrDefaultSecond("GANDIV5_PROPAGATION_TIMEOUT", 20*time.Minute),
-		PollingInterval:    env.GetOrDefaultSecond("GANDIV5_POLLING_INTERVAL", 20*time.Second),
+		TTL:                env.GetOrDefaultInt(EnvTTL, minTTL),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, 20*time.Minute),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, 20*time.Second),
 		HTTPClient: &http.Client{
-			Timeout: env.GetOrDefaultSecond("GANDIV5_HTTP_TIMEOUT", 10*time.Second),
+			Timeout: env.GetOrDefaultSecond(EnvHTTPTimeout, 10*time.Second),
 		},
 	}
 }
 
-// DNSProvider is an implementation of the
-// challenge.ProviderTimeout interface that uses Gandi's LiveDNS
-// API to manage TXT records for a domain.
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	config          *Config
 	inProgressFQDNs map[string]inProgressInfo
@@ -63,13 +73,13 @@ type DNSProvider struct {
 // NewDNSProvider returns a DNSProvider instance configured for Gandi.
 // Credentials must be passed in the environment variable: GANDIV5_API_KEY.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get("GANDIV5_API_KEY")
+	values, err := env.Get(EnvAPIKey)
 	if err != nil {
-		return nil, fmt.Errorf("gandi: %v", err)
+		return nil, fmt.Errorf("gandi: %w", err)
 	}
 
 	config := NewDefaultConfig()
-	config.APIKey = values["GANDIV5_API_KEY"]
+	config.APIKey = values[EnvAPIKey]
 
 	return NewDNSProviderConfig(config)
 }
@@ -81,7 +91,7 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 	}
 
 	if config.APIKey == "" {
-		return nil, fmt.Errorf("gandiv5: no API Key given")
+		return nil, errors.New("gandiv5: no API Key given")
 	}
 
 	if config.BaseURL == "" {
@@ -106,7 +116,7 @@ func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	// find authZone
 	authZone, err := d.findZoneByFqdn(fqdn)
 	if err != nil {
-		return fmt.Errorf("gandiv5: findZoneByFqdn failure: %v", err)
+		return fmt.Errorf("gandiv5: findZoneByFqdn failure: %w", err)
 	}
 
 	// determine name of TXT record
@@ -154,14 +164,13 @@ func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	// delete TXT record from authZone
 	err := d.deleteTXTRecord(dns01.UnFqdn(authZone), fieldName)
 	if err != nil {
-		return fmt.Errorf("gandiv5: %v", err)
+		return fmt.Errorf("gandiv5: %w", err)
 	}
 	return nil
 }
 
-// Timeout returns the values (20*time.Minute, 20*time.Second) which
-// are used by the acme package as timeout and check interval values
-// when checking for DNS record propagation with Gandi.
+// Timeout returns the timeout and interval to use when checking for DNS propagation.
+// Adjusting here to cope with spikes in propagation times.
 func (d *DNSProvider) Timeout() (timeout, interval time.Duration) {
 	return d.config.PropagationTimeout, d.config.PollingInterval
 }

@@ -3,6 +3,7 @@ package stackpath
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -12,23 +13,23 @@ import (
 	"golang.org/x/net/publicsuffix"
 )
 
-// Zones is the response struct from the Stackpath api GetZones
+// Zones is the response struct from the Stackpath api GetZones.
 type Zones struct {
 	Zones []Zone `json:"zones"`
 }
 
-// Zone a DNS zone representation
+// Zone a DNS zone representation.
 type Zone struct {
 	ID     string
 	Domain string
 }
 
-// Records is the response struct from the Stackpath api GetZoneRecords
+// Records is the response struct from the Stackpath api GetZoneRecords.
 type Records struct {
 	Records []Record `json:"records"`
 }
 
-// Record a DNS record representation
+// Record a DNS record representation.
 type Record struct {
 	ID   string `json:"id,omitempty"`
 	Name string `json:"name"`
@@ -37,7 +38,7 @@ type Record struct {
 	Data string `json:"data"`
 }
 
-// ErrorResponse the API error response representation
+// ErrorResponse the API error response representation.
 type ErrorResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"error"`
@@ -172,12 +173,12 @@ func (d *DNSProvider) do(req *http.Request, v interface{}) error {
 
 	raw, err := readBody(resp)
 	if err != nil {
-		return fmt.Errorf("failed to read body: %v", err)
+		return fmt.Errorf("failed to read body: %w", err)
 	}
 
 	err = json.Unmarshal(raw, v)
 	if err != nil {
-		return fmt.Errorf("unmarshaling error: %v: %s", err, string(raw))
+		return fmt.Errorf("unmarshaling error: %w: %s", err, string(raw))
 	}
 
 	return nil
@@ -203,7 +204,7 @@ func checkResponse(resp *http.Response) error {
 
 func readBody(resp *http.Response) ([]byte, error) {
 	if resp.Body == nil {
-		return nil, fmt.Errorf("response body is nil")
+		return nil, errors.New("response body is nil")
 	}
 
 	defer resp.Body.Close()

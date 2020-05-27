@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/go-ini/ini"
 	"github.com/mitchellh/go-homedir"
+	"gopkg.in/ini.v1"
 )
 
 // Config struct provides all the necessary fields to

@@ -15,7 +15,21 @@ import (
 
 const defaultBaseURL = "https://api.exoscale.com/dns"
 
-// Config is used to configure the creation of the DNSProvider
+// Environment variables names.
+const (
+	envNamespace = "EXOSCALE_"
+
+	EnvAPISecret = envNamespace + "API_SECRET"
+	EnvAPIKey    = envNamespace + "API_KEY"
+	EnvEndpoint  = envNamespace + "ENDPOINT"
+
+	EnvTTL                = envNamespace + "TTL"
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+	EnvHTTPTimeout        = envNamespace + "HTTP_TIMEOUT"
+)
+
+// Config is used to configure the creation of the DNSProvider.
 type Config struct {
 	APIKey             string
 	APISecret          string
@@ -26,19 +40,19 @@ type Config struct {
 	TTL                int
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
-		TTL:                env.GetOrDefaultInt("EXOSCALE_TTL", dns01.DefaultTTL),
-		PropagationTimeout: env.GetOrDefaultSecond("EXOSCALE_PROPAGATION_TIMEOUT", dns01.DefaultPropagationTimeout),
-		PollingInterval:    env.GetOrDefaultSecond("EXOSCALE_POLLING_INTERVAL", dns01.DefaultPollingInterval),
+		TTL:                env.GetOrDefaultInt(EnvTTL, dns01.DefaultTTL),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, dns01.DefaultPropagationTimeout),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, dns01.DefaultPollingInterval),
 		HTTPClient: &http.Client{
-			Timeout: env.GetOrDefaultSecond("EXOSCALE_HTTP_TIMEOUT", 0),
+			Timeout: env.GetOrDefaultSecond(EnvHTTPTimeout, 30*time.Second),
 		},
 	}
 }
 
-// DNSProvider is an implementation of the challenge.Provider interface.
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	config *Config
 	client *egoscale.Client
@@ -47,15 +61,15 @@ type DNSProvider struct {
 // NewDNSProvider Credentials must be passed in the environment variables:
 // EXOSCALE_API_KEY, EXOSCALE_API_SECRET, EXOSCALE_ENDPOINT.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get("EXOSCALE_API_KEY", "EXOSCALE_API_SECRET")
+	values, err := env.Get(EnvAPIKey, EnvAPISecret)
 	if err != nil {
-		return nil, fmt.Errorf("exoscale: %v", err)
+		return nil, fmt.Errorf("exoscale: %w", err)
 	}
 
 	config := NewDefaultConfig()
-	config.APIKey = values["EXOSCALE_API_KEY"]
-	config.APISecret = values["EXOSCALE_API_SECRET"]
-	config.Endpoint = env.GetOrFile("EXOSCALE_ENDPOINT")
+	config.APIKey = values[EnvAPIKey]
+	config.APISecret = values[EnvAPISecret]
+	config.Endpoint = env.GetOrFile(EnvEndpoint)
 
 	return NewDNSProviderConfig(config)
 }
@@ -67,7 +81,7 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 	}
 
 	if config.APIKey == "" || config.APISecret == "" {
-		return nil, fmt.Errorf("exoscale: credentials missing")
+		return nil, errors.New("exoscale: credentials missing")
 	}
 
 	if config.Endpoint == "" {
@@ -155,7 +169,7 @@ func (d *DNSProvider) Timeout() (timeout, interval time.Duration) {
 }
 
 // FindExistingRecordID Query Exoscale to find an existing record for this name.
-// Returns nil if no record could be found
+// Returns nil if no record could be found.
 func (d *DNSProvider) FindExistingRecordID(zone, recordName string) (int64, error) {
 	ctx := context.Background()
 	records, err := d.client.GetRecords(ctx, zone)
@@ -170,7 +184,7 @@ func (d *DNSProvider) FindExistingRecordID(zone, recordName string) (int64, erro
 	return 0, nil
 }
 
-// FindZoneAndRecordName Extract DNS zone and DNS entry name
+// FindZoneAndRecordName Extract DNS zone and DNS entry name.
 func (d *DNSProvider) FindZoneAndRecordName(fqdn, domain string) (string, string, error) {
 	zone, err := dns01.FindZoneByFqdn(dns01.ToFqdn(domain))
 	if err != nil {

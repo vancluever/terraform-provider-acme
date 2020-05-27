@@ -42,7 +42,7 @@ func CondOption(condition bool, opt ChallengeOption) ChallengeOption {
 	return opt
 }
 
-// Challenge implements the dns-01 challenge
+// Challenge implements the dns-01 challenge.
 type Challenge struct {
 	core       *api.Core
 	validate   ValidateFunc
@@ -93,7 +93,7 @@ func (c *Challenge) PreSolve(authz acme.Authorization) error {
 
 	err = c.provider.Present(authz.Identifier.Value, chlng.Token, keyAuth)
 	if err != nil {
-		return fmt.Errorf("[%s] acme: error presenting token: %s", domain, err)
+		return fmt.Errorf("[%s] acme: error presenting token: %w", domain, err)
 	}
 
 	return nil
@@ -169,7 +169,7 @@ type sequential interface {
 	Sequential() time.Duration
 }
 
-// GetRecord returns a DNS record which will fulfill the `dns-01` challenge
+// GetRecord returns a DNS record which will fulfill the `dns-01` challenge.
 func GetRecord(domain, keyAuth string) (fqdn string, value string) {
 	keyAuthShaBytes := sha256.Sum256([]byte(keyAuth))
 	// base64URL encoding without padding

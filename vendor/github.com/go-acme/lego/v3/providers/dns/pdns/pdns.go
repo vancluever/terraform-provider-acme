@@ -15,7 +15,20 @@ import (
 	"github.com/go-acme/lego/v3/platform/config/env"
 )
 
-// Config is used to configure the creation of the DNSProvider
+// Environment variables names.
+const (
+	envNamespace = "PDNS_"
+
+	EnvAPIKey = envNamespace + "API_KEY"
+	EnvAPIURL = envNamespace + "API_URL"
+
+	EnvTTL                = envNamespace + "TTL"
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+	EnvHTTPTimeout        = envNamespace + "HTTP_TIMEOUT"
+)
+
+// Config is used to configure the creation of the DNSProvider.
 type Config struct {
 	APIKey             string
 	Host               *url.URL
@@ -25,19 +38,19 @@ type Config struct {
 	HTTPClient         *http.Client
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
-		TTL:                env.GetOrDefaultInt("PDNS_TTL", dns01.DefaultTTL),
-		PropagationTimeout: env.GetOrDefaultSecond("PDNS_PROPAGATION_TIMEOUT", 120*time.Second),
-		PollingInterval:    env.GetOrDefaultSecond("PDNS_POLLING_INTERVAL", 2*time.Second),
+		TTL:                env.GetOrDefaultInt(EnvTTL, dns01.DefaultTTL),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, 120*time.Second),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, 2*time.Second),
 		HTTPClient: &http.Client{
-			Timeout: env.GetOrDefaultSecond("PDNS_HTTP_TIMEOUT", 30*time.Second),
+			Timeout: env.GetOrDefaultSecond(EnvHTTPTimeout, 30*time.Second),
 		},
 	}
 }
 
-// DNSProvider is an implementation of the challenge.Provider interface
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	apiVersion int
 	config     *Config
@@ -47,19 +60,19 @@ type DNSProvider struct {
 // Credentials must be passed in the environment variable:
 // PDNS_API_URL and PDNS_API_KEY.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get("PDNS_API_KEY", "PDNS_API_URL")
+	values, err := env.Get(EnvAPIKey, EnvAPIURL)
 	if err != nil {
-		return nil, fmt.Errorf("pdns: %v", err)
+		return nil, fmt.Errorf("pdns: %w", err)
 	}
 
-	hostURL, err := url.Parse(values["PDNS_API_URL"])
+	hostURL, err := url.Parse(values[EnvAPIURL])
 	if err != nil {
-		return nil, fmt.Errorf("pdns: %v", err)
+		return nil, fmt.Errorf("pdns: %w", err)
 	}
 
 	config := NewDefaultConfig()
 	config.Host = hostURL
-	config.APIKey = values["PDNS_API_KEY"]
+	config.APIKey = values[EnvAPIKey]
 
 	return NewDNSProviderConfig(config)
 }
@@ -71,11 +84,11 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 	}
 
 	if config.APIKey == "" {
-		return nil, fmt.Errorf("pdns: API key missing")
+		return nil, errors.New("pdns: API key missing")
 	}
 
 	if config.Host == nil || config.Host.Host == "" {
-		return nil, fmt.Errorf("pdns: API URL missing")
+		return nil, errors.New("pdns: API URL missing")
 	}
 
 	d := &DNSProvider{config: config}
@@ -95,13 +108,13 @@ func (d *DNSProvider) Timeout() (timeout, interval time.Duration) {
 	return d.config.PropagationTimeout, d.config.PollingInterval
 }
 
-// Present creates a TXT record to fulfill the dns-01 challenge
+// Present creates a TXT record to fulfill the dns-01 challenge.
 func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	fqdn, value := dns01.GetRecord(domain, keyAuth)
 
 	zone, err := d.getHostedZone(fqdn)
 	if err != nil {
-		return fmt.Errorf("pdns: %v", err)
+		return fmt.Errorf("pdns: %w", err)
 	}
 
 	name := fqdn
@@ -124,7 +137,7 @@ func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	// Look for existing records.
 	existingRrSet, err := d.findTxtRecord(fqdn)
 	if err != nil {
-		return fmt.Errorf("pdns: %v", err)
+		return fmt.Errorf("pdns: %w", err)
 	}
 
 	// merge the existing and new records
@@ -149,28 +162,28 @@ func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 
 	body, err := json.Marshal(rrsets)
 	if err != nil {
-		return fmt.Errorf("pdns: %v", err)
+		return fmt.Errorf("pdns: %w", err)
 	}
 
 	_, err = d.sendRequest(http.MethodPatch, zone.URL, bytes.NewReader(body))
 	if err != nil {
-		return fmt.Errorf("pdns: %v", err)
+		return fmt.Errorf("pdns: %w", err)
 	}
 	return nil
 }
 
-// CleanUp removes the TXT record matching the specified parameters
+// CleanUp removes the TXT record matching the specified parameters.
 func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	fqdn, _ := dns01.GetRecord(domain, keyAuth)
 
 	zone, err := d.getHostedZone(fqdn)
 	if err != nil {
-		return fmt.Errorf("pdns: %v", err)
+		return fmt.Errorf("pdns: %w", err)
 	}
 
 	set, err := d.findTxtRecord(fqdn)
 	if err != nil {
-		return fmt.Errorf("pdns: %v", err)
+		return fmt.Errorf("pdns: %w", err)
 	}
 	if set == nil {
 		return fmt.Errorf("pdns: no existing record found for %s", fqdn)
@@ -187,12 +200,12 @@ func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	}
 	body, err := json.Marshal(rrsets)
 	if err != nil {
-		return fmt.Errorf("pdns: %v", err)
+		return fmt.Errorf("pdns: %w", err)
 	}
 
 	_, err = d.sendRequest(http.MethodPatch, zone.URL, bytes.NewReader(body))
 	if err != nil {
-		return fmt.Errorf("pdns: %v", err)
+		return fmt.Errorf("pdns: %w", err)
 	}
 	return nil
 }

@@ -4,8 +4,8 @@ package goacmedns
 // server. It represents an API username/key that can be used to update TXT
 // records for the account's subdomain.
 type Account struct {
-	FullDomain string
-	SubDomain  string
-	Username   string
-	Password   string
+	FullDomain string `json:"fulldomain"`
+	SubDomain  string `json:"subdomain"`
+	Username   string `json:"username"`
+	Password   string `json:"password"`
 }

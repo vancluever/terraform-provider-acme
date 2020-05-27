@@ -41,7 +41,7 @@ func (d *DNSProvider) buildQuery(action, domain, txt string) (*url.URL, error) {
 }
 
 // updateTxtRecord will either add or remove a TXT record.
-// action is either cmdAddRecord or cmdRemoveRecord
+// action is either cmdAddRecord or cmdRemoveRecord.
 func (d *DNSProvider) updateTxtRecord(u fmt.Stringer) error {
 	resp, err := d.config.HTTPClient.Get(u.String())
 	if err != nil {
@@ -55,13 +55,13 @@ func (d *DNSProvider) updateTxtRecord(u fmt.Stringer) error {
 
 	raw, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return fmt.Errorf("failed to read body: %v", err)
+		return fmt.Errorf("failed to read body: %w", err)
 	}
 
 	var response apiResponse
 	err = json.Unmarshal(raw, &response)
 	if err != nil {
-		return fmt.Errorf("unable to decode API server response: %v: %s", err, string(raw))
+		return fmt.Errorf("unable to decode API server response: %w: %s", err, string(raw))
 	}
 
 	if response.Result == "error" {

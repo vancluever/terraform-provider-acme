@@ -20,6 +20,17 @@ const (
 	maxRetries = 5
 )
 
+// Environment variables names.
+const (
+	envNamespace = "LIGHTSAIL_"
+
+	EnvRegion  = envNamespace + "LIGHTSAIL_REGION"
+	EnvDNSZone = "DNS_ZONE"
+
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+)
+
 // customRetryer implements the client.Retryer interface by composing the DefaultRetryer.
 // It controls the logic for retrying recoverable request errors (e.g. when rate limits are exceeded).
 type customRetryer struct {
@@ -41,7 +52,7 @@ func (c customRetryer) RetryRules(r *request.Request) time.Duration {
 	return time.Duration(delay) * time.Millisecond
 }
 
-// Config is used to configure the creation of the DNSProvider
+// Config is used to configure the creation of the DNSProvider.
 type Config struct {
 	DNSZone            string
 	Region             string
@@ -49,17 +60,17 @@ type Config struct {
 	PollingInterval    time.Duration
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
-		DNSZone:            env.GetOrFile("DNS_ZONE"),
-		PropagationTimeout: env.GetOrDefaultSecond("LIGHTSAIL_PROPAGATION_TIMEOUT", dns01.DefaultPropagationTimeout),
-		PollingInterval:    env.GetOrDefaultSecond("LIGHTSAIL_POLLING_INTERVAL", dns01.DefaultPollingInterval),
-		Region:             env.GetOrDefaultString("LIGHTSAIL_REGION", "us-east-1"),
+		DNSZone:            env.GetOrFile(EnvDNSZone),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, dns01.DefaultPropagationTimeout),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, dns01.DefaultPollingInterval),
+		Region:             env.GetOrDefaultString(EnvRegion, "us-east-1"),
 	}
 }
 
-// DNSProvider implements the challenge.Provider interface
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	client *lightsail.Lightsail
 	config *Config
@@ -102,18 +113,18 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 	}, nil
 }
 
-// Present creates a TXT record using the specified parameters
+// Present creates a TXT record using the specified parameters.
 func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	fqdn, value := dns01.GetRecord(domain, keyAuth)
 
 	err := d.newTxtRecord(fqdn, `"`+value+`"`)
 	if err != nil {
-		return fmt.Errorf("lightsail: %v", err)
+		return fmt.Errorf("lightsail: %w", err)
 	}
 	return nil
 }
 
-// CleanUp removes the TXT record matching the specified parameters
+// CleanUp removes the TXT record matching the specified parameters.
 func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	fqdn, value := dns01.GetRecord(domain, keyAuth)
 
@@ -128,7 +139,7 @@ func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 
 	_, err := d.client.DeleteDomainEntry(params)
 	if err != nil {
-		return fmt.Errorf("lightsail: %v", err)
+		return fmt.Errorf("lightsail: %w", err)
 	}
 	return nil
 }

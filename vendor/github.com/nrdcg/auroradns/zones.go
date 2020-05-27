@@ -17,7 +17,7 @@ type Zone struct {
 func (c *Client) CreateZone(domain string) (*Zone, *http.Response, error) {
 	body, err := json.Marshal(Zone{Name: domain})
 	if err != nil {
-		return nil, nil, fmt.Errorf("failed to marshall request body: %v", err)
+		return nil, nil, fmt.Errorf("failed to marshall request body: %w", err)
 	}
 
 	req, err := c.newRequest(http.MethodPost, "/zones", bytes.NewReader(body))
@@ -49,7 +49,6 @@ func (c *Client) DeleteZone(zoneID string) (bool, *http.Response, error) {
 	}
 
 	return true, resp, nil
-
 }
 
 // ListZones returns a list of all zones.

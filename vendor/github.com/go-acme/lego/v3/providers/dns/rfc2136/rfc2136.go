@@ -13,7 +13,23 @@ import (
 	"github.com/miekg/dns"
 )
 
-// Config is used to configure the creation of the DNSProvider
+// Environment variables names.
+const (
+	envNamespace = "RFC2136_"
+
+	EnvTSIGKey       = envNamespace + "TSIG_KEY"
+	EnvTSIGSecret    = envNamespace + "TSIG_SECRET"
+	EnvTSIGAlgorithm = envNamespace + "TSIG_ALGORITHM"
+	EnvNameserver    = envNamespace + "NAMESERVER"
+	EnvDNSTimeout    = envNamespace + "DNS_TIMEOUT"
+
+	EnvTTL                = envNamespace + "TTL"
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+	EnvSequenceInterval   = envNamespace + "SEQUENCE_INTERVAL"
+)
+
+// Config is used to configure the creation of the DNSProvider.
 type Config struct {
 	Nameserver         string
 	TSIGAlgorithm      string
@@ -26,20 +42,19 @@ type Config struct {
 	DNSTimeout         time.Duration
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
-		TSIGAlgorithm:      env.GetOrDefaultString("RFC2136_TSIG_ALGORITHM", dns.HmacMD5),
-		TTL:                env.GetOrDefaultInt("RFC2136_TTL", dns01.DefaultTTL),
-		PropagationTimeout: env.GetOrDefaultSecond("RFC2136_PROPAGATION_TIMEOUT", env.GetOrDefaultSecond("RFC2136_TIMEOUT", 60*time.Second)),
-		PollingInterval:    env.GetOrDefaultSecond("RFC2136_POLLING_INTERVAL", 2*time.Second),
-		SequenceInterval:   env.GetOrDefaultSecond("RFC2136_SEQUENCE_INTERVAL", dns01.DefaultPropagationTimeout),
-		DNSTimeout:         env.GetOrDefaultSecond("RFC2136_DNS_TIMEOUT", 10*time.Second),
+		TSIGAlgorithm:      env.GetOrDefaultString(EnvTSIGAlgorithm, dns.HmacMD5),
+		TTL:                env.GetOrDefaultInt(EnvTTL, dns01.DefaultTTL),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, env.GetOrDefaultSecond("RFC2136_TIMEOUT", 60*time.Second)),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, 2*time.Second),
+		SequenceInterval:   env.GetOrDefaultSecond(EnvSequenceInterval, dns01.DefaultPropagationTimeout),
+		DNSTimeout:         env.GetOrDefaultSecond(EnvDNSTimeout, 10*time.Second),
 	}
 }
 
-// DNSProvider is an implementation of the challenge.Provider interface that
-// uses dynamic DNS updates (RFC 2136) to create TXT records on a nameserver.
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	config *Config
 }
@@ -54,15 +69,15 @@ type DNSProvider struct {
 // RFC2136_PROPAGATION_TIMEOUT: DNS propagation timeout in time.ParseDuration format. (60s)
 // To disable TSIG authentication, leave the RFC2136_TSIG* variables unset.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get("RFC2136_NAMESERVER")
+	values, err := env.Get(EnvNameserver)
 	if err != nil {
-		return nil, fmt.Errorf("rfc2136: %v", err)
+		return nil, fmt.Errorf("rfc2136: %w", err)
 	}
 
 	config := NewDefaultConfig()
-	config.Nameserver = values["RFC2136_NAMESERVER"]
-	config.TSIGKey = env.GetOrFile("RFC2136_TSIG_KEY")
-	config.TSIGSecret = env.GetOrFile("RFC2136_TSIG_SECRET")
+	config.Nameserver = values[EnvNameserver]
+	config.TSIGKey = env.GetOrFile(EnvTSIGKey)
+	config.TSIGSecret = env.GetOrFile(EnvTSIGSecret)
 
 	return NewDNSProviderConfig(config)
 }
@@ -74,7 +89,7 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 	}
 
 	if config.Nameserver == "" {
-		return nil, fmt.Errorf("rfc2136: nameserver missing")
+		return nil, errors.New("rfc2136: nameserver missing")
 	}
 
 	if config.TSIGAlgorithm == "" {
@@ -86,7 +101,7 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 		if strings.Contains(err.Error(), "missing port") {
 			config.Nameserver = net.JoinHostPort(config.Nameserver, "53")
 		} else {
-			return nil, fmt.Errorf("rfc2136: %v", err)
+			return nil, fmt.Errorf("rfc2136: %w", err)
 		}
 	}
 
@@ -111,24 +126,24 @@ func (d *DNSProvider) Sequential() time.Duration {
 	return d.config.SequenceInterval
 }
 
-// Present creates a TXT record using the specified parameters
+// Present creates a TXT record using the specified parameters.
 func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	fqdn, value := dns01.GetRecord(domain, keyAuth)
 
 	err := d.changeRecord("INSERT", fqdn, value, d.config.TTL)
 	if err != nil {
-		return fmt.Errorf("rfc2136: failed to insert: %v", err)
+		return fmt.Errorf("rfc2136: failed to insert: %w", err)
 	}
 	return nil
 }
 
-// CleanUp removes the TXT record matching the specified parameters
+// CleanUp removes the TXT record matching the specified parameters.
 func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	fqdn, value := dns01.GetRecord(domain, keyAuth)
 
 	err := d.changeRecord("REMOVE", fqdn, value, d.config.TTL)
 	if err != nil {
-		return fmt.Errorf("rfc2136: failed to remove: %v", err)
+		return fmt.Errorf("rfc2136: failed to remove: %w", err)
 	}
 	return nil
 }
@@ -173,7 +188,7 @@ func (d *DNSProvider) changeRecord(action, fqdn, value string, ttl int) error {
 	// Send the query
 	reply, _, err := c.Exchange(m, d.config.Nameserver)
 	if err != nil {
-		return fmt.Errorf("DNS update failed: %v", err)
+		return fmt.Errorf("DNS update failed: %w", err)
 	}
 	if reply != nil && reply.Rcode != dns.RcodeSuccess {
 		return fmt.Errorf("DNS update failed: server replied: %s", dns.RcodeToString[reply.Rcode])

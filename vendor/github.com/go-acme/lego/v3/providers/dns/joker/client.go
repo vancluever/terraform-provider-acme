@@ -1,6 +1,7 @@
 package joker
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -14,7 +15,7 @@ import (
 
 const defaultBaseURL = "https://dmapi.joker.com/request/"
 
-// Joker DMAPI Response
+// Joker DMAPI Response.
 type response struct {
 	Headers    url.Values
 	Body       string
@@ -23,7 +24,7 @@ type response struct {
 	AuthSid    string
 }
 
-// parseResponse parses HTTP response body
+// parseResponse parses HTTP response body.
 func parseResponse(message string) *response {
 	r := &response{Headers: url.Values{}, StatusCode: -1}
 
@@ -63,7 +64,7 @@ func parseResponse(message string) *response {
 	return r
 }
 
-// login performs a login to Joker's DMAPI
+// login performs a login to Joker's DMAPI.
 func (d *DNSProvider) login() (*response, error) {
 	if d.config.AuthSid != "" {
 		// already logged in
@@ -80,7 +81,7 @@ func (d *DNSProvider) login() (*response, error) {
 	case d.config.APIKey != "":
 		values = url.Values{"api-key": {d.config.APIKey}}
 	default:
-		return nil, fmt.Errorf("no username and password or api-key")
+		return nil, errors.New("no username and password or api-key")
 	}
 
 	response, err := d.postRequest("login", values)
@@ -89,11 +90,11 @@ func (d *DNSProvider) login() (*response, error) {
 	}
 
 	if response == nil {
-		return nil, fmt.Errorf("login returned nil response")
+		return nil, errors.New("login returned nil response")
 	}
 
 	if response.AuthSid == "" {
-		return response, fmt.Errorf("login did not return valid Auth-Sid")
+		return response, errors.New("login did not return valid Auth-Sid")
 	}
 
 	d.config.AuthSid = response.AuthSid
@@ -101,10 +102,10 @@ func (d *DNSProvider) login() (*response, error) {
 	return response, nil
 }
 
-// logout closes authenticated session with Joker's DMAPI
+// logout closes authenticated session with Joker's DMAPI.
 func (d *DNSProvider) logout() (*response, error) {
 	if d.config.AuthSid == "" {
-		return nil, fmt.Errorf("already logged out")
+		return nil, errors.New("already logged out")
 	}
 
 	response, err := d.postRequest("logout", url.Values{})
@@ -114,25 +115,25 @@ func (d *DNSProvider) logout() (*response, error) {
 	return response, err
 }
 
-// getZone returns content of DNS zone for domain
+// getZone returns content of DNS zone for domain.
 func (d *DNSProvider) getZone(domain string) (*response, error) {
 	if d.config.AuthSid == "" {
-		return nil, fmt.Errorf("must be logged in to get zone")
+		return nil, errors.New("must be logged in to get zone")
 	}
 
 	return d.postRequest("dns-zone-get", url.Values{"domain": {dns01.UnFqdn(domain)}})
 }
 
-// putZone uploads DNS zone to Joker DMAPI
+// putZone uploads DNS zone to Joker DMAPI.
 func (d *DNSProvider) putZone(domain, zone string) (*response, error) {
 	if d.config.AuthSid == "" {
-		return nil, fmt.Errorf("must be logged in to put zone")
+		return nil, errors.New("must be logged in to put zone")
 	}
 
 	return d.postRequest("dns-zone-put", url.Values{"domain": {dns01.UnFqdn(domain)}, "zone": {strings.TrimSpace(zone)}})
 }
 
-// postRequest performs actual HTTP request
+// postRequest performs actual HTTP request.
 func (d *DNSProvider) postRequest(cmd string, data url.Values) (*response, error) {
 	uri := d.config.BaseURL + cmd
 
@@ -162,7 +163,7 @@ func (d *DNSProvider) postRequest(cmd string, data url.Values) (*response, error
 	return parseResponse(string(body)), nil
 }
 
-// Temporary workaround, until it get fixed on API side
+// Temporary workaround, until it get fixed on API side.
 func fixTxtLines(line string) string {
 	fields := strings.Fields(line)
 
@@ -178,7 +179,7 @@ func fixTxtLines(line string) string {
 	return strings.Join(fields, " ")
 }
 
-// removeTxtEntryFromZone clean-ups all TXT records with given name
+// removeTxtEntryFromZone clean-ups all TXT records with given name.
 func removeTxtEntryFromZone(zone, relative string) (string, bool) {
 	prefix := fmt.Sprintf("%s TXT 0 ", relative)
 
@@ -195,7 +196,7 @@ func removeTxtEntryFromZone(zone, relative string) (string, bool) {
 	return strings.TrimSpace(strings.Join(zoneEntries, "\n")), modified
 }
 
-// addTxtEntryToZone returns DNS zone with added TXT record
+// addTxtEntryToZone returns DNS zone with added TXT record.
 func addTxtEntryToZone(zone, relative, value string, ttl int) string {
 	var zoneEntries []string
 

@@ -5,16 +5,27 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/go-acme/lego/v3/challenge/dns01"
 	"github.com/go-acme/lego/v3/platform/config/env"
-	"github.com/transip/gotransip"
-	transipdomain "github.com/transip/gotransip/domain"
+	"github.com/transip/gotransip/v6"
+	transipdomain "github.com/transip/gotransip/v6/domain"
 )
 
-// Config is used to configure the creation of the DNSProvider
+// Environment variables names.
+const (
+	envNamespace = "TRANSIP_"
+
+	EnvAccountName    = envNamespace + "ACCOUNT_NAME"
+	EnvPrivateKeyPath = envNamespace + "PRIVATE_KEY_PATH"
+
+	EnvTTL                = envNamespace + "TTL"
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+)
+
+// Config is used to configure the creation of the DNSProvider.
 type Config struct {
 	AccountName        string
 	PrivateKeyPath     string
@@ -23,34 +34,33 @@ type Config struct {
 	TTL                int64
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
-		TTL:                int64(env.GetOrDefaultInt("TRANSIP_TTL", 10)),
-		PropagationTimeout: env.GetOrDefaultSecond("TRANSIP_PROPAGATION_TIMEOUT", 10*time.Minute),
-		PollingInterval:    env.GetOrDefaultSecond("TRANSIP_POLLING_INTERVAL", 10*time.Second),
+		TTL:                int64(env.GetOrDefaultInt(EnvTTL, 10)),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, 10*time.Minute),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, 10*time.Second),
 	}
 }
 
-// DNSProvider describes a provider for TransIP
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
-	config       *Config
-	client       gotransip.Client
-	dnsEntriesMu sync.Mutex
+	config     *Config
+	repository transipdomain.Repository
 }
 
 // NewDNSProvider returns a DNSProvider instance configured for TransIP.
 // Credentials must be passed in the environment variables:
 // TRANSIP_ACCOUNTNAME, TRANSIP_PRIVATEKEYPATH.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get("TRANSIP_ACCOUNT_NAME", "TRANSIP_PRIVATE_KEY_PATH")
+	values, err := env.Get(EnvAccountName, EnvPrivateKeyPath)
 	if err != nil {
-		return nil, fmt.Errorf("transip: %v", err)
+		return nil, fmt.Errorf("transip: %w", err)
 	}
 
 	config := NewDefaultConfig()
-	config.AccountName = values["TRANSIP_ACCOUNT_NAME"]
-	config.PrivateKeyPath = values["TRANSIP_PRIVATE_KEY_PATH"]
+	config.AccountName = values[EnvAccountName]
+	config.PrivateKeyPath = values[EnvPrivateKeyPath]
 
 	return NewDNSProviderConfig(config)
 }
@@ -61,15 +71,17 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 		return nil, errors.New("transip: the configuration of the DNS provider is nil")
 	}
 
-	client, err := gotransip.NewSOAPClient(gotransip.ClientConfig{
+	client, err := gotransip.NewClient(gotransip.ClientConfiguration{
 		AccountName:    config.AccountName,
 		PrivateKeyPath: config.PrivateKeyPath,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("transip: %v", err)
+		return nil, fmt.Errorf("transip: %w", err)
 	}
 
-	return &DNSProvider{client: client, config: config}, nil
+	repo := transipdomain.Repository{Client: client}
+
+	return &DNSProvider{repository: repo, config: config}, nil
 }
 
 // Timeout returns the timeout and interval to use when checking for DNS propagation.
@@ -78,7 +90,7 @@ func (d *DNSProvider) Timeout() (timeout, interval time.Duration) {
 	return d.config.PropagationTimeout, d.config.PollingInterval
 }
 
-// Present creates a TXT record to fulfill the dns-01 challenge
+// Present creates a TXT record to fulfill the dns-01 challenge.
 func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	fqdn, value := dns01.GetRecord(domain, keyAuth)
 
@@ -92,35 +104,24 @@ func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	// get the subDomain
 	subDomain := strings.TrimSuffix(dns01.UnFqdn(fqdn), "."+domainName)
 
-	// use mutex to prevent race condition from GetInfo until SetDNSEntries
-	d.dnsEntriesMu.Lock()
-	defer d.dnsEntriesMu.Unlock()
-
-	// get all DNS entries
-	info, err := transipdomain.GetInfo(d.client, domainName)
-	if err != nil {
-		return fmt.Errorf("transip: error for %s in Present: %v", domain, err)
-	}
-
-	// include the new DNS entry
-	dnsEntries := append(info.DNSEntries, transipdomain.DNSEntry{
+	entry := transipdomain.DNSEntry{
 		Name:    subDomain,
-		TTL:     d.config.TTL,
-		Type:    transipdomain.DNSEntryTypeTXT,
+		Expire:  int(d.config.TTL),
+		Type:    "TXT",
 		Content: value,
-	})
-
-	// set the updated DNS entries
-	err = transipdomain.SetDNSEntries(d.client, domainName, dnsEntries)
-	if err != nil {
-		return fmt.Errorf("transip: %v", err)
 	}
+
+	err = d.repository.AddDNSEntry(domainName, entry)
+	if err != nil {
+		return fmt.Errorf("transip: %w", err)
+	}
+
 	return nil
 }
 
-// CleanUp removes the TXT record matching the specified parameters
+// CleanUp removes the TXT record matching the specified parameters.
 func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
-	fqdn, _ := dns01.GetRecord(domain, keyAuth)
+	fqdn, value := dns01.GetRecord(domain, keyAuth)
 
 	authZone, err := dns01.FindZoneByFqdn(fqdn)
 	if err != nil {
@@ -132,28 +133,20 @@ func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	// get the subDomain
 	subDomain := strings.TrimSuffix(dns01.UnFqdn(fqdn), "."+domainName)
 
-	// use mutex to prevent race condition from GetInfo until SetDNSEntries
-	d.dnsEntriesMu.Lock()
-	defer d.dnsEntriesMu.Unlock()
-
 	// get all DNS entries
-	info, err := transipdomain.GetInfo(d.client, domainName)
+	dnsEntries, err := d.repository.GetDNSEntries(domainName)
 	if err != nil {
-		return fmt.Errorf("transip: error for %s in CleanUp: %v", fqdn, err)
+		return fmt.Errorf("transip: error for %s in CleanUp: %w", fqdn, err)
 	}
 
 	// loop through the existing entries and remove the specific record
-	updatedEntries := info.DNSEntries[:0]
-	for _, e := range info.DNSEntries {
-		if e.Name != subDomain {
-			updatedEntries = append(updatedEntries, e)
+	for _, entry := range dnsEntries {
+		if entry.Name == subDomain && entry.Content == value {
+			if err = d.repository.RemoveDNSEntry(domainName, entry); err != nil {
+				return fmt.Errorf("transip: couldn't get Record ID in CleanUp: %w", err)
+			}
+			return nil
 		}
-	}
-
-	// set the updated DNS entries
-	err = transipdomain.SetDNSEntries(d.client, domainName, updatedEntries)
-	if err != nil {
-		return fmt.Errorf("transip: couldn't get Record ID in CleanUp: %sv", err)
 	}
 
 	return nil

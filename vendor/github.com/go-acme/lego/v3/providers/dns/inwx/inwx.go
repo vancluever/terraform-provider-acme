@@ -12,7 +12,20 @@ import (
 	"github.com/nrdcg/goinwx"
 )
 
-// Config is used to configure the creation of the DNSProvider
+// Environment variables names.
+const (
+	envNamespace = "INWX_"
+
+	EnvUsername = envNamespace + "USERNAME"
+	EnvPassword = envNamespace + "PASSWORD"
+	EnvSandbox  = envNamespace + "SANDBOX"
+
+	EnvTTL                = envNamespace + "TTL"
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+)
+
+// Config is used to configure the creation of the DNSProvider.
 type Config struct {
 	Username           string
 	Password           string
@@ -22,17 +35,17 @@ type Config struct {
 	TTL                int
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
-		PropagationTimeout: env.GetOrDefaultSecond("INWX_PROPAGATION_TIMEOUT", dns01.DefaultPropagationTimeout),
-		PollingInterval:    env.GetOrDefaultSecond("INWX_POLLING_INTERVAL", dns01.DefaultPollingInterval),
-		TTL:                env.GetOrDefaultInt("INWX_TTL", 300),
-		Sandbox:            env.GetOrDefaultBool("INWX_SANDBOX", false),
+		TTL:                env.GetOrDefaultInt(EnvTTL, 300),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, dns01.DefaultPropagationTimeout),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, dns01.DefaultPollingInterval),
+		Sandbox:            env.GetOrDefaultBool(EnvSandbox, false),
 	}
 }
 
-// DNSProvider is an implementation of the challenge.Provider interface
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	config *Config
 	client *goinwx.Client
@@ -42,26 +55,26 @@ type DNSProvider struct {
 // Credentials must be passed in the environment variables:
 // INWX_USERNAME and INWX_PASSWORD.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get("INWX_USERNAME", "INWX_PASSWORD")
+	values, err := env.Get(EnvUsername, EnvPassword)
 	if err != nil {
-		return nil, fmt.Errorf("inwx: %v", err)
+		return nil, fmt.Errorf("inwx: %w", err)
 	}
 
 	config := NewDefaultConfig()
-	config.Username = values["INWX_USERNAME"]
-	config.Password = values["INWX_PASSWORD"]
+	config.Username = values[EnvUsername]
+	config.Password = values[EnvPassword]
 
 	return NewDNSProviderConfig(config)
 }
 
-// NewDNSProviderConfig return a DNSProvider instance configured for Dyn DNS
+// NewDNSProviderConfig return a DNSProvider instance configured for Dyn DNS.
 func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 	if config == nil {
 		return nil, errors.New("inwx: the configuration of the DNS provider is nil")
 	}
 
 	if config.Username == "" || config.Password == "" {
-		return nil, fmt.Errorf("inwx: credentials missing")
+		return nil, errors.New("inwx: credentials missing")
 	}
 
 	if config.Sandbox {
@@ -73,18 +86,18 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 	return &DNSProvider{config: config, client: client}, nil
 }
 
-// Present creates a TXT record using the specified parameters
+// Present creates a TXT record using the specified parameters.
 func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 	fqdn, value := dns01.GetRecord(domain, keyAuth)
 
 	authZone, err := dns01.FindZoneByFqdn(fqdn)
 	if err != nil {
-		return fmt.Errorf("inwx: %v", err)
+		return fmt.Errorf("inwx: %w", err)
 	}
 
 	err = d.client.Account.Login()
 	if err != nil {
-		return fmt.Errorf("inwx: %v", err)
+		return fmt.Errorf("inwx: %w", err)
 	}
 
 	defer func() {
@@ -109,27 +122,27 @@ func (d *DNSProvider) Present(domain, token, keyAuth string) error {
 			if er.Message == "Object exists" {
 				return nil
 			}
-			return fmt.Errorf("inwx: %v", err)
+			return fmt.Errorf("inwx: %w", err)
 		default:
-			return fmt.Errorf("inwx: %v", err)
+			return fmt.Errorf("inwx: %w", err)
 		}
 	}
 
 	return nil
 }
 
-// CleanUp removes the TXT record matching the specified parameters
+// CleanUp removes the TXT record matching the specified parameters.
 func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 	fqdn, _ := dns01.GetRecord(domain, keyAuth)
 
 	authZone, err := dns01.FindZoneByFqdn(fqdn)
 	if err != nil {
-		return fmt.Errorf("inwx: %v", err)
+		return fmt.Errorf("inwx: %w", err)
 	}
 
 	err = d.client.Account.Login()
 	if err != nil {
-		return fmt.Errorf("inwx: %v", err)
+		return fmt.Errorf("inwx: %w", err)
 	}
 
 	defer func() {
@@ -145,14 +158,14 @@ func (d *DNSProvider) CleanUp(domain, token, keyAuth string) error {
 		Type:   "TXT",
 	})
 	if err != nil {
-		return fmt.Errorf("inwx: %v", err)
+		return fmt.Errorf("inwx: %w", err)
 	}
 
 	var lastErr error
 	for _, record := range response.Records {
 		err = d.client.Nameservers.DeleteRecord(record.ID)
 		if err != nil {
-			lastErr = fmt.Errorf("inwx: %v", err)
+			lastErr = fmt.Errorf("inwx: %w", err)
 		}
 	}
 

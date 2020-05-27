@@ -12,7 +12,20 @@ import (
 	"github.com/sacloud/libsacloud/api"
 )
 
-// Config is used to configure the creation of the DNSProvider
+// Environment variables names.
+const (
+	envNamespace = "SAKURACLOUD_"
+
+	EnvAccessToken       = envNamespace + "ACCESS_TOKEN"
+	EnvAccessTokenSecret = envNamespace + "ACCESS_TOKEN_SECRET"
+
+	EnvTTL                = envNamespace + "TTL"
+	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
+	EnvPollingInterval    = envNamespace + "POLLING_INTERVAL"
+	EnvHTTPTimeout        = envNamespace + "HTTP_TIMEOUT"
+)
+
+// Config is used to configure the creation of the DNSProvider.
 type Config struct {
 	Token              string
 	Secret             string
@@ -22,35 +35,36 @@ type Config struct {
 	HTTPClient         *http.Client
 }
 
-// NewDefaultConfig returns a default configuration for the DNSProvider
+// NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
-		TTL:                env.GetOrDefaultInt("SAKURACLOUD_TTL", dns01.DefaultTTL),
-		PropagationTimeout: env.GetOrDefaultSecond("SAKURACLOUD_PROPAGATION_TIMEOUT", dns01.DefaultPropagationTimeout),
-		PollingInterval:    env.GetOrDefaultSecond("SAKURACLOUD_POLLING_INTERVAL", dns01.DefaultPollingInterval),
+		TTL:                env.GetOrDefaultInt(EnvTTL, dns01.DefaultTTL),
+		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, dns01.DefaultPropagationTimeout),
+		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, dns01.DefaultPollingInterval),
 		HTTPClient: &http.Client{
-			Timeout: env.GetOrDefaultSecond("SAKURACLOUD_HTTP_TIMEOUT", 10*time.Second),
+			Timeout: env.GetOrDefaultSecond(EnvHTTPTimeout, 10*time.Second),
 		},
 	}
 }
 
-// DNSProvider is an implementation of the challenge.Provider interface.
+// DNSProvider implements the challenge.Provider interface.
 type DNSProvider struct {
 	config *Config
 	client *api.DNSAPI
 }
 
 // NewDNSProvider returns a DNSProvider instance configured for SakuraCloud.
-// Credentials must be passed in the environment variables: SAKURACLOUD_ACCESS_TOKEN & SAKURACLOUD_ACCESS_TOKEN_SECRET
+// Credentials must be passed in the environment variables:
+// SAKURACLOUD_ACCESS_TOKEN & SAKURACLOUD_ACCESS_TOKEN_SECRET.
 func NewDNSProvider() (*DNSProvider, error) {
-	values, err := env.Get("SAKURACLOUD_ACCESS_TOKEN", "SAKURACLOUD_ACCESS_TOKEN_SECRET")
+	values, err := env.Get(EnvAccessToken, EnvAccessTokenSecret)
 	if err != nil {
-		return nil, fmt.Errorf("sakuracloud: %v", err)
+		return nil, fmt.Errorf("sakuracloud: %w", err)
 	}
 
 	config := NewDefaultConfig()
-	config.Token = values["SAKURACLOUD_ACCESS_TOKEN"]
-	config.Secret = values["SAKURACLOUD_ACCESS_TOKEN_SECRET"]
+	config.Token = values[EnvAccessToken]
+	config.Secret = values[EnvAccessTokenSecret]
 
 	return NewDNSProviderConfig(config)
 }

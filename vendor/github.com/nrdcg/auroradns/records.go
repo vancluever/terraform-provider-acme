@@ -36,7 +36,7 @@ type Record struct {
 func (c *Client) CreateRecord(zoneID string, record Record) (*Record, *http.Response, error) {
 	body, err := json.Marshal(record)
 	if err != nil {
-		return nil, nil, fmt.Errorf("failed to marshall request body: %v", err)
+		return nil, nil, fmt.Errorf("failed to marshall request body: %w", err)
 	}
 
 	resource := fmt.Sprintf("/zones/%s/records", zoneID)

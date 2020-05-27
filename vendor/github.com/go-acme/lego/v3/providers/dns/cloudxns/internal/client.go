@@ -5,6 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -23,14 +24,14 @@ type apiResponse struct {
 	Data    json.RawMessage `json:"data,omitempty"`
 }
 
-// Data Domain information
+// Data Domain information.
 type Data struct {
 	ID     string `json:"id"`
 	Domain string `json:"domain"`
 	TTL    int    `json:"ttl,omitempty"`
 }
 
-// TXTRecord a TXT record
+// TXTRecord a TXT record.
 type TXTRecord struct {
 	ID       int    `json:"domain_id,omitempty"`
 	RecordID string `json:"record_id,omitempty"`
@@ -42,14 +43,14 @@ type TXTRecord struct {
 	TTL    int    `json:"ttl,string"`
 }
 
-// NewClient creates a CloudXNS client
+// NewClient creates a CloudXNS client.
 func NewClient(apiKey string, secretKey string) (*Client, error) {
 	if apiKey == "" {
-		return nil, fmt.Errorf("CloudXNS: credentials missing: apiKey")
+		return nil, errors.New("CloudXNS: credentials missing: apiKey")
 	}
 
 	if secretKey == "" {
-		return nil, fmt.Errorf("CloudXNS: credentials missing: secretKey")
+		return nil, errors.New("CloudXNS: credentials missing: secretKey")
 	}
 
 	return &Client{
@@ -60,7 +61,7 @@ func NewClient(apiKey string, secretKey string) (*Client, error) {
 	}, nil
 }
 
-// Client CloudXNS client
+// Client CloudXNS client.
 type Client struct {
 	apiKey     string
 	secretKey  string
@@ -68,7 +69,7 @@ type Client struct {
 	BaseURL    string
 }
 
-// GetDomainInformation Get domain name information for a FQDN
+// GetDomainInformation Get domain name information for a FQDN.
 func (c *Client) GetDomainInformation(fqdn string) (*Data, error) {
 	authZone, err := dns01.FindZoneByFqdn(fqdn)
 	if err != nil {
@@ -84,7 +85,7 @@ func (c *Client) GetDomainInformation(fqdn string) (*Data, error) {
 	if len(result) > 0 {
 		err = json.Unmarshal(result, &domains)
 		if err != nil {
-			return nil, fmt.Errorf("CloudXNS: domains unmarshaling error: %v", err)
+			return nil, fmt.Errorf("CloudXNS: domains unmarshaling error: %w", err)
 		}
 	}
 
@@ -97,7 +98,7 @@ func (c *Client) GetDomainInformation(fqdn string) (*Data, error) {
 	return nil, fmt.Errorf("CloudXNS: zone %s not found for domain %s", authZone, fqdn)
 }
 
-// FindTxtRecord return the TXT record a zone ID and a FQDN
+// FindTxtRecord return the TXT record a zone ID and a FQDN.
 func (c *Client) FindTxtRecord(zoneID, fqdn string) (*TXTRecord, error) {
 	result, err := c.doRequest(http.MethodGet, fmt.Sprintf("record/%s?host_id=0&offset=0&row_num=2000", zoneID), nil)
 	if err != nil {
@@ -107,7 +108,7 @@ func (c *Client) FindTxtRecord(zoneID, fqdn string) (*TXTRecord, error) {
 	var records []TXTRecord
 	err = json.Unmarshal(result, &records)
 	if err != nil {
-		return nil, fmt.Errorf("CloudXNS: TXT record unmarshaling error: %v", err)
+		return nil, fmt.Errorf("CloudXNS: TXT record unmarshaling error: %w", err)
 	}
 
 	for _, record := range records {
@@ -119,11 +120,11 @@ func (c *Client) FindTxtRecord(zoneID, fqdn string) (*TXTRecord, error) {
 	return nil, fmt.Errorf("CloudXNS: no existing record found for %q", fqdn)
 }
 
-// AddTxtRecord add a TXT record
+// AddTxtRecord add a TXT record.
 func (c *Client) AddTxtRecord(info *Data, fqdn, value string, ttl int) error {
 	id, err := strconv.Atoi(info.ID)
 	if err != nil {
-		return fmt.Errorf("CloudXNS: invalid zone ID: %v", err)
+		return fmt.Errorf("CloudXNS: invalid zone ID: %w", err)
 	}
 
 	payload := TXTRecord{
@@ -137,14 +138,14 @@ func (c *Client) AddTxtRecord(info *Data, fqdn, value string, ttl int) error {
 
 	body, err := json.Marshal(payload)
 	if err != nil {
-		return fmt.Errorf("CloudXNS: record unmarshaling error: %v", err)
+		return fmt.Errorf("CloudXNS: record unmarshaling error: %w", err)
 	}
 
 	_, err = c.doRequest(http.MethodPost, "record", body)
 	return err
 }
 
-// RemoveTxtRecord remove a TXT record
+// RemoveTxtRecord remove a TXT record.
 func (c *Client) RemoveTxtRecord(recordID, zoneID string) error {
 	_, err := c.doRequest(http.MethodDelete, fmt.Sprintf("record/%s/%s", recordID, zoneID), nil)
 	return err
@@ -158,7 +159,7 @@ func (c *Client) doRequest(method, uri string, body []byte) (json.RawMessage, er
 
 	resp, err := c.HTTPClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("CloudXNS: %v", err)
+		return nil, fmt.Errorf("CloudXNS: %w", err)
 	}
 
 	defer resp.Body.Close()
@@ -171,7 +172,7 @@ func (c *Client) doRequest(method, uri string, body []byte) (json.RawMessage, er
 	var r apiResponse
 	err = json.Unmarshal(content, &r)
 	if err != nil {
-		return nil, fmt.Errorf("CloudXNS: response unmashaling error: %v: %s", err, toUnreadableBodyMessage(req, content))
+		return nil, fmt.Errorf("CloudXNS: response unmashaling error: %w: %s", err, toUnreadableBodyMessage(req, content))
 	}
 
 	if r.Code != 1 {
@@ -185,7 +186,7 @@ func (c *Client) buildRequest(method, uri string, body []byte) (*http.Request, e
 
 	req, err := http.NewRequest(method, url, bytes.NewReader(body))
 	if err != nil {
-		return nil, fmt.Errorf("CloudXNS: invalid request: %v", err)
+		return nil, fmt.Errorf("CloudXNS: invalid request: %w", err)
 	}
 
 	requestDate := time.Now().Format(time.RFC1123Z)

@@ -96,7 +96,7 @@ func (c *Client) do(req *http.Request, v interface{}) (*http.Response, error) {
 
 	raw, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return resp, fmt.Errorf("failed to read body: %v", err)
+		return resp, fmt.Errorf("failed to read body: %w", err)
 	}
 
 	if err = json.Unmarshal(raw, v); err != nil {
@@ -116,14 +116,13 @@ func checkResponse(resp *http.Response) error {
 		errorResponse := new(ErrorResponse)
 		err = json.Unmarshal(data, errorResponse)
 		if err != nil {
-			return fmt.Errorf("unmarshaling ErrorResponse error: %v: %s", err.Error(), string(data))
+			return fmt.Errorf("unmarshaling ErrorResponse error: %w: %s", err, string(data))
 		}
 
 		return errorResponse
 	}
-	defer func() { _ = resp.Body.Close() }()
 
-	return nil
+	return fmt.Errorf("status code: %d %s", resp.StatusCode, resp.Status)
 }
 
 // WithBaseURL Allows to define a custom base URL
@@ -139,6 +138,7 @@ func WithBaseURL(rawBaseURL string) func(*Client) error {
 		}
 
 		client.baseURL = baseURL
+
 		return nil
 	}
 }
