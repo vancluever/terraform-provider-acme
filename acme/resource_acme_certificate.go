@@ -89,6 +89,11 @@ func resourceACMECertificateV4() *schema.Resource {
 					},
 				},
 			},
+			"pre_check_delay": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  0,
+			},
 			"recursive_nameservers": {
 				Type:     schema.TypeList,
 				Optional: true,
@@ -288,6 +293,10 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		opts = append(opts, dns01.DisableCompletePropagationRequirement())
 	}
 
+	if preCheckDelay := d.Get("pre_check_delay").(int); preCheckDelay > 0 {
+		opts = append(opts, dns01.WrapPreCheck(resourceACMECertificatePreCheckDelay(preCheckDelay)))
+	}
+
 	if err := client.Challenge.SetDNS01Provider(provider, opts...); err != nil {
 		return err
 	}
@@ -469,6 +478,10 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 		opts = append(opts, dns01.DisableCompletePropagationRequirement())
 	}
 
+	if preCheckDelay := d.Get("pre_check_delay").(int); preCheckDelay > 0 {
+		opts = append(opts, dns01.WrapPreCheck(resourceACMECertificatePreCheckDelay(preCheckDelay)))
+	}
+
 	if err := client.Challenge.SetDNS01Provider(provider, opts...); err != nil {
 		return err
 	}
@@ -600,4 +613,53 @@ func (d *DNSProviderWrapper) Timeout() (time.Duration, time.Duration) {
 	}
 
 	return timeout, interval
+}
+
+func resourceACMECertificatePreCheckDelay(delay int) dns01.WrapPreCheckFunc {
+	// Compute a reasonable interval for the delay, max delay 10
+	// seconds, minimum 2.
+	var interval int
+	switch {
+	case delay <= 10:
+		interval = 2
+
+	case delay <= 60:
+		interval = 5
+
+	default:
+		interval = 10
+	}
+
+	return func(domain, fqdn, value string, orig dns01.PreCheckFunc) (bool, error) {
+		stop, err := orig(fqdn, value)
+		if stop && err == nil {
+			// Run the delay. TODO: Eventually make this interruptible.
+			var elapsed int
+			end := time.After(time.Second * time.Duration(delay))
+			for {
+				select {
+				case <-end:
+					return true, nil
+				default:
+				}
+
+				remaining := delay - elapsed
+				if remaining < interval {
+					// To honor the specified timeout, make our next interval the
+					// time remaining. Minimum one second.
+					interval = remaining
+					if interval < 1 {
+						interval = 1
+					}
+				}
+
+				log.Printf("[DEBUG] [%s] acme: Waiting an additional %d second(s) for DNS record propagation.", domain, remaining)
+				time.Sleep(time.Second * time.Duration(interval))
+				elapsed += interval
+			}
+		}
+
+		// A previous pre-check failed, return and exit.
+		return stop, err
+	}
 }
