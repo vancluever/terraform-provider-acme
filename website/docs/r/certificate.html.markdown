@@ -341,7 +341,7 @@ The following attributes are exported:
   `certificate_request_pem` was used, this will be blank.
 * `certificate_pem` - The certificate in PEM format. This does not include the
   `issuer_pem`. This certificate can be concatenated with `issuer_pem` to form
-  a full chain.
+  a full chain, e.g. `"${acme_certificate.certificate.certificate_pem}${acme_certificate.certificate.issuer_pem}"`
 * `issuer_pem` - The intermediate certificate of the issuer.
 * `certificate_p12` - The certificate, intermediate, and the private key
   archived as a PFX file (PKCS12 format, generally used by Microsoft products).
