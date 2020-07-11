@@ -110,7 +110,7 @@ func (r *Registrar) QueryRegistration() (*Resource, error) {
 
 	return &Resource{
 		Body: account,
-		// Location: header is not returned so this needs to be populated off of existing URI
+		// Location: header is not returned so this needs to be populated using existing URI
 		URI: r.user.GetRegistration().URI,
 	}, nil
 }

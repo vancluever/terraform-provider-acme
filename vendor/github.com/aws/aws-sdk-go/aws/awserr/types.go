@@ -32,7 +32,7 @@ type baseError struct {
 	// Detailed information about error
 	message string
 
-	// Optional original error this error is based off of. Allows building
+	// Optional, original error this error is based on. Allows building
 	// chained errors.
 	errs []error
 }

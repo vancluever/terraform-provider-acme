@@ -30,7 +30,7 @@ provider instances][multiple-provider-instances].
 
 ## Example
 
-The following creates an account off of a private key generated with the
+The following creates an account using a private key generated with the
 [`tls_private_key`][resource-tls-private-key] resource.
 
 [resource-tls-private-key]: /docs/providers/tls/r/private_key.html

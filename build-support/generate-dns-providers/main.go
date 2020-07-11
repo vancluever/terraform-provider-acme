@@ -217,7 +217,7 @@ func loadProviders() []dnsProviderInfo {
 			return err
 		}
 
-		// We work off of Go packages to find the metadata, but some
+		// We work from Go packages to find the metadata, but some
 		// packages have different codes (ie: acme-dns for acmedns in Go)
 		// so we need to save the provider as the package name.
 		p.GoPkg, err = filepath.Rel(rootDir, filepath.Dir(path))

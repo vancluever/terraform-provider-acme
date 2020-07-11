@@ -119,7 +119,7 @@ This would be equivalent to the following json:
 Thanks to:
 
   * [@vstakhov](https://github.com/vstakhov) - The original libucl parser
-    and syntax that HCL was based off of.
+    and syntax that HCL was based on.
 
   * [@fatih](https://github.com/fatih) - The rewritten HCL parser
     in pure Go (no goyacc) and support for a printer.
