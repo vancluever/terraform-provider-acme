@@ -195,7 +195,8 @@ resource "acme_certificate" "certificate" {
     config = {
       AWS_ACCESS_KEY_ID     = "${var.aws_access_key}"
       AWS_SECRET_ACCESS_KEY = "${var.aws_secret_key}"
-      AWS_DEFAULT_REGION    = "us-east-1"
+      AWS_SESSION_TOKEN     = "${var.aws_security_token}"
+      AWS_DEFAULT_REGION    = "us-east-1"  # OPTIONAL
     }
   }
 
@@ -240,7 +241,7 @@ machine running Terraform may not have visibility into these public DNS
 records.
 
 To override this default behavior, supply the `recursive_nameservers` to use as
-a list in `host:port` form within the `dns_challenge` block:
+a list in `host:port`:
 
 ```hcl
 resource "acme_certificate" "certificate" {
@@ -341,7 +342,7 @@ The following attributes are exported:
   `certificate_request_pem` was used, this will be blank.
 * `certificate_pem` - The certificate in PEM format. This does not include the
   `issuer_pem`. This certificate can be concatenated with `issuer_pem` to form
-  a full chain.
+  a full chain, e.g. `"${acme_certificate.certificate.certificate_pem}${acme_certificate.certificate.issuer_pem}"`
 * `issuer_pem` - The intermediate certificate of the issuer.
 * `certificate_p12` - The certificate, intermediate, and the private key
   archived as a PFX file (PKCS12 format, generally used by Microsoft products).
