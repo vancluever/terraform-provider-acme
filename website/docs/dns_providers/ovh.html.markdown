@@ -62,4 +62,24 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `OVH_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
 * `OVH_TTL` - The TTL of the TXT record used for the DNS challenge.
 
+## Application Key and Secret
+
+Application key and secret can be created by following the [OVH guide](https://docs.ovh.com/gb/en/customer/first-steps-with-ovh-api/).
+
+When requesting the consumer key, the following configuration can be use to define access rights:
+
+```json
+{
+  "accessRules": [
+    {
+      "method": "POST",
+      "path": "/domain/zone/*"
+    },
+    {
+      "method": "DELETE",
+      "path": "/domain/zone/*"
+    }
+  ]
+}
+```
 

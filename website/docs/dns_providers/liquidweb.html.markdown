@@ -16,7 +16,7 @@ sections apply to the Terraform provider as well.
 
 The `liquidweb` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Liquid Web](https://cart.liquidweb.com/storm/api/docs/v1/).
+[Liquid Web](https://liquidweb.com).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 

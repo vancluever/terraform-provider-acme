@@ -58,6 +58,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `CLOUDNS_HTTP_TIMEOUT` - API request timeout.
 * `CLOUDNS_POLLING_INTERVAL` - Time between DNS propagation check.
 * `CLOUDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `CLOUDNS_SUB_AUTH_ID` - The API sub user ID.
 * `CLOUDNS_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

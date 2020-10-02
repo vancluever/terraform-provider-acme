@@ -58,6 +58,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `NAMECHEAP_HTTP_TIMEOUT` - API request timeout.
 * `NAMECHEAP_POLLING_INTERVAL` - Time between DNS propagation check.
 * `NAMECHEAP_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `NAMECHEAP_SANDBOX` - Activate the sandbox (boolean).
 * `NAMECHEAP_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

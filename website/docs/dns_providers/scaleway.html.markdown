@@ -1,7 +1,7 @@
 ---
 layout: "acme"
-page_title: "ACME: Linode (v4) DNS Challenge Provider"
-sidebar_current: "docs-acme-dns-providers-linodev4"
+page_title: "ACME: Scaleway DNS Challenge Provider"
+sidebar_current: "docs-acme-dns-providers-scaleway"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
@@ -12,11 +12,11 @@ ACME provider's API library [lego](https://go-acme.github.io/lego/).
 Some sections may refer to lego directly - in most cases, these
 sections apply to the Terraform provider as well.
 
-# Linode (v4) DNS Challenge Provider
+# Scaleway DNS Challenge Provider
 
-The `linodev4` DNS challenge provider can be used to perform DNS challenges for
+The `scaleway` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Linode (v4)](https://www.linode.com/).
+[Scaleway](https://developers.scaleway.com/).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 
@@ -32,7 +32,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "linodev4"
+    provider = "scaleway"
   }
 }
 ```
@@ -52,11 +52,13 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `LINODE_TOKEN` - API token.
+* `SCALEWAY_API_TOKEN` - API token.
 
-* `LINODE_HTTP_TIMEOUT` - API request timeout.
-* `LINODE_POLLING_INTERVAL` - Time between DNS propagation check.
-* `LINODE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `LINODE_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `SCALEWAY_API_VERSION` - API version.
+* `SCALEWAY_BASE_URL` - API endpoint URL.
+* `SCALEWAY_HTTP_TIMEOUT` - API request timeout.
+* `SCALEWAY_POLLING_INTERVAL` - Time between DNS propagation check.
+* `SCALEWAY_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `SCALEWAY_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

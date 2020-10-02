@@ -18,7 +18,7 @@ provider-generate:
 	@echo "==> Re-generating Go DNS provider factory in ./acme..."
 	@go generate ./acme
 	@go build ./acme
-	@go mod tidy && go mod vendor
+	@go mod tidy
 	@echo "==> Re-genrating documentation..."
 	@find website/docs/dns_providers -type f -not -name index.html.markdown | xargs rm
 	@go run ./build-support/generate-dns-providers doc website/

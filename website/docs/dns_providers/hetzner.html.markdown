@@ -1,7 +1,7 @@
 ---
 layout: "acme"
-page_title: "ACME: DNSimple DNS Challenge Provider"
-sidebar_current: "docs-acme-dns-providers-dnsimple"
+page_title: "ACME: Hetzner DNS Challenge Provider"
+sidebar_current: "docs-acme-dns-providers-hetzner"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
@@ -12,11 +12,11 @@ ACME provider's API library [lego](https://go-acme.github.io/lego/).
 Some sections may refer to lego directly - in most cases, these
 sections apply to the Terraform provider as well.
 
-# DNSimple DNS Challenge Provider
+# Hetzner DNS Challenge Provider
 
-The `dnsimple` DNS challenge provider can be used to perform DNS challenges for
+The `hetzner` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[DNSimple](https://dnsimple.com/).
+[Hetzner](https://hetzner.com).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 
@@ -32,7 +32,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "dnsimple"
+    provider = "hetzner"
   }
 }
 ```
@@ -52,26 +52,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `DNSIMPLE_OAUTH_TOKEN` - OAuth token.
+* `HETZNER_API_KEY` - API key.
 
-* `DNSIMPLE_BASE_URL` - API endpoint URL.
-* `DNSIMPLE_POLLING_INTERVAL` - Time between DNS propagation check.
-* `DNSIMPLE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `DNSIMPLE_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `HETZNER_HTTP_TIMEOUT` - API request timeout.
+* `HETZNER_POLLING_INTERVAL` - Time between DNS propagation check.
+* `HETZNER_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `HETZNER_SEQUENCE_INTERVAL` - Interval between iteration.
+* `HETZNER_TTL` - The TTL of the TXT record used for the DNS challenge.
 
-## Description
-
-`DNSIMPLE_BASE_URL` is optional and must be set to production (https://api.dnsimple.com).
-if `DNSIMPLE_BASE_URL` is not defined or empty, the production URL is used by default.
-
-While you can manage DNS records in the [DNSimple Sandbox environment](https://developer.dnsimple.com/sandbox/),
-DNS records will not resolve and you will not be able to satisfy the ACME DNS challenge.
-
-To authenticate you need to provide a valid API token.
-HTTP Basic Authentication is intentionally not supported.
-
-### API tokens
-
-You can [generate a new API token](https://support.dnsimple.com/articles/api-access-token/) from your account page.
-Only Account API tokens are supported, if you try to use an User API token you will receive an error message.
 

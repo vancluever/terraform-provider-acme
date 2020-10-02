@@ -1,7 +1,7 @@
 ---
 layout: "acme"
-page_title: "ACME: FastDNS DNS Challenge Provider"
-sidebar_current: "docs-acme-dns-providers-fastdns"
+page_title: "ACME: Autodns DNS Challenge Provider"
+sidebar_current: "docs-acme-dns-providers-autodns"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
@@ -12,11 +12,11 @@ ACME provider's API library [lego](https://go-acme.github.io/lego/).
 Some sections may refer to lego directly - in most cases, these
 sections apply to the Terraform provider as well.
 
-# FastDNS DNS Challenge Provider
+# Autodns DNS Challenge Provider
 
-The `fastdns` DNS challenge provider can be used to perform DNS challenges for
+The `autodns` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[FastDNS](https://www.akamai.com/us/en/products/security/fast-dns.jsp).
+[Autodns](https://www.internetx.com/domains/autodns/).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 
@@ -32,7 +32,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "fastdns"
+    provider = "autodns"
   }
 }
 ```
@@ -52,13 +52,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `AKAMAI_ACCESS_TOKEN` - Access token.
-* `AKAMAI_CLIENT_SECRET` - Client secret.
-* `AKAMAI_CLIENT_TOKEN` - Client token.
-* `AKAMAI_HOST` - API host.
+* `AUTODNS_API_PASSWORD` - User Password.
+* `AUTODNS_API_USER` - Username.
 
-* `AKAMAI_POLLING_INTERVAL` - Time between DNS propagation check.
-* `AKAMAI_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `AKAMAI_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `AUTODNS_CONTEXT` - API context (4 for production, 1 for testing. Defaults to 4).
+* `AUTODNS_ENDPOINT` - API endpoint URL, defaults to https://api.autodns.com/v1/.
+* `AUTODNS_HTTP_TIMEOUT` - API request timeout, defaults to 30 seconds.
+* `AUTODNS_POLLING_INTERVAL` - Time between DNS propagation check.
+* `AUTODNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `AUTODNS_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

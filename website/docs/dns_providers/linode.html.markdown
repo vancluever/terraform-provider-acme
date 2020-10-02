@@ -1,6 +1,6 @@
 ---
 layout: "acme"
-page_title: "ACME: Linode (deprecated) DNS Challenge Provider"
+page_title: "ACME: Linode (v4) DNS Challenge Provider"
 sidebar_current: "docs-acme-dns-providers-linode"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
@@ -12,11 +12,11 @@ ACME provider's API library [lego](https://go-acme.github.io/lego/).
 Some sections may refer to lego directly - in most cases, these
 sections apply to the Terraform provider as well.
 
-# Linode (deprecated) DNS Challenge Provider
+# Linode (v4) DNS Challenge Provider
 
 The `linode` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Linode (deprecated)](https://www.linode.com/).
+[Linode (v4)](https://www.linode.com/).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 
@@ -52,10 +52,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `LINODE_API_KEY` - API key.
+* `LINODE_TOKEN` - API token.
 
 * `LINODE_HTTP_TIMEOUT` - API request timeout.
 * `LINODE_POLLING_INTERVAL` - Time between DNS propagation check.
+* `LINODE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
 * `LINODE_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 
