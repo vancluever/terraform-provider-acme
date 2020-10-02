@@ -18,7 +18,7 @@ website][terraform-io] and the [GitHub project page][terraform-gh].
 For ACME v1 endpoints, version 0.6.0 is required, which can be found
 [here][release-v0.6.0].
 
-[release-v0.6.0]: https://github.com/vancluever/terraform-provider-acme/releases/tag/v0.6.0
+[release-v0.6.0]: https://github.com/vancluever/terraform-provider-acme-old/releases/tag/v0.6.0
 
 # Using the Provider
 
@@ -158,7 +158,7 @@ run.
 ## License
 
 ```
-Copyright 2018 Chris Marchesi
+Copyright 2018-2020 Chris Marchesi
 Copyright 2016-2018 PayByPhone Technologies, Inc.
 
 This Source Code Form is subject to the terms of the Mozilla Public
