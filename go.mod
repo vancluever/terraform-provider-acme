@@ -1,5 +1,7 @@
 module github.com/terraform-providers/terraform-provider-acme
 
+go 1.15
+
 require (
 	github.com/BurntSushi/toml v0.3.1
 	github.com/davecgh/go-spew v1.1.1
