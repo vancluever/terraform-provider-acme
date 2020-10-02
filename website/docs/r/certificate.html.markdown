@@ -196,6 +196,7 @@ resource "acme_certificate" "certificate" {
       AWS_ACCESS_KEY_ID     = "${var.aws_access_key}"
       AWS_SECRET_ACCESS_KEY = "${var.aws_secret_key}"
       AWS_SESSION_TOKEN     = "${var.aws_security_token}"
+      AWS_DEFAULT_REGION    = "us-east-1"  # OPTIONAL
     }
   }
 
