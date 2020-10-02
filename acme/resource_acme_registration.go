@@ -1,8 +1,8 @@
 package acme
 
 import (
-	"github.com/go-acme/lego/v3/acme"
-	"github.com/go-acme/lego/v3/registration"
+	"github.com/go-acme/lego/v4/acme"
+	"github.com/go-acme/lego/v4/registration"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 

@@ -6,9 +6,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/go-acme/lego/v3/certificate"
-	"github.com/go-acme/lego/v3/challenge"
-	"github.com/go-acme/lego/v3/challenge/dns01"
+	"github.com/go-acme/lego/v4/certificate"
+	"github.com/go-acme/lego/v4/challenge"
+	"github.com/go-acme/lego/v4/challenge/dns01"
 	"github.com/hashicorp/go-multierror"
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -290,7 +290,10 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		if err != nil {
 			return err
 		}
-		cert, err = client.Certificate.ObtainForCSR(*csr, true)
+		cert, err = client.Certificate.ObtainForCSR(certificate.ObtainForCSRRequest{
+			CSR:    csr,
+			Bundle: true,
+		})
 	} else {
 		cn := d.Get("common_name").(string)
 		domains := []string{cn}
@@ -456,7 +459,7 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 		return err
 	}
 
-	newCert, err := client.Certificate.Renew(*cert, true, d.Get("must_staple").(bool))
+	newCert, err := client.Certificate.Renew(*cert, true, d.Get("must_staple").(bool), "")
 	if err != nil {
 		return err
 	}

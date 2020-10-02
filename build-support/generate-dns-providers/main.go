@@ -19,7 +19,7 @@ import (
 // envVarAliases are Terraform-specific environment variables for
 // specific providers.
 var envVarAliases = map[string]map[string]string{
-	"azure": map[string]string{
+	"azure": {
 		"ARM_CLIENT_ID":       "AZURE_CLIENT_ID",
 		"ARM_CLIENT_SECRET":   "AZURE_CLIENT_SECRET",
 		"ARM_SUBSCRIPTION_ID": "AZURE_SUBSCRIPTION_ID",
@@ -56,7 +56,7 @@ var dnsProviderDocTemplate = template.Must(
 )
 
 // legoPkgPath is the root lego package path to use.
-const legoPkgPath = "github.com/go-acme/lego/v3"
+const legoPkgPath = "github.com/go-acme/lego/v4"
 
 // Type from "go help mod edit"
 type pkgInfoGoMod struct {
