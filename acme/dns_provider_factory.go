@@ -43,6 +43,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/httpreq"
 	"github.com/go-acme/lego/v4/providers/dns/hyperone"
 	"github.com/go-acme/lego/v4/providers/dns/iij"
+	"github.com/go-acme/lego/v4/providers/dns/infomaniak"
 	"github.com/go-acme/lego/v4/providers/dns/inwx"
 	"github.com/go-acme/lego/v4/providers/dns/joker"
 	"github.com/go-acme/lego/v4/providers/dns/lightsail"
@@ -410,6 +411,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"iij": func() (challenge.Provider, error) {
 		p, err := iij.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"infomaniak": func() (challenge.Provider, error) {
+		p, err := infomaniak.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
