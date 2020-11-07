@@ -52,7 +52,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `JOKER_API_KEY` - API key.
+* `JOKER_API_KEY` - API key (only with DMAPI mode).
+* `JOKER_API_MODE` - 'DMAPI' or 'SVC'. DMAPI is for resellers accounts. (Default: DMAPI).
 * `JOKER_PASSWORD` - Joker.com password.
 * `JOKER_USERNAME` - Joker.com username (email address).
 

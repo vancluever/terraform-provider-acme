@@ -52,7 +52,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `MYTHICBEASTS_PASSWORD` - Paswword.
+* `MYTHICBEASTS_PASSWORD` - Password.
 * `MYTHICBEASTS_USERNAME` - User name.
 
 * `MYTHICBEASTS_API_ENDPOINT` - The endpoint for the API (must implement v2).

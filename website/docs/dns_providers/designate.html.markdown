@@ -56,12 +56,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `OS_PASSWORD` - Password.
 * `OS_PROJECT_NAME` - Project name.
 * `OS_REGION_NAME` - Region name.
-* `OS_TENANT_NAME` - Tenant name (deprecated see OS_PROJECT_NAME and OS_PROJECT_ID).
 * `OS_USERNAME` - Username.
 
 * `DESIGNATE_POLLING_INTERVAL` - Time between DNS propagation check.
 * `DESIGNATE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
 * `DESIGNATE_TTL` - The TTL of the TXT record used for the DNS challenge.
 * `OS_PROJECT_ID` - Project ID.
+* `OS_TENANT_NAME` - Tenant name (deprecated see OS_PROJECT_NAME and OS_PROJECT_ID).
 
 

@@ -1,7 +1,7 @@
 ---
 layout: "acme"
-page_title: "ACME: Dyn DNS Challenge Provider"
-sidebar_current: "docs-acme-dns-providers-dyn"
+page_title: "ACME: Infomaniak DNS Challenge Provider"
+sidebar_current: "docs-acme-dns-providers-infomaniak"
 description: |-
   Provides a resource to manage certificates on an ACME CA.
 ---
@@ -12,11 +12,11 @@ ACME provider's API library [lego](https://go-acme.github.io/lego/).
 Some sections may refer to lego directly - in most cases, these
 sections apply to the Terraform provider as well.
 
-# Dyn DNS Challenge Provider
+# Infomaniak DNS Challenge Provider
 
-The `dyn` DNS challenge provider can be used to perform DNS challenges for
+The `infomaniak` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Dyn](https://dyn.com/).
+[Infomaniak](https://www.infomaniak.com/).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 
@@ -32,7 +32,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "dyn"
+    provider = "infomaniak"
   }
 }
 ```
@@ -52,13 +52,17 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
-* `DYN_CUSTOMER_NAME` - Customer name.
-* `DYN_PASSWORD` - Password.
-* `DYN_USER_NAME` - User name.
+* `INFOMANIAK_ACCESS_TOKEN` - Access token.
 
-* `DYN_HTTP_TIMEOUT` - API request timeout.
-* `DYN_POLLING_INTERVAL` - Time between DNS propagation check.
-* `DYN_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `DYN_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `INFOMANIAK_ENDPOINT` - https://api.infomaniak.com.
+* `INFOMANIAK_HTTP_TIMEOUT` - API request timeout.
+* `INFOMANIAK_POLLING_INTERVAL` - Time between DNS propagation check.
+* `INFOMANIAK_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `INFOMANIAK_TTL` - The TTL of the TXT record used for the DNS challenge in seconds.
 
+## Access token
+
+Access token can be created at the url https://manager.infomaniak.com/v3/infomaniak-api.
+You will need domain scope.
+```
 

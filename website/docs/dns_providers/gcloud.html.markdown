@@ -57,6 +57,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `GCE_SERVICE_ACCOUNT` - Account.
 * `GCE_SERVICE_ACCOUNT_FILE` - Account file path.
 
+* `GCE_ALLOW_PRIVATE_ZONE` - Allows requested domain to be in private DNS zone, works only with a private ACME server (by default: false).
 * `GCE_POLLING_INTERVAL` - Time between DNS propagation check.
 * `GCE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
 * `GCE_TTL` - The TTL of the TXT record used for the DNS challenge.

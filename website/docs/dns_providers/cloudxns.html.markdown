@@ -53,7 +53,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
 * `CLOUDXNS_API_KEY` - The API key.
-* `CLOUDXNS_SECRET_KEY` - THe API secret key.
+* `CLOUDXNS_SECRET_KEY` - The API secret key.
 
 * `CLOUDXNS_HTTP_TIMEOUT` - API request timeout.
 * `CLOUDXNS_POLLING_INTERVAL` - Time between DNS propagation check.

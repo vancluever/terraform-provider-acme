@@ -54,7 +54,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `VSCALE_API_TOKEN` - API token.
 
-* `VSCALE_BASE_URL` - API enddpoint URL.
+* `VSCALE_BASE_URL` - API endpoint URL.
 * `VSCALE_HTTP_TIMEOUT` - API request timeout.
 * `VSCALE_POLLING_INTERVAL` - Time between DNS propagation check.
 * `VSCALE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.

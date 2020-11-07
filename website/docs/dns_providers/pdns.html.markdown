@@ -53,7 +53,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
 
 * `PDNS_API_KEY` - API key.
-* `PDNS_API_URL` - API url.
+* `PDNS_API_URL` - API URL.
 
 * `PDNS_HTTP_TIMEOUT` - API request timeout.
 * `PDNS_POLLING_INTERVAL` - Time between DNS propagation check.

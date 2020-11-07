@@ -6,7 +6,7 @@ require (
 	github.com/BurntSushi/toml v0.3.1
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-acme/lego/v3 v3.1.0
-	github.com/go-acme/lego/v4 v4.0.1
+	github.com/go-acme/lego/v4 v4.1.0
 	github.com/go-test/deep v1.0.2-0.20181118220953-042da051cf31 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.9.5 // indirect
 	github.com/hashicorp/go-multierror v1.0.0
@@ -20,6 +20,7 @@ require (
 	github.com/miekg/dns v1.1.31
 	github.com/mitchellh/copystructure v1.0.0
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
+	github.com/oklog/run v1.1.0 // indirect
 	github.com/spf13/afero v1.2.2 // indirect
 	github.com/terraform-providers/terraform-provider-tls v1.2.0
 	github.com/ulikunitz/xz v0.5.6 // indirect
