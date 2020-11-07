@@ -2,6 +2,7 @@ TEST?=$$(go list ./... |grep -v 'vendor')
 GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 WEBSITE_REPO=github.com/hashicorp/terraform-website
 PKG_NAME=acme
+PEBBLE_VERSION=2.3.0
 
 export ACME_SERVER_URL ?= https://acme-staging-v02.api.letsencrypt.org/directory
 
@@ -9,6 +10,12 @@ default: build
 
 tools:
 	cd $(shell go env GOROOT) && go get -u github.com/hashicorp/go-bindata/go-bindata
+
+pebble-start: pebble-stop
+	build-support/scripts/pebble-start.sh
+
+pebble-stop:
+	build-support/scripts/pebble-stop.sh
 
 template-generate:
 	@echo "==> Re-generating templates..."

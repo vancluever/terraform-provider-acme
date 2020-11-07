@@ -51,6 +51,25 @@ func TestAccACMECertificate_basic(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_pebble(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckCertPebble(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigPebble(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrPair(
+						"acme_certificate.certificate", "id",
+						"acme_certificate.certificate", "certificate_url",
+					),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www", "www2", false),
+				),
+			},
+		},
+	})
+}
+
 func TestAccACMECertificate_CSR(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckCert(t) },
@@ -440,6 +459,28 @@ func testAccPreCheckCertMultiProviders(t *testing.T) {
 	}
 }
 
+func testAccPreCheckCertPebble(t *testing.T) {
+	if v := os.Getenv("ACME_EMAIL_ADDRESS"); v == "" {
+		t.Fatal("ACME_EMAIL_ADDRESS must be set for the certificate acceptance test")
+	}
+
+	if v := os.Getenv("ACME_CERT_DOMAIN"); v == "" {
+		t.Fatal("ACME_CERT_DOMAIN must be set for the certificate acceptance test")
+	}
+
+	if v := os.Getenv("ACME_PEBBLE_URL"); v == "" {
+		t.Fatal("ACME_PEBBLE_URL must be set for acceptance tests using local pebble test server")
+	}
+
+	if v := os.Getenv("ACME_PEBBLE_CHALLTEST_DNS_PATH"); v == "" {
+		t.Fatal("ACME_PEBBLE_CHALLTEST_DNS_PATH must be set for acceptance tests using local pebble test server")
+	}
+
+	if v := os.Getenv("ACME_PEBBLE_CHALLTEST_DNS_ADDR"); v == "" {
+		t.Fatal("ACME_PEBBLE_CHALLTEST_DNS_ADDR must be set for acceptance tests using local pebble test server")
+	}
+}
+
 func testAccACMECertificateConfig() string {
 	return fmt.Sprintf(`
 variable "email_address" {
@@ -469,6 +510,51 @@ resource "acme_certificate" "certificate" {
   }
 }
 `, os.Getenv("ACME_EMAIL_ADDRESS"), os.Getenv("ACME_CERT_DOMAIN"))
+}
+
+func testAccACMECertificateConfigPebble() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "www.${var.domain}"
+  subject_alternative_names = ["www2.${var.domain}"]
+
+  recursive_nameservers = ["%s"]
+
+  dns_challenge {
+    provider = "exec"
+    config = {
+      EXEC_PATH = "%s"
+    }
+  }
+}
+`, os.Getenv("ACME_PEBBLE_URL"),
+		os.Getenv("ACME_EMAIL_ADDRESS"),
+		os.Getenv("ACME_CERT_DOMAIN"),
+		os.Getenv("ACME_PEBBLE_CHALLTEST_DNS_ADDR"),
+		os.Getenv("ACME_PEBBLE_CHALLTEST_DNS_PATH"),
+	)
 }
 
 func testAccACMECertificateCSRConfig() string {
