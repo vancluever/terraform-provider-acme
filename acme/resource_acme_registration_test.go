@@ -30,6 +30,25 @@ func TestAccACMERegistration_basic(t *testing.T) {
 	})
 }
 
+func TestAccACMERegistration_eab(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckACMERegistrationValid("acme_registration.reg", false),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMERegistrationConfigPebble,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrPair(
+						"acme_registration.reg", "id",
+						"acme_registration.reg", "registration_url",
+					),
+					testAccCheckACMERegistrationValid("acme_registration.reg", true),
+				),
+			},
+		},
+	})
+}
+
 func TestAccACMERegistration_refreshDeactivated(t *testing.T) {
 	var state *terraform.State
 	resource.Test(t, resource.TestCase{
@@ -138,3 +157,22 @@ resource "acme_registration" "reg" {
 }
 `, os.Getenv("ACME_EMAIL_ADDRESS"))
 }
+
+const testAccACMERegistrationConfigPebble = `
+provider "acme" {
+  server_url = "https://127.0.0.1:14001/dir"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "nobody@example.test"
+  external_account_binding {
+    key_id      = "kid-1"
+    hmac_base64 = "zWNDZM6eQGHWpSRTPal5eIUYFTu7EajVIoguysqZ9wG44nMEtx3MUAsUDkMTQ12W"
+  }
+}
+`

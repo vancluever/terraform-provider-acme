@@ -59,6 +59,12 @@ The resource takes the following arguments:
 
 * `account_key_pem` (Required) - The private key used to identity the account.
 * `email_address` (Required) - The contact email address for the account.
+* `external_account_binding` (Optional) - An external account binding for the
+  registration, usually used to link the registration with an account in a
+  commercial CA. Sub-options are:
+    - `key_id` (Required): The key ID for the external account binding.
+    - `hmac_base64` (Required): The base64-encoded message authentication code
+      for the external account binding.
 
 #### Attribute Reference
 
