@@ -2,6 +2,9 @@
 
 FEATURES:
 
+* `resource/acme_registration:` Added support for external account binding. This
+  allows registrations to be linked to external accounts, commonly used by
+  commercial CAs.
 * `resource/acme_certificate:` Added the `disable_complete_propagation` option,
   which allows one to disable the propagation pre-check before attempting to
   complete the DNS challenge. Enabling this is only recommended for testing.
