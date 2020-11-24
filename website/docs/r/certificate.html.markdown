@@ -142,6 +142,9 @@ The resource takes the following arguments:
   nameservers](#manually-specifying-recursive-nameservers-for-propagation-checks)
   that will be used to check for propagation of the challenge record. Defaults
   to your system-configured DNS resolvers.
+* `disable_complete_propagation` (Optional) - Disable the requiement for full
+  propagation of the TXT challenge record before proceeding with validation.
+  Defaults to `false`. Only recommended for testing..
 * `must_staple` (Optional) Enables the [OCSP Stapling Required][ocsp-stapling]
   TLS Security Policy extension. Certificates with this extension must include a
   valid OCSP Staple in the TLS handshake for the connection to succeed.

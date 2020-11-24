@@ -540,7 +540,8 @@ resource "acme_certificate" "certificate" {
   common_name               = "www.${var.domain}"
   subject_alternative_names = ["www2.${var.domain}"]
 
-  recursive_nameservers = ["%s"]
+  recursive_nameservers        = ["%s"]
+  disable_complete_propagation = true
 
   dns_challenge {
     provider = "exec"

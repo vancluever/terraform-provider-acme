@@ -1,4 +1,11 @@
-## 1.5.1 (Unreleased)
+## 1.6.0 (Unreleased)
+
+FEATURES:
+
+* `resource/acme_certificate:` Added the `disable_complete_propagation` option,
+  which allows one to disable the propagation pre-check before attempting to
+  complete the DNS challenge. Enabling this is only recommended for testing.
+
 ## 1.5.0 (October 21, 2019)
 
 LEGO UPDATE:
