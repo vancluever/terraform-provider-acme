@@ -23,7 +23,7 @@ jobs:
           cache-name: go-build-cache
           cache-dir: /home/runner/.cache/go-build
         with:
-          path: 
+          path: ${{ env.cache-dir }}
           key: ${{ env.cache-name}}-${{ hashFiles(format('{0}/**/*', env.cache-dir)) }}
           restore-keys: |
             ${{ env.cache-name}}-
