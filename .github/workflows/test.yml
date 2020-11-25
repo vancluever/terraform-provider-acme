@@ -27,6 +27,16 @@ jobs:
           key: ${{ env.cache-name}}-${{ hashFiles(format('{0}/**/*', env.cache-dir)) }}
           restore-keys: |
             ${{ env.cache-name}}-
+      - name: Cache (Pebble)
+        uses: actions/cache@v2
+        env:
+          cache-name: pebble-cache
+          cache-dir: /home/runner/go/src/github.com/letsencrypt/pebble
+        with:
+          path: ${{ env.cache-dir }}
+          key: ${{ env.cache-name}}-${{ hashFiles(format('{0}/**/*', env.cache-dir)) }}
+          restore-keys: |
+            ${{ env.cache-name}}-
       - run: go mod verify
-      - run: make tools pebble-start-install test
+      - run: make tools pebble-start test
 

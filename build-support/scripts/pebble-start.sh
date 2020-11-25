@@ -3,7 +3,7 @@
 set -e
 
 GOPATH="$(go env GOPATH)"
-PEBBLE_VERSION="2.3.0"
+PEBBLE_VERSION="2.3.1"
 # config files are relative to script dir
 PEBBLE_CFGFILE="../pebblecfg/basic.json"
 PEBBLE_PIDFILE="/tmp/pebble.pid"
@@ -24,6 +24,15 @@ BASIC_CFG="$(realpath "$(dirname "$0")"/${PEBBLE_CFGFILE})"
 EAB_CFG="$(realpath "$(dirname "$0")"/${PEBBLE_EAB_CFGFILE})"
 
 if [ "$1" == "--install" ]; then
+  INSTALL="yes"
+fi
+
+if [ ! -d "${GOPATH}/${PEBBLE_DIR}" ] || [ "$(cd "${GOPATH}/${PEBBLE_DIR}" && git rev-parse HEAD)" != "$(cd "${GOPATH}/${PEBBLE_DIR}" && git rev-list -n 1 "tags/v${PEBBLE_VERSION}")" ]; then
+  echo "pebble source code missing or incorrect version, forcing install."
+  INSTALL="yes"
+fi
+
+if [ "${INSTALL}" == "yes" ]; then
   cd "${GOPATH}"
   rm -rf "${PEBBLE_DIR}"
   git clone "${PEBBLE_SRC}" "${PEBBLE_DIR}"
