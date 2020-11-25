@@ -464,6 +464,10 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 		opts = append(opts, dns01.AddRecursiveNameservers(s))
 	}
 
+	if d.Get("disable_complete_propagation").(bool) {
+		opts = append(opts, dns01.DisableCompletePropagationRequirement())
+	}
+
 	if err := client.Challenge.SetDNS01Provider(provider, opts...); err != nil {
 		return err
 	}

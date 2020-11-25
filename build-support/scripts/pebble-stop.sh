@@ -4,7 +4,6 @@ PEBBLE_PIDFILE="/tmp/pebble.pid"
 PEBBLE_EAB_PIDFILE="/tmp/pebble-eab.pid"
 PEBBLE_CHALLTESTSRV_PIDFILE="/tmp/pebble-challtestsrv.pid"
 
-set -e
 PEBBLE_ERROR="false"
 PEBBLE_EAB_ERROR="false"
 PEBBLE_CHALLTESTSRV_ERROR="false"

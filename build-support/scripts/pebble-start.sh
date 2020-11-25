@@ -14,7 +14,7 @@ PEBBLE_EAB_PIDFILE="/tmp/pebble-eab.pid"
 PEBBLE_EAB_LOGFILE="/tmp/pebble-eab.log"
 PEBBLE_CHALLTESTSRV_PIDFILE="/tmp/pebble-challtestsrv.pid"
 PEBBLE_CHALLTESTSRV_LOGFILE="/tmp/pebble-challtestsrv.log"
-PEBBLE_CHALLTESTSRV_DNS_SERVER="127.0.0.1:5553"
+PEBBLE_CHALLTESTSRV_DNS_SERVER="0.0.0.0:5553"
 PEBBLE_SRC="git@github.com:letsencrypt/pebble.git"
 PEBBLE_DIR="src/github.com/letsencrypt/pebble"
 PEBBLE_CA_CERT="test/certs/pebble.minica.pem"
@@ -23,13 +23,17 @@ PEBBLE_CA_CERT="test/certs/pebble.minica.pem"
 BASIC_CFG="$(realpath "$(dirname "$0")"/${PEBBLE_CFGFILE})"
 EAB_CFG="$(realpath "$(dirname "$0")"/${PEBBLE_EAB_CFGFILE})"
 
-# shellcheck disable=SC2086
-cd "${GOPATH}"
-rm -rf "${PEBBLE_DIR}"
-git clone "${PEBBLE_SRC}" "${PEBBLE_DIR}"
-cd "${PEBBLE_DIR}"
-git checkout "v${PEBBLE_VERSION}"
-go install ./...
+if [ "$1" == "--install" ]; then
+  cd "${GOPATH}"
+  rm -rf "${PEBBLE_DIR}"
+  git clone "${PEBBLE_SRC}" "${PEBBLE_DIR}"
+  cd "${PEBBLE_DIR}"
+  git checkout "v${PEBBLE_VERSION}"
+  go install ./...
+else
+  cd "${GOPATH}/${PEBBLE_DIR}"
+fi
+
 pebble-challtestsrv -dns01 "${PEBBLE_CHALLTESTSRV_DNS_SERVER}" -http01 "" -tlsalpn01 "" > "${PEBBLE_CHALLTESTSRV_LOGFILE}" 2>&1 &
 echo -n $! > "${PEBBLE_CHALLTESTSRV_PIDFILE}"
 # Basic Pebble instance

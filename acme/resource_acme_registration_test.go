@@ -2,7 +2,6 @@ package acme
 
 import (
 	"fmt"
-	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/resource"
@@ -12,7 +11,6 @@ import (
 
 func TestAccACMERegistration_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t); testAccPreCheckReg(t) },
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckACMERegistrationValid("acme_registration.reg", false),
 		Steps: []resource.TestStep{
@@ -36,7 +34,7 @@ func TestAccACMERegistration_eab(t *testing.T) {
 		CheckDestroy: testAccCheckACMERegistrationValid("acme_registration.reg", false),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccACMERegistrationConfigPebble,
+				Config: testAccACMERegistrationConfigEAB(),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrPair(
 						"acme_registration.reg", "id",
@@ -52,7 +50,6 @@ func TestAccACMERegistration_eab(t *testing.T) {
 func TestAccACMERegistration_refreshDeactivated(t *testing.T) {
 	var state *terraform.State
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t); testAccPreCheckReg(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			{
@@ -139,28 +136,27 @@ func testAccCheckACMERegistrationResourceData(rs *terraform.ResourceState) *sche
 	return d
 }
 
-func testAccPreCheckReg(t *testing.T) {
-	if v := os.Getenv("ACME_EMAIL_ADDRESS"); v == "" {
-		t.Fatal("ACME_EMAIL_ADDRESS must be set for the registration acceptance test")
-	}
-}
-
 func testAccACMERegistrationConfig() string {
 	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
 resource "tls_private_key" "private_key" {
-    algorithm = "RSA"
+  algorithm = "RSA"
 }
 
 resource "acme_registration" "reg" {
   account_key_pem = "${tls_private_key.private_key.private_key_pem}"
-  email_address   = "%s"
+  email_address   = "nobody@example.test"
 }
-`, os.Getenv("ACME_EMAIL_ADDRESS"))
+`, pebbleDirBasic)
 }
 
-const testAccACMERegistrationConfigPebble = `
+func testAccACMERegistrationConfigEAB() string {
+	return fmt.Sprintf(`
 provider "acme" {
-  server_url = "https://127.0.0.1:14001/dir"
+  server_url = "%s"
 }
 
 resource "tls_private_key" "private_key" {
@@ -175,4 +171,5 @@ resource "acme_registration" "reg" {
     hmac_base64 = "zWNDZM6eQGHWpSRTPal5eIUYFTu7EajVIoguysqZ9wG44nMEtx3MUAsUDkMTQ12W"
   }
 }
-`
+`, pebbleDirEAB)
+}
