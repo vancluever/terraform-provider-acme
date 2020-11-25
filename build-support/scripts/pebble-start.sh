@@ -41,6 +41,15 @@ if [ "${INSTALL}" == "yes" ]; then
   go install ./...
 else
   cd "${GOPATH}/${PEBBLE_DIR}"
+  if [ ! -x "${GOPATH}/bin/pebble" ] || [ ! -x "${GOPATH}/bin/pebble-challtestsrv" ]; then
+    echo "rebuilding ${GOPATH}/bin/pebble and ${GOPATH}/bin/pebble-challtestsrv from cache."
+    go install ./...
+  fi
+fi
+
+if [ ! -x "${GOPATH}/bin/pebble" ] || [ ! -x "${GOPATH}/bin/pebble-challtestsrv" ]; then
+  echo "${GOPATH}/bin/pebble or ${GOPATH}/bin/pebble-challtestsrv missing; error happened in installation.">&2
+  exit 1
 fi
 
 pebble-challtestsrv -dns01 "${PEBBLE_CHALLTESTSRV_DNS_SERVER}" -http01 "" -tlsalpn01 "" > "${PEBBLE_CHALLTESTSRV_LOGFILE}" 2>&1 &
