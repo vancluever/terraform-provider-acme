@@ -24,7 +24,7 @@ jobs:
           cache-dir: /home/runner/.cache/go-build
         with:
           path: 
-          key: ${{ env.cache-name}}-${{ hashFiles(env.cache-dir + '**/*') }}
+          key: ${{ env.cache-name}}-${{ hashFiles(format('{0}/**/*', env.cache-dir)) }}
           restore-keys: |
             ${{ env.cache-name}}-
       - run: go mod verify
