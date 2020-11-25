@@ -1,5 +1,14 @@
 ## 1.6.0 (Unreleased)
 
+GENERAL NOTIFICATIONS:
+
+* Testing of the provider has moved to use
+  [pebble](https://github.com/letsencrypt/pebble/) exclusively. Tests for some
+  features that are not explicitly supported by pebble or were otherwise tested
+  manually have been removed. See
+  [`907de66`](https://github.com/vancluever/terraform-provider-acme/commit/907de66625886fbd86b383cb158515ef458f3604)
+  for more details.
+
 FEATURES:
 
 * `resource/acme_registration:` Added support for external account binding. This
