@@ -8,5 +8,12 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: '^1.15.5'
+      - uses: actions/cache@v2
+        with:
+          path: /home/runner/go/mod
+          key: go-mod-cache-${{ hashFiles('go.mod') }}
+          restore-keys: |
+            go-mod-cache-
+      - run: go mod verify
       - run: make tools pebble-start-install test
 
