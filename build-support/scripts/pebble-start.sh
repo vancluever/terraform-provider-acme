@@ -15,7 +15,7 @@ PEBBLE_EAB_LOGFILE="/tmp/pebble-eab.log"
 PEBBLE_CHALLTESTSRV_PIDFILE="/tmp/pebble-challtestsrv.pid"
 PEBBLE_CHALLTESTSRV_LOGFILE="/tmp/pebble-challtestsrv.log"
 PEBBLE_CHALLTESTSRV_DNS_SERVER="0.0.0.0:5553"
-PEBBLE_SRC="git@github.com:letsencrypt/pebble.git"
+PEBBLE_SRC="https://github.com/letsencrypt/pebble.git"
 PEBBLE_DIR="src/github.com/letsencrypt/pebble"
 PEBBLE_CA_CERT="test/certs/pebble.minica.pem"
 
