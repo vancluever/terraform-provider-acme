@@ -8,12 +8,25 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: '^1.15.5'
-      - uses: actions/cache@v2
+      - name: Cache (Go Modules)
+        uses: actions/cache@v2
+        env:
+          cache-name: go-mod-cache
         with:
           path: /home/runner/go/pkg/mod
-          key: go-mod-cache-${{ hashFiles('go.sum') }}
+          key: ${{ env.cache-name}}-${{ hashFiles('go.sum') }}
           restore-keys: |
-            go-mod-cache-
+            ${{ env.cache-name}}-
+      - name: Cache (Go Build)
+        uses: actions/cache@v2
+        env:
+          cache-name: go-build-cache
+          cache-dir: /home/runner/.cache/go-build
+        with:
+          path: 
+          key: ${{ env.cache-name}}-${{ hashFiles(env.cache-dir + '**/*') }}
+          restore-keys: |
+            ${{ env.cache-name}}-
       - run: go mod verify
       - run: make tools pebble-start-install test
 
