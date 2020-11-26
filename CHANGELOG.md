@@ -1,5 +1,12 @@
 ## 1.6.0 (Unreleased)
 
+LEGO UPDATE:
+
+[lego](https://github.com/go-acme/lego) has been updated to v4.1.3 See the lego
+[CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.1.3/CHANGELOG.md) for
+more details on additions and changes to DNS providers, and other minor changes
+to the library.
+
 GENERAL NOTIFICATIONS:
 
 * Testing of the provider has moved to use
@@ -8,6 +15,8 @@ GENERAL NOTIFICATIONS:
   manually have been removed. See
   [`907de66`](https://github.com/vancluever/terraform-provider-acme/commit/907de66625886fbd86b383cb158515ef458f3604)
   for more details.
+* Support for Terraform 0.11 has been dropped. The provider is now only
+  available on the Terraform registry.
 
 FEATURES:
 
