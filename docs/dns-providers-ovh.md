@@ -3,11 +3,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# {{.Name}} DNS Challenge Provider
+# OVH DNS Challenge Provider
 
-The `{{.Code}}` DNS challenge provider can be used to perform DNS challenges for
+The `ovh` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-{{if .URL}}[{{.Name}}]({{.URL}}){{else}}{{.Name}}{{- end}}.
+[OVH](https://www.ovh.com/).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 
@@ -23,12 +23,10 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "{{.Code}}"
+    provider = "ovh"
   }
 }
 ```
-
-{{- if .Configuration.Present}}
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -44,19 +42,35 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [here][acme-certificate-file-arg-example] for more information.
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
-{{range $k, $v := .Configuration.Credentials}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{range $k, $v := .Configuration.Additional}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{if .EnvVarAliases}}
-The following variables are **Terraform-specific** aliases for the above
-configuration values:
 
-{{range $k, $v := .EnvVarAliases}}
-* `{{$k}}` - alias for `{{$v}}`.
-{{- end}}
-{{end}}
-{{- end}}
-{{.Additional}}
+* `OVH_APPLICATION_KEY` - Application key.
+* `OVH_APPLICATION_SECRET` - Application secret.
+* `OVH_CONSUMER_KEY` - Consumer key.
+* `OVH_ENDPOINT` - Endpoint URL (ovh-eu or ovh-ca).
+
+* `OVH_HTTP_TIMEOUT` - API request timeout.
+* `OVH_POLLING_INTERVAL` - Time between DNS propagation check.
+* `OVH_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `OVH_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+## Application Key and Secret
+
+Application key and secret can be created by following the [OVH guide](https://docs.ovh.com/gb/en/customer/first-steps-with-ovh-api/).
+
+When requesting the consumer key, the following configuration can be use to define access rights:
+
+```json
+{
+  "accessRules": [
+    {
+      "method": "POST",
+      "path": "/domain/zone/*"
+    },
+    {
+      "method": "DELETE",
+      "path": "/domain/zone/*"
+    }
+  ]
+}
+```
+

@@ -3,11 +3,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# {{.Name}} DNS Challenge Provider
+# RFC2136 DNS Challenge Provider
 
-The `{{.Code}}` DNS challenge provider can be used to perform DNS challenges for
+The `rfc2136` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-{{if .URL}}[{{.Name}}]({{.URL}}){{else}}{{.Name}}{{- end}}.
+[RFC2136](https://tools.ietf.org/html/rfc2136).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 
@@ -23,12 +23,10 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "{{.Code}}"
+    provider = "rfc2136"
   }
 }
 ```
-
-{{- if .Configuration.Present}}
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -44,19 +42,16 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [here][acme-certificate-file-arg-example] for more information.
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
-{{range $k, $v := .Configuration.Credentials}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{range $k, $v := .Configuration.Additional}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{if .EnvVarAliases}}
-The following variables are **Terraform-specific** aliases for the above
-configuration values:
 
-{{range $k, $v := .EnvVarAliases}}
-* `{{$k}}` - alias for `{{$v}}`.
-{{- end}}
-{{end}}
-{{- end}}
-{{.Additional}}
+* `RFC2136_NAMESERVER` - Network address in the form "host" or "host:port".
+* `RFC2136_TSIG_ALGORITHM` - TSIG algorithm. See [miekg/dns#tsig.go](https://github.com/miekg/dns/blob/master/tsig.go) for supported values. To disable TSIG authentication, leave the `RFC2136_TSIG*` variables unset..
+* `RFC2136_TSIG_KEY` - Name of the secret key as defined in DNS server configuration. To disable TSIG authentication, leave the `RFC2136_TSIG*` variables unset..
+* `RFC2136_TSIG_SECRET` - Secret key payload. To disable TSIG authentication, leave the` RFC2136_TSIG*` variables unset..
+
+* `RFC2136_DNS_TIMEOUT` - API request timeout.
+* `RFC2136_POLLING_INTERVAL` - Time between DNS propagation check.
+* `RFC2136_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `RFC2136_SEQUENCE_INTERVAL` - Interval between iteration.
+* `RFC2136_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

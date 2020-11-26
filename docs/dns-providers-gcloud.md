@@ -3,11 +3,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# {{.Name}} DNS Challenge Provider
+# Google Cloud DNS Challenge Provider
 
-The `{{.Code}}` DNS challenge provider can be used to perform DNS challenges for
+The `gcloud` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-{{if .URL}}[{{.Name}}]({{.URL}}){{else}}{{.Name}}{{- end}}.
+[Google Cloud](https://cloud.google.com).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 
@@ -23,12 +23,10 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "{{.Code}}"
+    provider = "gcloud"
   }
 }
 ```
-
-{{- if .Configuration.Present}}
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -44,19 +42,15 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [here][acme-certificate-file-arg-example] for more information.
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
-{{range $k, $v := .Configuration.Credentials}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{range $k, $v := .Configuration.Additional}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{if .EnvVarAliases}}
-The following variables are **Terraform-specific** aliases for the above
-configuration values:
 
-{{range $k, $v := .EnvVarAliases}}
-* `{{$k}}` - alias for `{{$v}}`.
-{{- end}}
-{{end}}
-{{- end}}
-{{.Additional}}
+* `Application Default Credentials` - [Documentation](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application).
+* `GCE_PROJECT` - Project name (by default, the project name is auto-detected by using the metadata service).
+* `GCE_SERVICE_ACCOUNT` - Account.
+* `GCE_SERVICE_ACCOUNT_FILE` - Account file path.
+
+* `GCE_ALLOW_PRIVATE_ZONE` - Allows requested domain to be in private DNS zone, works only with a private ACME server (by default: false).
+* `GCE_POLLING_INTERVAL` - Time between DNS propagation check.
+* `GCE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `GCE_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

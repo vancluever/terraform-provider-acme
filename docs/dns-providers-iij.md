@@ -3,11 +3,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# {{.Name}} DNS Challenge Provider
+# Internet Initiative Japan DNS Challenge Provider
 
-The `{{.Code}}` DNS challenge provider can be used to perform DNS challenges for
+The `iij` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-{{if .URL}}[{{.Name}}]({{.URL}}){{else}}{{.Name}}{{- end}}.
+[Internet Initiative Japan](https://www.iij.ad.jp/en/).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 
@@ -23,12 +23,10 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "{{.Code}}"
+    provider = "iij"
   }
 }
 ```
-
-{{- if .Configuration.Present}}
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -44,19 +42,13 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [here][acme-certificate-file-arg-example] for more information.
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
-{{range $k, $v := .Configuration.Credentials}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{range $k, $v := .Configuration.Additional}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{if .EnvVarAliases}}
-The following variables are **Terraform-specific** aliases for the above
-configuration values:
 
-{{range $k, $v := .EnvVarAliases}}
-* `{{$k}}` - alias for `{{$v}}`.
-{{- end}}
-{{end}}
-{{- end}}
-{{.Additional}}
+* `IIJ_API_ACCESS_KEY` - API access key.
+* `IIJ_API_SECRET_KEY` - API secret key.
+* `IIJ_DO_SERVICE_CODE` - DO service code.
+
+* `IIJ_POLLING_INTERVAL` - Time between DNS propagation check.
+* `IIJ_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `IIJ_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

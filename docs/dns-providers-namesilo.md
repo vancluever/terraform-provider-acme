@@ -3,11 +3,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# {{.Name}} DNS Challenge Provider
+# Namesilo DNS Challenge Provider
 
-The `{{.Code}}` DNS challenge provider can be used to perform DNS challenges for
+The `namesilo` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-{{if .URL}}[{{.Name}}]({{.URL}}){{else}}{{.Name}}{{- end}}.
+[Namesilo](https://www.namesilo.com/).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 
@@ -23,12 +23,10 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "{{.Code}}"
+    provider = "namesilo"
   }
 }
 ```
-
-{{- if .Configuration.Present}}
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -44,19 +42,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [here][acme-certificate-file-arg-example] for more information.
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
-{{range $k, $v := .Configuration.Credentials}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{range $k, $v := .Configuration.Additional}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{if .EnvVarAliases}}
-The following variables are **Terraform-specific** aliases for the above
-configuration values:
 
-{{range $k, $v := .EnvVarAliases}}
-* `{{$k}}` - alias for `{{$v}}`.
-{{- end}}
-{{end}}
-{{- end}}
-{{.Additional}}
+* `NAMESILO_API_KEY` - Client ID.
+
+* `NAMESILO_POLLING_INTERVAL` - Time between DNS propagation check.
+* `NAMESILO_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation, it is better to set larger than 15m.
+* `NAMESILO_TTL` - The TTL of the TXT record used for the DNS challenge, should be in [3600, 2592000].
+
+

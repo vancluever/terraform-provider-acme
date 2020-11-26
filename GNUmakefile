@@ -32,8 +32,8 @@ provider-generate:
 	@go build ./acme
 	@go mod tidy
 	@echo "==> Re-genrating documentation..."
-	@find website/docs/dns_providers -type f -not -name index.html.markdown | xargs rm
-	@go run ./build-support/generate-dns-providers doc website/
+	@rm docs/dns-providers-*.md
+	@go run ./build-support/generate-dns-providers doc docs/
 
 .PHONY: build
 build:

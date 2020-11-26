@@ -3,11 +3,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# {{.Name}} DNS Challenge Provider
+# HTTP request DNS Challenge Provider
 
-The `{{.Code}}` DNS challenge provider can be used to perform DNS challenges for
+The `httpreq` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-{{if .URL}}[{{.Name}}]({{.URL}}){{else}}{{.Name}}{{- end}}.
+HTTP request.
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 
@@ -23,12 +23,10 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "{{.Code}}"
+    provider = "httpreq"
   }
 }
 ```
-
-{{- if .Configuration.Present}}
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -44,19 +42,51 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [here][acme-certificate-file-arg-example] for more information.
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
-{{range $k, $v := .Configuration.Credentials}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{range $k, $v := .Configuration.Additional}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{if .EnvVarAliases}}
-The following variables are **Terraform-specific** aliases for the above
-configuration values:
 
-{{range $k, $v := .EnvVarAliases}}
-* `{{$k}}` - alias for `{{$v}}`.
-{{- end}}
-{{end}}
-{{- end}}
-{{.Additional}}
+* `HTTPREQ_ENDPOINT` - The URL of the server.
+* `HTTPREQ_MODE` - `RAW`, none.
+
+* `HTTPREQ_HTTP_TIMEOUT` - API request timeout.
+* `HTTPREQ_PASSWORD` - Basic authentication password.
+* `HTTPREQ_POLLING_INTERVAL` - Time between DNS propagation check.
+* `HTTPREQ_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `HTTPREQ_USERNAME` - Basic authentication username.
+
+## Description
+
+The server must provide:
+
+- `POST` `/present`
+- `POST` `/cleanup`
+
+The URL of the server must be define by `HTTPREQ_ENDPOINT`.
+
+### Mode
+
+There are 2 modes (`HTTPREQ_MODE`):
+
+- default mode:
+```json
+{
+  "fqdn": "_acme-challenge.domain.",
+  "value": "LHDhK3oGRvkiefQnx7OOczTY5Tic_xZ6HcMOc_gmtoM"
+}
+```
+
+- `RAW`
+```json
+{
+  "domain": "domain",
+  "token": "token",
+  "keyAuth": "key"
+}
+```
+
+### Authentication
+
+Basic authentication (optional) can be set with some environment variables:
+
+- `HTTPREQ_USERNAME` and `HTTPREQ_PASSWORD`
+- both values must be set, otherwise basic authentication is not defined.
+
+

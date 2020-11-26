@@ -3,11 +3,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# {{.Name}} DNS Challenge Provider
+# DNSimple DNS Challenge Provider
 
-The `{{.Code}}` DNS challenge provider can be used to perform DNS challenges for
+The `dnsimple` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-{{if .URL}}[{{.Name}}]({{.URL}}){{else}}{{.Name}}{{- end}}.
+[DNSimple](https://dnsimple.com/).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 
@@ -23,12 +23,10 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "{{.Code}}"
+    provider = "dnsimple"
   }
 }
 ```
-
-{{- if .Configuration.Present}}
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -44,19 +42,27 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [here][acme-certificate-file-arg-example] for more information.
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
-{{range $k, $v := .Configuration.Credentials}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{range $k, $v := .Configuration.Additional}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{if .EnvVarAliases}}
-The following variables are **Terraform-specific** aliases for the above
-configuration values:
 
-{{range $k, $v := .EnvVarAliases}}
-* `{{$k}}` - alias for `{{$v}}`.
-{{- end}}
-{{end}}
-{{- end}}
-{{.Additional}}
+* `DNSIMPLE_OAUTH_TOKEN` - OAuth token.
+
+* `DNSIMPLE_BASE_URL` - API endpoint URL.
+* `DNSIMPLE_POLLING_INTERVAL` - Time between DNS propagation check.
+* `DNSIMPLE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `DNSIMPLE_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+## Description
+
+`DNSIMPLE_BASE_URL` is optional and must be set to production (https://api.dnsimple.com).
+if `DNSIMPLE_BASE_URL` is not defined or empty, the production URL is used by default.
+
+While you can manage DNS records in the [DNSimple Sandbox environment](https://developer.dnsimple.com/sandbox/),
+DNS records will not resolve and you will not be able to satisfy the ACME DNS challenge.
+
+To authenticate you need to provide a valid API token.
+HTTP Basic Authentication is intentionally not supported.
+
+### API tokens
+
+You can [generate a new API token](https://support.dnsimple.com/articles/api-access-token/) from your account page.
+Only Account API tokens are supported, if you try to use an User API token you will receive an error message.
+

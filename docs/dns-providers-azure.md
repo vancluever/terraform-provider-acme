@@ -3,11 +3,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# {{.Name}} DNS Challenge Provider
+# Azure DNS Challenge Provider
 
-The `{{.Code}}` DNS challenge provider can be used to perform DNS challenges for
+The `azure` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-{{if .URL}}[{{.Name}}]({{.URL}}){{else}}{{.Name}}{{- end}}.
+[Azure](https://azure.microsoft.com/services/dns/).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 
@@ -23,12 +23,10 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "{{.Code}}"
+    provider = "azure"
   }
 }
 ```
-
-{{- if .Configuration.Present}}
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -44,19 +42,28 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [here][acme-certificate-file-arg-example] for more information.
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
-{{range $k, $v := .Configuration.Credentials}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{range $k, $v := .Configuration.Additional}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{if .EnvVarAliases}}
+
+* `AZURE_CLIENT_ID` - Client ID.
+* `AZURE_CLIENT_SECRET` - Client secret.
+* `AZURE_ENVIRONMENT` - Azure environment, one of: public, usgovernment, german, and china.
+* `AZURE_RESOURCE_GROUP` - Resource group.
+* `AZURE_SUBSCRIPTION_ID` - Subscription ID.
+* `AZURE_TENANT_ID` - Tenant ID.
+* `instance metadata service` - If the credentials are **not** set via the environment, then it will attempt to get a bearer token via the [instance metadata service](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/instance-metadata-service)..
+
+* `AZURE_METADATA_ENDPOINT` - Metadata Service endpoint URL.
+* `AZURE_POLLING_INTERVAL` - Time between DNS propagation check.
+* `AZURE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `AZURE_TTL` - The TTL of the TXT record used for the DNS challenge.
+
 The following variables are **Terraform-specific** aliases for the above
 configuration values:
 
-{{range $k, $v := .EnvVarAliases}}
-* `{{$k}}` - alias for `{{$v}}`.
-{{- end}}
-{{end}}
-{{- end}}
-{{.Additional}}
+
+* `ARM_CLIENT_ID` - alias for `AZURE_CLIENT_ID`.
+* `ARM_CLIENT_SECRET` - alias for `AZURE_CLIENT_SECRET`.
+* `ARM_RESOURCE_GROUP` - alias for `AZURE_RESOURCE_GROUP`.
+* `ARM_SUBSCRIPTION_ID` - alias for `AZURE_SUBSCRIPTION_ID`.
+* `ARM_TENANT_ID` - alias for `AZURE_TENANT_ID`.
+
+

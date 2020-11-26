@@ -3,11 +3,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# {{.Name}} DNS Challenge Provider
+# HyperOne DNS Challenge Provider
 
-The `{{.Code}}` DNS challenge provider can be used to perform DNS challenges for
+The `hyperone` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-{{if .URL}}[{{.Name}}]({{.URL}}){{else}}{{.Name}}{{- end}}.
+[HyperOne](https://www.hyperone.com).
 
 [resource-acme-certificate]: /docs/providers/acme/r/certificate.html
 
@@ -23,12 +23,10 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "{{.Code}}"
+    provider = "hyperone"
   }
 }
 ```
-
-{{- if .Configuration.Present}}
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -44,19 +42,36 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [here][acme-certificate-file-arg-example] for more information.
 
 [acme-certificate-file-arg-example]: /docs/providers/acme/r/certificate.html#using-variable-files-for-provider-arguments
-{{range $k, $v := .Configuration.Credentials}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{range $k, $v := .Configuration.Additional}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{if .EnvVarAliases}}
-The following variables are **Terraform-specific** aliases for the above
-configuration values:
 
-{{range $k, $v := .EnvVarAliases}}
-* `{{$k}}` - alias for `{{$v}}`.
-{{- end}}
-{{end}}
-{{- end}}
-{{.Additional}}
+
+* `HYPERONE_API_URL` - Allows to pass custom API Endpoint to be used in the challenge (default https://api.hyperone.com/v2).
+* `HYPERONE_LOCATION_ID` - Specifies location (region) to be used in API calls. (default pl-waw-1).
+* `HYPERONE_PASSPORT_LOCATION` - Allows to pass custom passport file location (default ~/.h1/passport.json).
+* `HYPERONE_POLLING_INTERVAL` - Time between DNS propagation check.
+* `HYPERONE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `HYPERONE_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+## Description
+
+Default configuration does not require any additional environment variables,
+just a passport file in `~/.h1/passport.json` location.
+
+### Generating passport file using H1 CLI
+
+To use this application you have to generate passport file for `sa`:
+
+```
+h1 sa credential generate --name my-passport --sa <sa ID> --passport-output-file ~/.h1/passport.json
+```
+
+### Required permissions
+
+Depending of environment variables usage, the application requires different permissions:
+-  `dns/zone/list` if `HYPERONE_ZONE_URI` is not specified
+-  `dns/zone.recordset/list`
+-  `dns/zone.recordset/create`
+-  `dns/zone.recordset/delete`
+-  `dns/zone.record/create`
+-  `dns/zone.record/list`
+-  `dns/zone.record/delete`
+
