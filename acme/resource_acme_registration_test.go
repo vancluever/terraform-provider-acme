@@ -11,8 +11,9 @@ import (
 
 func TestAccACMERegistration_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckACMERegistrationValid("acme_registration.reg", false),
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		CheckDestroy:      testAccCheckACMERegistrationValid("acme_registration.reg", false),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccACMERegistrationConfig(),
@@ -30,8 +31,9 @@ func TestAccACMERegistration_basic(t *testing.T) {
 
 func TestAccACMERegistration_eab(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckACMERegistrationValid("acme_registration.reg", false),
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		CheckDestroy:      testAccCheckACMERegistrationValid("acme_registration.reg", false),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccACMERegistrationConfigEAB(),
@@ -50,7 +52,8 @@ func TestAccACMERegistration_eab(t *testing.T) {
 func TestAccACMERegistration_refreshDeactivated(t *testing.T) {
 	var state *terraform.State
 	resource.Test(t, resource.TestCase{
-		Providers: testAccProviders,
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccACMERegistrationConfig(),
@@ -70,7 +73,7 @@ func TestAccACMERegistration_refreshDeactivated(t *testing.T) {
 				PreConfig: func() {
 					rs := state.RootModule().Resources["acme_registration.reg"]
 					d := testAccCheckACMERegistrationResourceData(rs)
-					client, _, err := expandACMEClient(d, testAccProvider.Meta(), true)
+					client, _, err := expandACMEClient(d, testAccProviders["acme"].Meta(), true)
 					if err != nil {
 						panic(err)
 					}
@@ -100,7 +103,7 @@ func testAccCheckACMERegistrationValid(n string, exists bool) resource.TestCheck
 
 		d := testAccCheckACMERegistrationResourceData(rs)
 
-		client, _, err := expandACMEClient(d, testAccProvider.Meta(), true)
+		client, _, err := expandACMEClient(d, testAccProviders["acme"].Meta(), true)
 		if err != nil {
 			if regGone(err) && !exists {
 				return nil

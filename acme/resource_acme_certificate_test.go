@@ -18,7 +18,8 @@ import (
 
 func TestAccACMECertificate_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers: testAccProviders,
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccACMECertificateConfig(),
@@ -36,7 +37,8 @@ func TestAccACMECertificate_basic(t *testing.T) {
 
 func TestAccACMECertificate_CSR(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers: testAccProviders,
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccACMECertificateCSRConfig(),
@@ -51,7 +53,8 @@ func TestAccACMECertificate_CSR(t *testing.T) {
 func TestAccACMECertificate_forceRenewal(t *testing.T) {
 	var certID string
 	resource.Test(t, resource.TestCase{
-		Providers: testAccProviders,
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccACMECertificateForceRenewalConfig(),
@@ -96,7 +99,8 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 
 func TestAccACMECertificate_wildcard(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers: testAccProviders,
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccACMECertificateWildcardConfig(),
@@ -110,7 +114,8 @@ func TestAccACMECertificate_wildcard(t *testing.T) {
 
 func TestAccACMECertificate_p12Password(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers: testAccProviders,
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccACMECertificateConfigP12Password("changeit"),

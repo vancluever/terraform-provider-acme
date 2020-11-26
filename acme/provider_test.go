@@ -6,10 +6,10 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-var testAccProvider *schema.Provider
 var testAccProviders map[string]*schema.Provider
 
 // Path to the pebble CA cert list, from GOPATH
@@ -29,6 +29,13 @@ const pebbleChallTestDNSSrv = "localhost:5553"
 
 // Relative path to the external challenge/test script
 const pebbleChallTestDNSScriptPath = "../build-support/scripts/pebble-challtest-dns.sh"
+
+// External providers (tls)
+var testAccExternalProviders = map[string]resource.ExternalProvider{
+	"tls": {
+		Source: "registry.terraform.io/hashicorp/tls",
+	},
+}
 
 func init() {
 	// Set TF_SCHEMA_PANIC_ON_ERROR as a sanity check on tests.

@@ -1,6 +1,7 @@
 package acme
 
 import (
+	"context"
 	"reflect"
 	"testing"
 
@@ -53,7 +54,7 @@ func testACMECertificateStateData012V4() map[string]interface{} {
 
 func TestResourceACMECertificateStateUpgraderV3Func(t *testing.T) {
 	expected := testACMECertificateStateData012V4()
-	actual, err := resourceACMECertificateStateUpgraderV3Func(nil, testACMECertificateStateData012V3(), nil)
+	actual, err := resourceACMECertificateStateUpgraderV3Func(context.TODO(), testACMECertificateStateData012V3(), nil)
 	if err != nil {
 		t.Fatalf("error migrating state: %s", err)
 	}
