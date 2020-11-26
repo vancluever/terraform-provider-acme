@@ -3,7 +3,7 @@ package acme
 import (
 	"github.com/go-acme/lego/v4/acme"
 	"github.com/go-acme/lego/v4/registration"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 // resourceACMERegistration returns the current version of the

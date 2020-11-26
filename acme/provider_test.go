@@ -6,13 +6,11 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"github.com/terraform-providers/terraform-provider-tls/v2/tls"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 var testAccProvider *schema.Provider
-var testAccProviders map[string]terraform.ResourceProvider
+var testAccProviders map[string]*schema.Provider
 
 // Path to the pebble CA cert list, from GOPATH
 const pebbleCACerts = "src/github.com/letsencrypt/pebble/test/certs/pebble.minica.pem"
@@ -39,19 +37,13 @@ func init() {
 	// Set lego's CA certs to pebble's CA for testing w/pebble
 	os.Setenv("LEGO_CA_CERTIFICATES", filepath.Join(build.Default.GOPATH, pebbleCACerts))
 
-	testAccProvider = Provider().(*schema.Provider)
-	testAccProviders = map[string]terraform.ResourceProvider{
-		"acme": testAccProvider,
-		"tls":  tls.Provider().(*schema.Provider),
+	testAccProviders = map[string]*schema.Provider{
+		"acme": Provider(),
 	}
 }
 
 func TestProvider(t *testing.T) {
-	if err := Provider().(*schema.Provider).InternalValidate(); err != nil {
+	if err := Provider().InternalValidate(); err != nil {
 		t.Fatalf("err: %s", err)
 	}
-}
-
-func TestProvider_impl(t *testing.T) {
-	var _ terraform.ResourceProvider = Provider()
 }

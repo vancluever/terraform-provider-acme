@@ -183,8 +183,8 @@ func AssetNames() []string {
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
 	"templates/acme-provider-sidebar-template.tmpl": templatesAcmeProviderSidebarTemplateTmpl,
-	"templates/dns-provider-doc-template.tmpl": templatesDnsProviderDocTemplateTmpl,
-	"templates/dns-provider-go-template.tmpl": templatesDnsProviderGoTemplateTmpl,
+	"templates/dns-provider-doc-template.tmpl":      templatesDnsProviderDocTemplateTmpl,
+	"templates/dns-provider-go-template.tmpl":       templatesDnsProviderGoTemplateTmpl,
 }
 
 // AssetDir returns the file names below a certain
@@ -226,11 +226,12 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
 	"templates": &bintree{nil, map[string]*bintree{
 		"acme-provider-sidebar-template.tmpl": &bintree{templatesAcmeProviderSidebarTemplateTmpl, map[string]*bintree{}},
-		"dns-provider-doc-template.tmpl": &bintree{templatesDnsProviderDocTemplateTmpl, map[string]*bintree{}},
-		"dns-provider-go-template.tmpl": &bintree{templatesDnsProviderGoTemplateTmpl, map[string]*bintree{}},
+		"dns-provider-doc-template.tmpl":      &bintree{templatesDnsProviderDocTemplateTmpl, map[string]*bintree{}},
+		"dns-provider-go-template.tmpl":       &bintree{templatesDnsProviderGoTemplateTmpl, map[string]*bintree{}},
 	}},
 }}
 
@@ -280,4 +281,3 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-

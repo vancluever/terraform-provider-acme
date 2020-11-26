@@ -1,7 +1,9 @@
 package acme
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"context"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/mitchellh/copystructure"
 )
 
@@ -20,6 +22,7 @@ func resourceACMECertificateStateUpgraderV3() schema.StateUpgrader {
 // state upgrade functionality from schema version 3 to schema
 // version 4 for acme_certificate.
 func resourceACMECertificateStateUpgraderV3Func(
+	_ context.Context,
 	rawState map[string]interface{},
 	meta interface{},
 ) (map[string]interface{}, error) {

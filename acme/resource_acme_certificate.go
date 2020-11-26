@@ -1,6 +1,7 @@
 package acme
 
 import (
+	"context"
 	"crypto/x509"
 	"fmt"
 	"log"
@@ -10,7 +11,7 @@ import (
 	"github.com/go-acme/lego/v4/challenge"
 	"github.com/go-acme/lego/v4/challenge/dns01"
 	"github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 // resourceACMECertificate returns the current version of the
@@ -370,7 +371,7 @@ func resourceACMECertificateRead(d *schema.ResourceData, meta interface{}) error
 
 // resourceACMECertificateCustomizeDiff checks the certificate for renewal and
 // flags it as NewComputed if it needs a renewal.
-func resourceACMECertificateCustomizeDiff(d *schema.ResourceDiff, meta interface{}) error {
+func resourceACMECertificateCustomizeDiff(_ context.Context, d *schema.ResourceDiff, meta interface{}) error {
 	// Ensure duplicate providers for dns_challenge are not provided.
 	providerMap := make(map[string]bool)
 	for _, v := range d.Get("dns_challenge").([]interface{}) {
