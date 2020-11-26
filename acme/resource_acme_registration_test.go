@@ -94,6 +94,33 @@ func testAccCheckACMERegistrationValid(n string, exists bool) resource.TestCheck
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
 		if !ok {
+			if !exists {
+				// No state, but this is okay. The new TF SDK completely
+				// removes state for deleted resources before the destroy
+				// check runs, so we cannot do in-band verification of
+				// resource deletion. Normal patterns loop through state
+				// looking for resources, using a pattern like this:
+				//
+				// for _, rs := range s.RootModule().Resources {
+				//   if rs.Type != "example_widget" {
+				//     continue
+				//   }
+				//
+				//   ...
+				// }
+				//
+				// This pattern will completely miss the fact that the
+				// resource state doesn't exist at all, and return no error.
+				//
+				// TODO: Maybe put in a bug report for this and see if the
+				// SDK can be adjusted to allow for the passing in of
+				// pre-destroy state to see if we can assert the deletion of
+				// the resource from infrastructure, and not just TF state.
+				//
+				// Return nil to pass the test.
+				return nil
+			}
+
 			return fmt.Errorf("Can't find ACME registration: %s", n)
 		}
 
