@@ -16,77 +16,10 @@ website][terraform-io] and the [GitHub project page][terraform-gh].
 
 :warning: **NOTE:** The ACME provider found here supports ACME v2 only.
 
-# Building The Provider
+## Documentation
 
-## Cloning the Project
-
-```sh
-git clone git@github.com:terraform-providers/terraform-provider-acme
-```
-
-## Running the Build
-
-After the clone has been completed, you can enter the provider directory and
-build the provider.
-
-**TBD:** This section needs modification.
-
-```sh
-cd terraform-provider-acme
-make build
-```
-
-## Installing the Local Plugin
-
-TBD: you will want to follow the [explicit
-install](https://www.terraform.io/docs/commands/cli-config.html#explicit-installation-method-configuration)
-configuration method. Note that `make build` is still in transition and may not
-reflect the actual format of the metadata required for the local mirror.
-
-# Developing the Provider
-
-**NOTE:** Before you start work on a feature, please make sure to check the
-[issue tracker][gh-issues] and existing [pull requests][gh-prs] to ensure that
-work is not being duplicated. For further clarification, you can also ask in a
-new issue.
-
-[gh-issues]: https://github.com/vancluever/terraform-provider-acme/issues
-[gh-prs]: https://github.com/vancluever/terraform-provider-acme/pulls
-
-If you wish to work on the provider, you'll first need [Go][go-website]
-installed on your machine. More than likely you will need at least the major
-version given in [`go.mod`](go.mod).
-
-[go-website]: https://golang.org/
-
-See [Building the Provider](#building-the-provider) for details on building the provider.
-
-## Auto-Generating Documentation and Supported DNS Providers
-
-There are a couple of commands that can help with updating the supported list of
-DNS providers and their accompanying documentation when lego is updated:
-
-* `make provider-generate` will update `acme/dns_provider_factory.go` with the
-  updated list of supported DNS providers, in addition to updating all of the
-  documentation in `website/`.
-* `make template-generate` only needs to be run if you are updating the
-  templates used for generating the factory or documentation, and does not
-  routinely need to be run.
-
-# Testing the Provider
-
-Tests can be run by running `make test`. They use
-[pebble](https://github.com/letsencrypt/pebble/) which needs to be installed
-first by running `make pebble-start`. You can use `make pebble-stop` to manually
-stop the pebble services when done.
-
-```sh
-make test TESTARGS="-run=TestAccACMECertificate"
-```
-
-This following example would run all of the acceptance tests matching
-`TestAccACMECertificate`. Change this for the specific tests you want to
-run.
+Documentation for this provider can be found at
+https://registry.terraform.io/providers/vancluever/acme/latest/docs.
 
 ## License
 
