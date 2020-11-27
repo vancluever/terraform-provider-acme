@@ -1,0 +1,98 @@
+# This GitHub action can publish assets for release when a tag is created.
+# Currently its setup to run on any tag that matches the pattern "v*" (ie. v0.1.0).
+#
+# This uses an action (paultyng/ghaction-import-gpg) that assumes you set your 
+# private key in the `GPG_PRIVATE_KEY` secret and passphrase in the `PASSPHRASE`
+# secret. If you would rather own your own GPG handling, please fork this action
+# or use an alternative one for key handling.
+#
+# You will need to pass the `--batch` flag to `gpg` in your signing step 
+# in `goreleaser` to indicate this is being used in a non-interactive mode.
+#
+name: release
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.15.5'
+      - name: Cache (Go Modules)
+        uses: actions/cache@v2
+        env:
+          cache-name: go-mod-cache
+        with:
+          path: /home/runner/go/pkg/mod
+          key: ${{ env.cache-name}}-${{ hashFiles('go.sum') }}
+          restore-keys: |
+            ${{ env.cache-name}}-
+      - name: Cache (Go Build)
+        uses: actions/cache@v2
+        env:
+          cache-name: go-build-cache
+          cache-dir: /home/runner/.cache/go-build
+        with:
+          path: ${{ env.cache-dir }}
+          key: ${{ env.cache-name}}-${{ hashFiles(format('{0}/**/*', env.cache-dir)) }}
+          restore-keys: |
+            ${{ env.cache-name}}-
+      - name: Cache (Pebble)
+        uses: actions/cache@v2
+        env:
+          cache-name: pebble-cache
+          cache-dir: /home/runner/go/src/github.com/letsencrypt/pebble
+        with:
+          path: ${{ env.cache-dir }}
+          key: ${{ env.cache-name}}-${{ hashFiles(format('{0}/**/*', env.cache-dir)) }}
+          restore-keys: |
+            ${{ env.cache-name}}-
+      - run: go mod verify
+      - run: make tools pebble-start test
+
+  goreleaser:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.15.5'
+      - name: Cache (Go Modules)
+        uses: actions/cache@v2
+        env:
+          cache-name: go-mod-cache
+        with:
+          path: /home/runner/go/pkg/mod
+          key: ${{ env.cache-name}}-${{ hashFiles('go.sum') }}
+          restore-keys: |
+            ${{ env.cache-name}}-
+      - name: Cache (Go Build)
+        uses: actions/cache@v2
+        env:
+          cache-name: go-build-cache
+          cache-dir: /home/runner/.cache/go-build
+        with:
+          path: ${{ env.cache-dir }}
+          key: ${{ env.cache-name}}-${{ hashFiles(format('{0}/**/*', env.cache-dir)) }}
+          restore-keys: |
+            ${{ env.cache-name}}-
+      - run: go mod verify
+      - name: Import GPG key
+        id: import_gpg
+        uses: paultyng/ghaction-import-gpg@v2.1.0
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          PASSPHRASE: ${{ secrets.PASSPHRASE }}
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          version: latest
+          args: release --rm-dist
+        env:
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
