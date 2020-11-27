@@ -1,3 +1,7 @@
+## 1.6.1-pre
+
+Bumped version for dev.
+
 ## 1.6.0
 
 LEGO UPDATE:
