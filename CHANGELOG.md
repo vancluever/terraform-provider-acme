@@ -1,3 +1,7 @@
+## 1.6.2-pre
+
+Bumped version for dev.
+
 ## 1.6.1 (November 27, 2020)
 
 This is a simple version bump to attempt to fix documentation on the Terraform
