@@ -1,8 +1,9 @@
-## 1.6.1-pre
+## 1.6.1 (November 27, 2020)
 
-Bumped version for dev.
+This is a simple version bump to attempt to fix documentation on the Terraform
+Registry. No changes are being made.
 
-## 1.6.0
+## 1.6.0 (November 27, 2020)
 
 LEGO UPDATE:
 
