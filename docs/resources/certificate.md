@@ -21,7 +21,7 @@ that you reference the
 resource. This will ensure that the account gets created before the certificate
 and avoid errors.
 
-[resource-registration]: ./registration.md#account_key_pem
+[resource-registration]: ./registration.md
 [resource-registration-account-key-pem]: ./registration.md#account_key_pem
 
 ```hcl
