@@ -1,5 +1,5 @@
 ---
-page_title: "{{.Code}}"
+page_title: "mythicbeasts"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# {{.Name}} DNS Challenge Provider
+# MythicBeasts DNS Challenge Provider
 
-The `{{.Code}}` DNS challenge provider can be used to perform DNS challenges for
+The `mythicbeasts` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-{{if .URL}}[{{.Name}}]({{.URL}}){{else}}{{.Name}}{{- end}}.
+[MythicBeasts](https://www.mythic-beasts.com/).
 
 [resource-acme-certificate]: ./certificate.md
 
@@ -28,12 +28,10 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "{{.Code}}"
+    provider = "mythicbeasts"
   }
 }
 ```
-
-{{- if .Configuration.Present}}
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -49,19 +47,18 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [here][acme-certificate-file-arg-example] for more information.
 
 [acme-certificate-file-arg-example]: ./certificate.md#using-variable-files-for-provider-arguments
-{{range $k, $v := .Configuration.Credentials}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{range $k, $v := .Configuration.Additional}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{if .EnvVarAliases}}
-The following variables are **Terraform-specific** aliases for the above
-configuration values:
 
-{{range $k, $v := .EnvVarAliases}}
-* `{{$k}}` - alias for `{{$v}}`.
-{{- end}}
-{{end}}
-{{- end}}
-{{.Additional}}
+* `MYTHICBEASTS_PASSWORD` - Password.
+* `MYTHICBEASTS_USERNAME` - User name.
+
+* `MYTHICBEASTS_API_ENDPOINT` - The endpoint for the API (must implement v2).
+* `MYTHICBEASTS_HTTP_TIMEOUT` - API request timeout.
+* `MYTHICBEASTS_POLLING_INTERVAL` - Time between DNS propagation check.
+* `MYTHICBEASTS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `MYTHICBEASTS_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `MYTHICBEASYS_AUTH_API_ENDPOINT` - The endpoint for Mythic Beasts' Authentication.
+
+If you are using specific API keys, then the username is the API ID for your API key, and the password is the API secret.
+
+Your API key name is not needed to operate lego.
+

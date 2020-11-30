@@ -9,15 +9,16 @@ ACME v1 spec, a _registration_ referred to the account entity.  This resource
 name is stable and more than likely will not change until a later major version
 of the provider, if at all.
 
--> Keep in mind that when using this resource along with `acme_certificate`
-within the same configuration, a change in the provider-level `server_url`
-(example: from the Let's Encrypt staging to production environment) within the
-same Terraform state will result in a resource failure, as Terraform will
-attempt to look for the account in the wrong CA. Consider different workspaces
-per environment, and/or using [multiple provider
-instances][multiple-provider-instances].
+-> Keep in mind that when using this resource along with
+[`acme_certificate`][resource-certificate] within the same configuration, a
+change in the provider-level `server_url` (example: from the Let's Encrypt
+staging to production environment) within the same Terraform state will result
+in a resource failure, as Terraform will attempt to look for the account in the
+wrong CA. Consider different workspaces per environment, and/or using [multiple
+provider instances][multiple-provider-instances].
 
 [multiple-provider-instances]: https://www.terraform.io/docs/configuration/providers.html#alias-multiple-provider-configurations
+[resource-certificate]: ./certificate.md
 
 ## Example
 

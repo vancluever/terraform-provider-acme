@@ -10,15 +10,19 @@ a different server than a certificate would normally be placed on, the
 ## Example
 
 The below example creates both an account and certificate within the same
-configuration. The account is created using the `acme_registration` resource.
+configuration. The account is created using the
+[`acme_registration`][resource-registration] resource.
 
 -> When creating accounts and certificates within the same configuration, ensure
-that you reference the `account_key_pem` argument in the `acme_registration`
-resource as the corresponding [`account_key_pem`](#account_key_pem) argument in
-the `acme_certificate` resource. This will ensure that the account gets created
-before the certificate and avoid errors.
+that you reference the
+[`account_key_pem`][resource-registration-account-key-pem] argument in the
+`acme_registration` resource as the corresponding
+[`account_key_pem`](#account_key_pem) argument in the `acme_certificate`
+resource. This will ensure that the account gets created before the certificate
+and avoid errors.
 
-[resource-acme-registration-account-key-pem]: registration.md#account_key_pem
+[resource-registration]: ./registration.md#account_key_pem
+[resource-registration-account-key-pem]: ./registration.md#account_key_pem
 
 ```hcl
 provider "acme" {
@@ -104,8 +108,8 @@ resource "acme_certificate" "certificate" {
 
 The resource takes the following arguments:
 
-~> **NOTE:** All arguments in `acme_certificate`, other than
-`min_days_remaining`, force a new resource when changed.
+~> All arguments in `acme_certificate`, other than `min_days_remaining`, force a
+new resource when changed.
 
 * `account_key_pem` (Required) - The private key of the account that is
   requesting the certificate.
@@ -139,11 +143,11 @@ The resource takes the following arguments:
 
 [ocsp-stapling]: https://letsencrypt.org/docs/integration-guide/#implement-ocsp-stapling
 
--> **NOTE:** OCSP stapling requires specific webserver configuration to
-support the downloading of the staple from the CA's OCSP endpoints, and should
-be configured to tolerate prolonged outages of the OCSP service. Consider this
-when using `must_staple`, and only enable it if you are sure your webserver or
-service provider can be configured correctly.
+-> OCSP stapling requires specific webserver configuration to support the
+downloading of the staple from the CA's OCSP endpoints, and should be configured
+to tolerate prolonged outages of the OCSP service. Consider this when using
+`must_staple`, and only enable it if you are sure your webserver or service
+provider can be configured correctly.
 
 * `min_days_remaining` (Optional) - The minimum amount of days remaining on the
   expiration of a certificate before a renewal is attempted. The default is
@@ -167,7 +171,7 @@ environment variables, but if you would rather use configuration for this
 purpose, you can by specifying `config` blocks within a
 [`dns_challenge`](#dns_challenge) block, along with the `provider` parameter.
 
-See the guides section for a full list of DNS providers.
+See the DNS providers subcategory for a full list of DNS providers.
 
 ```hcl
 resource "acme_certificate" "certificate" {

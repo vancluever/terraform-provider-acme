@@ -1,5 +1,5 @@
 ---
-page_title: "{{.Code}}"
+page_title: "nifcloud"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# {{.Name}} DNS Challenge Provider
+# NIFCloud DNS Challenge Provider
 
-The `{{.Code}}` DNS challenge provider can be used to perform DNS challenges for
+The `nifcloud` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-{{if .URL}}[{{.Name}}]({{.URL}}){{else}}{{.Name}}{{- end}}.
+[NIFCloud](https://www.nifcloud.com/).
 
 [resource-acme-certificate]: ./certificate.md
 
@@ -28,12 +28,10 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "{{.Code}}"
+    provider = "nifcloud"
   }
 }
 ```
-
-{{- if .Configuration.Present}}
 ## Argument Reference
 
 The following arguments can be either passed as environment variables, or
@@ -49,19 +47,13 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [here][acme-certificate-file-arg-example] for more information.
 
 [acme-certificate-file-arg-example]: ./certificate.md#using-variable-files-for-provider-arguments
-{{range $k, $v := .Configuration.Credentials}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{range $k, $v := .Configuration.Additional}}
-* `{{$k}}` - {{$v}}.
-{{- end}}
-{{if .EnvVarAliases}}
-The following variables are **Terraform-specific** aliases for the above
-configuration values:
 
-{{range $k, $v := .EnvVarAliases}}
-* `{{$k}}` - alias for `{{$v}}`.
-{{- end}}
-{{end}}
-{{- end}}
-{{.Additional}}
+* `NIFCLOUD_ACCESS_KEY_ID` - Access key.
+* `NIFCLOUD_SECRET_ACCESS_KEY` - Secret access key.
+
+* `NIFCLOUD_HTTP_TIMEOUT` - API request timeout.
+* `NIFCLOUD_POLLING_INTERVAL` - Time between DNS propagation check.
+* `NIFCLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `NIFCLOUD_TTL` - The TTL of the TXT record used for the DNS challenge.
+
+

@@ -38,8 +38,8 @@ initial private key is created using the
 other means. DNS validation is performed by using [Amazon Route 53][aws-route-53],
 for which appropriate credentials are assumed to be in your environment.
 
-[resource-acme-registration]: resources/registration.html
-[resource-acme-certificate]: resources/certificate.html
+[resource-acme-registration]: ./resources/registration.md
+[resource-acme-certificate]: ./resources/certificate.md
 [resource-tls-private-key]: https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key
 [aws-route-53]: https://aws.amazon.com/route53/
 
