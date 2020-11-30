@@ -1,6 +1,7 @@
-## 1.6.3-pre
+## 1.6.3 (November 30, 2020)
 
-Bumped version for dev.
+This is (yet another) simple version bump to attempt to fix documentation on the
+Terraform Registry. No changes are being made.
 
 ## 1.6.2 (November 30, 2020)
 
