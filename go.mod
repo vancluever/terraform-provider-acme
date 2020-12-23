@@ -16,5 +16,3 @@ require (
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	software.sslmate.com/src/go-pkcs12 v0.0.0-20190209200317-47dd539968c4
 )
-
-replace github.com/terraform-providers/terraform-provider-tls/v3 => github.com/vancluever/terraform-provider-tls/v3 v3.0.1
