@@ -142,7 +142,7 @@ new resource when changed.
   Defaults to 0 (no delay).
 
 -> Be careful with `pre_check_delay` since the delay is executed _per-domain_.
-Take your expected delay and multiply it by the number of domains you have
+Take your expected delay and divide it by the number of domains you have
 configured (`common_name` + `subject_alternative_names`).
 
 * `must_staple` (Optional) Enables the [OCSP Stapling Required][ocsp-stapling]
