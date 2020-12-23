@@ -12,6 +12,7 @@ import (
 	"github.com/go-acme/lego/v4/challenge/dns01"
 	"github.com/hashicorp/go-multierror"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform/helper/validation"
 )
 
 // resourceACMECertificate returns the current version of the
@@ -90,9 +91,10 @@ func resourceACMECertificateV4() *schema.Resource {
 				},
 			},
 			"pre_check_delay": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  0,
+				Type:         schema.TypeInt,
+				Optional:     true,
+				Default:      0,
+				ValidateFunc: validation.IntAtLeast(0),
 			},
 			"recursive_nameservers": {
 				Type:     schema.TypeList,

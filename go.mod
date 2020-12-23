@@ -16,13 +16,12 @@ require (
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/gophercloud/gophercloud v0.10.1-0.20200424014253-c3bfe50899e5 // indirect
 	github.com/hashicorp/go-multierror v1.0.0
-	github.com/hashicorp/hcl/v2 v2.6.0 // indirect
+	github.com/hashicorp/terraform v0.14.3
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.0.3
 	github.com/miekg/dns v1.1.31
 	github.com/mitchellh/copystructure v1.0.0
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
-	github.com/zclconf/go-cty v1.5.1 // indirect
 	software.sslmate.com/src/go-pkcs12 v0.0.0-20190209200317-47dd539968c4
 )
 
