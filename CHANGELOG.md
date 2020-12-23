@@ -1,6 +1,11 @@
-## 1.6.4-pre
+## 1.7.0 (Unreleased)
 
-Bumped version for dev.
+FEATURES:
+
+* `resource/acme_certificate:` Added the `pre_check_delay` option to allow for
+  the insertion of delays in DNS challenges. This should help with DNS
+  propagation issues with certain providers.
+  [#111](https://github.com/vancluever/terraform-provider-acme/pull/111)
 
 ## 1.6.3 (November 30, 2020)
 
