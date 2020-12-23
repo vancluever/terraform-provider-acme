@@ -3,18 +3,10 @@ module github.com/terraform-providers/terraform-provider-acme
 go 1.15
 
 require (
-	github.com/Azure/azure-sdk-for-go v45.0.0+incompatible // indirect
-	github.com/Azure/go-autorest/autorest v0.11.3 // indirect
-	github.com/Azure/go-autorest/autorest/azure/cli v0.4.0 // indirect
-	github.com/Azure/go-autorest/autorest/to v0.4.0 // indirect
-	github.com/Azure/go-autorest/autorest/validation v0.3.0 // indirect
 	github.com/BurntSushi/toml v0.3.1
-	github.com/aws/aws-sdk-go v1.31.9 // indirect
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-acme/lego/v3 v3.1.0
 	github.com/go-acme/lego/v4 v4.1.3
-	github.com/gofrs/uuid v3.3.0+incompatible // indirect
-	github.com/gophercloud/gophercloud v0.10.1-0.20200424014253-c3bfe50899e5 // indirect
 	github.com/hashicorp/go-multierror v1.0.0
 	github.com/hashicorp/terraform v0.14.3
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.0.3
