@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 
-	legoLog "github.com/go-acme/lego/v3/log"
+	legoLog "github.com/go-acme/lego/v4/log"
 )
 
 // legoLogger is a proxy for lego log messages. This allows messages
