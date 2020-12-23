@@ -257,7 +257,7 @@ func resourceACMECertificateRead(d *schema.ResourceData, meta interface{}) error
 			return err
 		}
 
-		srcCR, err := client.Certificate.Get(d.Id(), true)
+		srcCR, err := client.Certificate.Get(d.Get("certificate_url").(string), true)
 		if err != nil {
 			// There are probably some cases that we will want to just drop
 			// the resource if there's been an issue, but seeing as this is

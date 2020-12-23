@@ -1,4 +1,12 @@
-## 1.7.0 (Unreleased)
+## 2.0.0 (Unreleased)
+
+BREAKING CHANGES:
+
+* `resource/acme_certificate:` The resource ID is now a state-local UUID, not
+  the same as `certificate_url`. This is to prevent drift issues during renewal.
+  If you need the URL for the current version of the certificate, use the
+  `certificate_url` field.
+  [#103](https://github.com/vancluever/terraform-provider-acme/pull/103)
 
 FEATURES:
 
