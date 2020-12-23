@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"regexp"
 	"testing"
 	"time"
 
@@ -16,6 +17,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	"software.sslmate.com/src/go-pkcs12"
 )
+
+var uuidRegexp = regexp.MustCompile(`^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$`)
+var certURLRegexp = regexp.MustCompile(`^https://localhost:1400[01]/certZ/[a-z0-9]+$`)
 
 func TestAccACMECertificate_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
@@ -25,10 +29,8 @@ func TestAccACMECertificate_basic(t *testing.T) {
 			{
 				Config: testAccACMECertificateConfig(),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrPair(
-						"acme_certificate.certificate", "id",
-						"acme_certificate.certificate", "certificate_url",
-					),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www", "www2"),
 				),
 			},
@@ -44,6 +46,8 @@ func TestAccACMECertificate_CSR(t *testing.T) {
 			{
 				Config: testAccACMECertificateCSRConfig(),
 				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www3", "www4"),
 				),
 			},
@@ -52,7 +56,7 @@ func TestAccACMECertificate_CSR(t *testing.T) {
 }
 
 func TestAccACMECertificate_forceRenewal(t *testing.T) {
-	var certID string
+	var certURL string
 	resource.Test(t, resource.TestCase{
 		Providers:         testAccProviders,
 		ExternalProviders: testAccExternalProviders,
@@ -61,13 +65,11 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 				Config: testAccACMECertificateForceRenewalConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					func(s *terraform.State) error {
-						certID = s.RootModule().Resources["acme_certificate.certificate"].Primary.ID
+						certURL = s.RootModule().Resources["acme_certificate.certificate"].Primary.Attributes["certificate_url"]
 						return nil
 					},
-					resource.TestCheckResourceAttrPair(
-						"acme_certificate.certificate", "id",
-						"acme_certificate.certificate", "certificate_url",
-					),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www6", ""),
 				),
 				ExpectNonEmptyPlan: true,
@@ -76,20 +78,14 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 				Config: testAccACMECertificateForceRenewalConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					func(s *terraform.State) error {
-						if certID == s.Modules[0].Resources["acme_certificate.certificate"].Primary.ID {
-							return errors.New("certificate ID did not change")
+						if certURL == s.Modules[0].Resources["acme_certificate.certificate"].Primary.Attributes["certificate_url"] {
+							return errors.New("certificate URL did not change")
 						}
 
 						return nil
 					},
-					resource.TestCheckResourceAttrPair(
-						"acme_certificate.certificate", "id",
-						"acme_certificate.certificate", "certificate_url",
-					),
-					resource.TestCheckResourceAttrPair(
-						"acme_certificate.certificate", "id",
-						"acme_certificate.certificate", "certificate_url",
-					),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www6", ""),
 				),
 				ExpectNonEmptyPlan: true,
@@ -106,6 +102,8 @@ func TestAccACMECertificate_wildcard(t *testing.T) {
 			{
 				Config: testAccACMECertificateWildcardConfig(),
 				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "*", ""),
 				),
 			},
@@ -121,20 +119,16 @@ func TestAccACMECertificate_p12Password(t *testing.T) {
 			{
 				Config: testAccACMECertificateConfigP12Password("changeit"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrPair(
-						"acme_certificate.certificate", "id",
-						"acme_certificate.certificate", "certificate_url",
-					),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www12", "www13"),
 				),
 			},
 			{
 				Config: testAccACMECertificateConfigP12Password("changeitagain"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrPair(
-						"acme_certificate.certificate", "id",
-						"acme_certificate.certificate", "certificate_url",
-					),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www12", "www13"),
 				),
 			},
@@ -158,10 +152,8 @@ func TestAccACMECertificate_preCheckDelay(t *testing.T) {
 						step1End = time.Now()
 						return nil
 					},
-					resource.TestCheckResourceAttrPair(
-						"acme_certificate.certificate", "id",
-						"acme_certificate.certificate", "certificate_url",
-					),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www16", "www17"),
 				),
 			},
@@ -198,10 +190,8 @@ func TestAccACMECertificate_preCheckDelay(t *testing.T) {
 
 						return nil
 					},
-					resource.TestCheckResourceAttrPair(
-						"acme_certificate.certificate", "id",
-						"acme_certificate.certificate", "certificate_url",
-					),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www16", "www17"),
 				),
 			},

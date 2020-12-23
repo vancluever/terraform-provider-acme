@@ -326,9 +326,12 @@ renewal checks to be bypassed, and the certificate will never renew.
 
 The following attributes are exported:
 
-* `id` - The full URL of the certificate within the ACME CA.
-* `certificate_url` - The full URL of the certificate within the ACME CA. Same
-  as `id`.
+* `id` - A UUID identifying the resource in Terraform state.
+
+-> As of provider version 2.0, this is no longer the same as `certificate_url`.
+Refer to that field for the current URL of the certificate.
+
+* `certificate_url` - The full URL of the certificate within the ACME CA.
 * `certificate_domain` - The common name of the certificate.
 * `private_key_pem` - The certificate's private key, in PEM format, if the
   certificate was generated from scratch and not with

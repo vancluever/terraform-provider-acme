@@ -11,6 +11,7 @@ import (
 	"github.com/go-acme/lego/v4/challenge"
 	"github.com/go-acme/lego/v4/challenge/dns01"
 	"github.com/hashicorp/go-multierror"
+	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -18,9 +19,9 @@ import (
 // resourceACMECertificate returns the current version of the
 // acme_registration resource and needs to be updated when the schema
 // version is incremented.
-func resourceACMECertificate() *schema.Resource { return resourceACMECertificateV4() }
+func resourceACMECertificate() *schema.Resource { return resourceACMECertificateV5() }
 
-func resourceACMECertificateV4() *schema.Resource {
+func resourceACMECertificateV5() *schema.Resource {
 	return &schema.Resource{
 		Create:        resourceACMECertificateCreate,
 		Read:          resourceACMECertificateRead,
@@ -28,9 +29,9 @@ func resourceACMECertificateV4() *schema.Resource {
 		Update:        resourceACMECertificateUpdate,
 		Delete:        resourceACMECertificateDelete,
 		MigrateState:  resourceACMECertificateMigrateState,
-		SchemaVersion: 4,
+		SchemaVersion: 5,
 		StateUpgraders: []schema.StateUpgrader{
-			resourceACMECertificateStateUpgraderV3(),
+			resourceACMECertificateStateUpgraderV4(),
 		},
 		Schema: map[string]*schema.Schema{
 			"account_key_pem": {
@@ -148,121 +149,19 @@ func resourceACMECertificateV4() *schema.Resource {
 	}
 }
 
-func resourceACMECertificateV3() *schema.Resource {
-	return &schema.Resource{
-		Create:        resourceACMECertificateCreate,
-		Read:          resourceACMECertificateRead,
-		CustomizeDiff: resourceACMECertificateCustomizeDiff,
-		Update:        resourceACMECertificateUpdate,
-		Delete:        resourceACMECertificateDelete,
-		MigrateState:  resourceACMECertificateMigrateState,
-		SchemaVersion: 3,
-		Schema: map[string]*schema.Schema{
-			"account_key_pem": {
-				Type:      schema.TypeString,
-				Required:  true,
-				ForceNew:  true,
-				Sensitive: true,
-			},
-			"common_name": {
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"certificate_request_pem"},
-			},
-			"subject_alternative_names": {
-				Type:          schema.TypeSet,
-				Optional:      true,
-				Elem:          &schema.Schema{Type: schema.TypeString},
-				Set:           schema.HashString,
-				ForceNew:      true,
-				ConflictsWith: []string{"certificate_request_pem"},
-			},
-			"key_type": {
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				Default:       "2048",
-				ConflictsWith: []string{"certificate_request_pem"},
-				ValidateFunc:  validateKeyType,
-			},
-			"certificate_request_pem": {
-				Type:          schema.TypeString,
-				Optional:      true,
-				ForceNew:      true,
-				ConflictsWith: []string{"common_name", "subject_alternative_names", "key_type"},
-			},
-			"min_days_remaining": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  30,
-			},
-			"dns_challenge": {
-				Type:     schema.TypeList,
-				Required: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"provider": {
-							Type:     schema.TypeString,
-							Required: true,
-						},
-						"config": {
-							Type:         schema.TypeMap,
-							Optional:     true,
-							ValidateFunc: validateDNSChallengeConfig,
-							Sensitive:    true,
-						},
-						"recursive_nameservers": {
-							Type:     schema.TypeList,
-							Optional: true,
-							Elem:     &schema.Schema{Type: schema.TypeString},
-						},
-					},
-				},
-			},
-			"must_staple": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-				ForceNew: true,
-			},
-			"certificate_url": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"certificate_domain": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"private_key_pem": {
-				Type:      schema.TypeString,
-				Computed:  true,
-				Sensitive: true,
-			},
-			"certificate_pem": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"issuer_pem": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"certificate_p12": {
-				Type:      schema.TypeString,
-				Computed:  true,
-				Sensitive: true,
-			},
-			"certificate_p12_password": {
-				Type:      schema.TypeString,
-				Optional:  true,
-				Default:   "",
-				Sensitive: true,
-			},
-		},
-	}
-}
-
 func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) error {
+	// Pre-generate resource UUID here, in case there is a serious
+	// issue with UUID generation that would lead to inconsistency.
+	//
+	// We do not use the ID of the certificate here as the IDs of
+	// certificates drift during renewal (they are effectively new
+	// certificates). Use the certificate_url to get the URL of the
+	// current certificate instead.
+	resourceUUID, err := uuid.GenerateUUID()
+	if err != nil {
+		return fmt.Errorf("error generating UUID for resource: %s", err)
+	}
+
 	client, _, err := expandACMEClient(d, meta, true)
 	if err != nil {
 		return err
@@ -338,7 +237,7 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		return fmt.Errorf("error creating certificate: %s", err)
 	}
 
-	d.SetId(cert.CertURL)
+	d.SetId(resourceUUID)
 	password := d.Get("certificate_p12_password").(string)
 	if err := saveCertificateResource(d, cert, password); err != nil {
 		return err
@@ -434,7 +333,6 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 		// when the certificate hasn't changed but the p12 password has, we still need to regenerate the p12
 		if d.HasChange("certificate_p12_password") {
 			cert := expandCertificateResource(d)
-			d.SetId(cert.CertURL)
 			password := d.Get("certificate_p12_password").(string)
 			if err := saveCertificateResource(d, cert, password); err != nil {
 				return err
@@ -493,7 +391,6 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 		return err
 	}
 
-	d.SetId(newCert.CertURL)
 	password := d.Get("certificate_p12_password").(string)
 	if err := saveCertificateResource(d, newCert, password); err != nil {
 		return err

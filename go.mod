@@ -13,9 +13,11 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-acme/lego/v4 v4.1.3
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
+	github.com/google/go-cmp v0.5.2
 	github.com/gophercloud/gophercloud v0.10.1-0.20200424014253-c3bfe50899e5 // indirect
 	github.com/hashicorp/go-getter v1.5.1 // indirect
 	github.com/hashicorp/go-multierror v1.0.0
+	github.com/hashicorp/go-uuid v1.0.1
 	github.com/hashicorp/hcl/v2 v2.8.1 // indirect
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.4.0
 	github.com/miekg/dns v1.1.31
