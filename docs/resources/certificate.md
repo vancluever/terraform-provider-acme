@@ -135,6 +135,16 @@ new resource when changed.
 * `disable_complete_propagation` (Optional) - Disable the requiement for full
   propagation of the TXT challenge record before proceeding with validation.
   Defaults to `false`. Only recommended for testing.
+* `pre_check_delay` (Optional) - Insert a delay after _every_ DNS challenge
+  record to allow for extra time for DNS propagation before the certificate is
+  requested. Use this option if you observe issues with requesting certificates
+  even when DNS challenge records get added successfully. Units are in seconds.
+  Defaults to 0 (no delay).
+
+-> Be careful with `pre_check_delay` since the delay is executed _per-domain_.
+Take your expected delay and divide it by the number of domains you have
+configured (`common_name` + `subject_alternative_names`).
+
 * `must_staple` (Optional) Enables the [OCSP Stapling Required][ocsp-stapling]
   TLS Security Policy extension. Certificates with this extension must include a
   valid OCSP Staple in the TLS handshake for the connection to succeed.

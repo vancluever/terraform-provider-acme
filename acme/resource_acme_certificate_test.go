@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
@@ -135,6 +136,73 @@ func TestAccACMECertificate_p12Password(t *testing.T) {
 						"acme_certificate.certificate", "certificate_url",
 					),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www12", "www13"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccACMECertificate_preCheckDelay(t *testing.T) {
+	var step1Start, step1End, step2Start, step2End time.Time
+	const delay = 15
+
+	resource.Test(t, resource.TestCase{
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				PreConfig: func() { step1Start = time.Now() },
+				Config:    testAccACMECertificateConfigPreCheckDelay(0),
+				Check: resource.ComposeTestCheckFunc(
+					func(_ *terraform.State) error {
+						step1End = time.Now()
+						return nil
+					},
+					resource.TestCheckResourceAttrPair(
+						"acme_certificate.certificate", "id",
+						"acme_certificate.certificate", "certificate_url",
+					),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www16", "www17"),
+				),
+			},
+			{
+				Config:  testAccACMECertificateConfigPreCheckDelay(0),
+				Destroy: true,
+			},
+			{
+				PreConfig: func() { step2Start = time.Now() },
+				Config:    testAccACMECertificateConfigPreCheckDelay(delay),
+				Check: resource.ComposeTestCheckFunc(
+					func(_ *terraform.State) error {
+						step2End = time.Now()
+						step1Elapsed := step1End.Sub(step1Start)
+						step2Elapsed := step2End.Sub(step2Start)
+
+						// Approximate the actual delay and expect some margin of
+						// error, since it's pretty much guaranteed that the
+						// elapsed time is not going to be exact, to the tune of
+						// seconds on part of caching/etc.
+						//
+						// Additionally, we need to multiply the configured delay
+						// by the number of domains we're actually configuring
+						// challenges for.
+						const deltaThreshold = 5
+
+						expectedDelay := delay * 2
+						actualDelay := int((step2Elapsed - step1Elapsed) / time.Second)
+						delayDelta := expectedDelay - actualDelay
+						if delayDelta > deltaThreshold || delayDelta < -deltaThreshold {
+							return fmt.Errorf(
+								"delta too large between standard and pre-check delay applies; expected %ds, got approx. %ds", expectedDelay, actualDelay)
+						}
+
+						return nil
+					},
+					resource.TestCheckResourceAttrPair(
+						"acme_certificate.certificate", "id",
+						"acme_certificate.certificate", "certificate_url",
+					),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www16", "www17"),
 				),
 			},
 		},
@@ -520,6 +588,54 @@ resource "acme_certificate" "certificate" {
 		pebbleCertDomain,
 		password,
 		pebbleChallTestDNSSrv,
+		pebbleChallTestDNSScriptPath,
+	)
+}
+
+func testAccACMECertificateConfigPreCheckDelay(delay int) string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "www16.${var.domain}"
+  subject_alternative_names = ["www17.${var.domain}"]
+
+  recursive_nameservers        = ["%s"]
+  disable_complete_propagation = true
+  pre_check_delay              = %d
+
+  dns_challenge {
+    provider = "exec"
+    config = {
+      EXEC_PATH = "%s"
+    }
+  }
+}
+`, pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		pebbleChallTestDNSSrv,
+		delay,
 		pebbleChallTestDNSScriptPath,
 	)
 }
