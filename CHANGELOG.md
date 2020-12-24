@@ -6,7 +6,7 @@ BREAKING CHANGES:
   the same as `certificate_url`. This is to prevent drift issues during renewal.
   If you need the URL for the current version of the certificate, use the
   `certificate_url` field.
-  [#103](https://github.com/vancluever/terraform-provider-acme/pull/103)
+  [#103](https://github.com/vancluever/terraform-provider-acme/issues/103)
 
 FEATURES:
 
@@ -14,6 +14,10 @@ FEATURES:
   the insertion of delays in DNS challenges. This should help with DNS
   propagation issues with certain providers.
   [#111](https://github.com/vancluever/terraform-provider-acme/pull/111)
+* `resource/acme_certificate:` The domain defined in the `common_name` field can
+  now be specified in `subject_alternative_names`. This is a strictly semantic
+  change as the CN is already included in the SAN list of issued certificates.
+  [#90](https://github.com/vancluever/terraform-provider-acme/issues/90)
 
 ## 1.6.3 (November 30, 2020)
 
