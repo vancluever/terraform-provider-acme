@@ -2,7 +2,7 @@
 
 Bumped version for dev.
 
-## 2.0.0 (Unreleased)
+## 2.0.0 (December 23, 2020)
 
 BREAKING CHANGES:
 
