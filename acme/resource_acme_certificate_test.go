@@ -199,6 +199,23 @@ func TestAccACMECertificate_preCheckDelay(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_duplicateDomain(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigDuplicateDomain(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-dupe", "test-dupe"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckACMECertificateValid(n, cn, san string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
@@ -268,7 +285,7 @@ func testAccCheckACMECertificateValid(n, cn, san string) resource.TestCheckFunc 
 		domain := "." + pebbleCertDomain
 		expectedCN := cn + domain
 		var expectedSANs []string
-		if san != "" {
+		if san != "" && cn != san {
 			expectedSANs = []string{cn + domain, san + domain}
 		} else {
 			expectedSANs = []string{cn + domain}
@@ -626,6 +643,52 @@ resource "acme_certificate" "certificate" {
 		pebbleCertDomain,
 		pebbleChallTestDNSSrv,
 		delay,
+		pebbleChallTestDNSScriptPath,
+	)
+}
+
+func testAccACMECertificateConfigDuplicateDomain() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "test-dupe.${var.domain}"
+  subject_alternative_names = ["test-dupe.${var.domain}"]
+
+  recursive_nameservers        = ["%s"]
+  disable_complete_propagation = true
+
+  dns_challenge {
+    provider = "exec"
+    config = {
+      EXEC_PATH = "%s"
+    }
+  }
+}
+`, pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		pebbleChallTestDNSSrv,
 		pebbleChallTestDNSScriptPath,
 	)
 }

@@ -41,4 +41,4 @@ build:
 
 .PHONY: test
 test:
-	TF_ACC=1 gotestsum --format=short-verbose $(TEST) $(TESTARGS)
+	TF_LOG=debug TF_ACC=1 gotestsum --format=short-verbose $(TEST) $(TESTARGS)

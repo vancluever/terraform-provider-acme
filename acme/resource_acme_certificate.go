@@ -219,10 +219,9 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		domains := []string{cn}
 		if s, ok := d.GetOk("subject_alternative_names"); ok {
 			for _, v := range stringSlice(s.(*schema.Set).List()) {
-				if v == cn {
-					return fmt.Errorf("common name %s should not appear in SAN list", v)
+				if v != cn {
+					domains = append(domains, v)
 				}
-				domains = append(domains, v)
 			}
 		}
 
