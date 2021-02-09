@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: lego Issue Tracker
-    url: https://github.com/go-acme/lego/issues
-    about: Issue tracker for lego project (please read general issue template before submitting issue).
+  - name: Submitting a lego Issue
+    url: https://github.com/vancluever/terraform-provider-acme/blob/master/docs/lego.md
+    about: Details on how to submit an issue for DNS provider-related issues and other lego-related problems.
   - name: Terraform Community Directory
     url: https://www.terraform.io/community
     about: Links for references on where to ask general Terraform questions or submit issues.
