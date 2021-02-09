@@ -21,7 +21,7 @@ DNS provider-related issues that are not very specifically related to how this p
 
 Please also understand that there are other issues that we will not be able to really troubleshoot for you or reliably provide support on:
 
-* Transient network issues: Please check your network configuration, contact CA you are working with, and/or contact your service provider(s).
+* Transient network issues: Please check your network configuration, contact the CA you are working with, and/or contact your service provider(s).
 * General Terraform configuration issues: Please refer to the [Terraform community page](https://www.terraform.io/community) for links to where best to direct your request.
 
 Thanks!
