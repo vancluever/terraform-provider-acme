@@ -18,7 +18,7 @@ https://go-acme.github.io/lego/installation/. See
 https://go-acme.github.io/lego/usage/cli/ for instructions on how to use the CLI
 tool itself.
 
-## Submitting an Issue to lego.
+## Submitting an Issue to lego
 
 [lego's issue tracker](https://github.com/go-acme/lego/issues)
 
