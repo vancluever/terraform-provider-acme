@@ -1,6 +1,6 @@
 ---
 name: Provider bugs/feature requests/questions
-about: Submit general (provider-related only).
+about: Submit a provider-related issue (for DNS provider issues, see "Submitting a lego Issue").
 title: ''
 labels: ''
 assignees: ''
