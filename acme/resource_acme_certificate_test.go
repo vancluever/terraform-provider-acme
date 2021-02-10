@@ -178,7 +178,7 @@ func TestAccACMECertificate_preCheckDelay(t *testing.T) {
 						// Additionally, we need to multiply the configured delay
 						// by the number of domains we're actually configuring
 						// challenges for.
-						const deltaThreshold = 5
+						const deltaThreshold = 10
 
 						expectedDelay := delay * 2
 						actualDelay := int((step2Elapsed - step1Elapsed) / time.Second)
