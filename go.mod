@@ -21,7 +21,7 @@ require (
 	github.com/hashicorp/hcl/v2 v2.8.1 // indirect
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.4.0
 	github.com/miekg/dns v1.1.31
-	github.com/mitchellh/copystructure v1.0.0
+	github.com/mitchellh/copystructure v1.1.1
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/zclconf/go-cty v1.7.1 // indirect
 	golang.org/x/tools v0.0.0-20201028111035-eafbe7b904eb // indirect
