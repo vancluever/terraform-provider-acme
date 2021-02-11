@@ -11,7 +11,7 @@ require (
 	github.com/BurntSushi/toml v0.3.1
 	github.com/aws/aws-sdk-go v1.31.9 // indirect
 	github.com/davecgh/go-spew v1.1.1
-	github.com/go-acme/lego/v4 v4.1.3
+	github.com/go-acme/lego/v4 v4.2.0
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/google/go-cmp v0.5.4
 	github.com/gophercloud/gophercloud v0.10.1-0.20200424014253-c3bfe50899e5 // indirect
