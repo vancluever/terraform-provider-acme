@@ -1,3 +1,7 @@
+## 2.1.2-pre
+
+Bumped version for dev.
+
 ## 2.1.1 (February 11, 2020)
 
 This is a simple version bump to fix documentation on the Terraform Registry. No
