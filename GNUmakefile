@@ -37,7 +37,7 @@ provider-generate:
 
 .PHONY: provider-generate-update
 provider-generate-update: provider-generate
-    test -z "$$(git diff acme docs)" || \
+	test -z "$$(git diff acme docs)" || \
 		{ git add acme docs && \
 		git commit -m "re-generate lego DNS provider data"; }
 
