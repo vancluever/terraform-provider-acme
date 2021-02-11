@@ -35,6 +35,12 @@ provider-generate:
 	@rm -f docs/guides/dns-providers-*.md
 	@go run ./build-support/generate-dns-providers doc docs/guides/
 
+.PHONY: provider-generate-update
+provider-generate-update: provider-generate
+    test -z "$$(git diff acme docs)" || \
+		{ git add acme docs && \
+		git commit -m "re-generate lego DNS provider data"; }
+
 .PHONY: build
 build:
 	go install

@@ -1,0 +1,34 @@
+name: lego-generate
+on:
+  pull_request:
+    branches:
+      - 'dependabot/go_modules/github.com/go-acme/lego/*'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.15.8'
+      - name: Cache (Go Modules)
+        uses: actions/cache@v2.1.4
+        env:
+          cache-name: go-mod-cache
+        with:
+          path: /home/runner/go/pkg/mod
+          key: ${{ env.cache-name}}-${{ hashFiles('go.sum') }}
+          restore-keys: |
+            ${{ env.cache-name}}-
+      - name: Cache (Go Build)
+        uses: actions/cache@v2.1.4
+        env:
+          cache-name: go-build-cache
+          cache-dir: /home/runner/.cache/go-build
+        with:
+          path: ${{ env.cache-dir }}
+          key: ${{ env.cache-name}}-${{ hashFiles(format('{0}/**/*', env.cache-dir)) }}
+          restore-keys: |
+            ${{ env.cache-name}}-
+      - run: make provider-generate-update
+      - run: git push
