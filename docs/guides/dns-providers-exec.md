@@ -19,7 +19,7 @@ External program.
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
 
-[resource-acme-certificate-dns-challenges]: ./certificate.md#using-dns-challenges
+[resource-acme-certificate-dns-challenges]: ../resources/certificate.md#using-dns-challenges
 
 ## Example
 

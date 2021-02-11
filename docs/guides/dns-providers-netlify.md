@@ -19,7 +19,7 @@ the [`acme_certificate`][resource-acme-certificate] resource with
 For complete information on how to use this provider with the `acme_certifiate`
 resource, see [here][resource-acme-certificate-dns-challenges].
 
-[resource-acme-certificate-dns-challenges]: ./certificate.md#using-dns-challenges
+[resource-acme-certificate-dns-challenges]: ../resources/certificate.md#using-dns-challenges
 
 ## Example
 
@@ -40,13 +40,13 @@ directly through the `config` block in the
 [`acme_certificate`][resource-acme-certificate] resource. For more details, see
 [here][resource-acme-certificate-dns-challenges].
 
-[resource-acme-certificate-dns-challenge-arg]: ./certificate.md#dns_challenge
+[resource-acme-certificate-dns-challenge-arg]: ../resources/certificate.md#dns_challenge
 
 In addition, arguments can also be stored in a local file, with the path
 supplied by supplying the argument with the `_FILE` suffix. See
 [here][acme-certificate-file-arg-example] for more information.
 
-[acme-certificate-file-arg-example]: ./certificate.md#using-variable-files-for-provider-arguments
+[acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
 * `NETLIFY_TOKEN` - Token.
 
