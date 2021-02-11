@@ -45,10 +45,12 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/iij"
 	"github.com/go-acme/lego/v4/providers/dns/infomaniak"
 	"github.com/go-acme/lego/v4/providers/dns/inwx"
+	"github.com/go-acme/lego/v4/providers/dns/ionos"
 	"github.com/go-acme/lego/v4/providers/dns/joker"
 	"github.com/go-acme/lego/v4/providers/dns/lightsail"
 	"github.com/go-acme/lego/v4/providers/dns/linode"
 	"github.com/go-acme/lego/v4/providers/dns/liquidweb"
+	"github.com/go-acme/lego/v4/providers/dns/loopia"
 	"github.com/go-acme/lego/v4/providers/dns/luadns"
 	"github.com/go-acme/lego/v4/providers/dns/mydnsjp"
 	"github.com/go-acme/lego/v4/providers/dns/mythicbeasts"
@@ -433,6 +435,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"ionos": func() (challenge.Provider, error) {
+		p, err := ionos.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"joker": func() (challenge.Provider, error) {
 		p, err := joker.NewDNSProvider()
 		if err != nil {
@@ -459,6 +469,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"liquidweb": func() (challenge.Provider, error) {
 		p, err := liquidweb.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"loopia": func() (challenge.Provider, error) {
+		p, err := loopia.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

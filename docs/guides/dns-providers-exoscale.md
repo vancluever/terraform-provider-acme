@@ -50,8 +50,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `EXOSCALE_API_KEY` - API key.
 * `EXOSCALE_API_SECRET` - API secret.
-* `EXOSCALE_ENDPOINT` - API endpoint URL.
 
+* `EXOSCALE_ENDPOINT` - API endpoint URL.
 * `EXOSCALE_HTTP_TIMEOUT` - API request timeout.
 * `EXOSCALE_POLLING_INTERVAL` - Time between DNS propagation check.
 * `EXOSCALE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.

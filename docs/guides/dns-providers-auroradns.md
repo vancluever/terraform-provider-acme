@@ -48,10 +48,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ./certificate.md#using-variable-files-for-provider-arguments
 
-* `AURORA_ENDPOINT` - API endpoint URL.
 * `AURORA_KEY` - User API key.
 * `AURORA_USER_ID` - User ID.
 
+* `AURORA_ENDPOINT` - API endpoint URL.
 * `AURORA_POLLING_INTERVAL` - Time between DNS propagation check.
 * `AURORA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
 * `AURORA_TTL` - The TTL of the TXT record used for the DNS challenge.

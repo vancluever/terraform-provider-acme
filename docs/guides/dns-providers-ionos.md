@@ -1,5 +1,5 @@
 ---
-page_title: "joker"
+page_title: "ionos"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Joker DNS Challenge Provider
+# Ionos DNS Challenge Provider
 
-The `joker` DNS challenge provider can be used to perform DNS challenges for
+The `ionos` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Joker](https://joker.com).
+[Ionos](https://ionos.com).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "joker"
+    provider = "ionos"
   }
 }
 ```
@@ -48,14 +48,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ./certificate.md#using-variable-files-for-provider-arguments
 
-* `JOKER_API_KEY` - API key (only with DMAPI mode).
-* `JOKER_API_MODE` - 'DMAPI' or 'SVC'. DMAPI is for resellers accounts. (Default: DMAPI).
-* `JOKER_PASSWORD` - Joker.com password.
-* `JOKER_USERNAME` - Joker.com username.
+* `IONOS_API_KEY` - API key `<prefix>.<secret>` https://developer.hosting.ionos.com/docs/getstarted.
 
-* `JOKER_HTTP_TIMEOUT` - API request timeout.
-* `JOKER_POLLING_INTERVAL` - Time between DNS propagation check.
-* `JOKER_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `JOKER_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `IONOS_HTTP_TIMEOUT` - API request timeout.
+* `IONOS_POLLING_INTERVAL` - Time between DNS propagation check.
+* `IONOS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `IONOS_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

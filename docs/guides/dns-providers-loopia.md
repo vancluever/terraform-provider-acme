@@ -1,5 +1,5 @@
 ---
-page_title: "joker"
+page_title: "loopia"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Joker DNS Challenge Provider
+# Loopia DNS Challenge Provider
 
-The `joker` DNS challenge provider can be used to perform DNS challenges for
+The `loopia` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Joker](https://joker.com).
+[Loopia](https://loopia.com).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "joker"
+    provider = "loopia"
   }
 }
 ```
@@ -48,14 +48,22 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ./certificate.md#using-variable-files-for-provider-arguments
 
-* `JOKER_API_KEY` - API key (only with DMAPI mode).
-* `JOKER_API_MODE` - 'DMAPI' or 'SVC'. DMAPI is for resellers accounts. (Default: DMAPI).
-* `JOKER_PASSWORD` - Joker.com password.
-* `JOKER_USERNAME` - Joker.com username.
+* `LOOPIA_API_PASSWORD` - API password.
+* `LOOPIA_API_USER` - API username.
 
-* `JOKER_HTTP_TIMEOUT` - API request timeout.
-* `JOKER_POLLING_INTERVAL` - Time between DNS propagation check.
-* `JOKER_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `JOKER_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `LOOPIA_HTTP_TIMEOUT` - API request timeout.
+* `LOOPIA_POLLING_INTERVAL` - Time between DNS propagation check.
+* `LOOPIA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `LOOPIA_TTL` - The TTL of the TXT record used for the DNS challenge.
 
+### API user
+
+You can [generate a new API user](https://customerzone.loopia.com/api/) from your account page.
+
+It needs to have the following permissions:
+
+* addZoneRecord
+* getZoneRecords
+* removeZoneRecord
+* removeSubdomain
 
