@@ -9,7 +9,7 @@ on:
     branches:
       - '**'
 jobs:
-  test:
+  go-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -49,8 +49,14 @@ jobs:
         run: go mod verify
       - name: Run Tests
         run: make tools pebble-start test
+  documentation-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
       - name: Validate Markdown Links
         uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
+          use-quiet-mode: 'yes'
+          use-verbose-mode: 'yes'
           folder-path: 'docs'
 

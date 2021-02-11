@@ -19,6 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Validate Markdown Links # Do this first to save time
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          use-quiet-mode: 'yes'
+          use-verbose-mode: 'yes'
+          folder-path: 'docs'
       - uses: actions/setup-go@v2
         with:
           go-version: '^1.15.8'
@@ -55,10 +61,6 @@ jobs:
         run: go mod verify
       - name: Run Tests
         run: make tools pebble-start test
-      - name: Validate Markdown Links
-        uses: gaurav-nelson/github-action-markdown-link-check@v1
-        with:
-          folder-path: 'docs'
 
   goreleaser:
     needs: test
