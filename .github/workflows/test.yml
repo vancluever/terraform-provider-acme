@@ -45,6 +45,12 @@ jobs:
           key: ${{ env.cache-name}}-${{ hashFiles(format('{0}/**/*', env.cache-dir)) }}
           restore-keys: |
             ${{ env.cache-name}}-
-      - run: go mod verify
-      - run: make tools pebble-start test
+      - name: Verify Modules
+        run: go mod verify
+      - name: Run Tests
+        run: make tools pebble-start test
+      - name: Validate Markdown Links
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          folder-path: 'docs'
 
