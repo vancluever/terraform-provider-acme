@@ -1,10 +1,8 @@
 name: lego-generate
-on:
-  pull_request:
-    branches:
-      - 'dependabot/go_modules/github.com/go-acme/lego/*'
+on: pull_request
 jobs:
-  test:
+  lego-generate:
+    if: startsWith(github.head_ref, 'dependabot/go_modules/github.com/go-acme/lego/')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
