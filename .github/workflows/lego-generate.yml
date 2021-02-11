@@ -28,5 +28,9 @@ jobs:
           key: ${{ env.cache-name}}-${{ hashFiles(format('{0}/**/*', env.cache-dir)) }}
           restore-keys: |
             ${{ env.cache-name}}-
-      - run: make provider-generate-update
-      - run: git push
+      - name: Setup Git
+        run: git config user.name github-actions && git config user.email github-actions@github.com
+      - name: Re-generate lego DNS providers and commit
+        run: make provider-generate-update
+      - name: Push any changes
+        run: git push
