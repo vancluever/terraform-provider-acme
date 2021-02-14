@@ -107,6 +107,11 @@ func resourceACMECertificateV5() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			},
+			"disable_propagation": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"must_staple": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -192,6 +197,12 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 
 	if d.Get("disable_complete_propagation").(bool) {
 		opts = append(opts, dns01.DisableCompletePropagationRequirement())
+	}
+
+	if d.Get("disable_propagation").(bool) {
+		opts = append(opts, dns01.WrapPreCheck(func(domain, fqdn, value string, check dns01.PreCheckFunc) (bool, error) {
+			return true, nil
+		}))
 	}
 
 	if preCheckDelay := d.Get("pre_check_delay").(int); preCheckDelay > 0 {

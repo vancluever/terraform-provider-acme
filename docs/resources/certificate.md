@@ -128,6 +128,12 @@ new resource when changed.
   `key_type`, and optionally `subject_alternative_names`) need to be specified.
 * `dns_challenge` (Required) - The [DNS challenges](#using-dns-challenges) to
   use in fulfilling the request.
+* `disable_propagation` (Optional) - Disable the check for propagation 
+  of the TXT challenge record before proceeding with validation.
+  Defaults to `false`. Useful in conjunction with `exec` DNS provider,
+  where the external executable blocks until DNS challenge record was fully
+  propagated. Overrides all other propagation check configuration parameters
+  (`disable_complete_propagation`, `pre_check_delay`, etc).
 * `recursive_nameservers` (Optional) - The [recursive
   nameservers](#manually-specifying-recursive-nameservers-for-propagation-checks)
   that will be used to check for propagation of the challenge record. Defaults
