@@ -132,7 +132,7 @@ new resource when changed.
   of the TXT challenge record before proceeding with validation.
   Defaults to `false`. Useful in conjunction with `exec` DNS provider,
   where the external executable blocks until DNS challenge record was fully
-  propagated. Overrides all other propagation check configuration parameters
+  propagated. Incompatible with other propagation check configuration parameters
   (`disable_complete_propagation`, `pre_check_delay`, etc).
 * `recursive_nameservers` (Optional) - The [recursive
   nameservers](#manually-specifying-recursive-nameservers-for-propagation-checks)
