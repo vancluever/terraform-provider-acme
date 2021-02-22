@@ -1,7 +1,3 @@
-## 2.1.3-pre
-
-Bumped version for dev.
-
 ## 2.1.2 (Unreleased)
 
 BUG FIXES:
