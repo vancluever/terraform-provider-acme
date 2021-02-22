@@ -340,8 +340,10 @@ Refer to that field for the current URL of the certificate.
 * `certificate_pem` - The certificate in PEM format. This does not include the
   `issuer_pem`. This certificate can be concatenated with `issuer_pem` to form
   a full chain, e.g. `"${acme_certificate.certificate.certificate_pem}${acme_certificate.certificate.issuer_pem}"`
-* `issuer_pem` - The intermediate certificate of the issuer.
-* `certificate_p12` - The certificate, intermediate, and the private key
+* `issuer_pem` - The intermediate certificates of the issuer. Multiple
+  certificates are concatenated in this field when there is more than one
+  intermediate certificate in the chain.
+* `certificate_p12` - The certificate, any intermediates, and the private key
   archived as a PFX file (PKCS12 format, generally used by Microsoft products).
   The data is base64 encoded (including padding), and its password is
   configurable via the [`certificate_p12_password`](#certificate_p12_password)
