@@ -1,6 +1,12 @@
-## 2.1.2-pre
+## 2.1.2 (Unreleased)
 
-Bumped version for dev.
+BUG FIXES:
+
+* `resource/acme_certificate:` The resource no longer always expects two
+  certificates (ie: a single intermediate certificate). All intermediate
+  certificates are now concatenated in `issuer_pem`. The `certificate_p12`
+  should contain all issuer certificates as well.
+  [#154](https://github.com/vancluever/terraform-provider-acme/issues/154)
 
 ## 2.1.1 (February 11, 2020)
 
