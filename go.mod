@@ -20,7 +20,7 @@ require (
 	github.com/hashicorp/go-uuid v1.0.2
 	github.com/hashicorp/hcl/v2 v2.8.1 // indirect
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.4.3
-	github.com/miekg/dns v1.1.38
+	github.com/miekg/dns v1.1.38 // indirect
 	github.com/mitchellh/copystructure v1.1.1
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/zclconf/go-cty v1.7.1 // indirect
