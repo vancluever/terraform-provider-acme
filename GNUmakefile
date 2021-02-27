@@ -1,6 +1,12 @@
 # Test all packages by default
 TEST ?= ./...
 
+ifeq ($(shell go env GOOS),darwin)
+SEDOPTS = -i ''
+else
+SEDOPTS = -i
+endif
+
 .PHONY: default
 default: build
 
@@ -48,3 +54,8 @@ build:
 .PHONY: test
 test:
 	TF_LOG=debug TF_ACC=1 gotestsum --format=short-verbose $(TEST) $(TESTARGS)
+
+.PHONY: go-version-sync
+go-version-sync:
+	sed $(SEDOPTS) -e "s/go-version:.*\$$/go-version: '^$(subst go,,$(shell go env GOVERSION))\$$'/g" .github/workflows/*.yml
+	git add .github/workflows/*.yml && git commit -m "workflows: update Go to version $(subst go,,$(shell go env GOVERSION))"
