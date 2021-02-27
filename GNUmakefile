@@ -7,6 +7,8 @@ else
 SEDOPTS = -i
 endif
 
+GOWORKFLOWVERSION=$(shell go run ./build-support/go-version-for-workflow)
+
 .PHONY: default
 default: build
 
@@ -57,5 +59,5 @@ test:
 
 .PHONY: go-version-sync
 go-version-sync:
-	sed $(SEDOPTS) -e "s/go-version:.*\$$/go-version: '^$(subst go,,$(shell go env GOVERSION))\$$'/g" .github/workflows/*.yml
-	git add .github/workflows/*.yml && git commit -m "workflows: update Go to version $(subst go,,$(shell go env GOVERSION))"
+	sed $(SEDOPTS) -e "s/go-version:.*\$$/go-version: '^$(GOWORKFLOWVERSION)'/g" .github/workflows/*.yml
+	git add .github/workflows/*.yml && git commit -m "workflows: update Go to version $(GOWORKFLOWVERSION)"
