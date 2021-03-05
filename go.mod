@@ -13,7 +13,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-acme/lego/v4 v4.2.0
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
-	github.com/google/go-cmp v0.5.4
+	github.com/google/go-cmp v0.5.5
 	github.com/gophercloud/gophercloud v0.10.1-0.20200424014253-c3bfe50899e5 // indirect
 	github.com/hashicorp/go-getter v1.5.1 // indirect
 	github.com/hashicorp/go-multierror v1.1.0
