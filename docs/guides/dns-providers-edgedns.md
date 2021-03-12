@@ -48,13 +48,41 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `AKAMAI_ACCESS_TOKEN` - Access token.
-* `AKAMAI_CLIENT_SECRET` - Client secret.
-* `AKAMAI_CLIENT_TOKEN` - Client token.
-* `AKAMAI_HOST` - API host.
+* `AKAMAI_ACCESS_TOKEN` - Access token, managed by the Akamai EdgeGrid client.
+* `AKAMAI_CLIENT_SECRET` - Client secret, managed by the Akamai EdgeGrid client.
+* `AKAMAI_CLIENT_TOKEN` - Client token, managed by the Akamai EdgeGrid client.
+* `AKAMAI_EDGERC` - Path to the .edgerc file, managed by the Akamai EdgeGrid client.
+* `AKAMAI_EDGERC_SECTION` - Configuration section, managed by the Akamai EdgeGrid client.
+* `AKAMAI_HOST` - API host, managed by the Akamai EdgeGrid client.
 
 * `AKAMAI_POLLING_INTERVAL` - Time between DNS propagation check. Default: 15 seconds.
 * `AKAMAI_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation. Default: 3 minutes.
 * `AKAMAI_TTL` - The TTL of the TXT record used for the DNS challenge.
 
+Akamai credentials are automatically detected in the following locations and prioritized in the following order:
+
+1. Section-specific environment variables (where `{SECTION}` is specified using `AKAMAI_EDGERC_SECTION`):
+  - `AKAMAI_{SECTION}_HOST`
+  - `AKAMAI_{SECTION}_ACCESS_TOKEN`
+  - `AKAMAI_{SECTION}_CLIENT_TOKEN`
+  - `AKAMAI_{SECTION}_CLIENT_SECRET`
+2. If `AKAMAI_EDGERC_SECTION` is not defined or is set to `default`, environment variables:
+  - `AKAMAI_HOST`
+  - `AKAMAI_ACCESS_TOKEN`
+  - `AKAMAI_CLIENT_TOKEN`
+  - `AKAMAI_CLIENT_SECRET`
+3. `.edgerc` file located at `AKAMAI_EDGERC`
+  - defaults to `~/.edgerc`, sections can be specified using `AKAMAI_EDGERC_SECTION`
+4. Default environment variables:
+  - `AKAMAI_HOST`
+  - `AKAMAI_ACCESS_TOKEN`
+  - `AKAMAI_CLIENT_TOKEN`
+  - `AKAMAI_CLIENT_SECRET`
+
+See also:
+
+- [Setting up Akamai credentials](https://developer.akamai.com/api/getting-started)
+- [.edgerc Format](https://developer.akamai.com/legacy/introduction/Conf_Client.html#edgercformat)
+- [API Client Authentication](https://developer.akamai.com/legacy/introduction/Client_Auth.html)
+- [Config from Env](https://github.com/akamai/AkamaiOPEN-edgegrid-golang/blob/master/edgegrid/config.go#L118)
 

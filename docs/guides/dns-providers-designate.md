@@ -48,11 +48,15 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
+* `OS_APPLICATION_CREDENTIAL_ID` - Application credential ID.
+* `OS_APPLICATION_CREDENTIAL_NAME` - Application credential name.
+* `OS_APPLICATION_CREDENTIAL_SECRET` - Application credential secret.
 * `OS_AUTH_URL` - Identity endpoint URL.
 * `OS_PASSWORD` - Password.
 * `OS_PROJECT_NAME` - Project name.
 * `OS_REGION_NAME` - Region name.
 * `OS_USERNAME` - Username.
+* `OS_USER_ID` - User ID.
 
 * `DESIGNATE_POLLING_INTERVAL` - Time between DNS propagation check.
 * `DESIGNATE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
@@ -60,4 +64,18 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `OS_PROJECT_ID` - Project ID.
 * `OS_TENANT_NAME` - Tenant name (deprecated see OS_PROJECT_NAME and OS_PROJECT_ID).
 
+## Description
+
+There are three main ways of authenticating with Designate:
+
+1. The first one is by using the `OS_CLOUD` environment variable and a `clouds.yaml` file.
+2. The second one is using your username and password, via the `OS_USERNAME`, `OS_PASSWORD` and `OS_PROJECT_NAME` environment variables.
+3. The third one is by using an application credential, via the `OS_APPLICATION_CREDENTIAL_*` and `OS_USER_ID` environment variables.
+
+For the username/password and application methods, the `OS_AUTH_URL` and `OS_REGION_NAME` environment variables are required.
+
+For more information, you can read about the different methods of authentication with OpenStack in the Keystone's documentation and the gophercloud documentation:
+
+- [Keystone username/password](https://docs.openstack.org/keystone/latest/user/supported_clients.html)
+- [Keystone application credentials](https://docs.openstack.org/keystone/latest/user/application_credentials.html)
 

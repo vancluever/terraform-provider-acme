@@ -25,6 +25,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/dnsmadeeasy"
 	"github.com/go-acme/lego/v4/providers/dns/dnspod"
 	"github.com/go-acme/lego/v4/providers/dns/dode"
+	"github.com/go-acme/lego/v4/providers/dns/domeneshop"
 	"github.com/go-acme/lego/v4/providers/dns/dreamhost"
 	"github.com/go-acme/lego/v4/providers/dns/duckdns"
 	"github.com/go-acme/lego/v4/providers/dns/dyn"
@@ -41,6 +42,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/hetzner"
 	"github.com/go-acme/lego/v4/providers/dns/hostingde"
 	"github.com/go-acme/lego/v4/providers/dns/httpreq"
+	"github.com/go-acme/lego/v4/providers/dns/hurricane"
 	"github.com/go-acme/lego/v4/providers/dns/hyperone"
 	"github.com/go-acme/lego/v4/providers/dns/iij"
 	"github.com/go-acme/lego/v4/providers/dns/infomaniak"
@@ -60,6 +62,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/netcup"
 	"github.com/go-acme/lego/v4/providers/dns/netlify"
 	"github.com/go-acme/lego/v4/providers/dns/nifcloud"
+	"github.com/go-acme/lego/v4/providers/dns/njalla"
 	"github.com/go-acme/lego/v4/providers/dns/ns1"
 	"github.com/go-acme/lego/v4/providers/dns/oraclecloud"
 	"github.com/go-acme/lego/v4/providers/dns/otc"
@@ -275,6 +278,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"domeneshop": func() (challenge.Provider, error) {
+		p, err := domeneshop.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"dreamhost": func() (challenge.Provider, error) {
 		p, err := dreamhost.NewDNSProvider()
 		if err != nil {
@@ -397,6 +408,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"httpreq": func() (challenge.Provider, error) {
 		p, err := httpreq.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"hurricane": func() (challenge.Provider, error) {
+		p, err := hurricane.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -549,6 +568,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"nifcloud": func() (challenge.Provider, error) {
 		p, err := nifcloud.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"njalla": func() (challenge.Provider, error) {
+		p, err := njalla.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
