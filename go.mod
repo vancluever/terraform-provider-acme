@@ -16,7 +16,7 @@ require (
 	github.com/google/go-cmp v0.5.5
 	github.com/gophercloud/gophercloud v0.10.1-0.20200424014253-c3bfe50899e5 // indirect
 	github.com/hashicorp/go-getter v1.5.1 // indirect
-	github.com/hashicorp/go-multierror v1.1.0
+	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hashicorp/go-uuid v1.0.2
 	github.com/hashicorp/hcl/v2 v2.8.1 // indirect
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.4.4
