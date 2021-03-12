@@ -1,4 +1,4 @@
-## 2.2.0 (Unreleased)
+## 2.2.0 (March 12, 2021)
 
 LEGO UPDATE:
 
