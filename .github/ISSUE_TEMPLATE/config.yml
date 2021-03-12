@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Submitting a lego Issue
-    url: https://github.com/vancluever/terraform-provider-acme/blob/master/docs/lego.md
+    url: https://github.com/vancluever/terraform-provider-acme/blob/main/docs/lego.md
     about: Details on how to submit an issue for DNS provider-related issues and other lego-related problems.
   - name: Terraform Community Directory
     url: https://www.terraform.io/community
