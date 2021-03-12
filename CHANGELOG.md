@@ -7,7 +7,7 @@ LEGO UPDATE:
 more details on additions and changes to DNS providers, and other minor changes
 to the library.
 
-## 2.1.2 (February 22, 2020)
+## 2.1.2 (February 22, 2021)
 
 BUG FIXES:
 
@@ -17,12 +17,12 @@ BUG FIXES:
   should contain all issuer certificates as well.
   [#154](https://github.com/vancluever/terraform-provider-acme/issues/154)
 
-## 2.1.1 (February 11, 2020)
+## 2.1.1 (February 11, 2021)
 
 This is a simple version bump to fix documentation on the Terraform Registry. No
 changes are being made.
 
-## 2.1.0 (February 10, 2020)
+## 2.1.0 (February 10, 2021)
 
 LEGO UPDATE:
 
