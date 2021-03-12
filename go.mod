@@ -11,7 +11,6 @@ require (
 	github.com/BurntSushi/toml v0.3.1
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-acme/lego/v4 v4.3.1
-	github.com/go-sql-driver/mysql v1.5.0 // indirect
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/google/go-cmp v0.5.5
 	github.com/hashicorp/go-getter v1.5.1 // indirect
