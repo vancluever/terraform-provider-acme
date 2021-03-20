@@ -4,6 +4,7 @@ import (
 	"crypto"
 	"crypto/ecdsa"
 	"crypto/rsa"
+	"crypto/x509"
 	"encoding/base64"
 	"encoding/pem"
 	"errors"
@@ -19,7 +20,7 @@ import (
 )
 
 var uuidRegexp = regexp.MustCompile(`^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$`)
-var certURLRegexp = regexp.MustCompile(`^https://localhost:1400[01]/certZ/[a-z0-9]+$`)
+var certURLRegexp = regexp.MustCompile(`^https://localhost:1400[01]/certZ/[a-z0-9]+(/alternate/\d+)?$`)
 
 func TestAccACMECertificate_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
@@ -32,6 +33,7 @@ func TestAccACMECertificate_basic(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www", "www2"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
 				),
 			},
 		},
@@ -49,6 +51,7 @@ func TestAccACMECertificate_CSR(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www3", "www4"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
 				),
 			},
 		},
@@ -71,6 +74,7 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www6", ""),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
 				),
 				ExpectNonEmptyPlan: true,
 			},
@@ -87,6 +91,7 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www6", ""),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
 				),
 				ExpectNonEmptyPlan: true,
 			},
@@ -105,6 +110,7 @@ func TestAccACMECertificate_wildcard(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "*", ""),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
 				),
 			},
 		},
@@ -122,6 +128,7 @@ func TestAccACMECertificate_p12Password(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www12", "www13"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
 				),
 			},
 			{
@@ -130,6 +137,7 @@ func TestAccACMECertificate_p12Password(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www12", "www13"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
 				),
 			},
 		},
@@ -155,6 +163,7 @@ func TestAccACMECertificate_preCheckDelay(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www16", "www17"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
 				),
 			},
 			{
@@ -193,6 +202,7 @@ func TestAccACMECertificate_preCheckDelay(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www16", "www17"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
 				),
 			},
 		},
@@ -210,6 +220,25 @@ func TestAccACMECertificate_duplicateDomain(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-dupe", "test-dupe"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+				),
+			},
+		},
+	})
+}
+
+func TestAccACMECertificate_preferredChain(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigPreferredChain(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-preferred", "test-preferred2"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(alternateIntermediateURL)),
 				),
 			},
 		},
@@ -349,6 +378,28 @@ func testFindPEMInP12(pfxB64 []byte, password string, expected ...[]byte) error 
 	}
 
 	return nil
+}
+
+func testAccCheckACMECertificateIntermediateEqual(name string, expected *x509.Certificate) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs, ok := s.RootModule().Resources[name]
+		if !ok {
+			return fmt.Errorf("Can't find ACME certificate: %s", name)
+		}
+
+		issuer := rs.Primary.Attributes["issuer_pem"]
+		issuerCerts, err := parsePEMBundle([]byte(issuer))
+		if err != nil {
+			return err
+		}
+		actual := issuerCerts[0]
+
+		if !expected.Equal(actual) {
+			return fmt.Errorf("certificate mismatch: expected issuer %q, actual %q", expected.Issuer.CommonName, actual.Issuer.CommonName)
+		}
+
+		return nil
+	}
 }
 
 func testAccACMECertificateConfig() string {
@@ -689,6 +740,54 @@ resource "acme_certificate" "certificate" {
 		pebbleCertDomain,
 		pebbleCertDomain,
 		pebbleChallTestDNSSrv,
+		pebbleChallTestDNSScriptPath,
+	)
+}
+
+func testAccACMECertificateConfigPreferredChain() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "test-preferred.${var.domain}"
+  subject_alternative_names = ["test-preferred2.${var.domain}"]
+
+  recursive_nameservers        = ["%s"]
+  disable_complete_propagation = true
+  preferred_chain = "%s"
+
+  dns_challenge {
+    provider = "exec"
+    config = {
+      EXEC_PATH = "%s"
+    }
+  }
+}
+`, pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		pebbleChallTestDNSSrv,
+		getPebbleCertificateIssuer(alternateIntermediateURL),
 		pebbleChallTestDNSScriptPath,
 	)
 }

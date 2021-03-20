@@ -23,6 +23,9 @@ PEBBLE_CA_CERT="test/certs/pebble.minica.pem"
 BASIC_CFG="$(realpath "$(dirname "$0")"/${PEBBLE_CFGFILE})"
 EAB_CFG="$(realpath "$(dirname "$0")"/${PEBBLE_EAB_CFGFILE})"
 
+# Enable alternate roots
+export PEBBLE_ALTERNATE_ROOTS="1"
+
 if [ "$1" == "--install" ]; then
   INSTALL="yes"
 fi

@@ -113,6 +113,12 @@ func resourceACMECertificateV5() *schema.Resource {
 				Default:  false,
 				ForceNew: true,
 			},
+			"preferred_chain": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "",
+				ForceNew: true,
+			},
 			"certificate_url": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -226,9 +232,10 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		}
 
 		cert, err = client.Certificate.Obtain(certificate.ObtainRequest{
-			Domains:    domains,
-			Bundle:     true,
-			MustStaple: d.Get("must_staple").(bool),
+			Domains:        domains,
+			Bundle:         true,
+			MustStaple:     d.Get("must_staple").(bool),
+			PreferredChain: d.Get("preferred_chain").(string),
 		})
 	}
 
@@ -385,7 +392,7 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 		return err
 	}
 
-	newCert, err := client.Certificate.Renew(*cert, true, d.Get("must_staple").(bool), "")
+	newCert, err := client.Certificate.Renew(*cert, true, d.Get("must_staple").(bool), d.Get("preferred_chain").(string))
 	if err != nil {
 		return err
 	}

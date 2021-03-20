@@ -1,7 +1,12 @@
 package acme
 
 import (
+	"crypto/tls"
+	"crypto/x509"
+	"fmt"
 	"go/build"
+	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"testing"
@@ -29,6 +34,50 @@ const pebbleChallTestDNSSrv = "localhost:5553"
 
 // Relative path to the external challenge/test script
 const pebbleChallTestDNSScriptPath = "../build-support/scripts/pebble-challtest-dns.sh"
+
+// URL to the main certificate for regular tests
+const mainIntermediateURL = "https://localhost:15000/intermediates/0"
+
+// URL to the alternate certificate for preferred chain tests
+const alternateIntermediateURL = "https://localhost:15000/intermediates/1"
+
+// getPebbleCertificate gets the certificate at the supplied URL.
+func getPebbleCertificate(url string) *x509.Certificate {
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true,
+			},
+		},
+	}
+	resp, err := client.Get(url)
+	if err != nil {
+		panic(fmt.Errorf("getAlternateIntermediateCertificate: error fetching certificate: %s", err))
+	}
+
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		panic(fmt.Errorf("getAlternateIntermediateCertificate: error reading certificate: %s", err))
+	}
+
+	certs, err := parsePEMBundle(body)
+	if err != nil {
+		panic(fmt.Errorf("getAlternateIntermediateCertificate: error reading PEM bundle response: %s", err))
+	}
+
+	if len(certs) != 1 {
+		panic("getAlternateIntermediateCertificate: expected single certificate in intermediate chain, check pebble config")
+	}
+
+	return certs[0]
+}
+
+// getPebbleCertificateIssuer returns the issuer CN of the
+// certificate at the supplied URL.
+func getPebbleCertificateIssuer(url string) string {
+	return getPebbleCertificate(url).Issuer.CommonName
+}
 
 // External providers (tls)
 var testAccExternalProviders = map[string]resource.ExternalProvider{
