@@ -1,6 +1,10 @@
-## 2.2.1-pre
+## 2.3.0 (Unreleased)
 
-Bumped version for dev.
+FEATURES:
+
+* `resource/acme_certificate:` Added the `preferred_chain` option to allow for
+  the selection of alternate certificate chains offered by the CA.
+  [#161](https://github.com/vancluever/terraform-provider-acme/issues/161)
 
 ## 2.2.0 (March 12, 2021)
 
