@@ -172,8 +172,8 @@ provider can be configured correctly.
   default will be provided.
 
 -> `preferred_chain` can be used to request alternate chains on Let's Encrypt
-during their transitions to their new independently-signed certificates. See
-[this article for more
+during the transition away from their old cross-signed intermediates. See [this
+article for more
 details](https://letsencrypt.org/2020/12/21/extending-android-compatibility.html).
 In their example titled **"What about the alternate chain?"**, the root you
 would put in to the `preferred_chain` field would be `ISRG Root X1`.
