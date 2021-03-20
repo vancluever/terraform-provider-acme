@@ -167,16 +167,19 @@ provider can be configured correctly.
   the PFX file stored in [`certificate_p12`](#certificate_p12). Defaults to an
   empty string.
 * `preferred_chain` - (Optional) The common name of the root of a preferred
-  alternate certificate chain offered by the CA. The issue certificates in
+  alternate certificate chain offered by the CA. The certificates in
   `issuer_pem` will reflect the chain requested, if available, otherwise the
-  default will be provided.
+  default chain will be provided.
 
 -> `preferred_chain` can be used to request alternate chains on Let's Encrypt
 during the transition away from their old cross-signed intermediates. See [this
 article for more
 details](https://letsencrypt.org/2020/12/21/extending-android-compatibility.html).
 In their example titled **"What about the alternate chain?"**, the root you
-would put in to the `preferred_chain` field would be `ISRG Root X1`.
+would put in to the `preferred_chain` field would be `ISRG Root X1`. The
+equivalent in the [staging
+environment](https://letsencrypt.org/docs/staging-environment/) is `(STAGING)
+Pretend Pear X1`.
 
 
 ### Using DNS challenges
