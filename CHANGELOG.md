@@ -1,4 +1,4 @@
-## 2.3.0 (Unreleased)
+## 2.3.0 (March 19, 2021)
 
 FEATURES:
 
