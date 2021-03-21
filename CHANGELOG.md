@@ -6,7 +6,7 @@ Bumped version for dev.
 
 FEATURES:
 
-* `resource/acme_certificate:` Added the `preferred_chain` option to allow for
+* `resource/acme_certificate`: Added the `preferred_chain` option to allow for
   the selection of alternate certificate chains offered by the CA.
   [#161](https://github.com/vancluever/terraform-provider-acme/issues/161)
 
@@ -23,7 +23,7 @@ to the library.
 
 BUG FIXES:
 
-* `resource/acme_certificate:` The resource no longer always expects two
+* `resource/acme_certificate`: The resource no longer always expects two
   certificates (ie: a single intermediate certificate). All intermediate
   certificates are now concatenated in `issuer_pem`. The `certificate_p12`
   should contain all issuer certificates as well.
@@ -47,7 +47,7 @@ to the library.
 
 BREAKING CHANGES:
 
-* `resource/acme_certificate:` The resource ID is now a state-local UUID, not
+* `resource/acme_certificate`: The resource ID is now a state-local UUID, not
   the same as `certificate_url`. This is to prevent drift issues during renewal.
   If you need the URL for the current version of the certificate, use the
   `certificate_url` field.
@@ -55,11 +55,11 @@ BREAKING CHANGES:
 
 FEATURES:
 
-* `resource/acme_certificate:` Added the `pre_check_delay` option to allow for
+* `resource/acme_certificate`: Added the `pre_check_delay` option to allow for
   the insertion of delays in DNS challenges. This should help with DNS
   propagation issues with certain providers.
   [#111](https://github.com/vancluever/terraform-provider-acme/pull/111)
-* `resource/acme_certificate:` The domain defined in the `common_name` field can
+* `resource/acme_certificate`: The domain defined in the `common_name` field can
   now be specified in `subject_alternative_names`. This is a strictly semantic
   change as the CN is already included in the SAN list of issued certificates.
   [#90](https://github.com/vancluever/terraform-provider-acme/issues/90)
@@ -101,10 +101,10 @@ GENERAL NOTIFICATIONS:
 
 FEATURES:
 
-* `resource/acme_registration:` Added support for external account binding. This
+* `resource/acme_registration`: Added support for external account binding. This
   allows registrations to be linked to external accounts, commonly used by
   commercial CAs.
-* `resource/acme_certificate:` Added the `disable_complete_propagation` option,
+* `resource/acme_certificate`: Added the `disable_complete_propagation` option,
   which allows one to disable the propagation pre-check before attempting to
   complete the DNS challenge. Enabling this is only recommended for testing.
 
