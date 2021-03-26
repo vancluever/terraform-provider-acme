@@ -309,7 +309,7 @@ func mapEnvironmentVariableValues(keyMapping map[string]string) {
 }
 
 // setDNSChallenge takes a *lego.Client and the DNS challenge complex
-// structure as a map[string]interface{}, and configues the client to
+// structure as a map[string]interface{}, and configures the client to
 // only allow a DNS challenge with the configured provider.
 func setDNSChallenge(client *lego.Client, m map[string]interface{}) (challenge.Provider, error) {
 	var providerName string
@@ -333,6 +333,37 @@ func setDNSChallenge(client *lego.Client, m map[string]interface{}) (challenge.P
 	}
 
 	return providerFunc()
+}
+
+// setHTTPChallenge takes a *lego.Client and the HTTP challenge complex
+// structure as a map[string]interface{}, and configures the client to
+// only allow a HTTP challenge with the configured provider.
+func setHTTPChallenge(client *lego.Client, m map[string]interface{}) (challenge.Provider, error) {
+	var providerName string
+
+	if v, ok := m["provider"]; ok && v.(string) != "" {
+		providerName = v.(string)
+	} else {
+		return nil, fmt.Errorf("HTTP challenge provider not defined")
+	}
+	var config interface{}
+	if v, ok := m["config"]; ok {
+		config = v
+
+		// env for DNS exec provider
+		// Config only needs to be set if it's defined, otherwise existing env/SDK
+		// defaults are fine.
+		for k, v := range v.(map[string]interface{}) {
+			os.Setenv(k, v.(string))
+		}
+	}
+
+	providerFunc, ok := httpProviderFactory[providerName]
+	if !ok {
+		return nil, fmt.Errorf("%s: unsupported HTTP challenge provider", providerName)
+	}
+
+	return providerFunc(config)
 }
 
 // stringSlice converts an interface slice to a string slice.

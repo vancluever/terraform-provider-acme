@@ -4,6 +4,10 @@ import (
 	"context"
 	"crypto/x509"
 	"fmt"
+	"github.com/go-acme/lego/v4/lego"
+	"github.com/go-acme/lego/v4/providers/http/webroot"
+	"github.com/terraform-providers/terraform-provider-acme/acme/dns"
+	"github.com/terraform-providers/terraform-provider-acme/acme/providers"
 	"log"
 	"time"
 
@@ -34,6 +38,11 @@ func resourceACMECertificateV5() *schema.Resource {
 			resourceACMECertificateStateUpgraderV4(),
 		},
 		Schema: map[string]*schema.Schema{
+			"method": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "dns",
+			},
 			"account_key_pem": {
 				Type:      schema.TypeString,
 				Required:  true,
@@ -149,6 +158,75 @@ func resourceACMECertificateV5() *schema.Resource {
 	}
 }
 
+func setupChallenge(client *lego.Client, d *schema.ResourceData) error {
+	// Check for provider configured with http method
+	useHttp01 := false
+	for _, v := range d.Get("dns_challenge").([]interface{}) {
+		config := v.(map[string]interface{})
+		if config["method"] == "http" {
+			useHttp01 = true
+			break
+		}
+	}
+
+	if !useHttp01 {
+		provider, err := providers.NewDNSProviderWrapper()
+		if err != nil {
+			return err
+		}
+		for _, v := range d.Get("dns_challenge").([]interface{}) {
+			config := v.(map[string]interface{})
+			if (!useHttp01 && config["method"] != "dns") || (useHttp01 && config["method"] != "http") {
+				continue
+			}
+			if p, err := setDNSChallenge(client, config); err == nil {
+				provider.Providers = append(provider.Providers, p)
+			} else {
+				return err
+			}
+		}
+
+		// DNS verification
+		var opts []dns01.ChallengeOption
+		if nameservers := d.Get("recursive_nameservers").([]interface{}); len(nameservers) > 0 {
+			var s []string
+			for _, ns := range nameservers {
+				s = append(s, ns.(string))
+			}
+
+			opts = append(opts, dns01.AddRecursiveNameservers(s))
+		}
+
+		if d.Get("disable_complete_propagation").(bool) {
+			opts = append(opts, dns01.DisableCompletePropagationRequirement())
+		}
+
+		if preCheckDelay := d.Get("pre_check_delay").(int); preCheckDelay > 0 {
+			opts = append(opts, dns01.WrapPreCheck(resourceACMECertificatePreCheckDelay(preCheckDelay)))
+		}
+
+		return client.Challenge.SetDNS01Provider(provider, opts...)
+	}
+
+	// HTTP-01 verification
+	provider, err := providers.NewHTTPProviderWrapper()
+	if err != nil {
+		return err
+	}
+	for _, v := range d.Get("dns_challenge").([]interface{}) {
+		config := v.(map[string]interface{})
+		if (!useHttp01 && config["method"] != "dns") || (useHttp01 && config["method"] != "http") {
+			continue
+		}
+		if p, err := setHTTPChallenge(client, config); err == nil {
+			provider.Providers = append(provider.Providers, p)
+		} else {
+			return err
+		}
+	}
+	return client.Challenge.SetHTTP01Provider(provider)
+}
+
 func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) error {
 	// Pre-generate resource UUID here, in case there is a serious
 	// issue with UUID generation that would lead to inconsistency.
@@ -167,38 +245,7 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		return err
 	}
 
-	provider, err := NewDNSProviderWrapper()
-	if err != nil {
-		return err
-	}
-
-	for _, v := range d.Get("dns_challenge").([]interface{}) {
-		if p, err := setDNSChallenge(client, v.(map[string]interface{})); err == nil {
-			provider.providers = append(provider.providers, p)
-		} else {
-			return err
-		}
-	}
-
-	var opts []dns01.ChallengeOption
-	if nameservers := d.Get("recursive_nameservers").([]interface{}); len(nameservers) > 0 {
-		var s []string
-		for _, ns := range nameservers {
-			s = append(s, ns.(string))
-		}
-
-		opts = append(opts, dns01.AddRecursiveNameservers(s))
-	}
-
-	if d.Get("disable_complete_propagation").(bool) {
-		opts = append(opts, dns01.DisableCompletePropagationRequirement())
-	}
-
-	if preCheckDelay := d.Get("pre_check_delay").(int); preCheckDelay > 0 {
-		opts = append(opts, dns01.WrapPreCheck(resourceACMECertificatePreCheckDelay(preCheckDelay)))
-	}
-
-	if err := client.Challenge.SetDNS01Provider(provider, opts...); err != nil {
+	if err := setupChallenge(client, d); err != nil {
 		return err
 	}
 
@@ -350,38 +397,7 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 
 	cert := expandCertificateResource(d)
 
-	provider, err := NewDNSProviderWrapper()
-	if err != nil {
-		return err
-	}
-
-	for _, v := range d.Get("dns_challenge").([]interface{}) {
-		if p, err := setDNSChallenge(client, v.(map[string]interface{})); err == nil {
-			provider.providers = append(provider.providers, p)
-		} else {
-			return err
-		}
-	}
-
-	var opts []dns01.ChallengeOption
-	if nameservers := d.Get("recursive_nameservers").([]interface{}); len(nameservers) > 0 {
-		var s []string
-		for _, ns := range nameservers {
-			s = append(s, ns.(string))
-		}
-
-		opts = append(opts, dns01.AddRecursiveNameservers(s))
-	}
-
-	if d.Get("disable_complete_propagation").(bool) {
-		opts = append(opts, dns01.DisableCompletePropagationRequirement())
-	}
-
-	if preCheckDelay := d.Get("pre_check_delay").(int); preCheckDelay > 0 {
-		opts = append(opts, dns01.WrapPreCheck(resourceACMECertificatePreCheckDelay(preCheckDelay)))
-	}
-
-	if err := client.Challenge.SetDNS01Provider(provider, opts...); err != nil {
+	if err := setupChallenge(client, d); err != nil {
 		return err
 	}
 
@@ -442,75 +458,6 @@ func resourceACMECertificateHasExpired(d certificateResourceExpander) (bool, err
 	}
 
 	return false, nil
-}
-
-// DNSProviderWrapper is a multi-provider wrapper to support multiple
-// DNS challenges.
-type DNSProviderWrapper struct {
-	providers []challenge.Provider
-}
-
-// NewDNSProviderWrapper returns an freshly initialized
-// DNSProviderWrapper.
-func NewDNSProviderWrapper() (*DNSProviderWrapper, error) {
-	return &DNSProviderWrapper{}, nil
-}
-
-// Present implements challenge.Provider for DNSProviderWrapper.
-func (d *DNSProviderWrapper) Present(domain, token, keyAuth string) error {
-	var err error
-	for _, p := range d.providers {
-		err = p.Present(domain, token, keyAuth)
-		if err != nil {
-			err = multierror.Append(err, fmt.Errorf("error encountered while presenting token for DNS challenge: %s", err.Error()))
-		}
-	}
-
-	return err
-}
-
-// CleanUp implements challenge.Provider for DNSProviderWrapper.
-func (d *DNSProviderWrapper) CleanUp(domain, token, keyAuth string) error {
-	var err error
-	for _, p := range d.providers {
-		err = p.CleanUp(domain, token, keyAuth)
-		if err != nil {
-			err = multierror.Append(err, fmt.Errorf("error encountered while cleaning token for DNS challenge: %s", err.Error()))
-		}
-	}
-
-	return err
-}
-
-// Timeout implements challenge.ProviderTimeout for
-// DNSProviderWrapper.
-//
-// The highest polling interval and timeout values defined across all
-// providers is used.
-func (d *DNSProviderWrapper) Timeout() (time.Duration, time.Duration) {
-	var timeout, interval time.Duration
-	for _, p := range d.providers {
-		if pt, ok := p.(challenge.ProviderTimeout); ok {
-			t, i := pt.Timeout()
-			if t > timeout {
-				timeout = t
-			}
-
-			if i > interval {
-				interval = i
-			}
-		}
-	}
-
-	if timeout < 1 {
-		timeout = dns01.DefaultPropagationTimeout
-	}
-
-	if interval < 1 {
-		interval = dns01.DefaultPollingInterval
-	}
-
-	return timeout, interval
 }
 
 func resourceACMECertificatePreCheckDelay(delay int) dns01.WrapPreCheckFunc {
