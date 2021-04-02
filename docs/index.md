@@ -50,6 +50,15 @@ production endpoints, which can be found [here][lets-encrypt-endpoints].
 [lets-encrypt-endpoints]: https://letsencrypt.org/docs/acme-protocol-updates/
 
 ```hcl
+terraform {
+  required_providers {
+    acme = {
+      source = "vancluever/acme"
+      version = "~> 2.0"
+    }
+  }
+}
+
 provider "acme" {
   server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
 }
