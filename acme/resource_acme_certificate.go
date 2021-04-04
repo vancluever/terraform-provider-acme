@@ -8,9 +8,7 @@ import (
 	"time"
 
 	"github.com/go-acme/lego/v4/certificate"
-	"github.com/go-acme/lego/v4/challenge"
 	"github.com/go-acme/lego/v4/challenge/dns01"
-	"github.com/hashicorp/go-multierror"
 	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -74,8 +72,9 @@ func resourceACMECertificateV5() *schema.Resource {
 				Default:  30,
 			},
 			"dns_challenge": {
-				Type:     schema.TypeList,
-				Required: true,
+				Type:         schema.TypeList,
+				Optional:     true,
+				AtLeastOneOf: []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "tls_challenge"},
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"provider": {
@@ -87,6 +86,76 @@ func resourceACMECertificateV5() *schema.Resource {
 							Optional:     true,
 							ValidateFunc: validateDNSChallengeConfig,
 							Sensitive:    true,
+						},
+					},
+				},
+			},
+			"http_challenge": {
+				Type:          schema.TypeList,
+				Optional:      true,
+				AtLeastOneOf:  []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "tls_challenge"},
+				ConflictsWith: []string{"http_webroot_challenge", "http_memcached_challenge"},
+				MaxItems:      1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"port": {
+							Type:         schema.TypeInt,
+							Optional:     true,
+							Default:      80,
+							ValidateFunc: validation.IsPortNumber,
+						},
+						"proxy_header": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+					},
+				},
+			},
+			"http_webroot_challenge": {
+				Type:          schema.TypeList,
+				Optional:      true,
+				AtLeastOneOf:  []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "tls_challenge"},
+				ConflictsWith: []string{"http_challenge", "http_memcached_challenge"},
+				MaxItems:      1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"directory": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+					},
+				},
+			},
+			"http_memcached_challenge": {
+				Type:          schema.TypeList,
+				Optional:      true,
+				AtLeastOneOf:  []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "tls_challenge"},
+				ConflictsWith: []string{"http_challenge", "http_webroot_challenge"},
+				MaxItems:      1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"hosts": {
+							Type:     schema.TypeSet,
+							Required: true,
+							Elem:     &schema.Schema{Type: schema.TypeString},
+							Set:      schema.HashString,
+							MinItems: 1,
+						},
+					},
+				},
+			},
+			"tls_challenge": {
+				Type:         schema.TypeList,
+				Optional:     true,
+				AtLeastOneOf: []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "tls_challenge"},
+				MaxItems:     1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"port": {
+							Type:         schema.TypeInt,
+							Optional:     true,
+							Default:      443,
+							ValidateFunc: validation.IsPortNumber,
 						},
 					},
 				},
@@ -173,38 +242,7 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		return err
 	}
 
-	provider, err := NewDNSProviderWrapper()
-	if err != nil {
-		return err
-	}
-
-	for _, v := range d.Get("dns_challenge").([]interface{}) {
-		if p, err := setDNSChallenge(client, v.(map[string]interface{})); err == nil {
-			provider.providers = append(provider.providers, p)
-		} else {
-			return err
-		}
-	}
-
-	var opts []dns01.ChallengeOption
-	if nameservers := d.Get("recursive_nameservers").([]interface{}); len(nameservers) > 0 {
-		var s []string
-		for _, ns := range nameservers {
-			s = append(s, ns.(string))
-		}
-
-		opts = append(opts, dns01.AddRecursiveNameservers(s))
-	}
-
-	if d.Get("disable_complete_propagation").(bool) {
-		opts = append(opts, dns01.DisableCompletePropagationRequirement())
-	}
-
-	if preCheckDelay := d.Get("pre_check_delay").(int); preCheckDelay > 0 {
-		opts = append(opts, dns01.WrapPreCheck(resourceACMECertificatePreCheckDelay(preCheckDelay)))
-	}
-
-	if err := client.Challenge.SetDNS01Provider(provider, opts...); err != nil {
+	if err := setCertificateChallengeProviders(client, d); err != nil {
 		return err
 	}
 
@@ -357,38 +395,7 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 
 	cert := expandCertificateResource(d)
 
-	provider, err := NewDNSProviderWrapper()
-	if err != nil {
-		return err
-	}
-
-	for _, v := range d.Get("dns_challenge").([]interface{}) {
-		if p, err := setDNSChallenge(client, v.(map[string]interface{})); err == nil {
-			provider.providers = append(provider.providers, p)
-		} else {
-			return err
-		}
-	}
-
-	var opts []dns01.ChallengeOption
-	if nameservers := d.Get("recursive_nameservers").([]interface{}); len(nameservers) > 0 {
-		var s []string
-		for _, ns := range nameservers {
-			s = append(s, ns.(string))
-		}
-
-		opts = append(opts, dns01.AddRecursiveNameservers(s))
-	}
-
-	if d.Get("disable_complete_propagation").(bool) {
-		opts = append(opts, dns01.DisableCompletePropagationRequirement())
-	}
-
-	if preCheckDelay := d.Get("pre_check_delay").(int); preCheckDelay > 0 {
-		opts = append(opts, dns01.WrapPreCheck(resourceACMECertificatePreCheckDelay(preCheckDelay)))
-	}
-
-	if err := client.Challenge.SetDNS01Provider(provider, opts...); err != nil {
+	if err := setCertificateChallengeProviders(client, d); err != nil {
 		return err
 	}
 
@@ -449,75 +456,6 @@ func resourceACMECertificateHasExpired(d certificateResourceExpander) (bool, err
 	}
 
 	return false, nil
-}
-
-// DNSProviderWrapper is a multi-provider wrapper to support multiple
-// DNS challenges.
-type DNSProviderWrapper struct {
-	providers []challenge.Provider
-}
-
-// NewDNSProviderWrapper returns an freshly initialized
-// DNSProviderWrapper.
-func NewDNSProviderWrapper() (*DNSProviderWrapper, error) {
-	return &DNSProviderWrapper{}, nil
-}
-
-// Present implements challenge.Provider for DNSProviderWrapper.
-func (d *DNSProviderWrapper) Present(domain, token, keyAuth string) error {
-	var err error
-	for _, p := range d.providers {
-		err = p.Present(domain, token, keyAuth)
-		if err != nil {
-			err = multierror.Append(err, fmt.Errorf("error encountered while presenting token for DNS challenge: %s", err.Error()))
-		}
-	}
-
-	return err
-}
-
-// CleanUp implements challenge.Provider for DNSProviderWrapper.
-func (d *DNSProviderWrapper) CleanUp(domain, token, keyAuth string) error {
-	var err error
-	for _, p := range d.providers {
-		err = p.CleanUp(domain, token, keyAuth)
-		if err != nil {
-			err = multierror.Append(err, fmt.Errorf("error encountered while cleaning token for DNS challenge: %s", err.Error()))
-		}
-	}
-
-	return err
-}
-
-// Timeout implements challenge.ProviderTimeout for
-// DNSProviderWrapper.
-//
-// The highest polling interval and timeout values defined across all
-// providers is used.
-func (d *DNSProviderWrapper) Timeout() (time.Duration, time.Duration) {
-	var timeout, interval time.Duration
-	for _, p := range d.providers {
-		if pt, ok := p.(challenge.ProviderTimeout); ok {
-			t, i := pt.Timeout()
-			if t > timeout {
-				timeout = t
-			}
-
-			if i > interval {
-				interval = i
-			}
-		}
-	}
-
-	if timeout < 1 {
-		timeout = dns01.DefaultPropagationTimeout
-	}
-
-	if interval < 1 {
-		interval = dns01.DefaultPollingInterval
-	}
-
-	return timeout, interval
 }
 
 func resourceACMECertificatePreCheckDelay(delay int) dns01.WrapPreCheckFunc {
