@@ -344,10 +344,10 @@ what variables are supported.
 whenever possible to generate certificates with `acme_certificate`. Only use the
 HTTP and TLS challenge types if you don't have access to do DNS challenges, and
 can ensure that you can direct traffic for all domains being authorized to the
-machine running Terraform or the locations served by the
-`http_webroot_challenge` or `http_memcached_challenge` types. Additionally,
-these challenge types do not support wildcard domains. See [Let's Encrypt page
-on challenge types](https://letsencrypt.org/docs/challenge-types/) for more
+machine running Terraform, or the locations served by the
+`http_webroot_challenge` and `http_memcached_challenge` types. Additionally,
+these challenge types do not support wildcard domains. See the [Let's Encrypt
+page on challenge types](https://letsencrypt.org/docs/challenge-types/) for more
 details. These challenges have requirements that almost always exclude them from
 being used on [Terraform Cloud](https://www.terraform.io/docs/cloud/) unless you
 are using the [Cloud
@@ -375,8 +375,8 @@ You can work around this by doing the following:
   .terraform/providers/registry.terraform.io/vancluever/acme/VERSION/ARCH/terraform-provider-acme_vVERSION`).
   Both have drawbacks: granting capabilites to Terraform itself will mean that
   Terraform core and any provider launched by it will also have the capability,
-  while re-granting to the provider will possibly be necesasry every time the
-  provider is updated or the repository is initialized with `terraform init`.
+  while capabilities granted to the provider will be lost every time the
+  provider is updated, or the repository is initialized with `terraform init`.
 * Use proxies to direct traffic to the ports defined with the `port` option in
   the challenge clauses. If necessary, use the `proxy_header` option of
   `http_challenge` to set the header to match the host of the current FQDN being
@@ -412,7 +412,7 @@ The `proxy_header` option behaves differently depending on its definition:
   section matching `host=DOMAIN` where `DOMAIN` is the domain currently being
   resolved by the challenge. See [RFC 7239](https://tools.ietf.org/html/rfc7239)
   for more details.
-* When set to an arbitrary header (example: `X-Forwarded-Host`), that heaader is
+* When set to an arbitrary header (example: `X-Forwarded-Host`), that header is
   checked for the host entry in the same way the host header would normally be
   checked.
 
@@ -448,7 +448,7 @@ challenge for which an out-of-band process must use this data to answer.
 
 See the [README.md on
 lego](https://github.com/go-acme/lego/blob/4bb8bea031eb805f361c04ca222f266b9e7feced/providers/http/memcached/README.md)
-for an example using nginx.
+for an example using Nginx.
 
 ```
 resource "acme_certificate" "certificate" {
