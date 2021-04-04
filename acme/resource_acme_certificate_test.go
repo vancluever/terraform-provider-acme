@@ -11,9 +11,12 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
 	"reflect"
 	"regexp"
+	"strings"
 	"testing"
 	"time"
 
@@ -272,8 +275,8 @@ func TestAccACMECertificate_httpWebroot(t *testing.T) {
 	if err != nil {
 		panic(fmt.Errorf("TestAccACMECertificate_httpWebroot: %s", err))
 	}
-
 	defer closeServer()
+
 	resource.Test(t, resource.TestCase{
 		Providers:         testAccProviders,
 		ExternalProviders: testAccExternalProviders,
@@ -296,8 +299,8 @@ func TestAccACMECertificate_httpMemcache(t *testing.T) {
 	if err != nil {
 		panic(fmt.Errorf("TestAccACMECertificate_httpMemcache: %s", err))
 	}
-
 	defer closeServer()
+
 	resource.Test(t, resource.TestCase{
 		Providers:         testAccProviders,
 		ExternalProviders: testAccExternalProviders,
@@ -308,6 +311,30 @@ func TestAccACMECertificate_httpMemcache(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-webroot", "test-webroot2"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+				),
+			},
+		},
+	})
+}
+
+func TestAccACMECertificate_httpProxy(t *testing.T) {
+	closeServer, err := testAccCheckACMECertificateProxyTestServer()
+	if err != nil {
+		panic(fmt.Errorf("TestAccACMECertificate_httpProxy: %s", err))
+	}
+	defer closeServer()
+
+	resource.Test(t, resource.TestCase{
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigHTTPProxy(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-proxy", "test-proxy2"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
 				),
 			},
@@ -533,6 +560,31 @@ func testAccCheckACMECertificateMemcacheTestServer() (func(), error) {
 	server := &http.Server{
 		Addr:    ":5002",
 		Handler: mux,
+	}
+	go server.ListenAndServe()
+	return func() {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+		defer cancel()
+		server.Shutdown(ctx)
+	}, nil
+}
+
+func testAccCheckACMECertificateProxyTestServer() (func(), error) {
+	target, err := url.Parse("http://localhost:5502")
+	if err != nil {
+		panic(err) // No real reason to return an actual error here
+	}
+
+	proxy := httputil.NewSingleHostReverseProxy(target)
+	defaultDirector := proxy.Director
+	proxy.Director = func(r *http.Request) {
+		r.Header.Add("Forwarded", "host="+strings.Split(r.Host, ":")[0])
+		defaultDirector(r)
+	}
+
+	server := &http.Server{
+		Addr:    ":5002",
+		Handler: proxy,
 	}
 	go server.ListenAndServe()
 	return func() {
@@ -1045,6 +1097,45 @@ resource "acme_certificate" "certificate" {
 		pebbleCertDomain,
 		pebbleCertDomain,
 		memcacheHost,
+	)
+}
+
+func testAccACMECertificateConfigHTTPProxy() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "test-proxy.${var.domain}"
+  subject_alternative_names = ["test-proxy2.${var.domain}"]
+
+  http_challenge {
+    port         = 5502
+    proxy_header = "Forwarded"
+  }
+}
+`, pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
 	)
 }
 
