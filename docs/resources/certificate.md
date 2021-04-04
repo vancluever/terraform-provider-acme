@@ -104,24 +104,28 @@ resource "acme_certificate" "certificate" {
 
 The resource takes the following arguments:
 
-~> All arguments in `acme_certificate`, other than `min_days_remaining`, force a
-new resource when changed.
+~> At least one challenge type (`dns_challenge`, `http_challenge`,
+`http_webroot_challenge`, `http_memcached_challenge`, or `tls_challenge`) must
+be specified. It's recommended you use `dns_challenge` whenever possible).
 
 * `account_key_pem` (Required) - The private key of the account that is
-  requesting the certificate.
+  requesting the certificate. Forces a new resource when changed.
 * `common_name` - The certificate's common name, the primary domain that the
-  certificate will be recognized for. Required when not specifying a CSR.
+  certificate will be recognized for. Required when not specifying a CSR. Forces
+  a new resource when changed.
 * `subject_alternative_names` - The certificate's subject alternative names,
   domains that this certificate will also be recognized for. Only valid when not
-  specifying a CSR.
+  specifying a CSR. Forces a new resource when changed.
 * `key_type` - The key type for the certificate's private key. Can be one of:
   `P256` and `P384` (for ECDSA keys of respective length) or `2048`, `4096`, and
   `8192` (for RSA keys of respective length). Required when not specifying a
-  CSR. The default is `2048` (RSA key of 2048 bits).
+  CSR. The default is `2048` (RSA key of 2048 bits). Forces a new resource when
+  changed.
 * `certificate_request_pem` - A pre-created certificate request, such as one
   from [`tls_cert_request`][tls-cert-request], or one from an external source,
-  in PEM format.  Either this, or the in-resource request options (`common_name`,
-  `key_type`, and optionally `subject_alternative_names`) need to be specified.
+  in PEM format.  Either this, or the in-resource request options
+  (`common_name`, `key_type`, and optionally `subject_alternative_names`) need
+  to be specified. Forces a new resource when changed.
 * `dns_challenge` (Optional) - The [DNS challenges](#using-dns-challenges) to
   use in fulfilling the request.
 * `recursive_nameservers` (Optional) - The [recursive
@@ -161,7 +165,8 @@ using these and `tls_challenge`.
   TLS Security Policy extension. Certificates with this extension must include a
   valid OCSP Staple in the TLS handshake for the connection to succeed.
   Defaults to `false`. Note that this option has no effect when using an
-  external CSR - it must be enabled in the CSR itself.
+  external CSR - it must be enabled in the CSR itself. Forces a new resource
+  when changed.
 
 [ocsp-stapling]: https://letsencrypt.org/docs/integration-guide/#implement-ocsp-stapling
 
@@ -181,7 +186,7 @@ provider can be configured correctly.
 * `preferred_chain` - (Optional) The common name of the root of a preferred
   alternate certificate chain offered by the CA. The certificates in
   `issuer_pem` will reflect the chain requested, if available, otherwise the
-  default chain will be provided.
+  default chain will be provided. Forces a new resource when changed.
 
 -> `preferred_chain` can be used to request alternate chains on Let's Encrypt
 during the transition away from their old cross-signed intermediates. See [this
@@ -432,7 +437,7 @@ resource "acme_certificate" "certificate" {
 
 The options are as follows:
 
-* `directory` (Optional) - The directory to publish the record to.
+* `directory` (Required) - The directory to publish the record to.
 
 #### `http_memcached_challenge`
 
@@ -459,7 +464,7 @@ resource "acme_certificate" "certificate" {
 
 The options are as follows:
 
-* `hosts` (Optional) - The hosts to publish the record to.
+* `hosts` (Required) - The hosts to publish the record to.
 
 #### `tls_challenge`
 
