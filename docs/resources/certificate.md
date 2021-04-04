@@ -370,7 +370,7 @@ You can work around this by doing the following:
 
 * On Linux, use [`setcap`](https://man7.org/linux/man-pages/man8/setcap.8.html)
   to grant escalated network privileges to either Terraform (`setcap
-  'cap_net_bind_service=+eip' \`which terraform\``), or the provider (`setcap
+  'cap_net_bind_service=+eip' "$(which terraform)"`), or the provider (`setcap
   'cap_net_bind_service=+ep'
   .terraform/providers/registry.terraform.io/vancluever/acme/VERSION/ARCH/terraform-provider-acme_vVERSION`).
   Both have drawbacks: granting capabilites to Terraform itself will mean that
