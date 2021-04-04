@@ -10,6 +10,6 @@ case "$(uname)" in
     # Assuming Ubuntu as that's what our CI runs on. YMMV here, might
     # need to expand this into a separate function for distribution
     # detection if need be.
-    apt-get update && apt-get -y install memcached && /etc/init.d/memcached start
+    sudo apt-get update && sudo apt-get -y install memcached && sudo /etc/init.d/memcached start
     ;;
 esac
