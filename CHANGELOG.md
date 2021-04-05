@@ -1,3 +1,7 @@
+## 2.4.1-pre
+
+Bumped version for dev.
+
 ## 2.4.0 (April 4, 2021)
 
 FEATURES:
