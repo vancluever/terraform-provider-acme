@@ -104,7 +104,7 @@ resource "acme_certificate" "certificate" {
 
 The resource takes the following arguments:
 
-~> At least one challenge type (`dns_challenge`, `http_challenge`,
+-> At least one challenge type (`dns_challenge`, `http_challenge`,
 `http_webroot_challenge`, `http_memcached_challenge`, or `tls_challenge`) must
 be specified. It's recommended you use `dns_challenge` whenever possible).
 
@@ -381,6 +381,10 @@ You can work around this by doing the following:
   the challenge clauses. If necessary, use the `proxy_header` option of
   `http_challenge` to set the header to match the host of the current FQDN being
   solved.
+
+~> Never run Terraform (or the plugin) as root! If you cannot satisfy the
+networking requirements for `http_challenge` or `tls_challenge`, consider using
+the other challenge types or use [DNS challenges](#using-dns-challenges).
 
 #### `http_challenge`
 
