@@ -41,6 +41,9 @@ const mainIntermediateURL = "https://localhost:15000/intermediates/0"
 // URL to the alternate certificate for preferred chain tests
 const alternateIntermediateURL = "https://localhost:15000/intermediates/1"
 
+// Host:port for memcached
+const memcacheHost = "localhost:11211"
+
 // getPebbleCertificate gets the certificate at the supplied URL.
 func getPebbleCertificate(url string) *x509.Certificate {
 	client := &http.Client{

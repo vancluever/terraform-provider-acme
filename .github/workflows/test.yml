@@ -48,4 +48,4 @@ jobs:
       - name: Verify Modules
         run: go mod verify
       - name: Run Tests
-        run: make tools pebble-start test
+        run: make tools pebble-start memcached-start test

@@ -3,10 +3,6 @@
 The `acme_certificate` resource can be used to create and manage an ACME TLS
 certificate.
 
--> **NOTE:** As the usage model of Terraform generally sees it as being run on
-a different server than a certificate would normally be placed on, the
-`acme_certificate` resource only supports DNS challenges.
-
 ## Example
 
 The below example creates both an account and certificate within the same
@@ -108,32 +104,36 @@ resource "acme_certificate" "certificate" {
 
 The resource takes the following arguments:
 
-~> All arguments in `acme_certificate`, other than `min_days_remaining`, force a
-new resource when changed.
+-> At least one challenge type (`dns_challenge`, `http_challenge`,
+`http_webroot_challenge`, `http_memcached_challenge`, or `tls_challenge`) must
+be specified. It's recommended you use `dns_challenge` whenever possible).
 
 * `account_key_pem` (Required) - The private key of the account that is
-  requesting the certificate.
+  requesting the certificate. Forces a new resource when changed.
 * `common_name` - The certificate's common name, the primary domain that the
-  certificate will be recognized for. Required when not specifying a CSR.
+  certificate will be recognized for. Required when not specifying a CSR. Forces
+  a new resource when changed.
 * `subject_alternative_names` - The certificate's subject alternative names,
   domains that this certificate will also be recognized for. Only valid when not
-  specifying a CSR.
+  specifying a CSR. Forces a new resource when changed.
 * `key_type` - The key type for the certificate's private key. Can be one of:
   `P256` and `P384` (for ECDSA keys of respective length) or `2048`, `4096`, and
   `8192` (for RSA keys of respective length). Required when not specifying a
-  CSR. The default is `2048` (RSA key of 2048 bits).
+  CSR. The default is `2048` (RSA key of 2048 bits). Forces a new resource when
+  changed.
 * `certificate_request_pem` - A pre-created certificate request, such as one
   from [`tls_cert_request`][tls-cert-request], or one from an external source,
-  in PEM format.  Either this, or the in-resource request options (`common_name`,
-  `key_type`, and optionally `subject_alternative_names`) need to be specified.
-* `dns_challenge` (Required) - The [DNS challenges](#using-dns-challenges) to
+  in PEM format.  Either this, or the in-resource request options
+  (`common_name`, `key_type`, and optionally `subject_alternative_names`) need
+  to be specified. Forces a new resource when changed.
+* `dns_challenge` (Optional) - The [DNS challenges](#using-dns-challenges) to
   use in fulfilling the request.
 * `recursive_nameservers` (Optional) - The [recursive
   nameservers](#manually-specifying-recursive-nameservers-for-propagation-checks)
-  that will be used to check for propagation of the challenge record. Defaults
+  that will be used to check for propagation of DNS challenge records. Defaults
   to your system-configured DNS resolvers.
 * `disable_complete_propagation` (Optional) - Disable the requiement for full
-  propagation of the TXT challenge record before proceeding with validation.
+  propagation of the TXT challenge records before proceeding with validation.
   Defaults to `false`. Only recommended for testing.
 * `pre_check_delay` (Optional) - Insert a delay after _every_ DNS challenge
   record to allow for extra time for DNS propagation before the certificate is
@@ -145,11 +145,28 @@ new resource when changed.
 Take your expected delay and divide it by the number of domains you have
 configured (`common_name` + `subject_alternative_names`).
 
+* `http_challenge` (Optional) - Defines an HTTP challenge to use in fulfilling
+  the request.
+* `http_webroot_challenge` (Optional) - Defines an alternate type of HTTP
+  challenge that can be used to place a file at a location that can be served by
+  an out-of-band webserver.
+* `http_memcached_challenge` (Optional) - Defines an alternate type of HTTP
+  challenge that can be used to serve up challenges to a
+  [Memcached](https://memcached.org/) cluster.
+* `tls_challenge` (Optional) - Defines a TLS challenge to use in fulfilling the
+  request.
+
+-> Only one of `http_challenge`, `http_webroot_challenge`, and
+`http_memcached_challenge` can be defined at once. See the section on [Using
+HTTP and TLS challenges](#using-http-and-tls-challenges) for more details on
+using these and `tls_challenge`.
+
 * `must_staple` (Optional) Enables the [OCSP Stapling Required][ocsp-stapling]
   TLS Security Policy extension. Certificates with this extension must include a
   valid OCSP Staple in the TLS handshake for the connection to succeed.
   Defaults to `false`. Note that this option has no effect when using an
-  external CSR - it must be enabled in the CSR itself.
+  external CSR - it must be enabled in the CSR itself. Forces a new resource
+  when changed.
 
 [ocsp-stapling]: https://letsencrypt.org/docs/integration-guide/#implement-ocsp-stapling
 
@@ -169,7 +186,7 @@ provider can be configured correctly.
 * `preferred_chain` - (Optional) The common name of the root of a preferred
   alternate certificate chain offered by the CA. The certificates in
   `issuer_pem` will reflect the chain requested, if available, otherwise the
-  default chain will be provided.
+  default chain will be provided. Forces a new resource when changed.
 
 -> `preferred_chain` can be used to request alternate chains on Let's Encrypt
 during the transition away from their old cross-signed intermediates. See [this
@@ -181,14 +198,10 @@ equivalent in the [staging
 environment](https://letsencrypt.org/docs/staging-environment/) is `(STAGING)
 Pretend Pear X1`.
 
-
 ### Using DNS challenges
 
-As the usage model of Terraform generally sees it as being run on a different
-server than a certificate would normally be placed on, the `acme_certificate`
-resource only supports DNS challenges. This method authenticates certificate
-domains by requiring the requester to place a TXT record on the FQDNs in the
-certificate.
+This method authenticates certificate domains by requiring the requester to
+place a TXT record on the FQDNs in the certificate.
 
 The ACME provider responds to DNS challenges automatically by utilizing one of
 the supported DNS challenge providers. Most providers take credentials as
@@ -324,6 +337,158 @@ supported by the corresponding provider's SDK.
 
 Check the documentation of a specific DNS provider for more details on exactly
 what variables are supported.
+
+### Using HTTP and TLS Challenges
+
+-> It's recommended that you use [DNS challenges](#using-dns-challenges)
+whenever possible to generate certificates with `acme_certificate`. Only use the
+HTTP and TLS challenge types if you don't have access to do DNS challenges, and
+can ensure that you can direct traffic for all domains being authorized to the
+machine running Terraform, or the locations served by the
+`http_webroot_challenge` and `http_memcached_challenge` types. Additionally,
+these challenge types do not support wildcard domains. See the [Let's Encrypt
+page on challenge types](https://letsencrypt.org/docs/challenge-types/) for more
+details. These challenges have requirements that almost always exclude them from
+being used on [Terraform Cloud](https://www.terraform.io/docs/cloud/) unless you
+are using the [Cloud
+Agents](https://www.terraform.io/docs/cloud/agents/index.html) feature.
+
+`acme_certificate` supports HTTP and TLS challenges. The provider accomplishes
+this by running a small HTTP or TLS service to serve records using the HTTP-01
+or TLS-ALPN-01 challenge types. Additionally, two alternate HTTP challenge
+providers exist that allow HTTP challenges to be satisfied by publishing the
+challenge records either to an arbitrary filesystem location or a
+[Memcached](https://memcached.org/) cluster.
+
+#### Network Requirements for Using `http_challenge` and `tls_challenge`
+
+`http_challenge` and `tls_challenge` by default will listen on their respective
+ports (port 80 for HTTP and port 443 for TLS). These ports are _privileged_ and
+will likely not be accessible by the machine running Terraform.
+
+You can work around this by doing the following:
+
+* On Linux, use [`setcap`](https://man7.org/linux/man-pages/man8/setcap.8.html)
+  to grant escalated network privileges to either Terraform (`setcap
+  'cap_net_bind_service=+eip' "$(which terraform)"`), or the provider (`setcap
+  'cap_net_bind_service=+ep'
+  .terraform/providers/registry.terraform.io/vancluever/acme/VERSION/ARCH/terraform-provider-acme_vVERSION`).
+  Both have drawbacks: granting capabilites to Terraform itself will mean that
+  Terraform core and any provider launched by it will also have the capability,
+  while capabilities granted to the provider will be lost every time the
+  provider is updated, or the repository is initialized with `terraform init`.
+* Use proxies to direct traffic to the ports defined with the `port` option in
+  the challenge clauses. If necessary, use the `proxy_header` option of
+  `http_challenge` to set the header to match the host of the current FQDN being
+  solved.
+
+~> Never run Terraform (or the plugin) as root! If you cannot satisfy the
+networking requirements for `http_challenge` or `tls_challenge`, consider using
+the other challenge types or use [DNS challenges](#using-dns-challenges).
+
+#### `http_challenge`
+
+The `http_challenge` type supports standard HTTP-01 challenges.
+
+```
+resource "acme_certificate" "certificate" {
+  #...
+
+  http_challenge {
+    port         = "5002"
+    proxy_header = "Forwarded"
+  }
+
+  #...
+}
+```
+
+The options are as follows:
+
+* `port` (Optional) - The port that the challenge server listens on. Default: `80`.
+* `proxy_header` (Optional) - The proxy header to match against. Default:
+  `Host`.
+
+The `proxy_header` option behaves differently depending on its definition:
+
+* When set to `Host`, standard host header validation is used.
+* When set to `Forwarded`, the server looks in the `Forwarded` header for a
+  section matching `host=DOMAIN` where `DOMAIN` is the domain currently being
+  resolved by the challenge. See [RFC 7239](https://tools.ietf.org/html/rfc7239)
+  for more details.
+* When set to an arbitrary header (example: `X-Forwarded-Host`), that header is
+  checked for the host entry in the same way the host header would normally be
+  checked.
+
+#### `http_webroot_challenge`
+
+Use `http_webroot_challenge` to publish a record to a location on the file
+system. The record is published to `DIRECTORY/.well-known/acme-challenge/`. The
+resource will request an HTTP-01 challenge for which an out-of-band process must
+use this data to answer.
+
+```
+resource "acme_certificate" "certificate" {
+  #...
+
+  http_webroot_challenge {
+    directory = "/a/webserver/path"
+  }
+
+  #...
+}
+```
+
+The options are as follows:
+
+* `directory` (Required) - The directory to publish the record to.
+
+#### `http_memcached_challenge`
+
+Use `http_memcached_challenge` to publish challenge records to a
+[Memcached](https://memcached.org/) cluster. The record is published to
+`/.well-known/acme-challenge/KEY`. The resource will request an HTTP-01
+challenge for which an out-of-band process must use this data to answer.
+
+See the [README.md on
+lego](https://github.com/go-acme/lego/blob/4bb8bea031eb805f361c04ca222f266b9e7feced/providers/http/memcached/README.md)
+for an example using Nginx.
+
+```
+resource "acme_certificate" "certificate" {
+  #...
+
+  http_memcached_challenge {
+    hosts = ["127.0.0.1:11211"]
+  }
+
+  #...
+}
+```
+
+The options are as follows:
+
+* `hosts` (Required) - The hosts to publish the record to.
+
+#### `tls_challenge`
+
+The `tls_challenge` type supports TLS-ALPN-01 challenges.
+
+```
+resource "acme_certificate" "certificate" {
+  #...
+
+  tls_challenge {
+    port = "5001"
+  }
+
+  #...
+}
+```
+
+The options are as follows:
+
+* `port` (Optional) - The port that the challenge server listens on. Default: `443`.
 
 ## Certificate renewal
 

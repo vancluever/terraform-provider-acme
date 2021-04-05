@@ -28,6 +28,17 @@ pebble-start: pebble-stop
 pebble-stop:
 	build-support/scripts/pebble-stop.sh
 
+.PHONY: memcached-start
+memcached-start: memcached-stop
+	build-support/scripts/memcached-start.sh
+
+.PHONY: memcached-stop
+memcached-stop:
+	build-support/scripts/memcached-stop.sh
+
+.PHONY: stop-services
+stop-services: memcached-stop pebble-stop
+
 .PHONY: template-generate
 template-generate:
 	@echo "==> Re-generating templates..."

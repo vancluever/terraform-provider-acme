@@ -1,6 +1,7 @@
 package acme
 
 import (
+	"context"
 	"crypto"
 	"crypto/ecdsa"
 	"crypto/rsa"
@@ -9,13 +10,19 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
+	"net/http"
+	"net/http/httputil"
+	"net/url"
+	"os"
 	"reflect"
 	"regexp"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/rainycape/memcache"
 	"software.sslmate.com/src/go-pkcs12"
 )
 
@@ -245,6 +252,114 @@ func TestAccACMECertificate_preferredChain(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_http(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigHTTP(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-http", "test-http2"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+				),
+			},
+		},
+	})
+}
+
+func TestAccACMECertificate_httpWebroot(t *testing.T) {
+	closeServer, serverDir, err := testAccCheckACMECertificateWebrootTestServer()
+	if err != nil {
+		panic(fmt.Errorf("TestAccACMECertificate_httpWebroot: %s", err))
+	}
+	defer closeServer()
+
+	resource.Test(t, resource.TestCase{
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigHTTPWebroot(serverDir),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-webroot", "test-webroot2"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+				),
+			},
+		},
+	})
+}
+
+func TestAccACMECertificate_httpMemcache(t *testing.T) {
+	closeServer, err := testAccCheckACMECertificateMemcacheTestServer()
+	if err != nil {
+		panic(fmt.Errorf("TestAccACMECertificate_httpMemcache: %s", err))
+	}
+	defer closeServer()
+
+	resource.Test(t, resource.TestCase{
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigHTTPMemcache(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-webroot", "test-webroot2"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+				),
+			},
+		},
+	})
+}
+
+func TestAccACMECertificate_httpProxy(t *testing.T) {
+	closeServer, err := testAccCheckACMECertificateProxyTestServer()
+	if err != nil {
+		panic(fmt.Errorf("TestAccACMECertificate_httpProxy: %s", err))
+	}
+	defer closeServer()
+
+	resource.Test(t, resource.TestCase{
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigHTTPProxy(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-proxy", "test-proxy2"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+				),
+			},
+		},
+	})
+}
+
+func TestAccACMECertificate_tls(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigTLS(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-tls", "test-tls2"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckACMECertificateValid(n, cn, san string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
@@ -400,6 +515,83 @@ func testAccCheckACMECertificateIntermediateEqual(name string, expected *x509.Ce
 
 		return nil
 	}
+}
+
+func testAccCheckACMECertificateWebrootTestServer() (func(), string, error) {
+	dir, err := os.MkdirTemp(os.TempDir(), "terraform-provider-acme-test-webroot")
+	if err != nil {
+		return nil, "", err
+	}
+
+	// Would use httptest here, but this ensures we don't have to mess with the
+	// default listener that would normally be crated by httptest to ensure it
+	// goes to the correct place, since we need to set this to 5002.
+	server := &http.Server{
+		Addr:    ":5002",
+		Handler: http.FileServer(http.Dir(dir)),
+	}
+	go server.ListenAndServe()
+	return func() {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+		defer cancel()
+		server.Shutdown(ctx)
+		os.RemoveAll(dir)
+	}, dir, nil
+}
+
+func testAccCheckACMECertificateMemcacheTestServer() (func(), error) {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/.well-known/acme-challenge/", func(w http.ResponseWriter, r *http.Request) {
+		client, err := memcache.New(memcacheHost)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("memcached connect: %s", err), http.StatusBadRequest)
+			return
+		}
+
+		item, err := client.Get(r.URL.Path)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("memcached get: %s", err), http.StatusBadRequest)
+			return
+		}
+
+		w.Write(item.Value)
+	})
+
+	server := &http.Server{
+		Addr:    ":5002",
+		Handler: mux,
+	}
+	go server.ListenAndServe()
+	return func() {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+		defer cancel()
+		server.Shutdown(ctx)
+	}, nil
+}
+
+func testAccCheckACMECertificateProxyTestServer() (func(), error) {
+	target, err := url.Parse("http://localhost:5502")
+	if err != nil {
+		panic(err) // No real reason to return an actual error here
+	}
+
+	proxy := httputil.NewSingleHostReverseProxy(target)
+	defaultDirector := proxy.Director
+	proxy.Director = func(r *http.Request) {
+		r.Header.Add("Forwarded", "host="+strings.Split(r.Host, ":")[0])
+		defaultDirector(r)
+	}
+
+	server := &http.Server{
+		Addr:    ":5002",
+		Handler: proxy,
+	}
+	go server.ListenAndServe()
+	return func() {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+		defer cancel()
+		server.Shutdown(ctx)
+	}, nil
 }
 
 func testAccACMECertificateConfig() string {
@@ -789,5 +981,198 @@ resource "acme_certificate" "certificate" {
 		pebbleChallTestDNSSrv,
 		getPebbleCertificateIssuer(alternateIntermediateURL),
 		pebbleChallTestDNSScriptPath,
+	)
+}
+
+func testAccACMECertificateConfigHTTP() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "test-http.${var.domain}"
+  subject_alternative_names = ["test-http2.${var.domain}"]
+
+  http_challenge {
+    port = 5002
+  }
+}
+`, pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+	)
+}
+
+func testAccACMECertificateConfigHTTPWebroot(dir string) string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "test-webroot.${var.domain}"
+  subject_alternative_names = ["test-webroot2.${var.domain}"]
+
+  http_webroot_challenge {
+    directory = "%s"
+  }
+}
+`, pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		dir,
+	)
+}
+
+func testAccACMECertificateConfigHTTPMemcache() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "test-webroot.${var.domain}"
+  subject_alternative_names = ["test-webroot2.${var.domain}"]
+
+  http_memcached_challenge {
+    hosts = ["%s"]
+  }
+}
+`, pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		memcacheHost,
+	)
+}
+
+func testAccACMECertificateConfigHTTPProxy() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "test-proxy.${var.domain}"
+  subject_alternative_names = ["test-proxy2.${var.domain}"]
+
+  http_challenge {
+    port         = 5502
+    proxy_header = "Forwarded"
+  }
+}
+`, pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+	)
+}
+
+func testAccACMECertificateConfigTLS() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "test-tls.${var.domain}"
+  subject_alternative_names = ["test-tls2.${var.domain}"]
+
+  tls_challenge {
+    port = 5001
+  }
+}
+`, pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
 	)
 }
