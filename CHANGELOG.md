@@ -1,6 +1,13 @@
-## 2.3.1-pre
+## 2.4.0-pre
 
-Bumped version for dev.
+FEATURES:
+
+* `resource/acme_certificate`: The resource now supports HTTP-01 and
+  TLS-ALPN-01 challenges again. These are done through the `http_challenge`,
+  `http_webroot_challenge`, `http_memcached_challenge`, and `tls_challenge`
+  challenge types. It is still recommended that you use DNS challenges whenever
+  possible. See the documentation for more details.
+  [#169](https://github.com/vancluever/terraform-provider-acme/pull/169)
 
 ## 2.3.0 (March 19, 2021)
 
