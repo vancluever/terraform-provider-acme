@@ -17,7 +17,7 @@ jobs:
         with:
           go-version: '^1.16.0'
       - name: Cache (Go Modules)
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.5
         env:
           cache-name: go-mod-cache
         with:
@@ -26,7 +26,7 @@ jobs:
           restore-keys: |
             ${{ env.cache-name}}-
       - name: Cache (Go Build)
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.5
         env:
           cache-name: go-build-cache
           cache-dir: /home/runner/.cache/go-build
@@ -36,7 +36,7 @@ jobs:
           restore-keys: |
             ${{ env.cache-name}}-
       - name: Cache (Pebble)
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.5
         env:
           cache-name: pebble-cache
           cache-dir: /home/runner/go/src/github.com/letsencrypt/pebble
