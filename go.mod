@@ -12,7 +12,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-acme/lego/v4 v4.3.1
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
-	github.com/google/go-cmp v0.5.5
+	github.com/google/go-cmp v0.5.6
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hashicorp/go-uuid v1.0.2
 	github.com/hashicorp/hcl/v2 v2.8.1 // indirect
