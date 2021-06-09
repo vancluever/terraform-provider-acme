@@ -1,6 +1,11 @@
-## 2.4.1-pre
+## 2.5.0
 
-Bumped version for dev.
+LEGO UPDATE:
+
+[lego](https://github.com/go-acme/lego) has been updated to v4.4.0 See the lego
+[CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.4.0/CHANGELOG.md) for
+more details on additions and changes to DNS providers, and other minor changes
+to the library.
 
 ## 2.4.0 (April 4, 2021)
 
