@@ -1,4 +1,4 @@
-## 2.5.1-pre
+## 2.5.1 (June 9, 2021)
 
 This is a re-issue of 2.5.0 without freebsd/arm support, which has been
 suspended due to build issues for the time being. No other changes have been
