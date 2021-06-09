@@ -1,3 +1,7 @@
+## 2.5.3-pre
+
+Bumped version for dev.
+
 ## 2.5.2 (June 9, 2021)
 
 This is another re-issue of v2.5.0 due to a goreleaser config issue. No other
