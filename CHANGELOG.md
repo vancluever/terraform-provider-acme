@@ -1,6 +1,8 @@
 ## 2.5.1-pre
 
-Bumped version for dev.
+This is a re-issue of 2.5.0 without freebsd/arm support, which has been
+suspended due to build issues for the time being. No other changes have been
+made.
 
 ## 2.5.0 (June 9, 2021)
 
