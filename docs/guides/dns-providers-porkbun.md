@@ -1,5 +1,5 @@
 ---
-page_title: "arvancloud"
+page_title: "porkbun"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# ArvanCloud DNS Challenge Provider
+# Porkbun DNS Challenge Provider
 
-The `arvancloud` DNS challenge provider can be used to perform DNS challenges for
+The `porkbun` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[ArvanCloud](https://arvancloud.com).
+[Porkbun](https://porkbun.com/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "arvancloud"
+    provider = "porkbun"
   }
 }
 ```
@@ -48,11 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `ARVANCLOUD_API_KEY` - API key.
+* `PORKBUN_API_KEY` - API key.
+* `PORKBUN_SECRET_API_KEY` - secret API key.
 
-* `ARVANCLOUD_HTTP_TIMEOUT` - API request timeout.
-* `ARVANCLOUD_POLLING_INTERVAL` - Time between DNS propagation check.
-* `ARVANCLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `ARVANCLOUD_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `PORKBUN_HTTP_TIMEOUT` - API request timeout.
+* `PORKBUN_POLLING_INTERVAL` - Time between DNS propagation check.
+* `PORKBUN_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `PORKBUN_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

@@ -55,7 +55,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `VERSIO_HTTP_TIMEOUT` - API request timeout.
 * `VERSIO_POLLING_INTERVAL` - Time between DNS propagation check.
 * `VERSIO_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `VERSIO_SEQUENCE_INTERVAL` - Interval between iteration, default 60s.
+* `VERSIO_SEQUENCE_INTERVAL` - Time between sequential requests, default 60s.
 * `VERSIO_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 To test with the sandbox environment set ```VERSIO_ENDPOINT=https://www.versio.nl/testapi/v1/```

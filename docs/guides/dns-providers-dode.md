@@ -53,7 +53,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `DODE_HTTP_TIMEOUT` - API request timeout.
 * `DODE_POLLING_INTERVAL` - Time between DNS propagation check.
 * `DODE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `DODE_SEQUENCE_INTERVAL` - Interval between iteration.
+* `DODE_SEQUENCE_INTERVAL` - Time between sequential requests.
 * `DODE_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

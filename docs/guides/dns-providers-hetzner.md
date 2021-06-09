@@ -53,7 +53,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `HETZNER_HTTP_TIMEOUT` - API request timeout.
 * `HETZNER_POLLING_INTERVAL` - Time between DNS propagation check.
 * `HETZNER_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `HETZNER_SEQUENCE_INTERVAL` - Interval between iteration.
 * `HETZNER_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

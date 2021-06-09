@@ -1,5 +1,5 @@
 ---
-page_title: "arvancloud"
+page_title: "vinyldns"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# ArvanCloud DNS Challenge Provider
+# VinylDNS DNS Challenge Provider
 
-The `arvancloud` DNS challenge provider can be used to perform DNS challenges for
+The `vinyldns` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[ArvanCloud](https://arvancloud.com).
+[VinylDNS](https://www.vinyldns.io).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "arvancloud"
+    provider = "vinyldns"
   }
 }
 ```
@@ -48,11 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `ARVANCLOUD_API_KEY` - API key.
+* `VINYLDNS_ACCESS_KEY` - The VinylDNS API key.
+* `VINYLDNS_HOST` - The VinylDNS API URL.
+* `VINYLDNS_SECRET_KEY` - The VinylDNS API Secret key.
 
-* `ARVANCLOUD_HTTP_TIMEOUT` - API request timeout.
-* `ARVANCLOUD_POLLING_INTERVAL` - Time between DNS propagation check.
-* `ARVANCLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `ARVANCLOUD_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `VINYLDNS_POLLING_INTERVAL` - Time between DNS propagation check.
+* `VINYLDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `VINYLDNS_TTL` - The TTL of the TXT record used for the DNS challenge.
 
+The vinyldns integration makes use of dotted hostnames to ease permission management.
+Users are required to have DELETE ACL level or zone admin permissions on the VinylDNS zone containing the target host.
 

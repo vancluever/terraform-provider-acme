@@ -12,7 +12,7 @@ apply to the Terraform provider as well.
 
 The `dnspod` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[DNSPod](http://www.dnspod.com/).
+[DNSPod](https://www.dnspod.com/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 

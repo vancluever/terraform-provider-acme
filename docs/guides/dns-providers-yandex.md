@@ -53,7 +53,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `YANDEX_HTTP_TIMEOUT` - API request timeout.
 * `YANDEX_POLLING_INTERVAL` - Time between DNS propagation check.
 * `YANDEX_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `YANDEX_SEQUENCE_INTERVAL` - Interval between iteration, default 60s.
 * `YANDEX_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

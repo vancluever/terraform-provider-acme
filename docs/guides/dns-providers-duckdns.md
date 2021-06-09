@@ -53,7 +53,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `DUCKDNS_HTTP_TIMEOUT` - API request timeout.
 * `DUCKDNS_POLLING_INTERVAL` - Time between DNS propagation check.
 * `DUCKDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `DUCKDNS_SEQUENCE_INTERVAL` - Interval between iteration.
+* `DUCKDNS_SEQUENCE_INTERVAL` - Time between sequential requests.
 * `DUCKDNS_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

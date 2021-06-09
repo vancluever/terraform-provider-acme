@@ -49,10 +49,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
 * `SCALEWAY_API_TOKEN` - API token.
+* `SCALEWAY_PROJECT_ID` - Project to use (optional).
 
-* `SCALEWAY_API_VERSION` - API version.
-* `SCALEWAY_BASE_URL` - API endpoint URL.
-* `SCALEWAY_HTTP_TIMEOUT` - API request timeout.
 * `SCALEWAY_POLLING_INTERVAL` - Time between DNS propagation check.
 * `SCALEWAY_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
 * `SCALEWAY_TTL` - The TTL of the TXT record used for the DNS challenge.

@@ -49,11 +49,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
 * `HOSTINGDE_API_KEY` - API key.
-* `HOSTINGDE_ZONE_NAME` - Zone name in ACE format.
 
 * `HOSTINGDE_HTTP_TIMEOUT` - API request timeout.
 * `HOSTINGDE_POLLING_INTERVAL` - Time between DNS propagation check.
 * `HOSTINGDE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
 * `HOSTINGDE_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `HOSTINGDE_ZONE_NAME` - Zone name in ACE format.
 
 

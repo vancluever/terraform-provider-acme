@@ -54,7 +54,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `GODADDY_HTTP_TIMEOUT` - API request timeout.
 * `GODADDY_POLLING_INTERVAL` - Time between DNS propagation check.
 * `GODADDY_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `GODADDY_SEQUENCE_INTERVAL` - Interval between iteration.
 * `GODADDY_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

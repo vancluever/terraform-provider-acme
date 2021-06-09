@@ -48,7 +48,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `DOMENESHOP_API_PASSWORD` - API secret.
+* `DOMENESHOP_API_SECRET` - API secret.
 * `DOMENESHOP_API_TOKEN` - API token.
 
 * `DOMENESHOP_HTTP_TIMEOUT` - API request timeout.

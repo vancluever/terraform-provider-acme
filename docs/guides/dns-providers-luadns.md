@@ -54,7 +54,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `LUADNS_HTTP_TIMEOUT` - API request timeout.
 * `LUADNS_POLLING_INTERVAL` - Time between DNS propagation check.
 * `LUADNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `LUADNS_SEQUENCE_INTERVAL` - Interval between iteration.
 * `LUADNS_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

@@ -56,6 +56,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `JOKER_HTTP_TIMEOUT` - API request timeout.
 * `JOKER_POLLING_INTERVAL` - Time between DNS propagation check.
 * `JOKER_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `JOKER_SEQUENCE_INTERVAL` - Time between sequential requests (only with 'SVC' mode).
 * `JOKER_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

@@ -56,7 +56,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `RFC2136_DNS_TIMEOUT` - API request timeout.
 * `RFC2136_POLLING_INTERVAL` - Time between DNS propagation check.
 * `RFC2136_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `RFC2136_SEQUENCE_INTERVAL` - Interval between iteration.
+* `RFC2136_SEQUENCE_INTERVAL` - Time between sequential requests.
 * `RFC2136_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 
