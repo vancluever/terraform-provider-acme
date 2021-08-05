@@ -8,7 +8,7 @@ require (
 	github.com/Azure/go-autorest/autorest/azure/cli v0.4.0 // indirect
 	github.com/Azure/go-autorest/autorest/to v0.4.0 // indirect
 	github.com/Azure/go-autorest/autorest/validation v0.3.0 // indirect
-	github.com/BurntSushi/toml v0.3.1
+	github.com/BurntSushi/toml v0.4.1
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-acme/lego/v4 v4.4.0
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
