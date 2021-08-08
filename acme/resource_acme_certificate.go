@@ -257,6 +257,7 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		cert, err = client.Certificate.ObtainForCSR(certificate.ObtainForCSRRequest{
 			CSR:    csr,
 			Bundle: true,
+			PreferredChain: d.Get("preferred_chain").(string),
 		})
 	} else {
 		cn := d.Get("common_name").(string)
