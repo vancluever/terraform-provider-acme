@@ -1,3 +1,7 @@
+## 2.5.4-pre
+
+Bumped version for dev.
+
 ## 2.5.3 (August 10, 2021)
 
 BUG FIXES:
