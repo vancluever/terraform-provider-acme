@@ -71,7 +71,7 @@ func TestAccACMECertificate_CSR_PreferredChain(t *testing.T) {
 		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccACMECertificateCSRConfigWithPerferredChain(),
+				Config: testAccACMECertificateCSRConfigWithPreferredChain(),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
@@ -717,7 +717,7 @@ resource "acme_certificate" "certificate" {
 	)
 }
 
-func testAccACMECertificateCSRConfigWithPerferredChain() string {
+func testAccACMECertificateCSRConfigWithPreferredChain() string {
 	return fmt.Sprintf(`
 provider "acme" {
   server_url = "%s"
