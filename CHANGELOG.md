@@ -1,6 +1,10 @@
 ## 2.5.3-pre
 
-Bumped version for dev.
+BUG FIXES:
+
+* `resource/acme_certificate`: Corrected an issue where `preferred_chain` was
+  not working for certificates that used an external CSR.
+  [#199](https://github.com/vancluever/terraform-provider-acme/issues/199)
 
 ## 2.5.2 (June 9, 2021)
 
