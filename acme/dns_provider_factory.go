@@ -5,6 +5,7 @@ import (
 	"github.com/go-acme/lego/v4/challenge"
 	"github.com/go-acme/lego/v4/providers/dns/acmedns"
 	"github.com/go-acme/lego/v4/providers/dns/alidns"
+	"github.com/go-acme/lego/v4/providers/dns/allinkl"
 	"github.com/go-acme/lego/v4/providers/dns/arvancloud"
 	"github.com/go-acme/lego/v4/providers/dns/auroradns"
 	"github.com/go-acme/lego/v4/providers/dns/autodns"
@@ -32,21 +33,27 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/dynu"
 	"github.com/go-acme/lego/v4/providers/dns/easydns"
 	"github.com/go-acme/lego/v4/providers/dns/edgedns"
+	"github.com/go-acme/lego/v4/providers/dns/epik"
 	"github.com/go-acme/lego/v4/providers/dns/exec"
 	"github.com/go-acme/lego/v4/providers/dns/exoscale"
+	"github.com/go-acme/lego/v4/providers/dns/freemyip"
 	"github.com/go-acme/lego/v4/providers/dns/gandi"
 	"github.com/go-acme/lego/v4/providers/dns/gandiv5"
 	"github.com/go-acme/lego/v4/providers/dns/gcloud"
+	"github.com/go-acme/lego/v4/providers/dns/gcore"
 	"github.com/go-acme/lego/v4/providers/dns/glesys"
 	"github.com/go-acme/lego/v4/providers/dns/godaddy"
 	"github.com/go-acme/lego/v4/providers/dns/hetzner"
 	"github.com/go-acme/lego/v4/providers/dns/hostingde"
+	"github.com/go-acme/lego/v4/providers/dns/hosttech"
 	"github.com/go-acme/lego/v4/providers/dns/httpreq"
 	"github.com/go-acme/lego/v4/providers/dns/hurricane"
 	"github.com/go-acme/lego/v4/providers/dns/hyperone"
+	"github.com/go-acme/lego/v4/providers/dns/ibmcloud"
 	"github.com/go-acme/lego/v4/providers/dns/iij"
 	"github.com/go-acme/lego/v4/providers/dns/infoblox"
 	"github.com/go-acme/lego/v4/providers/dns/infomaniak"
+	"github.com/go-acme/lego/v4/providers/dns/internetbs"
 	"github.com/go-acme/lego/v4/providers/dns/inwx"
 	"github.com/go-acme/lego/v4/providers/dns/ionos"
 	"github.com/go-acme/lego/v4/providers/dns/joker"
@@ -62,6 +69,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/namesilo"
 	"github.com/go-acme/lego/v4/providers/dns/netcup"
 	"github.com/go-acme/lego/v4/providers/dns/netlify"
+	"github.com/go-acme/lego/v4/providers/dns/nicmanager"
 	"github.com/go-acme/lego/v4/providers/dns/nifcloud"
 	"github.com/go-acme/lego/v4/providers/dns/njalla"
 	"github.com/go-acme/lego/v4/providers/dns/ns1"
@@ -111,6 +119,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"alidns": func() (challenge.Provider, error) {
 		p, err := alidns.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"allinkl": func() (challenge.Provider, error) {
+		p, err := allinkl.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -340,6 +356,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"epik": func() (challenge.Provider, error) {
+		p, err := epik.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"exec": func() (challenge.Provider, error) {
 		p, err := exec.NewDNSProvider()
 		if err != nil {
@@ -350,6 +374,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"exoscale": func() (challenge.Provider, error) {
 		p, err := exoscale.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"freemyip": func() (challenge.Provider, error) {
+		p, err := freemyip.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -374,6 +406,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"gcloud": func() (challenge.Provider, error) {
 		p, err := gcloud.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"gcore": func() (challenge.Provider, error) {
+		p, err := gcore.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -412,6 +452,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"hosttech": func() (challenge.Provider, error) {
+		p, err := hosttech.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"httpreq": func() (challenge.Provider, error) {
 		p, err := httpreq.NewDNSProvider()
 		if err != nil {
@@ -436,6 +484,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"ibmcloud": func() (challenge.Provider, error) {
+		p, err := ibmcloud.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"iij": func() (challenge.Provider, error) {
 		p, err := iij.NewDNSProvider()
 		if err != nil {
@@ -454,6 +510,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"infomaniak": func() (challenge.Provider, error) {
 		p, err := infomaniak.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"internetbs": func() (challenge.Provider, error) {
+		p, err := internetbs.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -574,6 +638,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"netlify": func() (challenge.Provider, error) {
 		p, err := netlify.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"nicmanager": func() (challenge.Provider, error) {
+		p, err := nicmanager.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

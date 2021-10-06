@@ -49,7 +49,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
 * `ALICLOUD_ACCESS_KEY` - Access key ID.
+* `ALICLOUD_RAM_ROLE` - Your instance RAM role (https://www.alibabacloud.com/help/doc-detail/54579.htm).
 * `ALICLOUD_SECRET_KEY` - Access Key secret.
+* `ALICLOUD_SECURITY_TOKEN` - STS Security Token (optional).
 
 * `ALICLOUD_HTTP_TIMEOUT` - API request timeout.
 * `ALICLOUD_POLLING_INTERVAL` - Time between DNS propagation check.

@@ -1,5 +1,5 @@
 ---
-page_title: "azure"
+page_title: "nicmanager"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Azure DNS Challenge Provider
+# Nicmanager DNS Challenge Provider
 
-The `azure` DNS challenge provider can be used to perform DNS challenges for
+The `nicmanager` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Azure](https://azure.microsoft.com/services/dns/).
+[Nicmanager](https://www.nicmanager.com/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "azure"
+    provider = "nicmanager"
   }
 }
 ```
@@ -48,28 +48,20 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `AZURE_CLIENT_ID` - Client ID.
-* `AZURE_CLIENT_SECRET` - Client secret.
-* `AZURE_ENVIRONMENT` - Azure environment, one of: public, usgovernment, german, and china.
-* `AZURE_RESOURCE_GROUP` - Resource group.
-* `AZURE_SUBSCRIPTION_ID` - Subscription ID.
-* `AZURE_TENANT_ID` - Tenant ID.
-* `instance metadata service` - If the credentials are **not** set via the environment, then it will attempt to get a bearer token via the [instance metadata service](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/instance-metadata-service)..
+* `NICMANAGER_API_EMAIL` - Email-based login.
+* `NICMANAGER_API_LOGIN` - Login, used for Username-based login.
+* `NICMANAGER_API_PASSWORD` - Password, always required.
+* `NICMANAGER_API_USERNAME` - Username, used for Username-based login.
 
-* `AZURE_METADATA_ENDPOINT` - Metadata Service endpoint URL.
-* `AZURE_POLLING_INTERVAL` - Time between DNS propagation check.
-* `AZURE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `AZURE_TTL` - The TTL of the TXT record used for the DNS challenge.
-* `AZURE_ZONE_NAME` - Zone name to use inside Azure DNS service to add the TXT record in.
+* `NICMANAGER_API_MODE` - mode: 'anycast' or 'zone' (default: 'anycast').
+* `NICMANAGER_API_OTP` - TOTP Secret (optional).
+* `NICMANAGER_HTTP_TIMEOUT` - API request timeout.
+* `NICMANAGER_POLLING_INTERVAL` - Time between DNS propagation check.
+* `NICMANAGER_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `NICMANAGER_TTL` - The TTL of the TXT record used for the DNS challenge.
 
-The following variables are **Terraform-specific** aliases for the above
-configuration values:
+## Description
 
-
-* `ARM_CLIENT_ID` - alias for `AZURE_CLIENT_ID`.
-* `ARM_CLIENT_SECRET` - alias for `AZURE_CLIENT_SECRET`.
-* `ARM_RESOURCE_GROUP` - alias for `AZURE_RESOURCE_GROUP`.
-* `ARM_SUBSCRIPTION_ID` - alias for `AZURE_SUBSCRIPTION_ID`.
-* `ARM_TENANT_ID` - alias for `AZURE_TENANT_ID`.
-
+You can login using your account name + username or using your email address.
+Optionally if TOTP is configured for your account, set `NICMANAGER_API_OTP`.
 

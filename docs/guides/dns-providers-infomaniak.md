@@ -60,5 +60,4 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 Access token can be created at the url https://manager.infomaniak.com/v3/infomaniak-api.
 You will need domain scope.
-```
 
