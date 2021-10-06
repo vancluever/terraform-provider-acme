@@ -2,7 +2,7 @@
 
 Bumped version for dev.
 
-## 2.6.0
+## 2.6.0 (October 6, 2021)
 
 LEGO UPDATE:
 
