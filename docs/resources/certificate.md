@@ -198,6 +198,9 @@ equivalent in the [staging
 environment](https://letsencrypt.org/docs/staging-environment/) is `(STAGING)
 Pretend Pear X1`.
 
+* `revoke_certificate_on_destroy` - Enables revocation of a certificate upon destroy,
+which includes when a resource is re-created. Default is `true`.
+
 ### Using DNS challenges
 
 This method authenticates certificate domains by requiring the requester to
