@@ -3,6 +3,7 @@ package acme
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/json"
 	"fmt"
 	"go/build"
 	"io"
@@ -40,6 +41,9 @@ const mainIntermediateURL = "https://localhost:15000/intermediates/0"
 
 // URL to the alternate certificate for preferred chain tests
 const alternateIntermediateURL = "https://localhost:15000/intermediates/1"
+
+// URL to cert status (non-EAB)
+const certStatusURL = "https://localhost:15000/cert-status-by-serial/"
 
 // Host:port for memcached
 const memcacheHost = "localhost:11211"
@@ -80,6 +84,46 @@ func getPebbleCertificate(url string) *x509.Certificate {
 // certificate at the supplied URL.
 func getPebbleCertificateIssuer(url string) string {
 	return getPebbleCertificate(url).Issuer.CommonName
+}
+
+const (
+	certificateStatusValid   = "Valid"
+	certificateStatusRevoked = "Revoked"
+)
+
+// getStatusForCertificate returns the serial number from a *x509.Certificate.
+// Note this currently only works for the non-EAB endpoint.
+func getStatusForCertificate(cert *x509.Certificate) string {
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true,
+			},
+		},
+	}
+	resp, err := client.Get(fmt.Sprintf("%s/%x", certStatusURL, cert.SerialNumber.Int64()))
+	if err != nil {
+		panic(fmt.Errorf("getStatusForCertificate: error fetching certificate status: %s", err))
+	}
+
+	if resp.StatusCode != 200 {
+		panic(fmt.Errorf("getStatusForCertificate: unexpected response status: %s", resp.Status))
+	}
+
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		panic(fmt.Errorf("getStatusForCertificate: error reading certificate status: %s", err))
+	}
+
+	var result struct {
+		Status string
+	}
+	if err := json.Unmarshal(body, &result); err != nil {
+		panic(fmt.Errorf("getStatusForCertificate: error reading certificate status JSON: %s", err))
+	}
+
+	return result.Status
 }
 
 // External providers (tls)

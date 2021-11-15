@@ -221,10 +221,9 @@ func resourceACMECertificateV5() *schema.Resource {
 				Sensitive: true,
 			},
 			"revoke_certificate_on_destroy": {
-				Type:      schema.TypeBool,
-				Optional:  true,
-				Default:   true,
-				Sensitive: false,
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
 			},
 		},
 	}
