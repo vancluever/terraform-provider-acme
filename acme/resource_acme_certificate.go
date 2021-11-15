@@ -220,6 +220,11 @@ func resourceACMECertificateV5() *schema.Resource {
 				Default:   "",
 				Sensitive: true,
 			},
+			"revoke_certificate_on_destroy": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
 		},
 	}
 }
@@ -255,8 +260,8 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 			return err
 		}
 		cert, err = client.Certificate.ObtainForCSR(certificate.ObtainForCSRRequest{
-			CSR:    csr,
-			Bundle: true,
+			CSR:            csr,
+			Bundle:         true,
 			PreferredChain: d.Get("preferred_chain").(string),
 		})
 	} else {
@@ -417,6 +422,10 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 
 // resourceACMECertificateDelete "deletes" the certificate by revoking it.
 func resourceACMECertificateDelete(d *schema.ResourceData, meta interface{}) error {
+	if !d.Get("revoke_certificate_on_destroy").(bool) {
+		return nil
+	}
+
 	client, _, err := expandACMEClient(d, meta, true)
 	if err != nil {
 		return err

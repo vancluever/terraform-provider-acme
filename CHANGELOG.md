@@ -2,6 +2,11 @@
 
 Bumped version for dev.
 
+FEATURES:
+
+* `resource/acme_certificate`: New flag `revoke_certificate_on_destroy` to control if certificates are 
+   revoced on destroy. Default is `true`, keeping with existing behaviour. [#192](https://github.com/vancluever/terraform-provider-acme/issues/192) 
+
 ## 2.6.0 (October 6, 2021)
 
 LEGO UPDATE:

@@ -33,6 +33,7 @@ func TestAccACMECertificate_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		Providers:         testAccProviders,
 		ExternalProviders: testAccExternalProviders,
+		CheckDestroy:      testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusRevoked),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccACMECertificateConfig(),
@@ -41,6 +42,7 @@ func TestAccACMECertificate_basic(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www", "www2"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusValid),
 				),
 			},
 		},
@@ -378,6 +380,26 @@ func TestAccACMECertificate_tls(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_noRevoke(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		Providers:         testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		CheckDestroy:      testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusValid),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigNoRevoke(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-no-revoke", "test-no-revoke2"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusValid),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckACMECertificateValid(n, cn, san string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
@@ -610,6 +632,29 @@ func testAccCheckACMECertificateProxyTestServer() (func(), error) {
 		defer cancel()
 		server.Shutdown(ctx)
 	}, nil
+}
+
+func testAccCheckACMECertificateStatus(name, expected string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs, ok := s.RootModule().Resources[name]
+		if !ok {
+			return fmt.Errorf("Can't find ACME certificate: %s", name)
+		}
+
+		certPem := rs.Primary.Attributes["certificate_pem"]
+		certs, err := parsePEMBundle([]byte(certPem))
+		if err != nil {
+			return err
+		}
+		cert := certs[0]
+		actual := getStatusForCertificate(cert)
+
+		if expected != actual {
+			return fmt.Errorf("subject=%s serial=%x, expected status %q, actual %q", cert.Subject, cert.SerialNumber.Int64(), expected, actual)
+		}
+
+		return nil
+	}
 }
 
 func testAccACMECertificateConfig() string {
@@ -1253,5 +1298,52 @@ resource "acme_certificate" "certificate" {
 `, pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
+	)
+}
+
+func testAccACMECertificateConfigNoRevoke() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = tls_private_key.private_key.private_key_pem
+  email_address   = var.email_address
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = acme_registration.reg.account_key_pem
+  common_name               = "test-no-revoke.${var.domain}"
+  subject_alternative_names = ["test-no-revoke2.${var.domain}"]
+
+  recursive_nameservers         = ["%s"]
+  disable_complete_propagation  = true
+  revoke_certificate_on_destroy = false
+
+  dns_challenge {
+    provider = "exec"
+    config = {
+      EXEC_PATH = "%s"
+    }
+  }
+}
+`, pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		pebbleChallTestDNSSrv,
+		pebbleChallTestDNSScriptPath,
 	)
 }
