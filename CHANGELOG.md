@@ -1,3 +1,7 @@
+## 2.7.1-pre
+
+Bumped version for dev.
+
 ## 2.7.0 (November 15, 2021)
 
 FEATURES:
