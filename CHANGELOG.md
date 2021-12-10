@@ -4,7 +4,7 @@ This is a patch version bump to build with the latest version of Go to address
 CVE-2021-44716.
 
 Note that this update is being made proactively and not in response to any known
-security issue. The ACME provider would normally only use `net/http` in DNS
+security issue. The ACME provider would normally only use `net/http` in HTTP
 challenges.
 
 No other changes are being made.
