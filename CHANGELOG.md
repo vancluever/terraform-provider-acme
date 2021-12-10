@@ -1,3 +1,7 @@
+## 2.7.2-pre
+
+Bumped version for dev.
+
 ## 2.7.1 (December 10, 2021)
 
 This is a patch version bump to build with the latest version of Go to address
