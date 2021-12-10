@@ -1,6 +1,13 @@
-## 2.7.1-pre
+## 2.7.1 (Unreleased)
 
-Bumped version for dev.
+This is a patch version bump to build with the latest version of Go to address
+CVE-2021-44716.
+
+Note that this update is being made proactively and not in response to any known
+security issue. The ACME provider would normally only use `net/http` in DNS
+challenges.
+
+No other changes are being made.
 
 ## 2.7.0 (November 15, 2021)
 
