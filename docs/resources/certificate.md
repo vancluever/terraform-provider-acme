@@ -262,7 +262,7 @@ resource "acme_certificate" "certificate" {
 
 #### About DNS propagation checks
 
-There are two parts of the DNS propagation check:
+There are two parts to the DNS propagation check:
 
 * A check using your system resolvers, or the settings specified in
   `recursive_nameservers`.
@@ -315,10 +315,10 @@ resource "acme_certificate" "certificate" {
 ~> **NOTE:** When `disable_complete_propagation` is used, you can encounter
 situations where the propagation check will pass before your platform has
 provisioned the DNS records on their name servers. Use this setting with care,
-such as in aforementioned air-gapped scenario where the system running Terraform
-has no outbound DNS access, or for testing purposes. If you encounter problems
-using this setting, consider removing it and moving your Terraform operations to
-a system that can access your domain's authoritative DNS servers.
+such as in the aforementioned air-gapped scenario where the system running
+Terraform has no outbound DNS access, or for testing purposes. If you encounter
+problems using this setting, consider removing it and moving your Terraform
+operations to a system that can access your domain's authoritative DNS servers.
 
 #### Using multiple primary DNS providers
 
