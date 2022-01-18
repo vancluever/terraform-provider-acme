@@ -128,13 +128,16 @@ be specified. It's recommended you use `dns_challenge` whenever possible).
   to be specified. Forces a new resource when changed.
 * `dns_challenge` (Optional) - The [DNS challenges](#using-dns-challenges) to
   use in fulfilling the request.
-* `recursive_nameservers` (Optional) - The [recursive
-  nameservers](#manually-specifying-recursive-nameservers-for-propagation-checks)
-  that will be used to check for propagation of DNS challenge records. Defaults
-  to your system-configured DNS resolvers.
-* `disable_complete_propagation` (Optional) - Disable the requiement for full
+* `recursive_nameservers` (Optional) - The recursive nameservers that will be
+  used to check for propagation of DNS challenge records. Defaults to your
+  system-configured DNS resolvers.
+* `disable_complete_propagation` (Optional) - Disable the requirement for full
   propagation of the TXT challenge records before proceeding with validation.
   Defaults to `false`. Only recommended for testing.
+
+-> See [About DNS propagation checks](#about-dns-propagation-checks) for details
+on the `recursive_nameservers` and `disable_complete_propagation` settings.
+
 * `pre_check_delay` (Optional) - Insert a delay after _every_ DNS challenge
   record to allow for extra time for DNS propagation before the certificate is
   requested. Use this option if you observe issues with requesting certificates
@@ -257,7 +260,13 @@ resource "acme_certificate" "certificate" {
 }
 ```
 
-#### Manually specifying recursive nameservers for propagation checks
+#### About DNS propagation checks
+
+There are two parts of the DNS propagation check:
+
+* A check using your system resolvers, or the settings specified in
+  `recursive_nameservers`.
+* A check against your domain's authoritative DNS servers.
 
 The ACME provider will normally use your system-configured DNS resolvers to
 check for propagation of the TXT records before proceeding with the certificate
@@ -266,7 +275,7 @@ machine running Terraform may not have visibility into these public DNS
 records.
 
 To override this default behavior, supply the `recursive_nameservers` to use as
-a list in `host:port`:
+a list in the format `host:port`:
 
 ```hcl
 resource "acme_certificate" "certificate" {
@@ -281,6 +290,35 @@ resource "acme_certificate" "certificate" {
   #...
 }
 ```
+
+Additionally, in air-gapped scenarios, internet access to DNS servers may not be
+available at all to the machine running Terraform. In this case, you can use
+`disable_complete_propagation` to bypass this authoritative DNS check, ensuring
+that the only propagation check being done is on the system resolver or the
+resolver you configure with `recursive_nameservers`.
+
+```hcl
+resource "acme_certificate" "certificate" {
+  #...
+
+  recursive_nameservers        = ["8.8.8.8:53"]
+  disable_complete_propagation = true
+
+  dns_challenge {
+    provider = "route53"
+  }
+
+  #...
+}
+```
+
+~> **NOTE:** When `disable_complete_propagation` is used, you can encounter
+situations where the propagation check will pass before your platform has
+provisioned the DNS records on their name servers. Use this setting with care,
+such as in aforementioned air-gapped scenario where the system running Terraform
+has no outbound DNS access, or for testing purposes. If you encounter problems
+using this setting, consider removing it and moving your Terraform operations to
+a system that can access your domain's authoritative DNS servers.
 
 #### Using multiple primary DNS providers
 
