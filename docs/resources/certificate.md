@@ -133,7 +133,7 @@ be specified. It's recommended you use `dns_challenge` whenever possible).
   system-configured DNS resolvers.
 * `disable_complete_propagation` (Optional) - Disable the requirement for full
   propagation of the TXT challenge records before proceeding with validation.
-  Defaults to `false`. Only recommended for testing.
+  Defaults to `false`.
 
 -> See [About DNS propagation checks](#about-dns-propagation-checks) for details
 on the `recursive_nameservers` and `disable_complete_propagation` settings.
