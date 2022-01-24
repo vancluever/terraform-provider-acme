@@ -59,4 +59,20 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `JOKER_SEQUENCE_INTERVAL` - Time between sequential requests (only with 'SVC' mode).
 * `JOKER_TTL` - The TTL of the TXT record used for the DNS challenge.
 
+## SVC mode
+
+In the SVC mode, username and passsword are not your email and account passwords, but those displayed in Joker.com domain dashboard when enabling Dynamic DNS.
+
+As per [Joker.com documentation](https://joker.com/faq/content/6/496/en/let_s-encrypt-support.html):
+
+> 1. please login at Joker.com, visit 'My Domains',
+>    find the domain you want to add  Let's Encrypt certificate for, and chose "DNS" in the menu
+>
+> 2. on the top right, you will find the setting for 'Dynamic DNS'.
+>    If not already active, please activate it.
+>    It will not affect any other already existing DNS records of this domain.
+>
+> 3. please take a note of the credentials which are now shown as 'Dynamic DNS Authentication', consisting of a 'username' and a 'password'.
+>
+> 4. this is all you have to do here - and only once per domain.
 

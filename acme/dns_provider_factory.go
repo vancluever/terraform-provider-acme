@@ -83,6 +83,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/rfc2136"
 	"github.com/go-acme/lego/v4/providers/dns/rimuhosting"
 	"github.com/go-acme/lego/v4/providers/dns/route53"
+	"github.com/go-acme/lego/v4/providers/dns/safedns"
 	"github.com/go-acme/lego/v4/providers/dns/sakuracloud"
 	"github.com/go-acme/lego/v4/providers/dns/scaleway"
 	"github.com/go-acme/lego/v4/providers/dns/selectel"
@@ -90,6 +91,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/simply"
 	"github.com/go-acme/lego/v4/providers/dns/sonic"
 	"github.com/go-acme/lego/v4/providers/dns/stackpath"
+	"github.com/go-acme/lego/v4/providers/dns/tencentcloud"
 	"github.com/go-acme/lego/v4/providers/dns/transip"
 	"github.com/go-acme/lego/v4/providers/dns/vegadns"
 	"github.com/go-acme/lego/v4/providers/dns/versio"
@@ -756,6 +758,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"safedns": func() (challenge.Provider, error) {
+		p, err := safedns.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"sakuracloud": func() (challenge.Provider, error) {
 		p, err := sakuracloud.NewDNSProvider()
 		if err != nil {
@@ -806,6 +816,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"stackpath": func() (challenge.Provider, error) {
 		p, err := stackpath.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"tencentcloud": func() (challenge.Provider, error) {
+		p, err := tencentcloud.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

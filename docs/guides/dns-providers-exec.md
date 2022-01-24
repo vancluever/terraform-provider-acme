@@ -47,6 +47,7 @@ resource "acme_certificate" "certificate" {
 |----------------------------|-------------------------------------------|
 | `EXEC_POLLING_INTERVAL`    | Time between DNS propagation check.       |
 | `EXEC_PROPAGATION_TIMEOUT` | Maximum waiting time for DNS propagation. |
+| `EXEC_SEQUENCE_INTERVAL`   | Time between sequential requests.         |
 
 
 ## Description

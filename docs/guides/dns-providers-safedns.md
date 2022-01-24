@@ -1,5 +1,5 @@
 ---
-page_title: "rfc2136"
+page_title: "safedns"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# RFC2136 DNS Challenge Provider
+# UKFast SafeDNS DNS Challenge Provider
 
-The `rfc2136` DNS challenge provider can be used to perform DNS challenges for
+The `safedns` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[RFC2136](https://www.rfc-editor.org/rfc/rfc2136.html).
+[UKFast SafeDNS](https://www.ukfast.co.uk/dns-hosting.html).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "rfc2136"
+    provider = "safedns"
   }
 }
 ```
@@ -48,15 +48,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `RFC2136_NAMESERVER` - Network address in the form "host" or "host:port".
-* `RFC2136_TSIG_ALGORITHM` - TSIG algorithm. See [miekg/dns#tsig.go](https://github.com/miekg/dns/blob/master/tsig.go) for supported values. To disable TSIG authentication, leave the `RFC2136_TSIG*` variables unset..
-* `RFC2136_TSIG_KEY` - Name of the secret key as defined in DNS server configuration. To disable TSIG authentication, leave the `RFC2136_TSIG*` variables unset..
-* `RFC2136_TSIG_SECRET` - Secret key payload. To disable TSIG authentication, leave the` RFC2136_TSIG*` variables unset..
+* `SAFEDNS_AUTH_TOKEN` - Authentication token.
 
-* `RFC2136_DNS_TIMEOUT` - API request timeout.
-* `RFC2136_POLLING_INTERVAL` - Time between DNS propagation check.
-* `RFC2136_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `RFC2136_SEQUENCE_INTERVAL` - Time between sequential requests.
-* `RFC2136_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `SAFEDNS_HTTP_TIMEOUT` - API request timeout.
+* `SAFEDNS_POLLING_INTERVAL` - Time between DNS propagation check.
+* `SAFEDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `SAFEDNS_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 
