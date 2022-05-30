@@ -1,5 +1,5 @@
 ---
-page_title: "allinkl"
+page_title: "iijdpf"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# all-inkl DNS Challenge Provider
+# IIJ DNS Platform Service DNS Challenge Provider
 
-The `allinkl` DNS challenge provider can be used to perform DNS challenges for
+The `iijdpf` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[all-inkl](https://all-inkl.com).
+[IIJ DNS Platform Service](https://www.iij.ad.jp/en/biz/dns-pfm/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "allinkl"
+    provider = "iijdpf"
   }
 }
 ```
@@ -48,11 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `ALL_INKL_LOGIN` - KAS login.
-* `ALL_INKL_PASSWORD` - KAS password.
+* `IIJ_DPF_API_TOKEN` - API token.
+* `IIJ_DPF_DPM_SERVICE_CODE` - IIJ Managed DNS Service's service code.
 
-* `ALL_INKL_HTTP_TIMEOUT` - API request timeout.
-* `ALL_INKL_POLLING_INTERVAL` - Time between DNS propagation check.
-* `ALL_INKL_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `IIJ_DPF_API_ENDPOINT` - API endpoint URL, defaults to https://api.dns-platform.jp/dpf/v1.
+* `IIJ_DPF_POLLING_INTERVAL` - Time between DNS propagation check, defaults to 5 second.
+* `IIJ_DPF_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation, defaults to 660 second.
+* `IIJ_DPF_TTL` - The TTL of the TXT record used for the DNS challenge, default to 300.
 
 

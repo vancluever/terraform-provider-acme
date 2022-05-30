@@ -1,5 +1,5 @@
 ---
-page_title: "allinkl"
+page_title: "iwantmyname"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# all-inkl DNS Challenge Provider
+# iwantmyname DNS Challenge Provider
 
-The `allinkl` DNS challenge provider can be used to perform DNS challenges for
+The `iwantmyname` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[all-inkl](https://all-inkl.com).
+[iwantmyname](https://iwantmyname.com).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "allinkl"
+    provider = "iwantmyname"
   }
 }
 ```
@@ -48,11 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `ALL_INKL_LOGIN` - KAS login.
-* `ALL_INKL_PASSWORD` - KAS password.
+* `IWANTMYNAME_PASSWORD` - API password.
+* `IWANTMYNAME_USERNAME` - API username.
 
-* `ALL_INKL_HTTP_TIMEOUT` - API request timeout.
-* `ALL_INKL_POLLING_INTERVAL` - Time between DNS propagation check.
-* `ALL_INKL_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `IWANTMYNAME_HTTP_TIMEOUT` - API request timeout.
+* `IWANTMYNAME_POLLING_INTERVAL` - Time between DNS propagation check.
+* `IWANTMYNAME_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `IWANTMYNAME_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

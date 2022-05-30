@@ -1,5 +1,5 @@
 ---
-page_title: "allinkl"
+page_title: "vercel"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# all-inkl DNS Challenge Provider
+# Vercel DNS Challenge Provider
 
-The `allinkl` DNS challenge provider can be used to perform DNS challenges for
+The `vercel` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[all-inkl](https://all-inkl.com).
+[Vercel](https://vercel.com).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "allinkl"
+    provider = "vercel"
   }
 }
 ```
@@ -48,11 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `ALL_INKL_LOGIN` - KAS login.
-* `ALL_INKL_PASSWORD` - KAS password.
+* `VERCEL_API_TOKEN` - Authentication token.
 
-* `ALL_INKL_HTTP_TIMEOUT` - API request timeout.
-* `ALL_INKL_POLLING_INTERVAL` - Time between DNS propagation check.
-* `ALL_INKL_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `VERCEL_HTTP_TIMEOUT` - API request timeout.
+* `VERCEL_POLLING_INTERVAL` - Time between DNS propagation check.
+* `VERCEL_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `VERCEL_TEAM_ID` - Team ID (ex: team_xxxxxxxxxxxxxxxxxxxxxxxx).
+* `VERCEL_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

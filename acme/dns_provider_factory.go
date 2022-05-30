@@ -51,11 +51,13 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/hyperone"
 	"github.com/go-acme/lego/v4/providers/dns/ibmcloud"
 	"github.com/go-acme/lego/v4/providers/dns/iij"
+	"github.com/go-acme/lego/v4/providers/dns/iijdpf"
 	"github.com/go-acme/lego/v4/providers/dns/infoblox"
 	"github.com/go-acme/lego/v4/providers/dns/infomaniak"
 	"github.com/go-acme/lego/v4/providers/dns/internetbs"
 	"github.com/go-acme/lego/v4/providers/dns/inwx"
 	"github.com/go-acme/lego/v4/providers/dns/ionos"
+	"github.com/go-acme/lego/v4/providers/dns/iwantmyname"
 	"github.com/go-acme/lego/v4/providers/dns/joker"
 	"github.com/go-acme/lego/v4/providers/dns/lightsail"
 	"github.com/go-acme/lego/v4/providers/dns/linode"
@@ -94,6 +96,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/tencentcloud"
 	"github.com/go-acme/lego/v4/providers/dns/transip"
 	"github.com/go-acme/lego/v4/providers/dns/vegadns"
+	"github.com/go-acme/lego/v4/providers/dns/vercel"
 	"github.com/go-acme/lego/v4/providers/dns/versio"
 	"github.com/go-acme/lego/v4/providers/dns/vinyldns"
 	"github.com/go-acme/lego/v4/providers/dns/vscale"
@@ -502,6 +505,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"iijdpf": func() (challenge.Provider, error) {
+		p, err := iijdpf.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"infoblox": func() (challenge.Provider, error) {
 		p, err := infoblox.NewDNSProvider()
 		if err != nil {
@@ -536,6 +547,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"ionos": func() (challenge.Provider, error) {
 		p, err := ionos.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"iwantmyname": func() (challenge.Provider, error) {
+		p, err := iwantmyname.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -840,6 +859,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"vegadns": func() (challenge.Provider, error) {
 		p, err := vegadns.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"vercel": func() (challenge.Provider, error) {
+		p, err := vercel.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
