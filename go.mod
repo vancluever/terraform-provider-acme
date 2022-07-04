@@ -6,7 +6,7 @@ require (
 	github.com/Azure/azure-sdk-for-go v45.0.0+incompatible // indirect
 	github.com/BurntSushi/toml v1.1.0
 	github.com/davecgh/go-spew v1.1.1
-	github.com/go-acme/lego/v4 v4.7.0
+	github.com/go-acme/lego/v4 v4.8.0
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/google/go-cmp v0.5.8
 	github.com/hashicorp/go-multierror v1.1.1
