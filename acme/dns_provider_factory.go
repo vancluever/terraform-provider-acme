@@ -69,6 +69,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/namecheap"
 	"github.com/go-acme/lego/v4/providers/dns/namedotcom"
 	"github.com/go-acme/lego/v4/providers/dns/namesilo"
+	"github.com/go-acme/lego/v4/providers/dns/nearlyfreespeech"
 	"github.com/go-acme/lego/v4/providers/dns/netcup"
 	"github.com/go-acme/lego/v4/providers/dns/netlify"
 	"github.com/go-acme/lego/v4/providers/dns/nicmanager"
@@ -95,6 +96,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/stackpath"
 	"github.com/go-acme/lego/v4/providers/dns/tencentcloud"
 	"github.com/go-acme/lego/v4/providers/dns/transip"
+	"github.com/go-acme/lego/v4/providers/dns/variomedia"
 	"github.com/go-acme/lego/v4/providers/dns/vegadns"
 	"github.com/go-acme/lego/v4/providers/dns/vercel"
 	"github.com/go-acme/lego/v4/providers/dns/versio"
@@ -649,6 +651,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"nearlyfreespeech": func() (challenge.Provider, error) {
+		p, err := nearlyfreespeech.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"netcup": func() (challenge.Provider, error) {
 		p, err := netcup.NewDNSProvider()
 		if err != nil {
@@ -851,6 +861,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"transip": func() (challenge.Provider, error) {
 		p, err := transip.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"variomedia": func() (challenge.Provider, error) {
+		p, err := variomedia.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
