@@ -731,7 +731,6 @@ resource "tls_private_key" "cert_private_key" {
 }
 
 resource "tls_cert_request" "req" {
-  key_algorithm   = "RSA"
   private_key_pem = "${tls_private_key.cert_private_key.private_key_pem}"
   dns_names       = ["www3.${var.domain}", "www4.${var.domain}"]
 
@@ -790,7 +789,6 @@ resource "tls_private_key" "cert_private_key" {
 }
 
 resource "tls_cert_request" "req" {
-  key_algorithm   = "RSA"
   private_key_pem = "${tls_private_key.cert_private_key.private_key_pem}"
   dns_names       = ["www3.${var.domain}", "www4.${var.domain}"]
 
