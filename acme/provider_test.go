@@ -16,7 +16,15 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-var testAccProviders map[string]*schema.Provider
+func testAccProviderAcme() *schema.Provider {
+	return Provider()
+}
+
+var testAccProviders = map[string]func() (*schema.Provider, error){
+	"acme": func() (*schema.Provider, error) {
+		return testAccProviderAcme(), nil
+	},
+}
 
 // Path to the pebble CA cert list, from GOPATH
 const pebbleCACerts = "src/github.com/letsencrypt/pebble/test/certs/pebble.minica.pem"
@@ -139,10 +147,6 @@ func init() {
 
 	// Set lego's CA certs to pebble's CA for testing w/pebble
 	os.Setenv("LEGO_CA_CERTIFICATES", filepath.Join(build.Default.GOPATH, pebbleCACerts))
-
-	testAccProviders = map[string]*schema.Provider{
-		"acme": Provider(),
-	}
 }
 
 func TestProvider(t *testing.T) {
