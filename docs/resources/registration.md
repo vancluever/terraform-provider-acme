@@ -37,7 +37,7 @@ resource "tls_private_key" "private_key" {
 }
 
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  account_key_pem = tls_private_key.private_key.private_key_pem
   email_address   = "nobody@example.com"
 }
 ```

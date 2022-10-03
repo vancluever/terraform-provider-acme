@@ -30,12 +30,12 @@ resource "tls_private_key" "private_key" {
 }
 
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  account_key_pem = tls_private_key.private_key.private_key_pem
   email_address   = "nobody@example.com"
 }
 
 resource "acme_certificate" "certificate" {
-  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  account_key_pem           = acme_registration.reg.account_key_pem
   common_name               = "www.example.com"
   subject_alternative_names = ["www2.example.com"]
 
@@ -72,7 +72,7 @@ resource "tls_private_key" "reg_private_key" {
 }
 
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.reg_private_key.private_key_pem}"
+  account_key_pem = tls_private_key.reg_private_key.private_key_pem
   email_address   = "nobody@example.com"
 }
 
@@ -82,7 +82,7 @@ resource "tls_private_key" "cert_private_key" {
 
 resource "tls_cert_request" "req" {
   key_algorithm   = "RSA"
-  private_key_pem = "${tls_private_key.cert_private_key.private_key_pem}"
+  private_key_pem = tls_private_key.cert_private_key.private_key_pem
   dns_names       = ["www.example.com", "www2.example.com"]
 
   subject {
@@ -91,8 +91,8 @@ resource "tls_cert_request" "req" {
 }
 
 resource "acme_certificate" "certificate" {
-  account_key_pem         = "${acme_registration.reg.account_key_pem}"
-  certificate_request_pem = "${tls_cert_request.req.cert_request_pem}"
+  account_key_pem         = acme_registration.reg.account_key_pem
+  certificate_request_pem = tls_cert_request.req.cert_request_pem
 
   dns_challenge {
     provider = "route53"
@@ -225,9 +225,9 @@ resource "acme_certificate" "certificate" {
     provider = "route53"
 
     config = {
-      AWS_ACCESS_KEY_ID     = "${var.aws_access_key}"
-      AWS_SECRET_ACCESS_KEY = "${var.aws_secret_key}"
-      AWS_SESSION_TOKEN     = "${var.aws_security_token}"
+      AWS_ACCESS_KEY_ID     = var.aws_access_key
+      AWS_SECRET_ACCESS_KEY = var.aws_secret_key
+      AWS_SESSION_TOKEN     = var.aws_security_token
       AWS_DEFAULT_REGION    = "us-east-1"  # OPTIONAL
     }
   }
