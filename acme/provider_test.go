@@ -20,6 +20,12 @@ func testAccProviderAcme() *schema.Provider {
 	return Provider()
 }
 
+func testAccProviderAcmeConfig(serverUrl string) *Config {
+	return &Config{
+		ServerURL: serverUrl,
+	}
+}
+
 var testAccProviders = map[string]func() (*schema.Provider, error){
 	"acme": func() (*schema.Provider, error) {
 		return testAccProviderAcme(), nil

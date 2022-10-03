@@ -13,7 +13,7 @@ func TestAccACMERegistration_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
-		CheckDestroy:      testAccCheckACMERegistrationValid("acme_registration.reg", false),
+		CheckDestroy:      testAccCheckACMERegistrationValid("acme_registration.reg", false, pebbleDirBasic),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccACMERegistrationConfig(),
@@ -22,7 +22,7 @@ func TestAccACMERegistration_basic(t *testing.T) {
 						"acme_registration.reg", "id",
 						"acme_registration.reg", "registration_url",
 					),
-					testAccCheckACMERegistrationValid("acme_registration.reg", true),
+					testAccCheckACMERegistrationValid("acme_registration.reg", true, pebbleDirBasic),
 				),
 			},
 		},
@@ -33,7 +33,7 @@ func TestAccACMERegistration_eab(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
-		CheckDestroy:      testAccCheckACMERegistrationValid("acme_registration.reg", false),
+		CheckDestroy:      testAccCheckACMERegistrationValid("acme_registration.reg", false, pebbleDirEAB),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccACMERegistrationConfigEAB(),
@@ -42,7 +42,7 @@ func TestAccACMERegistration_eab(t *testing.T) {
 						"acme_registration.reg", "id",
 						"acme_registration.reg", "registration_url",
 					),
-					testAccCheckACMERegistrationValid("acme_registration.reg", true),
+					testAccCheckACMERegistrationValid("acme_registration.reg", true, pebbleDirEAB),
 				),
 			},
 		},
@@ -66,14 +66,14 @@ func TestAccACMERegistration_refreshDeactivated(t *testing.T) {
 						"acme_registration.reg", "id",
 						"acme_registration.reg", "registration_url",
 					),
-					testAccCheckACMERegistrationValid("acme_registration.reg", true),
+					testAccCheckACMERegistrationValid("acme_registration.reg", true, pebbleDirBasic),
 				),
 			},
 			{
 				PreConfig: func() {
 					rs := state.RootModule().Resources["acme_registration.reg"]
 					d := testAccCheckACMERegistrationResourceData(rs)
-					client, _, err := expandACMEClient(d, testAccProviderAcme().Meta(), true)
+					client, _, err := expandACMEClient(d, testAccProviderAcmeConfig(pebbleDirBasic), true)
 					if err != nil {
 						panic(err)
 					}
@@ -90,7 +90,7 @@ func TestAccACMERegistration_refreshDeactivated(t *testing.T) {
 	})
 }
 
-func testAccCheckACMERegistrationValid(n string, exists bool) resource.TestCheckFunc {
+func testAccCheckACMERegistrationValid(n string, exists bool, acmeServerUrl string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
 		if !ok {
@@ -130,7 +130,7 @@ func testAccCheckACMERegistrationValid(n string, exists bool) resource.TestCheck
 
 		d := testAccCheckACMERegistrationResourceData(rs)
 
-		client, _, err := expandACMEClient(d, testAccProviderAcme().Meta(), true)
+		client, _, err := expandACMEClient(d, testAccProviderAcmeConfig(acmeServerUrl), true)
 		if err != nil {
 			if regGone(err) && !exists {
 				return nil
