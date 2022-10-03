@@ -31,7 +31,7 @@ var certURLRegexp = regexp.MustCompile(`^https://localhost:1400[01]/certZ/[a-z0-
 
 func TestAccACMECertificate_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers:         testAccProviders,
+		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
 		CheckDestroy:      testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusRevoked),
 		Steps: []resource.TestStep{
@@ -51,7 +51,7 @@ func TestAccACMECertificate_basic(t *testing.T) {
 
 func TestAccACMECertificate_CSR(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers:         testAccProviders,
+		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
@@ -69,7 +69,7 @@ func TestAccACMECertificate_CSR(t *testing.T) {
 
 func TestAccACMECertificate_CSR_PreferredChain(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers:         testAccProviders,
+		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
@@ -88,7 +88,7 @@ func TestAccACMECertificate_CSR_PreferredChain(t *testing.T) {
 func TestAccACMECertificate_forceRenewal(t *testing.T) {
 	var certURL string
 	resource.Test(t, resource.TestCase{
-		Providers:         testAccProviders,
+		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
@@ -128,7 +128,7 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 
 func TestAccACMECertificate_wildcard(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers:         testAccProviders,
+		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
@@ -146,7 +146,7 @@ func TestAccACMECertificate_wildcard(t *testing.T) {
 
 func TestAccACMECertificate_p12Password(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers:         testAccProviders,
+		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
@@ -176,7 +176,7 @@ func TestAccACMECertificate_preCheckDelay(t *testing.T) {
 	const delay = 15
 
 	resource.Test(t, resource.TestCase{
-		Providers:         testAccProviders,
+		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
@@ -238,7 +238,7 @@ func TestAccACMECertificate_preCheckDelay(t *testing.T) {
 
 func TestAccACMECertificate_duplicateDomain(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers:         testAccProviders,
+		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
@@ -256,7 +256,7 @@ func TestAccACMECertificate_duplicateDomain(t *testing.T) {
 
 func TestAccACMECertificate_preferredChain(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers:         testAccProviders,
+		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
@@ -274,7 +274,7 @@ func TestAccACMECertificate_preferredChain(t *testing.T) {
 
 func TestAccACMECertificate_http(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers:         testAccProviders,
+		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
@@ -298,7 +298,7 @@ func TestAccACMECertificate_httpWebroot(t *testing.T) {
 	defer closeServer()
 
 	resource.Test(t, resource.TestCase{
-		Providers:         testAccProviders,
+		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
@@ -322,7 +322,7 @@ func TestAccACMECertificate_httpMemcache(t *testing.T) {
 	defer closeServer()
 
 	resource.Test(t, resource.TestCase{
-		Providers:         testAccProviders,
+		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
@@ -346,7 +346,7 @@ func TestAccACMECertificate_httpProxy(t *testing.T) {
 	defer closeServer()
 
 	resource.Test(t, resource.TestCase{
-		Providers:         testAccProviders,
+		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
@@ -364,7 +364,7 @@ func TestAccACMECertificate_httpProxy(t *testing.T) {
 
 func TestAccACMECertificate_tls(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers:         testAccProviders,
+		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
 		Steps: []resource.TestStep{
 			{
@@ -382,7 +382,7 @@ func TestAccACMECertificate_tls(t *testing.T) {
 
 func TestAccACMECertificate_noRevoke(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers:         testAccProviders,
+		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
 		CheckDestroy:      testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusValid),
 		Steps: []resource.TestStep{
