@@ -6,7 +6,7 @@ require (
 	github.com/Azure/azure-sdk-for-go v45.0.0+incompatible // indirect
 	github.com/BurntSushi/toml v1.2.0
 	github.com/davecgh/go-spew v1.1.1
-	github.com/go-acme/lego/v4 v4.8.0
+	github.com/go-acme/lego/v4 v4.9.0
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/google/go-cmp v0.5.9
 	github.com/hashicorp/go-multierror v1.1.1
@@ -15,6 +15,5 @@ require (
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/rainycape/memcache v0.0.0-20150622160815-1031fa0ce2f2
-	google.golang.org/api v0.34.0 // indirect
-	software.sslmate.com/src/go-pkcs12 v0.0.0-20210415151418-c5206de65a78
+	software.sslmate.com/src/go-pkcs12 v0.2.0
 )
