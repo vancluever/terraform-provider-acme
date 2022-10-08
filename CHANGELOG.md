@@ -1,6 +1,17 @@
-## 2.10.1-pre
+## 2.11.0-pre
 
-Bumped version for dev.
+LEGO UPDATE:
+
+[lego](https://github.com/go-acme/lego) has been updated to v4.9.0 See the lego
+[CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.9.0/CHANGELOG.md) for
+more details on additions and changes to DNS providers, and other minor changes
+to the library.
+
+FEATURES:
+
+* `resource/acme_certificate`: Added the `certificate_not_after` attribute to
+  show the certificate expiry date in state.
+  [#264](https://github.com/vancluever/terraform-provider-acme/pull/264)
 
 ## 2.10.0 (Jul 5, 2022)
 
