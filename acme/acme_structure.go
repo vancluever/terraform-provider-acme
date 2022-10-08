@@ -231,7 +231,7 @@ func splitPEMBundle(bundle []byte) (cert []byte, certNotAfter string, issuer []b
 	}
 
 	cert = pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: cb[0].Raw})
-	certNotAfter = cb[0].NotAfter.String()
+	certNotAfter = cb[0].NotAfter.Format(time.RFC3339)
 	issuer = make([]byte, 0)
 	for _, ic := range cb[1:] {
 		issuer = append(issuer, pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: ic.Raw})...)

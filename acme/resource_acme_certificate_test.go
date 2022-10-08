@@ -486,6 +486,13 @@ func testAccCheckACMECertificateValid(n, cn, san string) resource.TestCheckFunc 
 			return fmt.Errorf("Expected SANs to be %#v, got %#v", expectedSANs, actualSANs)
 		}
 
+		// Expiry
+		actualNotAfter := rs.Primary.Attributes["certificate_not_after"]
+		expectedNotAfter := x509Cert.NotAfter.Format(time.RFC3339)
+		if expectedNotAfter != actualNotAfter {
+			return fmt.Errorf("expected certificate_not_after to be %q, got %q", expectedNotAfter, actualNotAfter)
+		}
+
 		return nil
 	}
 }
