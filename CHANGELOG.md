@@ -1,6 +1,8 @@
 ## 2.11.1-pre
 
-Bumped version for dev.
+This update is a bugfix to correct the fact that the provider was not fully
+synced with the lego updates when 2.11.0 was released. No other changes were
+made.
 
 ## 2.11.0 (Oct 8, 2022)
 
