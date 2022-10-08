@@ -50,15 +50,15 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `INFOBLOX_HOST` - Host URI.
 * `INFOBLOX_PASSWORD` - Account Password.
-* `INFOBLOX_USER` - Account Username.
+* `INFOBLOX_USERNAME` - Account Username.
 
+* `INFOBLOX_DNS_VIEW` - The view for the TXT records, default: External.
 * `INFOBLOX_HTTP_TIMEOUT` - HTTP request timeout.
 * `INFOBLOX_POLLING_INTERVAL` - Time between DNS propagation check.
 * `INFOBLOX_PORT` - The port for the infoblox grid manager, default: 443.
 * `INFOBLOX_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
 * `INFOBLOX_SSL_VERIFY` - Whether or not to verify the TLS certificate, default: true.
 * `INFOBLOX_TTL` - The TTL of the TXT record used for the DNS challenge.
-* `INFOBLOX_VIEW` - The view for the TXT records, default: External.
 * `INFOBLOX_WAPI_VERSION` - The version of WAPI being used, default: 2.11.
 
 When creating an API's user ensure it has the proper permissions for the view you are working with.

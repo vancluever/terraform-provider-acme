@@ -1,5 +1,5 @@
 ---
-page_title: "dnspod"
+page_title: "yandexcloud"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# DNSPod (deprecated) DNS Challenge Provider
+# Yandex Cloud DNS Challenge Provider
 
-The `dnspod` DNS challenge provider can be used to perform DNS challenges for
+The `yandexcloud` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[DNSPod (deprecated)](https://www.dnspod.com/).
+[Yandex Cloud](https://cloud.yandex.com).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "dnspod"
+    provider = "yandexcloud"
   }
 }
 ```
@@ -48,11 +48,20 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `DNSPOD_API_KEY` - The user token.
+* `YANDEX_CLOUD_FOLDER_ID` - The string id of folder (aka project) in Yandex Cloud.
+* `YANDEX_CLOUD_IAM_TOKEN` - The base64 encoded json which contains inforamtion about iam token of serivce account with `dns.admin` permissions.
 
-* `DNSPOD_HTTP_TIMEOUT` - API request timeout.
-* `DNSPOD_POLLING_INTERVAL` - Time between DNS propagation check.
-* `DNSPOD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `DNSPOD_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `YANDEX_CLOUD_POLLING_INTERVAL` - Time between DNS propagation check.
+* `YANDEX_CLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `YANDEX_CLOUD_TTL` - The TTL of the TXT record used for the DNS challenge.
 
+## IAM Token
+
+The simplest way to retrieve IAM access token is usage of yc-cli,
+follow [docs](https://cloud.yandex.ru/docs/iam/operations/iam-token/create-for-sa) to get it
+
+```bash
+yc iam key create --service-account-name my-robot --output key.json
+cat key.json | base64
+```
 

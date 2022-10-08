@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Yandex DNS Challenge Provider
+# Yandex PDD DNS Challenge Provider
 
 The `yandex` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Yandex](https://yandex.com/).
+[Yandex PDD](https://pdd.yandex.com).
 
 [resource-acme-certificate]: ../resources/certificate.md
 

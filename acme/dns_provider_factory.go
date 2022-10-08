@@ -13,6 +13,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/bindman"
 	"github.com/go-acme/lego/v4/providers/dns/bluecat"
 	"github.com/go-acme/lego/v4/providers/dns/checkdomain"
+	"github.com/go-acme/lego/v4/providers/dns/civo"
 	"github.com/go-acme/lego/v4/providers/dns/clouddns"
 	"github.com/go-acme/lego/v4/providers/dns/cloudflare"
 	"github.com/go-acme/lego/v4/providers/dns/cloudns"
@@ -101,10 +102,12 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/vercel"
 	"github.com/go-acme/lego/v4/providers/dns/versio"
 	"github.com/go-acme/lego/v4/providers/dns/vinyldns"
+	"github.com/go-acme/lego/v4/providers/dns/vkcloud"
 	"github.com/go-acme/lego/v4/providers/dns/vscale"
 	"github.com/go-acme/lego/v4/providers/dns/vultr"
 	"github.com/go-acme/lego/v4/providers/dns/wedos"
 	"github.com/go-acme/lego/v4/providers/dns/yandex"
+	"github.com/go-acme/lego/v4/providers/dns/yandexcloud"
 	"github.com/go-acme/lego/v4/providers/dns/zoneee"
 	"github.com/go-acme/lego/v4/providers/dns/zonomi"
 )
@@ -197,6 +200,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"checkdomain": func() (challenge.Provider, error) {
 		p, err := checkdomain.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"civo": func() (challenge.Provider, error) {
+		p, err := civo.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -907,6 +918,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"vkcloud": func() (challenge.Provider, error) {
+		p, err := vkcloud.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"vscale": func() (challenge.Provider, error) {
 		p, err := vscale.NewDNSProvider()
 		if err != nil {
@@ -933,6 +952,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"yandex": func() (challenge.Provider, error) {
 		p, err := yandex.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"yandexcloud": func() (challenge.Provider, error) {
+		p, err := yandexcloud.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

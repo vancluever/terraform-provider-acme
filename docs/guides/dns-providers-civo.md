@@ -1,5 +1,5 @@
 ---
-page_title: "dnspod"
+page_title: "civo"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# DNSPod (deprecated) DNS Challenge Provider
+# Civo DNS Challenge Provider
 
-The `dnspod` DNS challenge provider can be used to perform DNS challenges for
+The `civo` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[DNSPod (deprecated)](https://www.dnspod.com/).
+[Civo](https://civo.com).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "dnspod"
+    provider = "civo"
   }
 }
 ```
@@ -48,11 +48,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `DNSPOD_API_KEY` - The user token.
+* `CIVO_TOKEN` - Authentication token.
 
-* `DNSPOD_HTTP_TIMEOUT` - API request timeout.
-* `DNSPOD_POLLING_INTERVAL` - Time between DNS propagation check.
-* `DNSPOD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `DNSPOD_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `CIVO_POLLING_INTERVAL` - Time between DNS propagation check.
+* `CIVO_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `CIVO_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

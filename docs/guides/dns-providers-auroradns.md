@@ -12,7 +12,7 @@ apply to the Terraform provider as well.
 
 The `auroradns` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Aurora DNS](https://www.pcextreme.com/aurora/dns).
+[Aurora DNS](https://www.pcextreme.com/dns-health-checks).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -48,8 +48,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `AURORA_KEY` - User API key.
-* `AURORA_USER_ID` - User ID.
+* `AURORA_API_KEY` - API key or username to used.
+* `AURORA_SECRET` - Secret password to be used.
 
 * `AURORA_ENDPOINT` - API endpoint URL.
 * `AURORA_POLLING_INTERVAL` - Time between DNS propagation check.

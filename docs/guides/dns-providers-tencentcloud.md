@@ -55,6 +55,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `TENCENTCLOUD_POLLING_INTERVAL` - Time between DNS propagation check.
 * `TENCENTCLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
 * `TENCENTCLOUD_REGION` - Region.
+* `TENCENTCLOUD_SESSION_TOKEN` - Access Key token.
 * `TENCENTCLOUD_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 
