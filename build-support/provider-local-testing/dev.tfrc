@@ -1,0 +1,7 @@
+provider_installation {
+  dev_overrides {
+    "vancluever/acme" = "/tmp/terraform-provider-acme"
+  }
+
+  direct {}
+}

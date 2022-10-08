@@ -64,6 +64,15 @@ provider-generate-update: provider-generate
 build:
 	go install
 
+.PHONY: build-pre-release
+build-pre-release:
+	mkdir -p /tmp/terraform-provider-acme/
+	go build -o /tmp/terraform-provider-acme/terraform-provider-acme
+
+.PHONY: clean-pre-release
+clean-pre-release:
+	rm -rf /tmp/terraform-provider-acme/
+
 .PHONY: test
 test:
 	TF_LOG=debug TF_ACC=1 gotestsum --format=short-verbose $(TEST) $(TESTARGS)
