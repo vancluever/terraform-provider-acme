@@ -1,3 +1,7 @@
+## 2.11.2-pre
+
+Bumped version for dev.
+
 ## 2.11.1 (Oct 8, 2022)
 
 This update is a bugfix to correct the fact that the provider was not fully
