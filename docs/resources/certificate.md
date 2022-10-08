@@ -569,3 +569,5 @@ Refer to that field for the current URL of the certificate.
   The data is base64 encoded (including padding), and its password is
   configurable via the [`certificate_p12_password`](#certificate_p12_password)
   argument. This field is empty if creating a certificate from a CSR.
+* `certificate_not_after` - The expiry date of the certificate, laid out in
+  RFC3339 format (`2006-01-02T15:04:05Z07:00`).

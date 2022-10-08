@@ -83,7 +83,7 @@ func saveACMERegistration(d *schema.ResourceData, reg *registration.Resource) er
 func expandACMEClient(d *schema.ResourceData, meta interface{}, loadReg bool) (*lego.Client, *acmeUser, error) {
 	user, err := expandACMEUser(d)
 	if err != nil {
-		return nil, nil, fmt.Errorf("Error getting user data: %s", err.Error())
+		return nil, nil, fmt.Errorf("error getting user data: %s", err.Error())
 	}
 
 	config := lego.NewConfig(user)
@@ -154,13 +154,14 @@ func saveCertificateResource(d *schema.ResourceData, cert *certificate.Resource,
 	d.Set("certificate_url", cert.CertURL)
 	d.Set("certificate_domain", cert.Domain)
 	d.Set("private_key_pem", string(cert.PrivateKey))
-	issued, issuer, err := splitPEMBundle(cert.Certificate)
+	issued, issuedNotAfter, issuer, err := splitPEMBundle(cert.Certificate)
 	if err != nil {
 		return err
 	}
 
 	d.Set("certificate_pem", string(issued))
 	d.Set("issuer_pem", string(issuer))
+	d.Set("certificate_not_after", issuedNotAfter)
 
 	// Set PKCS12 data. This is only set if there is a private key
 	// present.
@@ -188,7 +189,7 @@ func certSecondsRemaining(cert *certificate.Resource) (int64, error) {
 	c := x509Certs[0]
 
 	if c.IsCA {
-		return 0, fmt.Errorf("First certificate is a CA certificate")
+		return 0, fmt.Errorf("first certificate is a CA certificate")
 	}
 
 	expiry := c.NotAfter.Unix()
@@ -217,7 +218,7 @@ func certDaysRemaining(cert *certificate.Resource) (int64, error) {
 // Technically, it will be possible for issuer to be empty, if there
 // are zero certificates in the intermediate chain. This is highly
 // unlikely, however.
-func splitPEMBundle(bundle []byte) (cert, issuer []byte, err error) {
+func splitPEMBundle(bundle []byte) (cert []byte, certNotAfter string, issuer []byte, err error) {
 	cb, err := parsePEMBundle(bundle)
 	if err != nil {
 		return
@@ -225,11 +226,12 @@ func splitPEMBundle(bundle []byte) (cert, issuer []byte, err error) {
 
 	// lego always returns the issued cert first, if the CA is first there is a problem
 	if cb[0].IsCA {
-		err = fmt.Errorf("First certificate is a CA certificate")
+		err = fmt.Errorf("first certificate is a CA certificate")
 		return
 	}
 
 	cert = pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: cb[0].Raw})
+	certNotAfter = cb[0].NotAfter.Format(time.RFC3339)
 	issuer = make([]byte, 0)
 	for _, ic := range cb[1:] {
 		issuer = append(issuer, pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: ic.Raw})...)
@@ -251,7 +253,7 @@ func bundleToPKCS12(bundle, key []byte, password string) ([]byte, error) {
 
 	// lego always returns the issued cert first, if the CA is first there is a problem
 	if cb[0].IsCA {
-		return nil, fmt.Errorf("First certificate is a CA certificate")
+		return nil, fmt.Errorf("first certificate is a CA certificate")
 	}
 
 	pk, err := privateKeyFromPEM(key)
@@ -352,7 +354,7 @@ func privateKeyFromPEM(pemData []byte) (crypto.PrivateKey, error) {
 	for {
 		result, rest = pem.Decode(rest)
 		if result == nil {
-			return nil, fmt.Errorf("Cannot decode supplied PEM data")
+			return nil, fmt.Errorf("cannot decode supplied PEM data")
 		}
 		switch result.Type {
 		case "RSA PRIVATE KEY":
@@ -370,7 +372,7 @@ func csrFromPEM(pemData []byte) (*x509.CertificateRequest, error) {
 	for {
 		result, rest = pem.Decode(rest)
 		if result == nil {
-			return nil, fmt.Errorf("Cannot decode supplied PEM data")
+			return nil, fmt.Errorf("cannot decode supplied PEM data")
 		}
 		if result.Type == "CERTIFICATE REQUEST" {
 			return x509.ParseCertificateRequest(result.Bytes)
@@ -387,9 +389,9 @@ func validateKeyType(v interface{}, k string) (ws []string, errors []error) {
 			found = true
 		}
 	}
-	if found == false {
+	if !found {
 		errors = append(errors, fmt.Errorf(
-			"Certificate key type must be one of P256, P384, 2048, 4096, or 8192"))
+			"certificate key type must be one of P256, P384, 2048, 4096, or 8192"))
 	}
 	return
 }
@@ -408,7 +410,7 @@ func validateDNSChallengeConfig(v interface{}, k string) (ws []string, errors []
 			bad = true
 		}
 	}
-	if bad == true {
+	if bad {
 		errors = append(errors, fmt.Errorf(
 			"DNS challenge config map values must be strings only"))
 	}
