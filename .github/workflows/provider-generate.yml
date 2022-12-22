@@ -1,0 +1,60 @@
+name: provider-generate
+on:
+  pull_request:
+    paths:
+      - go.mod
+jobs:
+  skip_duplicate:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_duplicate.outputs.should_skip }}
+    steps:
+      - id: skip_duplicate
+        uses: fkirc/skip-duplicate-actions@v5
+        with:
+          concurrent_skipping: 'same_content_newer'
+  skip_lego_not_changed:
+    needs: skip_duplicate
+    if: needs.skip_duplicate.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_lego_not_changed.outputs.should_skip }}
+    steps:
+      - id: should_skip
+        run: git diff | grep -q github.com/go-acme/lego; echo -n $? >> $GITHUB_OUTPUT
+  generate:
+    needs: skip_lego_not_changed
+    if: needs.skip_check.outputs.should_skip == '0'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '^1.17.5'
+      - name: Cache (Go Modules)
+        uses: actions/cache@v3
+        env:
+          cache-name: go-mod-cache
+        with:
+          path: /home/runner/go/pkg/mod
+          key: ${{ env.cache-name}}-${{ hashFiles('go.sum') }}
+          restore-keys: |
+            ${{ env.cache-name}}-
+      - name: Cache (Go Build)
+        uses: actions/cache@v3
+        env:
+          cache-name: go-build-cache
+          cache-dir: /home/runner/.cache/go-build
+        with:
+          path: ${{ env.cache-dir }}
+          key: ${{ env.cache-name}}-${{ hashFiles(format('{0}/**/*', env.cache-dir)) }}
+          restore-keys: |
+            ${{ env.cache-name}}-
+      - name: Verify Modules
+        run: go mod verify
+      - name: Generate lego providers and documentation
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          make provider-generate-update
+          git push
