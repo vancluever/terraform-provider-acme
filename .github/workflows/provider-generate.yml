@@ -21,6 +21,8 @@ jobs:
       should_skip: ${{ steps.skip_lego_not_changed.outputs.should_skip }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - id: should_skip
         run: git diff ${{ github.base_ref }} | grep -q github.com/go-acme/lego; echo -n $? >> $GITHUB_OUTPUT
   generate:
