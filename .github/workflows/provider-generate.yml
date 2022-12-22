@@ -27,9 +27,9 @@ jobs:
         run: |
           git diff origin/${{ github.base_ref }} | grep -q github.com/go-acme/lego
           if [ "$?" -eq "0" ]; then
-            echo -n "false" >> $GITHUB_OUTPUT
+            echo "false" >> $GITHUB_OUTPUT
           else
-            echo -n "true" >> $GITHUB_OUTPUT
+            echo "true" >> $GITHUB_OUTPUT
           fi
   generate:
     needs: skip_lego_not_changed
