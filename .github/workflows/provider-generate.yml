@@ -27,13 +27,13 @@ jobs:
         run: |
           git diff origin/${{ github.base_ref }} | grep -q github.com/go-acme/lego
           if [ "$?" -eq "0" ]; then
-            echo "false" >> $GITHUB_OUTPUT
+            echo "should_skip=false" >> $GITHUB_OUTPUT
           else
-            echo "true" >> $GITHUB_OUTPUT
+            echo "should_skip=true" >> $GITHUB_OUTPUT
           fi
   generate:
     needs: skip_lego_not_changed
-    if: needs.skip_check.outputs.should_skip == 'false'
+    if: needs.skip_lego_not_changed.outputs.should_skip == 'false'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
