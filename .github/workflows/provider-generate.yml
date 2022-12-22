@@ -37,6 +37,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+      - name: Setup local git
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
       - uses: actions/setup-go@v3
         with:
           go-version: '^1.17.5'
@@ -63,7 +70,5 @@ jobs:
         run: go mod verify
       - name: Generate lego providers and documentation
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
           make provider-generate-update
           git push
