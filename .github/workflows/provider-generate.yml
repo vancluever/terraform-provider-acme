@@ -18,7 +18,7 @@ jobs:
     if: needs.skip_duplicate.outputs.should_skip != 'true'
     runs-on: ubuntu-latest
     outputs:
-      should_skip: ${{ steps.skip_lego_not_changed.outputs.should_skip }}
+      should_skip: ${{ steps.should_skip.outputs.should_skip }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -33,7 +33,7 @@ jobs:
           fi
   generate:
     needs: skip_lego_not_changed
-    if: needs.skip_lego_not_changed.outputs.should_skip == 'false'
+    if: needs.skip_lego_not_changed.outputs.should_skip != 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
