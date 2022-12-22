@@ -24,7 +24,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: should_skip
-        run: git diff origin/${{ github.base_ref }} | grep -q github.com/go-acme/lego; echo -n $? >> $GITHUB_OUTPUT
+        run: sh -c 'git diff origin/${{ github.base_ref }} | grep -q github.com/go-acme/lego; echo -n $?' >> $GITHUB_OUTPUT
   generate:
     needs: skip_lego_not_changed
     if: needs.skip_check.outputs.should_skip == '0'
