@@ -9,18 +9,18 @@ on:
     branches:
       - '**'
 jobs:
-  skip_check:
+  skip_duplicate:
     runs-on: ubuntu-latest
     outputs:
-      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+      should_skip: ${{ steps.skip_duplicate.outputs.should_skip }}
     steps:
-      - id: skip_check
+      - id: skip_duplicate
         uses: fkirc/skip-duplicate-actions@v5
         with:
           concurrent_skipping: 'same_content_newer'
   go-tests:
-    needs: skip_check
-    if: needs.skip_check.outputs.should_skip != 'true'
+    needs: skip_duplicate
+    if: needs.skip_duplicate.outputs.should_skip != 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
