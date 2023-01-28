@@ -2,8 +2,6 @@ package acme
 
 import (
 	"math"
-	"net/http"
-	"net/http/httptest"
 	"os"
 	"reflect"
 	"strings"
@@ -12,35 +10,6 @@ import (
 	"github.com/go-acme/lego/v4/certificate"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
-
-const testDirResponseText = `
-{
-  "newNonce": "https://example.com/acme/new-nonce",
-  "newAccount": "https://example.com/acme/new-account",
-  "newOrder": "https://example.com/acme/new-order",
-  "newAuthz": "https://example.com/acme/new-authz",
-  "revokeCert": "https://example.com/acme/revoke-cert",
-  "keyChange": "https://example.com/acme/key-change",
-  "meta": {
-    "termsOfService": "https://example.com/acme/terms/2017-5-30",
-    "website": "https://www.example.com/",
-    "caaIdentities": ["example.com"],
-    "externalAccountRequired": false
-  }
-}
-`
-
-func newHTTPTestServer(f func(w http.ResponseWriter, r *http.Request)) *httptest.Server {
-	ts := httptest.NewServer(http.HandlerFunc(f))
-	return ts
-}
-
-func httpDirTestServer() *httptest.Server {
-	return newHTTPTestServer(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Content-Type", "application/json")
-		http.Error(w, testDirResponseText, http.StatusOK)
-	})
-}
 
 const testPrivateKeyText = `
 -----BEGIN RSA PRIVATE KEY-----
@@ -216,38 +185,6 @@ func TestACME_parsePEMBundle_noData(t *testing.T) {
 	_, err := parsePEMBundle(b)
 	if err == nil {
 		t.Fatalf("expected error due to no PEM data")
-	}
-}
-
-func TestACME_setDNSChallenge_noProvider(t *testing.T) {
-	m := make(map[string]interface{})
-	d := blankCertificateResource()
-	ts := httpDirTestServer()
-	client, _, err := expandACMEClient(d, &Config{ServerURL: ts.URL}, false)
-	if err != nil {
-		t.Fatalf("fatal: %s", err.Error())
-	}
-
-	_, err = setDNSChallenge(client, m)
-	if err == nil {
-		t.Fatalf("should have errored due to no provider supplied")
-	}
-}
-
-func TestACME_setDNSChallenge_unsuppotedProvider(t *testing.T) {
-	m := map[string]interface{}{
-		"provider": "foo",
-	}
-	d := blankCertificateResource()
-	ts := httpDirTestServer()
-	client, _, err := expandACMEClient(d, &Config{ServerURL: ts.URL}, false)
-	if err != nil {
-		t.Fatalf("fatal: %s", err.Error())
-	}
-
-	_, err = setDNSChallenge(client, m)
-	if err == nil {
-		t.Fatalf("should have errored due to unknown provider")
 	}
 }
 

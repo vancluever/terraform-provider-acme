@@ -15,7 +15,6 @@ import (
 
 	"github.com/go-acme/lego/v4/certcrypto"
 	"github.com/go-acme/lego/v4/certificate"
-	"github.com/go-acme/lego/v4/challenge"
 	"github.com/go-acme/lego/v4/lego"
 	"github.com/go-acme/lego/v4/registration"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -309,33 +308,6 @@ func mapEnvironmentVariableValues(keyMapping map[string]string) {
 			os.Setenv(keyMapping[key], value)
 		}
 	}
-}
-
-// setDNSChallenge takes a *lego.Client and the DNS challenge complex
-// structure as a map[string]interface{}, and configues the client to
-// only allow a DNS challenge with the configured provider.
-func setDNSChallenge(client *lego.Client, m map[string]interface{}) (challenge.Provider, error) {
-	var providerName string
-
-	if v, ok := m["provider"]; ok && v.(string) != "" {
-		providerName = v.(string)
-	} else {
-		return nil, fmt.Errorf("DNS challenge provider not defined")
-	}
-	// Config only needs to be set if it's defined, otherwise existing env/SDK
-	// defaults are fine.
-	if v, ok := m["config"]; ok {
-		for k, v := range v.(map[string]interface{}) {
-			os.Setenv(k, v.(string))
-		}
-	}
-
-	providerFunc, ok := dnsProviderFactory[providerName]
-	if !ok {
-		return nil, fmt.Errorf("%s: unsupported DNS challenge provider", providerName)
-	}
-
-	return providerFunc()
 }
 
 // stringSlice converts an interface slice to a string slice.
