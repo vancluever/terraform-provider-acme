@@ -29,11 +29,12 @@ func NewClient(providerName string, config map[string]string) (challenge.Provide
 	// Create the command
 	cmd := &exec.Cmd{
 		Path: execPath,
-		Args: []string{"-dnsplugin"},
+		Args: []string{PluginArg, fmt.Sprintf("[%s]", providerName)},
 	}
 
 	client := plugin.NewClient(&plugin.ClientConfig{
 		HandshakeConfig:  Handshake,
+		AutoMTLS:         true,
 		Plugins:          map[string]plugin.Plugin{PluginName: &DnsPlugin{}},
 		Cmd:              cmd,
 		AllowedProtocols: []plugin.Protocol{plugin.ProtocolGRPC},

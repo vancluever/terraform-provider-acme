@@ -16,6 +16,7 @@ const (
 	MagicCookieKey   = "TERRAFORM_PROVIDER_ACME_MAGIC_COOKIE_KEY"
 	MagicCookieValue = "990EF127-D8AA-43D3-9196-9493C2D6C475"
 	PluginName       = "dnsplugin"
+	PluginArg        = "dnsplugin"
 )
 
 var Handshake = plugin.HandshakeConfig{

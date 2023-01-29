@@ -163,7 +163,7 @@ func TestProvider(t *testing.T) {
 }
 
 func TestMain(m *testing.M) {
-	if os.Args[0] == "-dnsplugin" {
+	if os.Args[0] == dnsplugin.PluginArg {
 		// Start the plugin here
 		dnsplugin.Serve()
 	} else {
