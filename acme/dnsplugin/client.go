@@ -26,12 +26,7 @@ func NewClient(providerName string, config map[string]string) (challenge.Provide
 		return nil, nil, fmt.Errorf("error getting plugin path: %w", err)
 	}
 
-	// Create the command
-	cmd := &exec.Cmd{
-		Path: execPath,
-		Args: []string{PluginArg, fmt.Sprintf("[%s]", providerName)},
-	}
-
+	cmd := exec.Command(execPath, "-dnsplugin")
 	client := plugin.NewClient(&plugin.ClientConfig{
 		HandshakeConfig:  Handshake,
 		AutoMTLS:         true,

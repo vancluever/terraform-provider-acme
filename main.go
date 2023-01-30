@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	if os.Args[0] == dnsplugin.PluginArg {
+	if len(os.Args) == 2 && os.Args[1] == dnsplugin.PluginArg {
 		// Start the plugin here
 		dnsplugin.Serve()
 	} else {
