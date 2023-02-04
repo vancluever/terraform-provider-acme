@@ -1,5 +1,7 @@
 package dnsplugin
 
+//go:generate go run ../../build-support/generate-dns-providers go dns_provider_factory.go
+
 import (
 	"context"
 	"fmt"
@@ -83,4 +85,13 @@ func (m *DnsProviderServer) Present(ctx context.Context, req *dnspluginproto.Pre
 
 func (m *DnsProviderServer) CleanUp(ctx context.Context, req *dnspluginproto.CleanUpRequest) (*dnspluginproto.CleanUpResponse, error) {
 	return &dnspluginproto.CleanUpResponse{}, m.provider.CleanUp(req.GetDomain(), req.GetToken(), req.GetKeyAuth())
+}
+
+// helper function to map environment variables if set
+func mapEnvironmentVariableValues(keyMapping map[string]string) {
+	for key := range keyMapping {
+		if value, ok := os.LookupEnv(key); ok {
+			os.Setenv(keyMapping[key], value)
+		}
+	}
 }

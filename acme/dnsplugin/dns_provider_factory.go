@@ -168,6 +168,13 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 		return p, nil
 	},
 	"azure": func() (challenge.Provider, error) {
+		mapEnvironmentVariableValues(map[string]string{
+			"ARM_CLIENT_ID":       "AZURE_CLIENT_ID",
+			"ARM_CLIENT_SECRET":   "AZURE_CLIENT_SECRET",
+			"ARM_RESOURCE_GROUP":  "AZURE_RESOURCE_GROUP",
+			"ARM_SUBSCRIPTION_ID": "AZURE_SUBSCRIPTION_ID",
+			"ARM_TENANT_ID":       "AZURE_TENANT_ID",
+		})
 		p, err := azure.NewDNSProvider()
 		if err != nil {
 			return nil, err

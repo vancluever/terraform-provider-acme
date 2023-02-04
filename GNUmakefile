@@ -47,8 +47,8 @@ template-generate:
 .PHONY: provider-generate
 provider-generate:
 	@echo "==> Re-generating Go DNS provider factory in ./acme..."
-	@go generate ./acme
-	@go build ./acme
+	@go generate ./acme/dnsplugin
+	@go build ./acme/dnsplugin
 	@go mod tidy
 	@echo "==> Re-genrating documentation..."
 	@rm -f docs/guides/dns-providers-*.md

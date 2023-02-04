@@ -2,7 +2,6 @@ package acme
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"time"
 
@@ -105,32 +104,6 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 	}
 
 	return dnsCloser, nil
-}
-
-func expandDNSChallenge(m map[string]interface{}) (challenge.Provider, func(), error) {
-	dummyCloser := func() {}
-	var providerName string
-
-	if v, ok := m["provider"]; ok && v.(string) != "" {
-		providerName = v.(string)
-	} else {
-		return nil, dummyCloser, fmt.Errorf("DNS challenge provider not defined")
-	}
-	// Config only needs to be set if it's defined, otherwise existing env/SDK
-	// defaults are fine.
-	if v, ok := m["config"]; ok {
-		for k, v := range v.(map[string]interface{}) {
-			os.Setenv(k, v.(string))
-		}
-	}
-
-	providerFunc, ok := dnsProviderFactory[providerName]
-	if !ok {
-		return nil, dummyCloser, fmt.Errorf("%s: unsupported DNS challenge provider", providerName)
-	}
-
-	p, err := providerFunc()
-	return p, dummyCloser, err
 }
 
 func expandDNSChallengeEx(m map[string]interface{}) (challenge.Provider, func(), error) {

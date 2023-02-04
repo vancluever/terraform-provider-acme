@@ -10,7 +10,6 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/go-acme/lego/v4/certcrypto"
@@ -299,15 +298,6 @@ func parsePEMBundle(bundle []byte) ([]*x509.Certificate, error) {
 	}
 
 	return certificates, nil
-}
-
-// helper function to map environment variables if set
-func mapEnvironmentVariableValues(keyMapping map[string]string) {
-	for key := range keyMapping {
-		if value, ok := os.LookupEnv(key); ok {
-			os.Setenv(keyMapping[key], value)
-		}
-	}
 }
 
 // stringSlice converts an interface slice to a string slice.
