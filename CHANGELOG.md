@@ -1,6 +1,17 @@
-## 2.12.1-pre
+## 2.13.0-beta1 (Unreleased)
 
-Bumped version for dev.
+NEW DNS PLUGIN SYSTEM
+
+This update moves DNS providers for the `acme_certificate` resource into a
+[go-plugin](https://github.com/hashicorp/go-plugin) backed sub-plugin built into
+the provider. One provider is executed for each instance of a DNS provider
+supplied in `acme_certificate`, each with its own environment. This fixes a
+long-running issue where the environment variables set in the `config` parameter
+of one provider in one resource would overwrite the settings of another resource
+with different config settings for the same DNS provider. See
+[#235](https://github.com/vancluever/terraform-provider-acme/issues/235) and
+[#276](https://github.com/vancluever/terraform-provider-acme/pull/276) for more
+details.
 
 ## 2.12.0 (Dec 21, 2022)
 
