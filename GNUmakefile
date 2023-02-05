@@ -60,6 +60,10 @@ provider-generate-update: provider-generate
 		{ git add acme docs && \
 		git commit -m "re-generate lego DNS provider data"; }
 
+.PHONY: proto
+proto:
+	cd proto/ && buf generate
+
 .PHONY: build
 build:
 	go install
