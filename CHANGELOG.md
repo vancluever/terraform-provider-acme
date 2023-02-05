@@ -1,4 +1,4 @@
-## 2.13.1-pre (Unreleased)
+## 2.13.0-beta2 (Unreleased)
 
 Bumped version for dev.
 
