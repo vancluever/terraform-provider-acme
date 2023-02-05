@@ -39,7 +39,7 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 		}
 
 		for _, providerRaw := range providers.([]interface{}) {
-			if p, closer, err := expandDNSChallengeEx(providerRaw.(map[string]interface{})); err == nil {
+			if p, closer, err := expandDNSChallenge(providerRaw.(map[string]interface{})); err == nil {
 				dnsProvider.providers = append(dnsProvider.providers, p)
 				dnsClosers = append(dnsClosers, closer)
 			} else {
@@ -106,7 +106,7 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 	return dnsCloser, nil
 }
 
-func expandDNSChallengeEx(m map[string]interface{}) (challenge.Provider, func(), error) {
+func expandDNSChallenge(m map[string]interface{}) (challenge.Provider, func(), error) {
 	var providerName string
 
 	if v, ok := m["provider"]; ok && v.(string) != "" {
