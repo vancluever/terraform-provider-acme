@@ -14,6 +14,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/vancluever/terraform-provider-acme/v2/acme/dnsplugin"
 )
 
 func testAccProviderAcme() *schema.Provider {
@@ -158,5 +159,14 @@ func init() {
 func TestProvider(t *testing.T) {
 	if err := Provider().InternalValidate(); err != nil {
 		t.Fatalf("err: %s", err)
+	}
+}
+
+func TestMain(m *testing.M) {
+	if len(os.Args) == 2 && os.Args[1] == dnsplugin.PluginArg {
+		// Start the plugin here
+		dnsplugin.Serve()
+	} else {
+		os.Exit(m.Run())
 	}
 }

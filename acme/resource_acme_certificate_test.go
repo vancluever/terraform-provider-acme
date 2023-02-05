@@ -20,6 +20,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	"github.com/rainycape/memcache"
@@ -30,6 +32,7 @@ var uuidRegexp = regexp.MustCompile(`^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{
 var certURLRegexp = regexp.MustCompile(`^https://localhost:1400[01]/certZ/[a-z0-9]+(/alternate/\d+)?$`)
 
 func TestAccACMECertificate_basic(t *testing.T) {
+	wantEnv := os.Environ()
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
@@ -43,6 +46,7 @@ func TestAccACMECertificate_basic(t *testing.T) {
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www", "www2"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
 					testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusValid),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
 		},
@@ -50,6 +54,7 @@ func TestAccACMECertificate_basic(t *testing.T) {
 }
 
 func TestAccACMECertificate_CSR(t *testing.T) {
+	wantEnv := os.Environ()
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
@@ -61,6 +66,7 @@ func TestAccACMECertificate_CSR(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www3", "www4"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
 		},
@@ -68,6 +74,7 @@ func TestAccACMECertificate_CSR(t *testing.T) {
 }
 
 func TestAccACMECertificate_CSR_PreferredChain(t *testing.T) {
+	wantEnv := os.Environ()
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
@@ -79,6 +86,7 @@ func TestAccACMECertificate_CSR_PreferredChain(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www3", "www4"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(alternateIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
 		},
@@ -86,6 +94,7 @@ func TestAccACMECertificate_CSR_PreferredChain(t *testing.T) {
 }
 
 func TestAccACMECertificate_forceRenewal(t *testing.T) {
+	wantEnv := os.Environ()
 	var certURL string
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviders,
@@ -102,6 +111,7 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www6", ""),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 				ExpectNonEmptyPlan: true,
 			},
@@ -119,6 +129,7 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www6", ""),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 				ExpectNonEmptyPlan: true,
 			},
@@ -127,6 +138,7 @@ func TestAccACMECertificate_forceRenewal(t *testing.T) {
 }
 
 func TestAccACMECertificate_wildcard(t *testing.T) {
+	wantEnv := os.Environ()
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
@@ -138,6 +150,7 @@ func TestAccACMECertificate_wildcard(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "*", ""),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
 		},
@@ -145,6 +158,7 @@ func TestAccACMECertificate_wildcard(t *testing.T) {
 }
 
 func TestAccACMECertificate_p12Password(t *testing.T) {
+	wantEnv := os.Environ()
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
@@ -156,6 +170,7 @@ func TestAccACMECertificate_p12Password(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www12", "www13"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
 			{
@@ -165,6 +180,7 @@ func TestAccACMECertificate_p12Password(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www12", "www13"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
 		},
@@ -172,6 +188,7 @@ func TestAccACMECertificate_p12Password(t *testing.T) {
 }
 
 func TestAccACMECertificate_preCheckDelay(t *testing.T) {
+	wantEnv := os.Environ()
 	var step1Start, step1End, step2Start, step2End time.Time
 	const delay = 15
 
@@ -191,6 +208,7 @@ func TestAccACMECertificate_preCheckDelay(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www16", "www17"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
 			{
@@ -230,6 +248,7 @@ func TestAccACMECertificate_preCheckDelay(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www16", "www17"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
 		},
@@ -237,6 +256,7 @@ func TestAccACMECertificate_preCheckDelay(t *testing.T) {
 }
 
 func TestAccACMECertificate_duplicateDomain(t *testing.T) {
+	wantEnv := os.Environ()
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
@@ -248,6 +268,7 @@ func TestAccACMECertificate_duplicateDomain(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-dupe", "test-dupe"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
 		},
@@ -255,6 +276,7 @@ func TestAccACMECertificate_duplicateDomain(t *testing.T) {
 }
 
 func TestAccACMECertificate_preferredChain(t *testing.T) {
+	wantEnv := os.Environ()
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
@@ -266,6 +288,7 @@ func TestAccACMECertificate_preferredChain(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-preferred", "test-preferred2"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(alternateIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
 		},
@@ -273,6 +296,7 @@ func TestAccACMECertificate_preferredChain(t *testing.T) {
 }
 
 func TestAccACMECertificate_http(t *testing.T) {
+	wantEnv := os.Environ()
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
@@ -284,6 +308,7 @@ func TestAccACMECertificate_http(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-http", "test-http2"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
 		},
@@ -291,6 +316,7 @@ func TestAccACMECertificate_http(t *testing.T) {
 }
 
 func TestAccACMECertificate_httpWebroot(t *testing.T) {
+	wantEnv := os.Environ()
 	closeServer, serverDir, err := testAccCheckACMECertificateWebrootTestServer()
 	if err != nil {
 		panic(fmt.Errorf("TestAccACMECertificate_httpWebroot: %s", err))
@@ -308,6 +334,7 @@ func TestAccACMECertificate_httpWebroot(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-webroot", "test-webroot2"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
 		},
@@ -315,6 +342,7 @@ func TestAccACMECertificate_httpWebroot(t *testing.T) {
 }
 
 func TestAccACMECertificate_httpMemcache(t *testing.T) {
+	wantEnv := os.Environ()
 	closeServer, err := testAccCheckACMECertificateMemcacheTestServer()
 	if err != nil {
 		panic(fmt.Errorf("TestAccACMECertificate_httpMemcache: %s", err))
@@ -332,6 +360,7 @@ func TestAccACMECertificate_httpMemcache(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-webroot", "test-webroot2"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
 		},
@@ -339,6 +368,7 @@ func TestAccACMECertificate_httpMemcache(t *testing.T) {
 }
 
 func TestAccACMECertificate_httpProxy(t *testing.T) {
+	wantEnv := os.Environ()
 	closeServer, err := testAccCheckACMECertificateProxyTestServer()
 	if err != nil {
 		panic(fmt.Errorf("TestAccACMECertificate_httpProxy: %s", err))
@@ -356,6 +386,7 @@ func TestAccACMECertificate_httpProxy(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-proxy", "test-proxy2"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
 		},
@@ -363,6 +394,7 @@ func TestAccACMECertificate_httpProxy(t *testing.T) {
 }
 
 func TestAccACMECertificate_tls(t *testing.T) {
+	wantEnv := os.Environ()
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
@@ -374,6 +406,7 @@ func TestAccACMECertificate_tls(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-tls", "test-tls2"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
 		},
@@ -381,6 +414,7 @@ func TestAccACMECertificate_tls(t *testing.T) {
 }
 
 func TestAccACMECertificate_noRevoke(t *testing.T) {
+	wantEnv := os.Environ()
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
@@ -394,6 +428,7 @@ func TestAccACMECertificate_noRevoke(t *testing.T) {
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-no-revoke", "test-no-revoke2"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
 					testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusValid),
+					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
 		},
@@ -506,7 +541,8 @@ func testFindPEMInP12(pfxB64 []byte, password string, expected ...[]byte) error 
 		return err
 	}
 
-	actualBlocks, err := pkcs12.ToPEM(pfxData[:nBytes], password)
+	// TODO: fix the ToPEM deprecation notice
+	actualBlocks, err := pkcs12.ToPEM(pfxData[:nBytes], password) //nolint:staticcheck
 	if err != nil {
 		return err
 	}
@@ -658,6 +694,31 @@ func testAccCheckACMECertificateStatus(name, expected string) resource.TestCheck
 
 		if expected != actual {
 			return fmt.Errorf("subject=%s serial=%x, expected status %q, actual %q", cert.Subject, cert.SerialNumber.Int64(), expected, actual)
+		}
+
+		return nil
+	}
+}
+
+func testAccCheckEnvironNotChanged(want []string) resource.TestCheckFunc {
+	// Make an ignore func that allows us to ignore a few things that seem to
+	// get added by TF testing after we take an environment snapshot.
+	ignoreFunc := func(s string) bool {
+		ignoreList := []string{
+			"PLUGIN_PROTOCOL_VERSIONS",
+			"CHECKPOINT_DISABLE",
+		}
+		for _, v := range ignoreList {
+			if strings.HasPrefix(s, v+"=") {
+				return true
+			}
+		}
+
+		return false
+	}
+	return func(_ *terraform.State) error {
+		if diff := cmp.Diff(want, os.Environ(), cmpopts.IgnoreSliceElements(ignoreFunc)); diff != "" {
+			return fmt.Errorf("envionment altered but should not have been (-want +got):\n%s", diff)
 		}
 
 		return nil

@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package dnsplugin.v1;
+option go_package = "github.com/vancluever/terraform-provider-acme/proto/dnsplugin/v1";
+
+// DNSProviderService is a protobuf wrapper for the acme DNS challenge API. This
+// is designed to be used to wrap an instance of DNS providers in 
+service DNSProviderService {
+  // Configure needs to be called to initialize the provider and set the
+  // configuration.
+  rpc Configure(ConfigureRequest) returns (ConfigureResponse) {}
+
+  // Present presents the DNS challenge TXT records to a DNS provider. This
+  // wraps the lego Present call.
+  rpc Present(PresentRequest) returns (PresentResponse) {}
+
+  // Cleanup requests that DNS challenge TXT records be cleaned up. This wraps
+  // the lego Cleanup call.
+  rpc CleanUp(CleanUpRequest) returns (CleanUpResponse) {}
+}
+
+message ConfigureRequest {
+  string provider_name = 1;
+  map<string, string> config = 2;
+}
+
+message ConfigureResponse {}
+
+message PresentRequest {
+  string domain = 1;
+  string token = 2;
+  string key_auth = 3;
+}
+
+message PresentResponse {}
+
+message CleanUpRequest {
+  string domain = 1;
+  string token = 2;
+  string key_auth = 3;
+}
+
+message CleanUpResponse {}

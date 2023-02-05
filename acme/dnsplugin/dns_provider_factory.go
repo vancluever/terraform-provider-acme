@@ -1,5 +1,5 @@
 // Auto-generated file. Do not edit.
-package acme
+package dnsplugin
 
 import (
 	"github.com/go-acme/lego/v4/challenge"

@@ -47,8 +47,8 @@ template-generate:
 .PHONY: provider-generate
 provider-generate:
 	@echo "==> Re-generating Go DNS provider factory in ./acme..."
-	@go generate ./acme
-	@go build ./acme
+	@go generate ./acme/dnsplugin
+	@go build ./acme/dnsplugin
 	@go mod tidy
 	@echo "==> Re-genrating documentation..."
 	@rm -f docs/guides/dns-providers-*.md
@@ -59,6 +59,10 @@ provider-generate-update: provider-generate
 	test -z "$$(git diff acme docs)" || \
 		{ git add acme docs && \
 		git commit -m "re-generate lego DNS provider data"; }
+
+.PHONY: proto
+proto:
+	cd proto/ && buf generate
 
 .PHONY: build
 build:

@@ -2,7 +2,6 @@ package acme
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"time"
 
@@ -15,26 +14,41 @@ import (
 	"github.com/go-acme/lego/v4/providers/http/webroot"
 	"github.com/hashicorp/go-multierror"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/vancluever/terraform-provider-acme/v2/acme/dnsplugin"
 )
 
-func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceData) error {
+// setCertificateChallengeProviders sets all of the challenge providers in the
+// cilent that are needed for obtaining the certificate.
+//
+// The returned func() is a closer for all of the configured DNS providers that
+// should be called when they are no longer needed (i.e. in a defer after one of
+// the CRUD functions are complete).
+func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceData) (func(), error) {
 	// DNS
+	dnsClosers := make([]func(), 0)
+	dnsCloser := func() {
+		for _, f := range dnsClosers {
+			f()
+		}
+	}
+
 	if providers, ok := d.GetOk("dns_challenge"); ok {
 		dnsProvider, err := NewDNSProviderWrapper()
 		if err != nil {
-			return err
+			return dnsCloser, err
 		}
 
 		for _, providerRaw := range providers.([]interface{}) {
-			if p, err := expandDNSChallenge(providerRaw.(map[string]interface{})); err == nil {
+			if p, closer, err := expandDNSChallenge(providerRaw.(map[string]interface{})); err == nil {
 				dnsProvider.providers = append(dnsProvider.providers, p)
+				dnsClosers = append(dnsClosers, closer)
 			} else {
-				return err
+				return dnsCloser, err
 			}
 		}
 
 		if err := client.Challenge.SetDNS01Provider(dnsProvider, expandDNSChallengeOptions(d)...); err != nil {
-			return err
+			return dnsCloser, err
 		}
 	}
 
@@ -47,7 +61,7 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 		}
 
 		if err := client.Challenge.SetHTTP01Provider(httpServerProvider); err != nil {
-			return err
+			return dnsCloser, err
 		}
 	}
 
@@ -57,11 +71,11 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 			provider.([]interface{})[0].(map[string]interface{})["directory"].(string))
 
 		if err != nil {
-			return err
+			return dnsCloser, err
 		}
 
 		if err := client.Challenge.SetHTTP01Provider(httpWebrootProvider); err != nil {
-			return err
+			return dnsCloser, err
 		}
 	}
 
@@ -71,11 +85,11 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 			stringSlice(provider.([]interface{})[0].(map[string]interface{})["hosts"].(*schema.Set).List()))
 
 		if err != nil {
-			return err
+			return dnsCloser, err
 		}
 
 		if err := client.Challenge.SetHTTP01Provider(httpMemcachedProvider); err != nil {
-			return err
+			return dnsCloser, err
 		}
 	}
 
@@ -85,35 +99,32 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 			"", strconv.Itoa(provider.([]interface{})[0].(map[string]interface{})["port"].(int)))
 
 		if err := client.Challenge.SetTLSALPN01Provider(tlsProvider); err != nil {
-			return err
+			return dnsCloser, err
 		}
 	}
 
-	return nil
+	return dnsCloser, nil
 }
 
-func expandDNSChallenge(m map[string]interface{}) (challenge.Provider, error) {
+func expandDNSChallenge(m map[string]interface{}) (challenge.Provider, func(), error) {
 	var providerName string
 
 	if v, ok := m["provider"]; ok && v.(string) != "" {
 		providerName = v.(string)
 	} else {
-		return nil, fmt.Errorf("DNS challenge provider not defined")
+		return nil, nil, fmt.Errorf("DNS challenge provider not defined")
 	}
+
 	// Config only needs to be set if it's defined, otherwise existing env/SDK
 	// defaults are fine.
+	config := make(map[string]string)
 	if v, ok := m["config"]; ok {
 		for k, v := range v.(map[string]interface{}) {
-			os.Setenv(k, v.(string))
+			config[k] = v.(string)
 		}
 	}
 
-	providerFunc, ok := dnsProviderFactory[providerName]
-	if !ok {
-		return nil, fmt.Errorf("%s: unsupported DNS challenge provider", providerName)
-	}
-
-	return providerFunc()
+	return dnsplugin.NewClient(providerName, config)
 }
 
 func expandDNSChallengeOptions(d *schema.ResourceData) []dns01.ChallengeOption {

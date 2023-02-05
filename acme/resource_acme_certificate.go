@@ -251,7 +251,9 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 		return err
 	}
 
-	if err := setCertificateChallengeProviders(client, d); err != nil {
+	dnsCloser, err := setCertificateChallengeProviders(client, d)
+	defer dnsCloser()
+	if err != nil {
 		return err
 	}
 
@@ -405,7 +407,9 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 
 	cert := expandCertificateResource(d)
 
-	if err := setCertificateChallengeProviders(client, d); err != nil {
+	dnsCloser, err := setCertificateChallengeProviders(client, d)
+	defer dnsCloser()
+	if err != nil {
 		return err
 	}
 
