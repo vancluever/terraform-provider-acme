@@ -10,7 +10,7 @@ require (
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/google/go-cmp v0.5.9
 	github.com/hashicorp/go-multierror v1.1.1
-	github.com/hashicorp/go-plugin v1.4.6
+	github.com/hashicorp/go-plugin v1.4.8
 	github.com/hashicorp/go-uuid v1.0.3
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.24.1
 	github.com/mitchellh/copystructure v1.2.0
