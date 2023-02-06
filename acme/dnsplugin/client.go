@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"time"
 
 	"github.com/go-acme/lego/v4/challenge"
 	"github.com/hashicorp/go-plugin"
@@ -19,7 +20,7 @@ import (
 // The plugin is configured the the map passed in, this sets the local
 // environment without it leaking into the parent process or any side-by-side
 // providers.
-func NewClient(providerName string, config map[string]string) (challenge.Provider, func(), error) {
+func NewClient(providerName string, config map[string]string) (challenge.ProviderTimeout, func(), error) {
 	// Discover the path to the executable that we are running at.
 	execPath, err := os.Executable()
 	if err != nil {
@@ -55,7 +56,7 @@ func NewClient(providerName string, config map[string]string) (challenge.Provide
 		return nil, nil, errors.New("internal error: returned plugin not a DnsProviderClient")
 	}
 
-	provider, ok := raw.(challenge.Provider)
+	provider, ok := raw.(challenge.ProviderTimeout)
 	if !ok {
 		return nil, nil, errors.New("internal error: returned plugin not a challenge provider")
 	}
@@ -91,4 +92,9 @@ func (m *DnsProviderClient) CleanUp(domain, token, keyAuth string) error {
 		KeyAuth: keyAuth,
 	})
 	return err
+}
+
+func (m *DnsProviderClient) Timeout() (time.Duration, time.Duration) {
+	resp, _ := m.client.Timeout(context.Background(), &dnspluginproto.TimeoutRequest{})
+	return resp.GetTimeout().AsDuration(), resp.GetInterval().AsDuration()
 }

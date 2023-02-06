@@ -3,7 +3,11 @@ package dnsplugin
 import (
 	"os"
 	"testing"
+
+	"github.com/go-acme/lego/v4/challenge"
 )
+
+var _ = challenge.ProviderTimeout((*DnsProviderClient)(nil))
 
 func TestMapEnvironmentVariableValues(t *testing.T) {
 	oldFoo := os.Getenv("ACME_ENV_TEST_FOO")

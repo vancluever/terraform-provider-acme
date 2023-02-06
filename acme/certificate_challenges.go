@@ -106,7 +106,7 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 	return dnsCloser, nil
 }
 
-func expandDNSChallenge(m map[string]interface{}) (challenge.Provider, func(), error) {
+func expandDNSChallenge(m map[string]interface{}) (challenge.ProviderTimeout, func(), error) {
 	var providerName string
 
 	if v, ok := m["provider"]; ok && v.(string) != "" {
@@ -152,7 +152,7 @@ func expandDNSChallengeOptions(d *schema.ResourceData) []dns01.ChallengeOption {
 // DNSProviderWrapper is a multi-provider wrapper to support multiple
 // DNS challenges.
 type DNSProviderWrapper struct {
-	providers []challenge.Provider
+	providers []challenge.ProviderTimeout
 }
 
 // NewDNSProviderWrapper returns an freshly initialized
@@ -195,15 +195,13 @@ func (d *DNSProviderWrapper) CleanUp(domain, token, keyAuth string) error {
 func (d *DNSProviderWrapper) Timeout() (time.Duration, time.Duration) {
 	var timeout, interval time.Duration
 	for _, p := range d.providers {
-		if pt, ok := p.(challenge.ProviderTimeout); ok {
-			t, i := pt.Timeout()
-			if t > timeout {
-				timeout = t
-			}
+		t, i := p.Timeout()
+		if t > timeout {
+			timeout = t
+		}
 
-			if i > interval {
-				interval = i
-			}
+		if i > interval {
+			interval = i
 		}
 	}
 
