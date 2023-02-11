@@ -6,11 +6,13 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/go-acme/lego/v4/challenge"
 	"github.com/hashicorp/go-plugin"
 	dnspluginproto "github.com/vancluever/terraform-provider-acme/v2/proto/dnsplugin/v1"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/durationpb"
 )
 
 const (
@@ -85,6 +87,18 @@ func (m *DnsProviderServer) Present(ctx context.Context, req *dnspluginproto.Pre
 
 func (m *DnsProviderServer) CleanUp(ctx context.Context, req *dnspluginproto.CleanUpRequest) (*dnspluginproto.CleanUpResponse, error) {
 	return &dnspluginproto.CleanUpResponse{}, m.provider.CleanUp(req.GetDomain(), req.GetToken(), req.GetKeyAuth())
+}
+
+func (m *DnsProviderServer) Timeout(ctx context.Context, req *dnspluginproto.TimeoutRequest) (*dnspluginproto.TimeoutResponse, error) {
+	var timeout, interval time.Duration
+	if pt, ok := m.provider.(challenge.ProviderTimeout); ok {
+		timeout, interval = pt.Timeout()
+	}
+
+	return &dnspluginproto.TimeoutResponse{
+		Timeout:  durationpb.New(timeout),
+		Interval: durationpb.New(interval),
+	}, nil
 }
 
 // helper function to map environment variables if set

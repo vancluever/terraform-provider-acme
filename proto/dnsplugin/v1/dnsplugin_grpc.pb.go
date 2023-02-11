@@ -31,6 +31,9 @@ type DNSProviderServiceClient interface {
 	// Cleanup requests that DNS challenge TXT records be cleaned up. This wraps
 	// the lego Cleanup call.
 	CleanUp(ctx context.Context, in *CleanUpRequest, opts ...grpc.CallOption) (*CleanUpResponse, error)
+	// Timeout returns the provider's underlying timeout values. This wraps the
+	// lego Timeout call.
+	Timeout(ctx context.Context, in *TimeoutRequest, opts ...grpc.CallOption) (*TimeoutResponse, error)
 }
 
 type dNSProviderServiceClient struct {
@@ -68,6 +71,15 @@ func (c *dNSProviderServiceClient) CleanUp(ctx context.Context, in *CleanUpReque
 	return out, nil
 }
 
+func (c *dNSProviderServiceClient) Timeout(ctx context.Context, in *TimeoutRequest, opts ...grpc.CallOption) (*TimeoutResponse, error) {
+	out := new(TimeoutResponse)
+	err := c.cc.Invoke(ctx, "/dnsplugin.v1.DNSProviderService/Timeout", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DNSProviderServiceServer is the server API for DNSProviderService service.
 // All implementations must embed UnimplementedDNSProviderServiceServer
 // for forward compatibility
@@ -81,6 +93,9 @@ type DNSProviderServiceServer interface {
 	// Cleanup requests that DNS challenge TXT records be cleaned up. This wraps
 	// the lego Cleanup call.
 	CleanUp(context.Context, *CleanUpRequest) (*CleanUpResponse, error)
+	// Timeout returns the provider's underlying timeout values. This wraps the
+	// lego Timeout call.
+	Timeout(context.Context, *TimeoutRequest) (*TimeoutResponse, error)
 	mustEmbedUnimplementedDNSProviderServiceServer()
 }
 
@@ -96,6 +111,9 @@ func (UnimplementedDNSProviderServiceServer) Present(context.Context, *PresentRe
 }
 func (UnimplementedDNSProviderServiceServer) CleanUp(context.Context, *CleanUpRequest) (*CleanUpResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CleanUp not implemented")
+}
+func (UnimplementedDNSProviderServiceServer) Timeout(context.Context, *TimeoutRequest) (*TimeoutResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Timeout not implemented")
 }
 func (UnimplementedDNSProviderServiceServer) mustEmbedUnimplementedDNSProviderServiceServer() {}
 
@@ -164,6 +182,24 @@ func _DNSProviderService_CleanUp_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DNSProviderService_Timeout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TimeoutRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DNSProviderServiceServer).Timeout(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dnsplugin.v1.DNSProviderService/Timeout",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DNSProviderServiceServer).Timeout(ctx, req.(*TimeoutRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DNSProviderService_ServiceDesc is the grpc.ServiceDesc for DNSProviderService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -182,6 +218,10 @@ var DNSProviderService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CleanUp",
 			Handler:    _DNSProviderService_CleanUp_Handler,
+		},
+		{
+			MethodName: "Timeout",
+			Handler:    _DNSProviderService_Timeout_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

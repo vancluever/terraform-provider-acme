@@ -1,6 +1,9 @@
 syntax = "proto3";
 
 package dnsplugin.v1;
+
+import "google/protobuf/duration.proto";
+
 option go_package = "github.com/vancluever/terraform-provider-acme/proto/dnsplugin/v1";
 
 // DNSProviderService is a protobuf wrapper for the acme DNS challenge API. This
@@ -17,6 +20,10 @@ service DNSProviderService {
   // Cleanup requests that DNS challenge TXT records be cleaned up. This wraps
   // the lego Cleanup call.
   rpc CleanUp(CleanUpRequest) returns (CleanUpResponse) {}
+
+  // Timeout returns the provider's underlying timeout values. This wraps the
+  // lego Timeout call.
+  rpc Timeout(TimeoutRequest) returns (TimeoutResponse) {}
 }
 
 message ConfigureRequest {
@@ -41,3 +48,10 @@ message CleanUpRequest {
 }
 
 message CleanUpResponse {}
+
+message TimeoutRequest {}
+
+message TimeoutResponse {
+  google.protobuf.Duration timeout = 1;
+  google.protobuf.Duration interval = 2;
+}
