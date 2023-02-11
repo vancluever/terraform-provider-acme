@@ -268,6 +268,12 @@ There are two parts to the DNS propagation check:
   `recursive_nameservers`.
 * A check against your domain's authoritative DNS servers.
 
+-> The authoritative part of the DNS propagation check will almost always
+require access to the outside internet. Make sure you allow the required access
+accordingly, particularly in restricted networks. You can also use the
+`disable_complete_propagation` setting to bypass this check altogether (see
+below).
+
 The ACME provider will normally use your system-configured DNS resolvers to
 check for propagation of the TXT records before proceeding with the certificate
 request. In split horizon scenarios, this check may never succeed, as the
