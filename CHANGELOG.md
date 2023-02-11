@@ -1,5 +1,12 @@
 ## 2.13.0-beta2 (Unreleased)
 
+LEGO UPDATE:
+
+[lego](https://github.com/go-acme/lego) has been updated to v4.10.0 See the lego
+[CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.10.0/CHANGELOG.md) for
+more details on additions and changes to DNS providers, and other minor changes
+to the library.
+
 BUG FIXES:
 
 * `resource/acme_certificate`: The new DNS plugin system now implements
