@@ -1,4 +1,4 @@
-## 2.13.0-beta2 (Unreleased)
+## 2.13.0-beta2 (February 11, 2023)
 
 LEGO UPDATE:
 
