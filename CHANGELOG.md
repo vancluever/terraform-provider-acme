@@ -1,6 +1,10 @@
-## 2.13.0-pre (Unreleased)
+## 2.13.0-beta2 (Unreleased)
 
-Bumped version for dev.
+BUG FIXES:
+
+* `resource/acme_certificate`: The new DNS plugin system now implements
+  challenge provider timeouts properly.
+  [#277](https://github.com/vancluever/terraform-provider-acme/pull/277)
 
 ## 2.13.0-beta1 (February 5, 2023)
 
