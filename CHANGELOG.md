@@ -1,4 +1,4 @@
-## 2.13.0 (Unreleased)
+## 2.13.0 (February 18, 2023)
 
 This update is a full release of [2.13.0-beta1](#2130-beta1-february-5-2023) and
 [2.13.0-beta2](#2130-beta2-february-11-2023), including the new DNS provider
