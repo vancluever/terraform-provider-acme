@@ -23,6 +23,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/desec"
 	"github.com/go-acme/lego/v4/providers/dns/designate"
 	"github.com/go-acme/lego/v4/providers/dns/digitalocean"
+	"github.com/go-acme/lego/v4/providers/dns/dnshomede"
 	"github.com/go-acme/lego/v4/providers/dns/dnsimple"
 	"github.com/go-acme/lego/v4/providers/dns/dnsmadeeasy"
 	"github.com/go-acme/lego/v4/providers/dns/dnspod"
@@ -60,6 +61,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/ionos"
 	"github.com/go-acme/lego/v4/providers/dns/iwantmyname"
 	"github.com/go-acme/lego/v4/providers/dns/joker"
+	"github.com/go-acme/lego/v4/providers/dns/liara"
 	"github.com/go-acme/lego/v4/providers/dns/lightsail"
 	"github.com/go-acme/lego/v4/providers/dns/linode"
 	"github.com/go-acme/lego/v4/providers/dns/liquidweb"
@@ -97,6 +99,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/stackpath"
 	"github.com/go-acme/lego/v4/providers/dns/tencentcloud"
 	"github.com/go-acme/lego/v4/providers/dns/transip"
+	"github.com/go-acme/lego/v4/providers/dns/ultradns"
 	"github.com/go-acme/lego/v4/providers/dns/variomedia"
 	"github.com/go-acme/lego/v4/providers/dns/vegadns"
 	"github.com/go-acme/lego/v4/providers/dns/vercel"
@@ -105,6 +108,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/vkcloud"
 	"github.com/go-acme/lego/v4/providers/dns/vscale"
 	"github.com/go-acme/lego/v4/providers/dns/vultr"
+	"github.com/go-acme/lego/v4/providers/dns/websupport"
 	"github.com/go-acme/lego/v4/providers/dns/wedos"
 	"github.com/go-acme/lego/v4/providers/dns/yandex"
 	"github.com/go-acme/lego/v4/providers/dns/yandexcloud"
@@ -280,6 +284,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"digitalocean": func() (challenge.Provider, error) {
 		p, err := digitalocean.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"dnshomede": func() (challenge.Provider, error) {
+		p, err := dnshomede.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -582,6 +594,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"liara": func() (challenge.Provider, error) {
+		p, err := liara.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"lightsail": func() (challenge.Provider, error) {
 		p, err := lightsail.NewDNSProvider()
 		if err != nil {
@@ -878,6 +898,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"ultradns": func() (challenge.Provider, error) {
+		p, err := ultradns.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"variomedia": func() (challenge.Provider, error) {
 		p, err := variomedia.NewDNSProvider()
 		if err != nil {
@@ -936,6 +964,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"vultr": func() (challenge.Provider, error) {
 		p, err := vultr.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"websupport": func() (challenge.Provider, error) {
+		p, err := websupport.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
