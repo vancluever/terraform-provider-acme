@@ -1,6 +1,8 @@
-## 2.13.1-pre (Unreleased)
+## 2.13.1 (Unreleased)
 
-Bumped version for dev.
+This is a security fix to address
+[CVE-2022-41723](https://github.com/advisories/GHSA-vvpx-j8f3-3w6h). No other
+changes have been made.
 
 ## 2.13.0 (February 18, 2023)
 
