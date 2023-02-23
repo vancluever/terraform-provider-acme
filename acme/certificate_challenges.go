@@ -18,7 +18,7 @@ import (
 )
 
 // setCertificateChallengeProviders sets all of the challenge providers in the
-// cilent that are needed for obtaining the certificate.
+// client that are needed for obtaining the certificate.
 //
 // The returned func() is a closer for all of the configured DNS providers that
 // should be called when they are no longer needed (i.e. in a defer after one of
