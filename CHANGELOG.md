@@ -1,4 +1,4 @@
-## 2.13.1 (Unreleased)
+## 2.13.1 (February 23, 2023)
 
 This is a security fix to address
 [CVE-2022-41723](https://github.com/advisories/GHSA-vvpx-j8f3-3w6h). No other
