@@ -49,7 +49,7 @@ changed.
 
 The resource takes the following arguments:
 
-* `account_key_pem` (Required) - The private key used to identity the account.
+* `account_key_pem` (Required) - The private key used to identify the account.
 * `email_address` (Required) - The contact email address for the account.
 * `external_account_binding` (Optional) - An external account binding for the
   registration, usually used to link the registration with an account in a
