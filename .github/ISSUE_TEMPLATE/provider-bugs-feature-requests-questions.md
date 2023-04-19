@@ -19,6 +19,7 @@ Before you submit an issue:
 
 * Search the issue tracker here to see if your problem has been answered (even for lego-related issues; there is plenty of history and options that have been added to work around various issues that neither we nor lego can fix).
 * If your problem is not assuredly related to this provider itself (such as in the case with DNS provider issues), please attempt to reproduce the issue with [lego's CLI tool](https://go-acme.github.io/lego/installation/).
+* Note that new DNS provider feature requests need to go through lego.
 
 DNS provider-related issues that are not specifically related to how this provider interacts with lego will more than likely be closed with a referral back to lego. Please read our [instructions](https://github.com/vancluever/terraform-provider-acme/blob/main/docs/lego.md) on submitting a lego issue if you need to.
 
