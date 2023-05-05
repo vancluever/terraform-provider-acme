@@ -1,9 +1,9 @@
-## 2.13.2-pre (Unreleased)
+## 2.14.0 (Unreleased)
 
 LEGO UPDATE:
 
-[lego](https://github.com/go-acme/lego) has been updated to v4.10.2 See the lego
-[CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.10.2/CHANGELOG.md) for
+[lego](https://github.com/go-acme/lego) has been updated to v4.11.0 See the lego
+[CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.11.0/CHANGELOG.md) for
 more details on additions and changes to DNS providers, and other minor changes
 to the library.
 
