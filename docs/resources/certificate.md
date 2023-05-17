@@ -371,9 +371,8 @@ provider, but it is important to note so that configuration is supplied
 correctly.
 
 As an example, if you specify manual configuration for the [AWS
-provider][tf-provider-aws] via the [`provider`][tf-providers] block instead of
-the environment, you will still need to supply the configuration explicitly as
-per above.
+provider][tf-provider-aws] via the [`provider`][tf-providers] block instead of the environment, you will still need to supply the configuration explicitly as per above.  If your organization uses AWS SSO with Assumed Roles then this bug [https://github.com/go-acme/lego/issues/1500] will block you and you should check the comments for possible solutions. 
+
 
 [tf-provider-aws]: https://registry.terraform.io/providers/hashicorp/aws/latest
 [tf-providers]: https://www.terraform.io/docs/configuration/providers.html
