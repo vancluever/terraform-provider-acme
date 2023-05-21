@@ -27,3 +27,5 @@ website/node_modules
 website/vendor
 
 terraform-provider-acme
+
+.direnv/
