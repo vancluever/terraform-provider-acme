@@ -12,7 +12,6 @@
         devShell = pkgs.mkShell {
           packages = [
             pkgs.go
-            pkgs.gopls
             pkgs.nixfmt
             pkgs.buf
             pkgs.buf-language-server
