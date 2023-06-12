@@ -11,12 +11,17 @@
         inherit pkgs;
         devShell = pkgs.mkShell {
           packages = [
-            pkgs.go
-            pkgs.nixfmt
             pkgs.buf
             pkgs.buf-language-server
+            pkgs.go
+            pkgs.golangci-lint
+            pkgs.golangci-lint-langserver
+            pkgs.gopls
+            pkgs.nixfmt
             pkgs.protoc-gen-go
             pkgs.protoc-gen-go-grpc
+            pkgs.protoc-gen-go-grpc
+            pkgs.rnix-lsp
           ];
         };
       });
