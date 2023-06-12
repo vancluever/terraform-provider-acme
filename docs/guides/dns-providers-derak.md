@@ -1,5 +1,5 @@
 ---
-page_title: "brandit"
+page_title: "derak"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Brandit DNS Challenge Provider
+# Derak Cloud DNS Challenge Provider
 
-The `brandit` DNS challenge provider can be used to perform DNS challenges for
+The `derak` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Brandit](https://www.brandit.com/).
+[Derak Cloud](https://derak.cloud/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "brandit"
+    provider = "derak"
   }
 }
 ```
@@ -48,12 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `BRANDIT_API_KEY` - The API key.
-* `BRANDIT_API_USERNAME` - The API username.
+* `DERAK_API_KEY` - The API key.
 
-* `BRANDIT_HTTP_TIMEOUT` - API request timeout.
-* `BRANDIT_POLLING_INTERVAL` - Time between DNS propagation check.
-* `BRANDIT_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `BRANDIT_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `DERAK_HTTP_TIMEOUT` - API request timeout.
+* `DERAK_POLLING_INTERVAL` - Time between DNS propagation check.
+* `DERAK_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `DERAK_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `DERAK_WEBSITE_ID` - Force the zone/website ID.
 
 

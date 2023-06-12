@@ -22,6 +22,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/cloudxns"
 	"github.com/go-acme/lego/v4/providers/dns/conoha"
 	"github.com/go-acme/lego/v4/providers/dns/constellix"
+	"github.com/go-acme/lego/v4/providers/dns/derak"
 	"github.com/go-acme/lego/v4/providers/dns/desec"
 	"github.com/go-acme/lego/v4/providers/dns/designate"
 	"github.com/go-acme/lego/v4/providers/dns/digitalocean"
@@ -281,6 +282,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"constellix": func() (challenge.Provider, error) {
 		p, err := constellix.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"derak": func() (challenge.Provider, error) {
+		p, err := derak.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
