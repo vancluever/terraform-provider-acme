@@ -39,7 +39,7 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 		}
 
 		for _, providerRaw := range providers.([]interface{}) {
-			if p, closer, err := expandDNSChallenge(providerRaw.(map[string]interface{})); err == nil {
+			if p, closer, err := expandDNSChallenge(providerRaw.(map[string]interface{}), expandRecursiveNameservers(d)); err == nil {
 				dnsProvider.providers = append(dnsProvider.providers, p)
 				dnsClosers = append(dnsClosers, closer)
 			} else {
@@ -106,7 +106,7 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 	return dnsCloser, nil
 }
 
-func expandDNSChallenge(m map[string]interface{}) (challenge.ProviderTimeout, func(), error) {
+func expandDNSChallenge(m map[string]interface{}, nameServers []string) (challenge.ProviderTimeout, func(), error) {
 	var providerName string
 
 	if v, ok := m["provider"]; ok && v.(string) != "" {
@@ -124,18 +124,13 @@ func expandDNSChallenge(m map[string]interface{}) (challenge.ProviderTimeout, fu
 		}
 	}
 
-	return dnsplugin.NewClient(providerName, config)
+	return dnsplugin.NewClient(providerName, config, nameServers)
 }
 
 func expandDNSChallengeOptions(d *schema.ResourceData) []dns01.ChallengeOption {
 	var opts []dns01.ChallengeOption
-	if nameservers := d.Get("recursive_nameservers").([]interface{}); len(nameservers) > 0 {
-		var s []string
-		for _, ns := range nameservers {
-			s = append(s, ns.(string))
-		}
-
-		opts = append(opts, dns01.AddRecursiveNameservers(s))
+	if nameservers := expandRecursiveNameservers(d); len(nameservers) > 0 {
+		opts = append(opts, dns01.AddRecursiveNameservers(nameservers))
 	}
 
 	if d.Get("disable_complete_propagation").(bool) {
@@ -147,6 +142,17 @@ func expandDNSChallengeOptions(d *schema.ResourceData) []dns01.ChallengeOption {
 	}
 
 	return opts
+}
+
+func expandRecursiveNameservers(d *schema.ResourceData) []string {
+	s := make([]string, 0)
+	if nameservers := d.Get("recursive_nameservers").([]interface{}); len(nameservers) > 0 {
+		for _, ns := range nameservers {
+			s = append(s, ns.(string))
+		}
+	}
+
+	return s
 }
 
 // DNSProviderWrapper is a multi-provider wrapper to support multiple

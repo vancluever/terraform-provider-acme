@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/go-acme/lego/v4/challenge"
+	"github.com/go-acme/lego/v4/challenge/dns01"
 	"github.com/hashicorp/go-plugin"
 	dnspluginproto "github.com/vancluever/terraform-provider-acme/v2/proto/dnsplugin/v1"
 	"google.golang.org/grpc"
@@ -67,6 +68,15 @@ func (s *DnsProviderServer) Configure(ctx context.Context, req *dnspluginproto.C
 		return nil, fmt.Errorf("unknown provider name %q", req.GetProviderName())
 	}
 
+	if len(req.GetRecursiveNameservers()) > 0 {
+		// Configure recursive nameservers in the dns01 package. Some providers use
+		// functionality in dns01 that depend on these and the changes made in the
+		// parent process will not propagate.
+		if err := dns01.AddRecursiveNameservers(req.GetRecursiveNameservers())(nil); err != nil {
+			return nil, fmt.Errorf("error setting recursive nameservers: %w", err)
+		}
+	}
+
 	// Set env before configuring provider
 	for k, v := range req.GetConfig() {
 		os.Setenv(k, v)
@@ -75,7 +85,7 @@ func (s *DnsProviderServer) Configure(ctx context.Context, req *dnspluginproto.C
 	var err error
 	s.provider, err = providerFunc()
 	if err != nil {
-		return nil, fmt.Errorf("erorr initializing provider: %w", err)
+		return nil, fmt.Errorf("error initializing provider: %w", err)
 	}
 
 	return &dnspluginproto.ConfigureResponse{}, nil

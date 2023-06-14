@@ -17,10 +17,15 @@ import (
 // go-plugin. The client for the new provider is returned, along with a closer
 // function that should be called when done to shut down the plugin.
 //
-// The plugin is configured the the map passed in, this sets the local
-// environment without it leaking into the parent process or any side-by-side
-// providers.
-func NewClient(providerName string, config map[string]string) (challenge.ProviderTimeout, func(), error) {
+// The plugin is initialized with the settings passed in:
+//   - The environment is set with the config map.
+//   - If supplied, the global recursive nameservers are also set (via the
+//     dns01 package - some providers use these facilities).
+func NewClient(
+	providerName string,
+	config map[string]string,
+	recursiveNameservers []string,
+) (challenge.ProviderTimeout, func(), error) {
 	// Discover the path to the executable that we are running at.
 	execPath, err := os.Executable()
 	if err != nil {
@@ -49,7 +54,7 @@ func NewClient(providerName string, config map[string]string) (challenge.Provide
 	// First call the plugin as its gRPC server interface so that we can
 	// configure it.
 	if dnsProviderClient, ok := raw.(*DnsProviderClient); ok {
-		if err := dnsProviderClient.Configure(providerName, config); err != nil {
+		if err := dnsProviderClient.Configure(providerName, config, recursiveNameservers); err != nil {
 			return nil, nil, fmt.Errorf("error configuring plugin: %w", err)
 		}
 	} else {
@@ -68,10 +73,11 @@ type DnsProviderClient struct {
 	client dnspluginproto.DNSProviderServiceClient
 }
 
-func (m *DnsProviderClient) Configure(providerName string, config map[string]string) error {
+func (m *DnsProviderClient) Configure(providerName string, config map[string]string, recursiveNameservers []string) error {
 	_, err := m.client.Configure(context.Background(), &dnspluginproto.ConfigureRequest{
-		ProviderName: providerName,
-		Config:       config,
+		ProviderName:         providerName,
+		Config:               config,
+		RecursiveNameservers: recursiveNameservers,
 	})
 	return err
 }
