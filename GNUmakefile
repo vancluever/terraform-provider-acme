@@ -68,6 +68,10 @@ proto:
 build:
 	go install
 
+.PHONY: release
+release:
+	build-support/scripts/release.sh
+
 .PHONY: build-pre-release
 build-pre-release:
 	mkdir -p /tmp/terraform-provider-acme/
