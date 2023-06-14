@@ -718,7 +718,7 @@ func testAccCheckEnvironNotChanged(want []string) resource.TestCheckFunc {
 	}
 	return func(_ *terraform.State) error {
 		if diff := cmp.Diff(want, os.Environ(), cmpopts.IgnoreSliceElements(ignoreFunc)); diff != "" {
-			return fmt.Errorf("envionment altered but should not have been (-want +got):\n%s", diff)
+			return fmt.Errorf("environment altered but should not have been (-want +got):\n%s", diff)
 		}
 
 		return nil

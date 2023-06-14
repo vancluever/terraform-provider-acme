@@ -1,4 +1,4 @@
-## 2.15.0 (Unreleased)
+## 2.15.0-beta1 (Unreleased)
 
 LEGO UPDATE:
 
@@ -6,6 +6,12 @@ LEGO UPDATE:
 [CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.12.1/CHANGELOG.md) for
 more details on additions and changes to DNS providers, and other minor changes
 to the library.
+
+BUG FIXES:
+
+* `resource/acme_certificate`: DNS plugins should now respect the setting of
+  `recursive_nameservers` again.
+  [#316](https://github.com/vancluever/terraform-provider-acme/pull/316)
 
 ## 2.14.0 (May 5, 2023)
 
