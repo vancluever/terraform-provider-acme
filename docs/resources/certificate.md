@@ -129,8 +129,9 @@ be specified. It's recommended you use `dns_challenge` whenever possible).
 * `dns_challenge` (Optional) - The [DNS challenges](#using-dns-challenges) to
   use in fulfilling the request.
 * `recursive_nameservers` (Optional) - The recursive nameservers that will be
-  used to check for propagation of DNS challenge records. Defaults to your
-  system-configured DNS resolvers.
+  used to check for propagation of DNS challenge records, in addition to some
+  in-provider checks such as zone detection. Defaults to your system-configured
+  DNS resolvers.
 * `disable_complete_propagation` (Optional) - Disable the requirement for full
   propagation of the TXT challenge records before proceeding with validation.
   Defaults to `false`.
