@@ -1,4 +1,4 @@
-## 2.15.0 (Unreleased)
+## 2.15.0 (June 14, 2023)
 
 This update is a full release of [2.15.0-beta1](#2150-beta1-june-13-2023),
 including the lego update and the bug fix for the `recursive_nameservers`
