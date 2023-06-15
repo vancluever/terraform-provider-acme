@@ -1,6 +1,8 @@
-## 2.15.1-pre (Unreleased)
+## 2.15.0 (Unreleased)
 
-Bumped version for dev.
+This update is a full release of [2.15.0-beta1](#2150-beta1-june-13-2023),
+including the lego update and the bug fix for the `recursive_nameservers`
+setting. See that release for more details.
 
 ## 2.15.0-beta1 (June 13, 2023)
 
