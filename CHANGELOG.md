@@ -1,6 +1,15 @@
-## 2.15.1-pre (Unreleased)
+## 2.15.1 (Unreleased)
 
-Bumped version for dev.
+LEGO UPDATE:
+
+[lego](https://github.com/go-acme/lego) has been updated to v4.12.2 See the
+lego [CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.12.2/CHANGELOG.md)
+for more details on additions and changes to DNS providers, and other minor
+changes to the library.
+
+This lego update contains a critical fix to the `dnsmadeeasy` DNS provider,
+ensuring that it does not delete all records in a zone during cleanup.
+[go-acme/lego#1939](https://github.com/go-acme/lego/pull/1939)
 
 ## 2.15.0 (June 14, 2023)
 
