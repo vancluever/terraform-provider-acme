@@ -1,4 +1,4 @@
-## 2.15.1 (Unreleased)
+## 2.15.1 (June 19, 2023)
 
 LEGO UPDATE:
 
