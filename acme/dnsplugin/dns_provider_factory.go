@@ -10,6 +10,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/auroradns"
 	"github.com/go-acme/lego/v4/providers/dns/autodns"
 	"github.com/go-acme/lego/v4/providers/dns/azure"
+	"github.com/go-acme/lego/v4/providers/dns/azuredns"
 	"github.com/go-acme/lego/v4/providers/dns/bindman"
 	"github.com/go-acme/lego/v4/providers/dns/bluecat"
 	"github.com/go-acme/lego/v4/providers/dns/brandit"
@@ -38,6 +39,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/dynu"
 	"github.com/go-acme/lego/v4/providers/dns/easydns"
 	"github.com/go-acme/lego/v4/providers/dns/edgedns"
+	"github.com/go-acme/lego/v4/providers/dns/efficientip"
 	"github.com/go-acme/lego/v4/providers/dns/epik"
 	"github.com/go-acme/lego/v4/providers/dns/exec"
 	"github.com/go-acme/lego/v4/providers/dns/exoscale"
@@ -63,6 +65,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/internetbs"
 	"github.com/go-acme/lego/v4/providers/dns/inwx"
 	"github.com/go-acme/lego/v4/providers/dns/ionos"
+	"github.com/go-acme/lego/v4/providers/dns/ipv64"
 	"github.com/go-acme/lego/v4/providers/dns/iwantmyname"
 	"github.com/go-acme/lego/v4/providers/dns/joker"
 	"github.com/go-acme/lego/v4/providers/dns/liara"
@@ -71,6 +74,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/liquidweb"
 	"github.com/go-acme/lego/v4/providers/dns/loopia"
 	"github.com/go-acme/lego/v4/providers/dns/luadns"
+	"github.com/go-acme/lego/v4/providers/dns/metaname"
 	"github.com/go-acme/lego/v4/providers/dns/mydnsjp"
 	"github.com/go-acme/lego/v4/providers/dns/mythicbeasts"
 	"github.com/go-acme/lego/v4/providers/dns/namecheap"
@@ -91,6 +95,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/plesk"
 	"github.com/go-acme/lego/v4/providers/dns/porkbun"
 	"github.com/go-acme/lego/v4/providers/dns/rackspace"
+	"github.com/go-acme/lego/v4/providers/dns/rcodezero"
 	"github.com/go-acme/lego/v4/providers/dns/regru"
 	"github.com/go-acme/lego/v4/providers/dns/rfc2136"
 	"github.com/go-acme/lego/v4/providers/dns/rimuhosting"
@@ -186,6 +191,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 			"ARM_TENANT_ID":       "AZURE_TENANT_ID",
 		})
 		p, err := azure.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"azuredns": func() (challenge.Provider, error) {
+		p, err := azuredns.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -416,6 +429,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"efficientip": func() (challenge.Provider, error) {
+		p, err := efficientip.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"epik": func() (challenge.Provider, error) {
 		p, err := epik.NewDNSProvider()
 		if err != nil {
@@ -616,6 +637,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"ipv64": func() (challenge.Provider, error) {
+		p, err := ipv64.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"iwantmyname": func() (challenge.Provider, error) {
 		p, err := iwantmyname.NewDNSProvider()
 		if err != nil {
@@ -674,6 +703,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"luadns": func() (challenge.Provider, error) {
 		p, err := luadns.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"metaname": func() (challenge.Provider, error) {
+		p, err := metaname.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -834,6 +871,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"rackspace": func() (challenge.Provider, error) {
 		p, err := rackspace.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"rcodezero": func() (challenge.Provider, error) {
+		p, err := rcodezero.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

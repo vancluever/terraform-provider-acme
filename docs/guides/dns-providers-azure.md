@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Azure DNS Challenge Provider
+# Azure (deprecated) DNS Challenge Provider
 
 The `azure` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Azure](https://azure.microsoft.com/services/dns/).
+[Azure (deprecated)](https://azure.microsoft.com/services/dns/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
