@@ -19,3 +19,5 @@ require (
 	google.golang.org/protobuf v1.31.0
 	software.sslmate.com/src/go-pkcs12 v0.2.1
 )
+
+replace github.com/hashicorp/go-plugin v1.4.10 => github.com/vancluever/go-plugin v0.0.0-20230724011129-9463613601bf
