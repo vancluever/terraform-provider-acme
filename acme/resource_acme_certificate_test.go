@@ -37,7 +37,7 @@ func TestAccACMECertificate_basic(t *testing.T) {
 		ProviderFactories: testAccProviders,
 		ExternalProviders: testAccExternalProviders,
 		CheckDestroy:      testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusRevoked),
-			Steps: []resource.TestStep{
+		Steps: []resource.TestStep{
 			{
 				Config: testAccACMECertificateConfig(),
 				Check: resource.ComposeTestCheckFunc(
@@ -372,7 +372,7 @@ func TestAccACMECertificate_httpS3(t *testing.T) {
 	s3_bucket := os.Getenv("TF_S3_BUCKET")
 	// If bucket not set, skip test
 	if s3_bucket == "" {
-		return
+		t.Skip()
 	}
 	awsRegion := os.Getenv("AWS_REGION")
 	closeServer, err := testAccCheckACMECertificateS3ProxyTestServer(s3_bucket, awsRegion)
@@ -684,7 +684,6 @@ func testAccCheckACMECertificateMemcacheTestServer() (func(), error) {
 	}, nil
 }
 
-
 func testAccCheckACMECertificateProxyTestServer() (func(), error) {
 	target, err := url.Parse("http://localhost:5502")
 	if err != nil {
@@ -711,15 +710,15 @@ func testAccCheckACMECertificateProxyTestServer() (func(), error) {
 }
 
 func testAccCheckACMECertificateS3ProxyTestServer(s3Bucket string, awsRegion string) (func(), error) {
-	target := fmt.Sprintf("%s.s3.%s.amazonaws.com",s3Bucket, awsRegion)
+	target := fmt.Sprintf("%s.s3.%s.amazonaws.com", s3Bucket, awsRegion)
 
 	proxy := &httputil.ReverseProxy{
-        Director: func(req *http.Request) {
-            req.URL.Scheme = "https"
-            req.URL.Host = target
-            req.Host = target
-        },
-    }
+		Director: func(req *http.Request) {
+			req.URL.Scheme = "https"
+			req.URL.Host = target
+			req.Host = target
+		},
+	}
 
 	server := &http.Server{
 		Addr:    ":5002",
