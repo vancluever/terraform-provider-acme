@@ -12,6 +12,7 @@ import (
 	"github.com/go-acme/lego/v4/lego"
 	"github.com/go-acme/lego/v4/providers/http/memcached"
 	"github.com/go-acme/lego/v4/providers/http/webroot"
+	"github.com/go-acme/lego/v4/providers/http/s3"
 	"github.com/hashicorp/go-multierror"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/vancluever/terraform-provider-acme/v2/acme/dnsplugin"
@@ -89,6 +90,20 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 		}
 
 		if err := client.Challenge.SetHTTP01Provider(httpMemcachedProvider); err != nil {
+			return dnsCloser, err
+		}
+	}
+
+	// HTTP (s3)
+	if provider, ok := d.GetOk("http_s3_challenge"); ok {
+		httpS3Provider, err := s3.NewHTTPProvider(
+				provider.([]interface{})[0].(map[string]interface{})["s3_bucket"].(string))
+
+		if err != nil {
+			return dnsCloser, err
+		}
+
+		if err := client.Challenge.SetHTTP01Provider(httpS3Provider); err != nil {
 			return dnsCloser, err
 		}
 	}

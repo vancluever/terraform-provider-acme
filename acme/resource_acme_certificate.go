@@ -74,7 +74,7 @@ func resourceACMECertificateV5() *schema.Resource {
 			"dns_challenge": {
 				Type:         schema.TypeList,
 				Optional:     true,
-				AtLeastOneOf: []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "tls_challenge"},
+				AtLeastOneOf:  []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "http_s3_challenge", "tls_challenge"},
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"provider": {
@@ -93,8 +93,8 @@ func resourceACMECertificateV5() *schema.Resource {
 			"http_challenge": {
 				Type:          schema.TypeList,
 				Optional:      true,
-				AtLeastOneOf:  []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "tls_challenge"},
-				ConflictsWith: []string{"http_webroot_challenge", "http_memcached_challenge"},
+				AtLeastOneOf:  []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "http_s3_challenge", "tls_challenge"},
+				ConflictsWith: []string{"http_webroot_challenge", "http_memcached_challenge", "http_s3_challenge"},
 				MaxItems:      1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -114,8 +114,8 @@ func resourceACMECertificateV5() *schema.Resource {
 			"http_webroot_challenge": {
 				Type:          schema.TypeList,
 				Optional:      true,
-				AtLeastOneOf:  []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "tls_challenge"},
-				ConflictsWith: []string{"http_challenge", "http_memcached_challenge"},
+				AtLeastOneOf:  []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "http_s3_challenge", "tls_challenge"},
+				ConflictsWith: []string{"http_challenge", "http_memcached_challenge", "http_s3_challenge"},
 				MaxItems:      1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -129,8 +129,8 @@ func resourceACMECertificateV5() *schema.Resource {
 			"http_memcached_challenge": {
 				Type:          schema.TypeList,
 				Optional:      true,
-				AtLeastOneOf:  []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "tls_challenge"},
-				ConflictsWith: []string{"http_challenge", "http_webroot_challenge"},
+				AtLeastOneOf:  []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "http_s3_challenge", "tls_challenge"},
+				ConflictsWith: []string{"http_challenge", "http_webroot_challenge", "http_s3_challenge"},
 				MaxItems:      1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -144,10 +144,25 @@ func resourceACMECertificateV5() *schema.Resource {
 					},
 				},
 			},
+			"http_s3_challenge": {
+				Type:          schema.TypeList,
+				Optional:      true,
+				AtLeastOneOf:  []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "http_s3_challenge", "tls_challenge"},
+				ConflictsWith: []string{"http_challenge", "http_webroot_challenge", "http_memcached_challenge"},
+				MaxItems:      1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"s3_bucket": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+					},
+				},
+			},
 			"tls_challenge": {
 				Type:         schema.TypeList,
 				Optional:     true,
-				AtLeastOneOf: []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "tls_challenge"},
+				AtLeastOneOf:  []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "http_s3_challenge", "tls_challenge"},
 				MaxItems:     1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
