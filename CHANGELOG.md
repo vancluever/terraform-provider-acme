@@ -1,6 +1,7 @@
-## 2.16.1-pre (Unreleased)
+## 2.16.1 (Unreleased)
 
-Bumped version for dev.
+This change is being made to correct build issues. No other changes are being
+made.
 
 ## 2.16.0 (August 11, 2023)
 
