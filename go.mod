@@ -5,7 +5,7 @@ go 1.15
 require (
 	github.com/BurntSushi/toml v1.3.2
 	github.com/davecgh/go-spew v1.1.1
-	github.com/go-acme/lego/v4 v4.13.3
+	github.com/go-acme/lego/v4 v4.14.0
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/google/go-cmp v0.5.9
 	github.com/hashicorp/go-multierror v1.1.1
