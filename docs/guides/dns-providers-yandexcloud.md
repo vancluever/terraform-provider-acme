@@ -49,7 +49,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
 * `YANDEX_CLOUD_FOLDER_ID` - The string id of folder (aka project) in Yandex Cloud.
-* `YANDEX_CLOUD_IAM_TOKEN` - The base64 encoded json which contains inforamtion about iam token of serivce account with `dns.admin` permissions.
+* `YANDEX_CLOUD_IAM_TOKEN` - The base64 encoded json which contains information about iam token of service account with `dns.admin` permissions.
 
 * `YANDEX_CLOUD_POLLING_INTERVAL` - Time between DNS propagation check.
 * `YANDEX_CLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.

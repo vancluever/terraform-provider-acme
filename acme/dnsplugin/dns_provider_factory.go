@@ -20,6 +20,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/clouddns"
 	"github.com/go-acme/lego/v4/providers/dns/cloudflare"
 	"github.com/go-acme/lego/v4/providers/dns/cloudns"
+	"github.com/go-acme/lego/v4/providers/dns/cloudru"
 	"github.com/go-acme/lego/v4/providers/dns/cloudxns"
 	"github.com/go-acme/lego/v4/providers/dns/conoha"
 	"github.com/go-acme/lego/v4/providers/dns/constellix"
@@ -122,6 +123,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/websupport"
 	"github.com/go-acme/lego/v4/providers/dns/wedos"
 	"github.com/go-acme/lego/v4/providers/dns/yandex"
+	"github.com/go-acme/lego/v4/providers/dns/yandex360"
 	"github.com/go-acme/lego/v4/providers/dns/yandexcloud"
 	"github.com/go-acme/lego/v4/providers/dns/zoneee"
 	"github.com/go-acme/lego/v4/providers/dns/zonomi"
@@ -271,6 +273,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"cloudns": func() (challenge.Provider, error) {
 		p, err := cloudns.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"cloudru": func() (challenge.Provider, error) {
+		p, err := cloudru.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -1087,6 +1097,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"yandex": func() (challenge.Provider, error) {
 		p, err := yandex.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"yandex360": func() (challenge.Provider, error) {
+		p, err := yandex360.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

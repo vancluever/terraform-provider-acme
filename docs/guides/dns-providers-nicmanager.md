@@ -62,6 +62,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 ## Description
 
-You can login using your account name + username or using your email address.
+You can log in using your account name + username or using your email address.
 Optionally if TOTP is configured for your account, set `NICMANAGER_API_OTP`.
 

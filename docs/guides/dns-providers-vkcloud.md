@@ -59,7 +59,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `VK_CLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
 * `VK_CLOUD_TTL` - The TTL of the TXT record used for the DNS challenge.
 
-## Credential inforamtion
+## Credential information
 
 You can find all required and additional information on ["Project/Keys" page](https://mcs.mail.ru/app/en/project/keys) of your cloud.
 
