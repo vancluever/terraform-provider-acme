@@ -7,6 +7,12 @@ lego [CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.14.0/CHANGELOG.md)
 for more details on additions and changes to DNS providers, and other minor
 changes to the library.
 
+FEATURES:
+
+* `resource/acme_certificate`: New HTTP challenge type `http_s3_challenge`,
+  which will allow publishing HTTP challenge records to an S3 bucket.
+  [#330](https://github.com/vancluever/terraform-provider-acme/pull/330)
+
 ## 2.16.1 (August 11, 2023)
 
 This change is being made to correct build issues. No other changes are being
