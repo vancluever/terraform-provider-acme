@@ -62,7 +62,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 Application key and secret can be created by following the [OVH guide](https://docs.ovh.com/gb/en/customer/first-steps-with-ovh-api/).
 
-When requesting the consumer key, the following configuration can be use to define access rights:
+When requesting the consumer key, the following configuration can be used to define access rights:
 
 ```json
 {

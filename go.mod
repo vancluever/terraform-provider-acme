@@ -9,15 +9,13 @@ require (
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/google/go-cmp v0.5.9
 	github.com/hashicorp/go-multierror v1.1.1
-	github.com/hashicorp/go-plugin v1.4.10
+	github.com/hashicorp/go-plugin v1.4.11-rc1
 	github.com/hashicorp/go-uuid v1.0.3
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.27.0
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/rainycape/memcache v0.0.0-20150622160815-1031fa0ce2f2
-	google.golang.org/grpc v1.56.0
+	google.golang.org/grpc v1.57.0
 	google.golang.org/protobuf v1.31.0
 	software.sslmate.com/src/go-pkcs12 v0.2.1
 )
-
-replace github.com/hashicorp/go-plugin v1.4.10 => github.com/vancluever/go-plugin v0.0.0-20230724011129-9463613601bf

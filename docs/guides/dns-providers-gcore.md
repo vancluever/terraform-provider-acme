@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# G-Core Labs DNS Challenge Provider
+# G-Core DNS Challenge Provider
 
 The `gcore` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[G-Core Labs](https://gcorelabs.com/dns/).
+[G-Core](https://gcore.com/dns/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -48,7 +48,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `GCORE_PERMANENT_API_TOKEN` - Permanent API tokene (https://gcorelabs.com/blog/permanent-api-token-explained/).
+* `GCORE_PERMANENT_API_TOKEN` - Permanent API token (https://gcore.com/blog/permanent-api-token-explained/).
 
 * `GCORE_HTTP_TIMEOUT` - API request timeout.
 * `GCORE_POLLING_INTERVAL` - Time between DNS propagation check.

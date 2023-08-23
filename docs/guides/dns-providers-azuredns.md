@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# AzureDNS DNS Challenge Provider
+# Azure DNS DNS Challenge Provider
 
 The `azuredns` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[AzureDNS](https://azure.microsoft.com/services/dns/).
+[Azure DNS](https://azure.microsoft.com/services/dns/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -77,16 +77,53 @@ Link:
 
 #### Azure Managed Identity
 
-Azure managed identity service allows linking Azure AD identities to Azure resources. \
-Workloads running inside compute typed resource can inherit from this configuration to get rights on Azure resources.
+The Azure Managed Identity service allows linking Azure AD identities to Azure resources, without needing to manually manage client IDs and secrets.
+
+Workloads with a Managed Identity can manage their own certificates, with permissions on specific domain names set using IAM assignments.
+For this to work, the Managed Identity requires the **Reader** role on the target DNS Zone,
+and the **DNS Zone Contributor** on the relevant `_acme-challenge` TXT records.
+
+For example, to allow a Managed Identity to create a certificate for "fw01.lab.example.com", using Azure CLI:
+
+```bash
+export AZURE_SUBSCRIPTION_ID="00000000-0000-0000-0000-000000000000"
+export AZURE_RESOURCE_GROUP="rg1"
+export SERVICE_PRINCIPAL_ID="00000000-0000-0000-0000-000000000000"
+
+export AZURE_DNS_ZONE="lab.example.com"
+export AZ_HOSTNAME="fw01"
+export AZ_RECORD_SET="_acme-challenge.${AZ_HOSTNAME}"
+
+az role assignment create \
+--assignee "${SERVICE_PRINCIPAL_ID}" \
+--role "Reader" \
+--scope "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${AZURE_RESOURCE_GROUP}/providers/Microsoft.Network/dnszones/${AZURE_DNS_ZONE}"
+
+az role assignment create \
+--assignee "${SERVICE_PRINCIPAL_ID}" \
+--role "DNS Zone Contributor" \
+--scope "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${AZURE_RESOURCE_GROUP}/providers/Microsoft.Network/dnszones/${AZURE_DNS_ZONE}/TXT/${AZ_RECORD_SET}"
+```
+
+#### Azure Managed Identity (with Azure Arc)
+
+The Azure Arc agent provides the ability to use a Managed Identity on resources hosted outside of Azure
+(such as on-prem virtual machines, or VMs in another cloud provider).
+
+While the upstream `azidentity` SDK will try to automatically identify and use the Azure Arc metadata service,
+if you get `azuredns: DefaultAzureCredential: failed to acquire a token.` error messages,
+you may need to set the environment variables:
+  * `IMDS_ENDPOINT=http://localhost:40342`
+  * `IDENTITY_ENDPOINT=http://localhost:40342/metadata/identity/oauth2/token`
 
 #### Workload identity for AKS
 
-Workload identity allows workloads running Azure Kubernetes Services (AKS) clusters to authenticate as an Azure AD application identity using federated credentials. \
-This must be configured in kubernetes workload deployment in one hand and on the Azure AD application registration in the other hand. \
+Workload identity allows workloads running Azure Kubernetes Services (AKS) clusters to authenticate as an Azure AD application identity using federated credentials.
+
+This must be configured in kubernetes workload deployment in one hand and on the Azure AD application registration in the other hand.
 
 Here is a summary of the steps to follow to use it :
-* create a `ServiceAccount` resource, add following annotations to reference the targeted Azure AD application registration : `azure.workload.identity/client-id` and `azure.workload.identity/tenant-id`. \
+* create a `ServiceAccount` resource, add following annotations to reference the targeted Azure AD application registration : `azure.workload.identity/client-id` and `azure.workload.identity/tenant-id`.
 * on the `Deployment` resource you must reference the previous `ServiceAccount` and add the following label : `azure.workload.identity/use: "true"`.
 * create a fedreated credentials of type `Kubernetes accessing Azure resources`, add the cluster issuer URL  and add the namespace and name of your kubernetes service account.
 

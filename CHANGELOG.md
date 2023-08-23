@@ -1,9 +1,23 @@
-## 2.16.0 (Unreleased)
+## 2.17.0 (Unreleased)
 
 LEGO UPDATE:
 
-[lego](https://github.com/go-acme/lego) has been updated to v4.13.1 See the
-lego [CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.13.1/CHANGELOG.md)
+[lego](https://github.com/go-acme/lego) has been updated to v4.14.0 See the
+lego [CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.14.0/CHANGELOG.md)
+for more details on additions and changes to DNS providers, and other minor
+changes to the library.
+
+## 2.16.1 (August 11, 2023)
+
+This change is being made to correct build issues. No other changes are being
+made.
+
+## 2.16.0 (August 11, 2023)
+
+LEGO UPDATE:
+
+[lego](https://github.com/go-acme/lego) has been updated to v4.13.3 See the
+lego [CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.13.3/CHANGELOG.md)
 for more details on additions and changes to DNS providers, and other minor
 changes to the library.
 
