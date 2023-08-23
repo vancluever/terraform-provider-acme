@@ -367,6 +367,57 @@ func TestAccACMECertificate_httpMemcache(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_httpS3(t *testing.T) {
+	testAccACMECertificate_httpS3_preCheck(t)
+
+	wantEnv := os.Environ()
+	s3_bucket := os.Getenv("ACME_S3_BUCKET")
+	awsRegion := os.Getenv("AWS_REGION")
+	closeServer, err := testAccCheckACMECertificateS3ProxyTestServer(s3_bucket, awsRegion)
+	if err != nil {
+		t.Fatalf("TestAccACMECertificate_S3httpProxy: %s", err)
+	}
+	defer closeServer()
+
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigHTTPS3(s3_bucket),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "test-s3", "test-s32"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
+				),
+			},
+		},
+	})
+}
+
+func testAccACMECertificate_httpS3_preCheck(t *testing.T) {
+	t.Helper()
+
+	if os.Getenv("ACME_S3_BUCKET") == "" {
+		t.Skip("ACME_S3_BUCKET must be set for the HTTP S3 challenge acceptance test")
+	}
+
+	if os.Getenv("AWS_PROFILE") == "" {
+		if os.Getenv("AWS_ACCESS_KEY_ID") == "" {
+			t.Skip("AWS_ACCESS_KEY_ID must be set for the HTTP S3 challenge acceptance test")
+		}
+		if os.Getenv("AWS_SECRET_ACCESS_KEY") == "" {
+			t.Skip("AWS_SECRET_ACCESS_KEY must be set for the HTTP S3 challenge acceptance test")
+		}
+	}
+
+	if os.Getenv("AWS_REGION") == "" {
+		t.Skip("AWS_REGION must be set for the HTTP S3 challenge acceptance test")
+	}
+}
+
 func TestAccACMECertificate_httpProxy(t *testing.T) {
 	wantEnv := os.Environ()
 	closeServer, err := testAccCheckACMECertificateProxyTestServer()
@@ -670,6 +721,30 @@ func testAccCheckACMECertificateProxyTestServer() (func(), error) {
 		Handler: proxy,
 	}
 	go server.ListenAndServe()
+	return func() {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+		defer cancel()
+		server.Shutdown(ctx)
+	}, nil
+}
+
+func testAccCheckACMECertificateS3ProxyTestServer(s3Bucket string, awsRegion string) (func(), error) {
+	target := fmt.Sprintf("%s.s3.%s.amazonaws.com", s3Bucket, awsRegion)
+
+	proxy := &httputil.ReverseProxy{
+		Director: func(req *http.Request) {
+			req.URL.Scheme = "https"
+			req.URL.Host = target
+			req.Host = target
+		},
+	}
+
+	server := &http.Server{
+		Addr:    ":5002",
+		Handler: proxy,
+	}
+	go server.ListenAndServe()
+
 	return func() {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 		defer cancel()
@@ -1287,6 +1362,45 @@ resource "acme_certificate" "certificate" {
 		pebbleCertDomain,
 		pebbleCertDomain,
 		memcacheHost,
+	)
+}
+
+func testAccACMECertificateConfigHTTPS3(bucket string) string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "test-s3.${var.domain}"
+  subject_alternative_names = ["test-s32.${var.domain}"]
+
+  http_s3_challenge {
+    s3_bucket = "%s"
+  }
+}
+`, pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		bucket,
 	)
 }
 

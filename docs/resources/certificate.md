@@ -157,13 +157,16 @@ configured (`common_name` + `subject_alternative_names`).
 * `http_memcached_challenge` (Optional) - Defines an alternate type of HTTP
   challenge that can be used to serve up challenges to a
   [Memcached](https://memcached.org/) cluster.
+* `http_s3_challenge` (Optional) - Defines an alternate type of HTTP
+  challenge that can be used to serve up challenges to a
+  [S3](https://aws.amazon.com/s3/) bucket.
 * `tls_challenge` (Optional) - Defines a TLS challenge to use in fulfilling the
   request.
 
--> Only one of `http_challenge`, `http_webroot_challenge`, and
-`http_memcached_challenge` can be defined at once. See the section on [Using
-HTTP and TLS challenges](#using-http-and-tls-challenges) for more details on
-using these and `tls_challenge`.
+-> Only one of `http_challenge`, `http_webroot_challenge`, `http_s3_challenge`
+and `http_memcached_challenge` can be defined at once. See the section on
+[Using HTTP and TLS challenges](#using-http-and-tls-challenges) for more
+details on using these and `tls_challenge`.
 
 * `must_staple` (Optional) Enables the [OCSP Stapling Required][ocsp-stapling]
   TLS Security Policy extension. Certificates with this extension must include a
@@ -393,10 +396,10 @@ whenever possible to generate certificates with `acme_certificate`. Only use the
 HTTP and TLS challenge types if you don't have access to do DNS challenges, and
 can ensure that you can direct traffic for all domains being authorized to the
 machine running Terraform, or the locations served by the
-`http_webroot_challenge` and `http_memcached_challenge` types. Additionally,
-these challenge types do not support wildcard domains. See the [Let's Encrypt
-page on challenge types](https://letsencrypt.org/docs/challenge-types/) for more
-details. These challenges have requirements that almost always exclude them from
+`http_webroot_challenge`, `http_s3_challenge` and `http_memcached_challenge` types. 
+Additionally, these challenge types do not support wildcard domains. See the
+[Let's Encrypt page on challenge types](https://letsencrypt.org/docs/challenge-types/)
+for more details. These challenges have requirements that almost always exclude them from
 being used on [Terraform Cloud](https://www.terraform.io/docs/cloud/) unless you
 are using the [Cloud
 Agents](https://www.terraform.io/docs/cloud/agents/index.html) feature.
@@ -508,6 +511,31 @@ resource "acme_certificate" "certificate" {
 
   http_memcached_challenge {
     hosts = ["127.0.0.1:11211"]
+  }
+
+  #...
+}
+```
+
+#### `http_s3_challenge`
+
+Use `http_s3_challenge` to publish challenge records to a
+[S3](https://aws.amazon.com/s3/) bucket. The record is published to
+`/.well-known/acme-challenge/KEY` in the bucket. The domain will need to be configured
+to point to the s3 bucket, either with a reverse proxy or some application.
+ The resource will request an HTTP-01
+challenge for which an out-of-band process must use this data to answer.
+
+See the [Documentation on
+lego](https://github.com/go-acme/lego/blob/master/providers/http/s3/s3.toml)
+
+
+```
+resource "acme_certificate" "certificate" {
+  #...
+
+  http_s3_challenge {
+    s3_bucket = "bucket_name"
   }
 
   #...
