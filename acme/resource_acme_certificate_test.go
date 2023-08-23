@@ -368,16 +368,14 @@ func TestAccACMECertificate_httpMemcache(t *testing.T) {
 }
 
 func TestAccACMECertificate_httpS3(t *testing.T) {
+	testAccACMECertificate_httpS3_preCheck(t)
+
 	wantEnv := os.Environ()
-	s3_bucket := os.Getenv("TF_S3_BUCKET")
-	// If bucket not set, skip test
-	if s3_bucket == "" {
-		t.Skip()
-	}
+	s3_bucket := os.Getenv("ACME_S3_BUCKET")
 	awsRegion := os.Getenv("AWS_REGION")
 	closeServer, err := testAccCheckACMECertificateS3ProxyTestServer(s3_bucket, awsRegion)
 	if err != nil {
-		panic(fmt.Errorf("TestAccACMECertificate_S3httpProxy: %s", err))
+		t.Fatalf("TestAccACMECertificate_S3httpProxy: %s", err)
 	}
 	defer closeServer()
 
@@ -397,6 +395,27 @@ func TestAccACMECertificate_httpS3(t *testing.T) {
 			},
 		},
 	})
+}
+
+func testAccACMECertificate_httpS3_preCheck(t *testing.T) {
+	t.Helper()
+
+	if os.Getenv("ACME_S3_BUCKET") == "" {
+		t.Skip("ACME_S3_BUCKET must be set for the HTTP S3 challenge acceptance test")
+	}
+
+	if os.Getenv("AWS_PROFILE") == "" {
+		if os.Getenv("AWS_ACCESS_KEY_ID") == "" {
+			t.Skip("AWS_ACCESS_KEY_ID must be set for the HTTP S3 challenge acceptance test")
+		}
+		if os.Getenv("AWS_SECRET_ACCESS_KEY") == "" {
+			t.Skip("AWS_SECRET_ACCESS_KEY must be set for the HTTP S3 challenge acceptance test")
+		}
+	}
+
+	if os.Getenv("AWS_REGION") == "" {
+		t.Skip("AWS_REGION must be set for the HTTP S3 challenge acceptance test")
+	}
 }
 
 func TestAccACMECertificate_httpProxy(t *testing.T) {
