@@ -12,16 +12,13 @@
         devShell = pkgs.mkShell {
           packages = [
             pkgs.buf
-            pkgs.buf-language-server
-            pkgs.go
+            pkgs.go_1_21
             pkgs.golangci-lint
             pkgs.golangci-lint-langserver
             pkgs.gopls
-            pkgs.nixfmt
             pkgs.protoc-gen-go
             pkgs.protoc-gen-go-grpc
             pkgs.protoc-gen-go-grpc
-            pkgs.rnix-lsp
           ];
         };
       });
