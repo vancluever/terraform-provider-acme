@@ -1,6 +1,10 @@
-## 2.17.1-pre (Unreleased)
+## 2.17.1 (Unreleased)
 
-Bumped version for dev.
+FEATURES:
+
+* `resource/acme_certificate`: `azuredns` DNS provider now has the same
+  environment variable aliasing as the old `azure` provider.
+  [#342](https://github.com/vancluever/terraform-provider-acme/issues/342) 
 
 ## 2.17.0 (August 22, 2023)
 
