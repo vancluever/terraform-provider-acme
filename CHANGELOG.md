@@ -1,4 +1,4 @@
-## 2.17.1 (Unreleased)
+## 2.17.1 (September 11, 2023)
 
 FEATURES:
 
