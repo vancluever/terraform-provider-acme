@@ -18,7 +18,6 @@
             pkgs.gopls
             pkgs.protoc-gen-go
             pkgs.protoc-gen-go-grpc
-            pkgs.protoc-gen-go-grpc
           ];
         };
       });
