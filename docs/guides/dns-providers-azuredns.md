@@ -61,6 +61,16 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `AZURE_TTL` - The TTL of the TXT record used for the DNS challenge.
 * `AZURE_ZONE_NAME` - Zone name to use inside Azure DNS service to add the TXT record in.
 
+The following variables are **Terraform-specific** aliases for the above
+configuration values:
+
+
+* `ARM_CLIENT_ID` - alias for `AZURE_CLIENT_ID`.
+* `ARM_CLIENT_SECRET` - alias for `AZURE_CLIENT_SECRET`.
+* `ARM_RESOURCE_GROUP` - alias for `AZURE_RESOURCE_GROUP`.
+* `ARM_SUBSCRIPTION_ID` - alias for `AZURE_SUBSCRIPTION_ID`.
+* `ARM_TENANT_ID` - alias for `AZURE_TENANT_ID`.
+
 ## Description
 
 Azure Credentials are automatically detected in the following locations and prioritized in the following order:

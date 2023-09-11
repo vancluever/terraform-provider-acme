@@ -4,7 +4,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -19,6 +18,13 @@ import (
 // specific providers.
 var envVarAliases = map[string]map[string]string{
 	"azure": {
+		"ARM_CLIENT_ID":       "AZURE_CLIENT_ID",
+		"ARM_CLIENT_SECRET":   "AZURE_CLIENT_SECRET",
+		"ARM_SUBSCRIPTION_ID": "AZURE_SUBSCRIPTION_ID",
+		"ARM_TENANT_ID":       "AZURE_TENANT_ID",
+		"ARM_RESOURCE_GROUP":  "AZURE_RESOURCE_GROUP",
+	},
+	"azuredns": {
 		"ARM_CLIENT_ID":       "AZURE_CLIENT_ID",
 		"ARM_CLIENT_SECRET":   "AZURE_CLIENT_SECRET",
 		"ARM_SUBSCRIPTION_ID": "AZURE_SUBSCRIPTION_ID",
@@ -236,7 +242,7 @@ func generateGo(providers []dnsProviderInfo) {
 		log.Fatal(err)
 	}
 
-	if err := ioutil.WriteFile(os.Args[2], out, 0666); err != nil {
+	if err := os.WriteFile(os.Args[2], out, 0666); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -251,7 +257,7 @@ func generateProviderDocs(providers []dnsProviderInfo) {
 		}
 
 		path := filepath.Join(os.Args[2], "dns-providers-"+provider.Code+".md")
-		if err := ioutil.WriteFile(path, b.Bytes(), 0666); err != nil {
+		if err := os.WriteFile(path, b.Bytes(), 0666); err != nil {
 			log.Fatal(err)
 		}
 
