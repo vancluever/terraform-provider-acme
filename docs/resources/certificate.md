@@ -208,6 +208,13 @@ Pretend Pear X1`.
 * `revoke_certificate_on_destroy` - Enables revocation of a certificate upon destroy,
 which includes when a resource is re-created. Default is `true`.
 
+* `cert_timeout` - Controls the timeout in seconds for certificate requests
+  that are made after challenges are complete. Defaults to 30 seconds.
+
+-> As mentioned, `cert_timeout` does nothing until all challenges are complete.
+If you are looking to control timeouts related to a particular challenge (such
+as a DNS challenge), see that challenge provider's specific options.
+
 ### Using DNS challenges
 
 This method authenticates certificate domains by requiring the requester to

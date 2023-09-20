@@ -203,6 +203,11 @@ func resourceACMECertificateV5() *schema.Resource {
 				Default:  "",
 				ForceNew: true,
 			},
+			"cert_timeout": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  30,
+			},
 			"certificate_url": {
 				Type:     schema.TypeString,
 				Computed: true,

@@ -84,17 +84,7 @@ func expandACMEClient(d *schema.ResourceData, meta interface{}, loadReg bool) (*
 		return nil, nil, fmt.Errorf("error getting user data: %s", err.Error())
 	}
 
-	config := lego.NewConfig(user)
-	config.CADirURL = meta.(*Config).ServerURL
-
-	// Note this function is used by both the registration and certificate
-	// resources, but key type is not necessary during registration, so
-	// it's okay if it's empty for that.
-	if v, ok := d.GetOk("key_type"); ok {
-		config.Certificate.KeyType = certcrypto.KeyType(v.(string))
-	}
-
-	client, err := lego.NewClient(config)
+	client, err := lego.NewClient(expandACMEClient_config(d, meta, user))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -108,6 +98,26 @@ func expandACMEClient(d *schema.ResourceData, meta interface{}, loadReg bool) (*
 	}
 
 	return client, user, nil
+}
+
+func expandACMEClient_config(d *schema.ResourceData, meta interface{}, user registration.User) *lego.Config {
+	config := lego.NewConfig(user)
+	config.CADirURL = meta.(*Config).ServerURL
+
+	// Note this function is used by both the registration and certificate
+	// resources, but key type is not necessary during registration, so
+	// it's okay if it's empty for that.
+	if v, ok := d.GetOk("key_type"); ok {
+		config.Certificate.KeyType = certcrypto.KeyType(v.(string))
+	}
+
+	// Same with timeout for certificates - defaults should be set by the
+	// certificate resource and missing for registrations
+	if v, ok := d.GetOk("cert_timeout"); ok {
+		config.Certificate.Timeout = time.Second * time.Duration(v.(int))
+	}
+
+	return config
 }
 
 // certificateResourceExpander is a simple interface to allow us to use the Get
