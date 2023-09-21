@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/go-acme/lego/v4/certificate"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -132,6 +133,32 @@ func blankCertificateResource() *schema.ResourceData {
 	return d
 }
 
+// registrationResourceDataDefaultConfig returns the schema.ResourceData for a
+// registration based off of a default config.
+//
+// Note that the attributes in the result set may vary quite differently from
+// registrationResourceData since it actually does a diff based on the
+// attributes in the schema, versus working with a blank ResourceData.
+func registrationResourceDataDefaultConfig(t *testing.T) *schema.ResourceData {
+	return schema.TestResourceDataRaw(t, resourceACMERegistration().Schema, make(map[string]interface{}))
+}
+
+// certificateResourceDataDefaultConfig returns the schema.ResourceData for a
+// certificate based off of a default config.
+//
+// Note that the attributes in the result set may vary quite differently from
+// blankCertificateResource since it actually does a diff based on the
+// attributes in the schema, versus working with a blank ResourceData.
+func certificateResourceDataDefaultConfig(t *testing.T) *schema.ResourceData {
+	// NOTE: we set cert_timeout to a static value here to try and
+	// bring meaning to the TestExpandACMEClient_config_certTimeout_default test.
+	// Since lego automatically sets the default to 30 seconds, we need to be
+	// able to differentiate between a schema that does not have this value in
+	// the client (registrations) versus one that does (certificates) as we can't
+	// test on the zero value for registrations.
+	return schema.TestResourceDataRaw(t, resourceACMECertificate().Schema, map[string]interface{}{"cert_timeout": 90})
+}
+
 func TestACME_expandACMEUser(t *testing.T) {
 	d := registrationResourceData()
 	u, err := expandACMEUser(d)
@@ -171,7 +198,7 @@ func TestACME_expandACMEClient_badKey(t *testing.T) {
 	}
 }
 
-func TestACME_expandACMEClient_noCertData(t *testing.T) {
+func TestACME_certDaysRemaining_noCertData(t *testing.T) {
 	c := &certificate.Resource{}
 	_, err := certDaysRemaining(c)
 	if err == nil {
@@ -286,5 +313,33 @@ func TestACME_validateDNSChallengeConfig_invalid(t *testing.T) {
 	_, errs := validateDNSChallengeConfig(s, "config")
 	if len(errs) < 1 {
 		t.Fatalf("should have given an error")
+	}
+}
+
+func TestExpandACMEClient_config_certTimeout_default(t *testing.T) {
+	testCases := []struct {
+		desc     string
+		f        func(t *testing.T) *schema.ResourceData
+		expected time.Duration
+	}{
+		{
+			desc:     "registration",
+			f:        registrationResourceDataDefaultConfig,
+			expected: time.Second * 30,
+		},
+		{
+			desc:     "certificate",
+			f:        certificateResourceDataDefaultConfig,
+			expected: time.Second * 90,
+		},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+
+			c := expandACMEClient_config(tc.f(t), &Config{}, &acmeUser{})
+			if tc.expected != c.Certificate.Timeout {
+				t.Fatalf("expected timeout to be %s, got %s", tc.expected, c.Certificate.Timeout)
+			}
+		})
 	}
 }
