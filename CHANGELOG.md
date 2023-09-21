@@ -1,4 +1,4 @@
-## 2.18.0 (Unreleased)
+## 2.18.0 (September 21, 2023)
 
 FEATURES:
 
