@@ -1,6 +1,11 @@
-## 2.17.3-pre (Unreleased)
+## 2.18.0 (Unreleased)
 
-Bumped version for dev.
+FEATURES:
+
+* `resource/acme_certificate`: Added the `cert_timeout` option to control the
+  timeout of HTTP requests used to obtain the certificate after challenges are
+  complete.
+  [#349](https://github.com/vancluever/terraform-provider-acme/issues/349) 
 
 ## 2.17.2 (September 20, 2023)
 
