@@ -24,13 +24,6 @@ var envVarAliases = map[string]map[string]string{
 		"ARM_TENANT_ID":       "AZURE_TENANT_ID",
 		"ARM_RESOURCE_GROUP":  "AZURE_RESOURCE_GROUP",
 	},
-	"azuredns": {
-		"ARM_CLIENT_ID":       "AZURE_CLIENT_ID",
-		"ARM_CLIENT_SECRET":   "AZURE_CLIENT_SECRET",
-		"ARM_SUBSCRIPTION_ID": "AZURE_SUBSCRIPTION_ID",
-		"ARM_TENANT_ID":       "AZURE_TENANT_ID",
-		"ARM_RESOURCE_GROUP":  "AZURE_RESOURCE_GROUP",
-	},
 }
 
 // providerURLs is a list of providers to override provider pages
