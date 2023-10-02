@@ -403,7 +403,7 @@ whenever possible to generate certificates with `acme_certificate`. Only use the
 HTTP and TLS challenge types if you don't have access to do DNS challenges, and
 can ensure that you can direct traffic for all domains being authorized to the
 machine running Terraform, or the locations served by the
-`http_webroot_challenge`, `http_s3_challenge` and `http_memcached_challenge` types. 
+`http_webroot_challenge`, `http_s3_challenge` and `http_memcached_challenge` types.
 Additionally, these challenge types do not support wildcard domains. See the
 [Let's Encrypt page on challenge types](https://letsencrypt.org/docs/challenge-types/)
 for more details. These challenges have requirements that almost always exclude them from
@@ -551,7 +551,7 @@ resource "acme_certificate" "certificate" {
 
 The options are as follows:
 
-* `hosts` (Required) - The hosts to publish the record to.
+* `s3_bucket` (Required) - The s3_bucket to publish the record to.
 
 #### `tls_challenge`
 
