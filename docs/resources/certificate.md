@@ -220,6 +220,12 @@ as a DNS challenge), see that challenge provider's specific options.
 This method authenticates certificate domains by requiring the requester to
 place a TXT record on the FQDNs in the certificate.
 
+-> The ACME provider will automatically follow CNAME records when working to
+automatically resolve where to put the challenge record. For more details on
+this, you can look at the [lego page on the
+matter](https://go-acme.github.io/lego/usage/cli/options/#dns-resolvers-and-challenge-verification),
+for which the same logic applies.
+
 The ACME provider responds to DNS challenges automatically by utilizing one of
 the supported DNS challenge providers. Most providers take credentials as
 environment variables, but if you would rather use configuration for this
