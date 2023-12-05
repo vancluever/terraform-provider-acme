@@ -249,6 +249,10 @@ func resourceACMECertificateV5() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"revoke_certificate_reason": {
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -466,11 +470,13 @@ func resourceACMECertificateDelete(d *schema.ResourceData, meta interface{}) err
 	}
 
 	if remaining >= 0 {
-		if err := client.Certificate.Revoke(cert.Certificate); err != nil {
-			return err
+		maybeReason, ok := d.GetOk("revoke_certificate_reason")
+		if ok {
+			reason := uint(maybeReason.(int))
+			return client.Certificate.RevokeWithReason(cert.Certificate, &reason)
 		}
+		return client.Certificate.Revoke(cert.Certificate)
 	}
-
 	return nil
 }
 

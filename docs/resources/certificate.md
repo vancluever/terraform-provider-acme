@@ -208,6 +208,10 @@ Pretend Pear X1`.
 * `revoke_certificate_on_destroy` - Enables revocation of a certificate upon destroy,
 which includes when a resource is re-created. Default is `true`.
 
+* `revoke_certificate_reason` - If `revoke_certificate_on_destroy` is `true`, use
+this reason code as a number (from [RFC 5280, section 5.3.1](https://www.rfc-editor.org/rfc/rfc5280#section-5.3.1).
+By default, no reason provided. Some CA's require a reason to be provided.
+
 * `cert_timeout` - Controls the timeout in seconds for certificate requests
   that are made after challenges are complete. Defaults to 30 seconds.
 

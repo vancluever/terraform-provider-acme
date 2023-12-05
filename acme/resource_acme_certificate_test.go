@@ -53,6 +53,28 @@ func TestAccACMECertificate_basic(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_basic_revoke_reason(t *testing.T) {
+	wantEnv := os.Environ()
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		CheckDestroy:      testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusRevoked),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateRevokeReasonConfig(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www", "www2"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusValid),
+					testAccCheckEnvironNotChanged(wantEnv),
+				),
+			},
+		},
+	})
+}
+
 func TestAccACMECertificate_CSR(t *testing.T) {
 	wantEnv := os.Environ()
 	resource.Test(t, resource.TestCase{
@@ -830,6 +852,54 @@ resource "acme_certificate" "certificate" {
 
   recursive_nameservers        = ["%s"]
   disable_complete_propagation = true
+
+  dns_challenge {
+    provider = "exec"
+    config = {
+      EXEC_PATH = "%s"
+    }
+  }
+}
+`, pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		pebbleChallTestDNSSrv,
+		pebbleChallTestDNSScriptPath,
+	)
+}
+
+func testAccACMECertificateRevokeReasonConfig() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "www.${var.domain}"
+  subject_alternative_names = ["www2.${var.domain}"]
+
+  recursive_nameservers        = ["%s"]
+  disable_complete_propagation = true
+
+  revoke_certificate_reason = 4 // superseded
 
   dns_challenge {
     provider = "exec"
