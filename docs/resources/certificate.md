@@ -208,9 +208,19 @@ Pretend Pear X1`.
 * `revoke_certificate_on_destroy` - Enables revocation of a certificate upon destroy,
 which includes when a resource is re-created. Default is `true`.
 
-* `revoke_certificate_reason` - If `revoke_certificate_on_destroy` is `true`, use
-this reason code as a number (from [RFC 5280, section 5.3.1](https://www.rfc-editor.org/rfc/rfc5280#section-5.3.1).
-By default, no reason provided. Some CA's require a reason to be provided.
+* `revoke_certificate_reason` - Some CA's require a reason for revocation to be provided.
+Use this reason (from [RFC 5280, section 5.3.1](https://www.rfc-editor.org/rfc/rfc5280#section-5.3.1).
+By default, no reason provided in revocation requests. The reason is a string, when provided should be one of:
+  * unspecified
+  * key-compromise
+  * ca-compromise
+  * affiliation-changed
+  * superseded
+  * cessation-of-operation
+  * certificate-hold
+  * remove-from-crl
+  * privilege-withdrawn
+  * aa-compromise
 
 * `cert_timeout` - Controls the timeout in seconds for certificate requests
   that are made after challenges are complete. Defaults to 30 seconds.
@@ -545,7 +555,6 @@ challenge for which an out-of-band process must use this data to answer.
 
 See the [Documentation on
 lego](https://github.com/go-acme/lego/blob/master/providers/http/s3/s3.toml)
-
 
 ```
 resource "acme_certificate" "certificate" {

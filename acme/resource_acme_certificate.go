@@ -7,11 +7,27 @@ import (
 	"log"
 	"time"
 
+	"github.com/go-acme/lego/v4/acme"
 	"github.com/go-acme/lego/v4/certificate"
 	"github.com/go-acme/lego/v4/challenge/dns01"
 	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+)
+
+type RevocationReason string
+
+const (
+	RevocationReasonUnspecified          RevocationReason = "unspecified"
+	RevocationReasonKeyCompromise        RevocationReason = "key-compromise"
+	RevocationReasonCACompromise         RevocationReason = "ca-compromise"
+	RevocationReasonAffiliationChanged   RevocationReason = "affiliation-changed"
+	RevocationReasonSuperseded           RevocationReason = "superseded"
+	RevocationReasonCessationOfOperation RevocationReason = "cessation-of-operation"
+	RevocationReasonCertificateHold      RevocationReason = "certificate-hold"
+	RevocationReasonRemoveFromCRL        RevocationReason = "remove-from-crl"
+	RevocationReasonPrivilegeWithdrawn   RevocationReason = "privilege-withdrawn"
+	RevocationReasonAACompromise         RevocationReason = "aa-compromise"
 )
 
 // resourceACMECertificate returns the current version of the
@@ -250,8 +266,9 @@ func resourceACMECertificateV5() *schema.Resource {
 				Default:  true,
 			},
 			"revoke_certificate_reason": {
-				Type:     schema.TypeInt,
-				Optional: true,
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validateRevocationReason,
 			},
 		},
 	}
@@ -472,8 +489,12 @@ func resourceACMECertificateDelete(d *schema.ResourceData, meta interface{}) err
 	if remaining >= 0 {
 		maybeReason, ok := d.GetOk("revoke_certificate_reason")
 		if ok {
-			reason := uint(maybeReason.(int))
-			return client.Certificate.RevokeWithReason(cert.Certificate, &reason)
+			reason := RevocationReason(maybeReason.(string))
+			reasonNum, err := GetRevocationReason(reason)
+			if err != nil {
+				return err
+			}
+			return client.Certificate.RevokeWithReason(cert.Certificate, &reasonNum)
 		}
 		return client.Certificate.Revoke(cert.Certificate)
 	}
@@ -548,5 +569,32 @@ func resourceACMECertificatePreCheckDelay(delay int) dns01.WrapPreCheckFunc {
 
 		// A previous pre-check failed, return and exit.
 		return stop, err
+	}
+}
+
+func GetRevocationReason(reason RevocationReason) (uint, error) {
+	switch reason {
+	case RevocationReasonUnspecified:
+		return acme.CRLReasonUnspecified, nil
+	case RevocationReasonKeyCompromise:
+		return acme.CRLReasonKeyCompromise, nil
+	case RevocationReasonCACompromise:
+		return acme.CRLReasonCACompromise, nil
+	case RevocationReasonAffiliationChanged:
+		return acme.CRLReasonAffiliationChanged, nil
+	case RevocationReasonSuperseded:
+		return acme.CRLReasonSuperseded, nil
+	case RevocationReasonCessationOfOperation:
+		return acme.CRLReasonCessationOfOperation, nil
+	case RevocationReasonCertificateHold:
+		return acme.CRLReasonCertificateHold, nil
+	case RevocationReasonRemoveFromCRL:
+		return acme.CRLReasonRemoveFromCRL, nil
+	case RevocationReasonPrivilegeWithdrawn:
+		return acme.CRLReasonPrivilegeWithdrawn, nil
+	case RevocationReasonAACompromise:
+		return acme.CRLReasonAACompromise, nil
+	default:
+		return acme.CRLReasonUnspecified, fmt.Errorf("unknown revocation reason: %s", reason)
 	}
 }

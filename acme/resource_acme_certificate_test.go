@@ -899,7 +899,7 @@ resource "acme_certificate" "certificate" {
   recursive_nameservers        = ["%s"]
   disable_complete_propagation = true
 
-  revoke_certificate_reason = 4 // superseded
+  revoke_certificate_reason = "superseded"
 
   dns_challenge {
     provider = "exec"
