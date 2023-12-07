@@ -1,4 +1,4 @@
-## 2.19.0 (Unreleased)
+## 2.19.0 (December 7, 2023)
 
 FEATURES:
 
