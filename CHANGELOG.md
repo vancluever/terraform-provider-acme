@@ -1,6 +1,10 @@
-## 2.18.1-pre (Unreleased)
+## 2.19.0 (Unreleased)
 
-Bumped version for dev.
+FEATURES:
+
+* `resource/acme_certificate`: Added the ability to specify a revocation
+  reason.
+  [#364](https://github.com/vancluever/terraform-provider-acme/issues/364) 
 
 ## 2.18.0 (September 21, 2023)
 
