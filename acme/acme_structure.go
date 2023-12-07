@@ -388,3 +388,12 @@ func validateDNSChallengeConfig(v interface{}, k string) (ws []string, errors []
 	}
 	return
 }
+
+func validateRevocationReason(v interface{}, k string) (ws []string, errors []error) {
+	value := RevocationReason(v.(string))
+	_, err := GetRevocationReason(value)
+	if err != nil {
+		errors = append(errors, err)
+	}
+	return
+}
