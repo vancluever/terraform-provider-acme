@@ -1,4 +1,4 @@
-## 2.19.1 (Unreleased)
+## 2.19.1 (January 23, 2024)
 
 BUG FIXES:
 
