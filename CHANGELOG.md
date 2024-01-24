@@ -1,6 +1,11 @@
-## 2.19.1-pre (Unreleased)
+## 2.19.1 (Unreleased)
 
-Bumped version for dev.
+BUG FIXES:
+
+* `resource/acme_registration`: Fixed a situation where certain errors during
+  creation of the resource may result in "inconsistent result after apply" in
+  Terraform instead of the actual error.
+  [#375](https://github.com/vancluever/terraform-provider-acme/pull/375)
 
 ## 2.19.0 (December 7, 2023)
 
