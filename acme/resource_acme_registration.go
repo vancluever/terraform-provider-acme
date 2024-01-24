@@ -86,9 +86,14 @@ func resourceACMERegistrationCreate(d *schema.ResourceData, meta interface{}) er
 		return err
 	}
 
-	d.SetId(reg.URI)
+	_, user, err := expandACMEClient(d, meta, true)
+	if err != nil {
+		return err
+	}
 
-	return resourceACMERegistrationRead(d, meta)
+	// save the reg
+	d.SetId(reg.URI)
+	return saveACMERegistration(d, user.Registration)
 }
 
 func resourceACMERegistrationRead(d *schema.ResourceData, meta interface{}) error {
