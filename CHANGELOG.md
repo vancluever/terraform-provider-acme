@@ -1,3 +1,7 @@
+## 2.19.2-pre (Unreleased)
+
+Bumped version for dev.
+
 ## 2.19.1 (January 23, 2024)
 
 BUG FIXES:
