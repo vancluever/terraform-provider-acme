@@ -54,6 +54,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `REGRU_HTTP_TIMEOUT` - API request timeout.
 * `REGRU_POLLING_INTERVAL` - Time between DNS propagation check.
 * `REGRU_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `REGRU_TLS_CERT` - authentication certificate.
+* `REGRU_TLS_KEY` - authentication private key.
 * `REGRU_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

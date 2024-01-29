@@ -48,7 +48,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `GANDIV5_API_KEY` - API key.
+* `GANDIV5_API_KEY` - API key (Deprecated).
+* `GANDIV5_PERSONAL_ACCESS_TOKEN` - Personal Access Token.
 
 * `GANDIV5_HTTP_TIMEOUT` - API request timeout.
 * `GANDIV5_POLLING_INTERVAL` - Time between DNS propagation check.

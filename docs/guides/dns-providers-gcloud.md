@@ -57,5 +57,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `GCE_POLLING_INTERVAL` - Time between DNS propagation check.
 * `GCE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
 * `GCE_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `GCE_ZONE_ID` - Allows to skip the automatic detection of the zone.
 
 

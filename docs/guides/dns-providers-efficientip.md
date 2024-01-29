@@ -54,6 +54,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `EFFICIENTIP_USERNAME` - Username.
 
 * `EFFICIENTIP_HTTP_TIMEOUT` - API request timeout.
+* `EFFICIENTIP_INSECURE_SKIP_VERIFY` - Whether or not to verify EfficientIP API certificate.
 * `EFFICIENTIP_POLLING_INTERVAL` - Time between DNS propagation check.
 * `EFFICIENTIP_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
 * `EFFICIENTIP_TTL` - The TTL of the TXT record used for the DNS challenge.

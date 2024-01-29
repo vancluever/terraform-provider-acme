@@ -48,14 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `LIQUID_WEB_PASSWORD` - Storm API Password.
-* `LIQUID_WEB_USERNAME` - Storm API Username.
-* `LIQUID_WEB_ZONE` - DNS Zone.
+* `LWAPI_PASSWORD` - Liquid Web API Password.
+* `LWAPI_USERNAME` - Liquid Web API Username.
 
-* `LIQUID_WEB_HTTP_TIMEOUT` - Maximum waiting time for the DNS records to be created (not verified).
-* `LIQUID_WEB_POLLING_INTERVAL` - Time between DNS propagation check.
-* `LIQUID_WEB_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `LIQUID_WEB_TTL` - The TTL of the TXT record used for the DNS challenge.
-* `LIQUID_WEB_URL` - Storm API endpoint.
+* `LWAPI_HTTP_TIMEOUT` - Maximum waiting time for the DNS records to be created (not verified).
+* `LWAPI_POLLING_INTERVAL` - Time between DNS propagation check.
+* `LWAPI_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `LWAPI_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `LWAPI_URL` - Liquid Web API endpoint.
+* `LWAPI_ZONE` - DNS Zone.
 
 

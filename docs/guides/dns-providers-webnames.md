@@ -1,5 +1,5 @@
 ---
-page_title: "otc"
+page_title: "webnames"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Open Telekom Cloud DNS Challenge Provider
+# Webnames DNS Challenge Provider
 
-The `otc` DNS challenge provider can be used to perform DNS challenges for
+The `webnames` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Open Telekom Cloud](https://cloud.telekom.de/en).
+[Webnames](https://www.webnames.ru/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "otc"
+    provider = "webnames"
   }
 }
 ```
@@ -48,16 +48,16 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `OTC_DOMAIN_NAME` - Domain name.
-* `OTC_IDENTITY_ENDPOINT` - Identity endpoint URL.
-* `OTC_PASSWORD` - Password.
-* `OTC_PROJECT_NAME` - Project name.
-* `OTC_USER_NAME` - User name.
+* `WEBNAMES_API_KEY` - Domain API key.
 
-* `OTC_HTTP_TIMEOUT` - API request timeout.
-* `OTC_POLLING_INTERVAL` - Time between DNS propagation check.
-* `OTC_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `OTC_SEQUENCE_INTERVAL` - Time between sequential requests.
-* `OTC_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `WEBNAMES_HTTP_TIMEOUT` - API request timeout.
+* `WEBNAMES_POLLING_INTERVAL` - Time between DNS propagation check.
+* `WEBNAMES_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `WEBNAMES_TTL` - The TTL of the TXT record used for the DNS challenge.
 
+## API Key
+
+To obtain the key, you need to change the DNS server to `*.nameself.com`: Personal account / My domains and services / Select the required domain / DNS servers
+
+The API key can be found: Personal account / My domains and services / Select the required domain / Zone management / acme.sh or certbot settings
 

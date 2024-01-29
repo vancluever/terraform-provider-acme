@@ -1,5 +1,5 @@
 ---
-page_title: "otc"
+page_title: "httpnet"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Open Telekom Cloud DNS Challenge Provider
+# http.net DNS Challenge Provider
 
-The `otc` DNS challenge provider can be used to perform DNS challenges for
+The `httpnet` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Open Telekom Cloud](https://cloud.telekom.de/en).
+[http.net](https://www.http.net/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "otc"
+    provider = "httpnet"
   }
 }
 ```
@@ -48,16 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `OTC_DOMAIN_NAME` - Domain name.
-* `OTC_IDENTITY_ENDPOINT` - Identity endpoint URL.
-* `OTC_PASSWORD` - Password.
-* `OTC_PROJECT_NAME` - Project name.
-* `OTC_USER_NAME` - User name.
+* `HTTPNET_API_KEY` - API key.
 
-* `OTC_HTTP_TIMEOUT` - API request timeout.
-* `OTC_POLLING_INTERVAL` - Time between DNS propagation check.
-* `OTC_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `OTC_SEQUENCE_INTERVAL` - Time between sequential requests.
-* `OTC_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `HTTPNET_HTTP_TIMEOUT` - API request timeout.
+* `HTTPNET_POLLING_INTERVAL` - Time between DNS propagation check.
+* `HTTPNET_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `HTTPNET_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `HTTPNET_ZONE_NAME` - Zone name in ACE format.
 
 

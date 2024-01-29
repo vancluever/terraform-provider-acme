@@ -55,6 +55,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/hetzner"
 	"github.com/go-acme/lego/v4/providers/dns/hostingde"
 	"github.com/go-acme/lego/v4/providers/dns/hosttech"
+	"github.com/go-acme/lego/v4/providers/dns/httpnet"
 	"github.com/go-acme/lego/v4/providers/dns/httpreq"
 	"github.com/go-acme/lego/v4/providers/dns/hurricane"
 	"github.com/go-acme/lego/v4/providers/dns/hyperone"
@@ -120,6 +121,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/vkcloud"
 	"github.com/go-acme/lego/v4/providers/dns/vscale"
 	"github.com/go-acme/lego/v4/providers/dns/vultr"
+	"github.com/go-acme/lego/v4/providers/dns/webnames"
 	"github.com/go-acme/lego/v4/providers/dns/websupport"
 	"github.com/go-acme/lego/v4/providers/dns/wedos"
 	"github.com/go-acme/lego/v4/providers/dns/yandex"
@@ -560,6 +562,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"hosttech": func() (challenge.Provider, error) {
 		p, err := hosttech.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"httpnet": func() (challenge.Provider, error) {
+		p, err := httpnet.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -1080,6 +1090,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"vultr": func() (challenge.Provider, error) {
 		p, err := vultr.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"webnames": func() (challenge.Provider, error) {
+		p, err := webnames.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
