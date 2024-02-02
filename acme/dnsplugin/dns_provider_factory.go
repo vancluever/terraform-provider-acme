@@ -190,9 +190,11 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 		mapEnvironmentVariableValues(map[string]string{
 			"ARM_CLIENT_ID":       "AZURE_CLIENT_ID",
 			"ARM_CLIENT_SECRET":   "AZURE_CLIENT_SECRET",
+			"ARM_OIDC_TOKEN":      "AZURE_OIDC_TOKEN",
 			"ARM_RESOURCE_GROUP":  "AZURE_RESOURCE_GROUP",
 			"ARM_SUBSCRIPTION_ID": "AZURE_SUBSCRIPTION_ID",
 			"ARM_TENANT_ID":       "AZURE_TENANT_ID",
+			"ARM_USE_OIDC":        "AZURE_USE_OIDC",
 		})
 		p, err := azure.NewDNSProvider()
 		if err != nil {
@@ -205,9 +207,11 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 		mapEnvironmentVariableValues(map[string]string{
 			"ARM_CLIENT_ID":       "AZURE_CLIENT_ID",
 			"ARM_CLIENT_SECRET":   "AZURE_CLIENT_SECRET",
+			"ARM_OIDC_TOKEN":      "AZURE_OIDC_TOKEN",
 			"ARM_RESOURCE_GROUP":  "AZURE_RESOURCE_GROUP",
 			"ARM_SUBSCRIPTION_ID": "AZURE_SUBSCRIPTION_ID",
 			"ARM_TENANT_ID":       "AZURE_TENANT_ID",
+			"ARM_USE_OIDC":        "AZURE_USE_OIDC",
 		})
 		p, err := azuredns.NewDNSProvider()
 		if err != nil {

@@ -23,6 +23,8 @@ var envVarAliases = map[string]map[string]string{
 		"ARM_SUBSCRIPTION_ID": "AZURE_SUBSCRIPTION_ID",
 		"ARM_TENANT_ID":       "AZURE_TENANT_ID",
 		"ARM_RESOURCE_GROUP":  "AZURE_RESOURCE_GROUP",
+		"ARM_OIDC_TOKEN":      "AZURE_OIDC_TOKEN",
+		"ARM_USE_OIDC":        "AZURE_USE_OIDC",
 	},
 	"azuredns": {
 		"ARM_CLIENT_ID":       "AZURE_CLIENT_ID",
@@ -30,6 +32,8 @@ var envVarAliases = map[string]map[string]string{
 		"ARM_SUBSCRIPTION_ID": "AZURE_SUBSCRIPTION_ID",
 		"ARM_TENANT_ID":       "AZURE_TENANT_ID",
 		"ARM_RESOURCE_GROUP":  "AZURE_RESOURCE_GROUP",
+		"ARM_OIDC_TOKEN":      "AZURE_OIDC_TOKEN",
+		"ARM_USE_OIDC":        "AZURE_USE_OIDC",
 	},
 }
 

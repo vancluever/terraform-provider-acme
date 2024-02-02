@@ -69,8 +69,10 @@ configuration values:
 
 * `ARM_CLIENT_ID` - alias for `AZURE_CLIENT_ID`.
 * `ARM_CLIENT_SECRET` - alias for `AZURE_CLIENT_SECRET`.
+* `ARM_OIDC_TOKEN` - alias for `AZURE_OIDC_TOKEN`.
 * `ARM_RESOURCE_GROUP` - alias for `AZURE_RESOURCE_GROUP`.
 * `ARM_SUBSCRIPTION_ID` - alias for `AZURE_SUBSCRIPTION_ID`.
 * `ARM_TENANT_ID` - alias for `AZURE_TENANT_ID`.
+* `ARM_USE_OIDC` - alias for `AZURE_USE_OIDC`.
 
 
