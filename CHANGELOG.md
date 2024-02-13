@@ -1,4 +1,4 @@
-## 2.20.2 (Unreleased)
+## 2.20.2 (February 13, 2024)
 
 This is a re-release to address the expired Terraform registry key due with
 release issues with key ID 1D9DFB214E18E085. The new key ID is
