@@ -1,6 +1,8 @@
-## 2.20.1-pre (Unreleased)
+## 2.20.1 (Unreleased)
 
-Bumped version for dev.
+This is a release to address the expired Terraform registry key (key ID
+F282F2CFA56C3D69). The new key ID is 1D9DFB214E18E085. No other changes are
+being made.
 
 ## 2.20.0 (January 29, 2024)
 
