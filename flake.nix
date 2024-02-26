@@ -12,7 +12,7 @@
         devShell = pkgs.mkShell {
           packages = [
             pkgs.buf
-            pkgs.go_1_21
+            pkgs.go_1_22
             pkgs.golangci-lint
             pkgs.golangci-lint-langserver
             pkgs.gopls
