@@ -24,6 +24,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/cloudxns"
 	"github.com/go-acme/lego/v4/providers/dns/conoha"
 	"github.com/go-acme/lego/v4/providers/dns/constellix"
+	"github.com/go-acme/lego/v4/providers/dns/cpanel"
 	"github.com/go-acme/lego/v4/providers/dns/derak"
 	"github.com/go-acme/lego/v4/providers/dns/desec"
 	"github.com/go-acme/lego/v4/providers/dns/designate"
@@ -76,6 +77,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/liquidweb"
 	"github.com/go-acme/lego/v4/providers/dns/loopia"
 	"github.com/go-acme/lego/v4/providers/dns/luadns"
+	"github.com/go-acme/lego/v4/providers/dns/mailinabox"
 	"github.com/go-acme/lego/v4/providers/dns/metaname"
 	"github.com/go-acme/lego/v4/providers/dns/mydnsjp"
 	"github.com/go-acme/lego/v4/providers/dns/mythicbeasts"
@@ -107,6 +109,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/scaleway"
 	"github.com/go-acme/lego/v4/providers/dns/selectel"
 	"github.com/go-acme/lego/v4/providers/dns/servercow"
+	"github.com/go-acme/lego/v4/providers/dns/shellrent"
 	"github.com/go-acme/lego/v4/providers/dns/simply"
 	"github.com/go-acme/lego/v4/providers/dns/sonic"
 	"github.com/go-acme/lego/v4/providers/dns/stackpath"
@@ -314,6 +317,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"constellix": func() (challenge.Provider, error) {
 		p, err := constellix.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"cpanel": func() (challenge.Provider, error) {
+		p, err := cpanel.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -736,6 +747,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"mailinabox": func() (challenge.Provider, error) {
+		p, err := mailinabox.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"metaname": func() (challenge.Provider, error) {
 		p, err := metaname.NewDNSProvider()
 		if err != nil {
@@ -978,6 +997,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"servercow": func() (challenge.Provider, error) {
 		p, err := servercow.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"shellrent": func() (challenge.Provider, error) {
+		p, err := shellrent.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
