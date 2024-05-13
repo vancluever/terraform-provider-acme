@@ -10,7 +10,7 @@ require (
 	github.com/go-acme/lego/v4 v4.16.1
 	github.com/google/go-cmp v0.6.0
 	github.com/hashicorp/go-multierror v1.1.1
-	github.com/hashicorp/go-plugin v1.6.0
+	github.com/hashicorp/go-plugin v1.6.1
 	github.com/hashicorp/go-uuid v1.0.3
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.33.0
 	github.com/mitchellh/copystructure v1.2.0
