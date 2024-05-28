@@ -329,6 +329,8 @@ func privateKeyFromPEM(pemData []byte) (crypto.PrivateKey, error) {
 			return nil, fmt.Errorf("cannot decode supplied PEM data")
 		}
 		switch result.Type {
+		case "PRIVATE KEY":
+			return x509.ParsePKCS8PrivateKey(result.Bytes)
 		case "RSA PRIVATE KEY":
 			return x509.ParsePKCS1PrivateKey(result.Bytes)
 		case "EC PRIVATE KEY":
