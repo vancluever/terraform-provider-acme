@@ -48,9 +48,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `OVH_APPLICATION_KEY` - Application key.
-* `OVH_APPLICATION_SECRET` - Application secret.
-* `OVH_CONSUMER_KEY` - Consumer key.
+* `OVH_APPLICATION_KEY` - Application key (Application Key authentication).
+* `OVH_APPLICATION_SECRET` - Application secret (Application Key authentication).
+* `OVH_CLIENT_ID` - Client ID (OAuth2).
+* `OVH_CLIENT_SECRET` - Client secret (OAuth2).
+* `OVH_CONSUMER_KEY` - Consumer key (Application Key authentication).
 * `OVH_ENDPOINT` - Endpoint URL (ovh-eu or ovh-ca).
 
 * `OVH_HTTP_TIMEOUT` - API request timeout.
@@ -78,4 +80,20 @@ When requesting the consumer key, the following configuration can be used to def
   ]
 }
 ```
+
+## OAuth2 Client Credentials
+
+Another method for authentication is by using OAuth2 client credentials.
+
+An IAM policy and service account can be created by following the [OVH guide](https://help.ovhcloud.com/csm/en-manage-service-account?id=kb_article_view&sysparm_article=KB0059343).
+
+Following IAM policies need to be authorized for the affected domain:
+
+* dnsZone:apiovh:record/create
+* dnsZone:apiovh:record/delete
+* dnsZone:apiovh:refresh
+
+## Important Note
+
+Both authentication methods cannot be used at the same time.
 
