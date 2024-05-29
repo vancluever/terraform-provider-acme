@@ -2,23 +2,41 @@
   description = "terraform-provider-acme: project development environment";
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-  inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = import nixpkgs { inherit system; };
-      in {
-        inherit pkgs;
-        devShell = pkgs.mkShell {
-          packages = [
-            pkgs.buf
-            pkgs.go_1_22
-            pkgs.golangci-lint
-            pkgs.golangci-lint-langserver
-            pkgs.gopls
-            pkgs.protoc-gen-go
-            pkgs.protoc-gen-go-grpc
-          ];
-        };
-      });
+  outputs = { self, nixpkgs }:
+    let
+      supportedSystems = [
+        "aarch64-darwin"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "x86_64-linux"
+      ];
+
+      defaultForEachSupportedSystem = (func:
+        nixpkgs.lib.genAttrs supportedSystems (system: {
+          default = func system;
+        })
+      );
+    in
+    {
+      devShells = defaultForEachSupportedSystem
+        (system:
+          let
+            pkgs = import nixpkgs {
+              inherit system;
+            };
+          in
+          pkgs.mkShell {
+            packages = with pkgs; [
+              buf
+              go_1_22
+              golangci-lint
+              golangci-lint-langserver
+              gopls
+              protoc-gen-go
+              protoc-gen-go-grpc
+            ];
+          }
+        );
+    };
 }
