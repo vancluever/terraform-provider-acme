@@ -1,5 +1,5 @@
 ---
-page_title: "godaddy"
+page_title: "selectelv2"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Go Daddy DNS Challenge Provider
+# Selectel v2 DNS Challenge Provider
 
-The `godaddy` DNS challenge provider can be used to perform DNS challenges for
+The `selectelv2` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Go Daddy](https://godaddy.com).
+[Selectel v2](https://selectel.ru).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "godaddy"
+    provider = "selectelv2"
   }
 }
 ```
@@ -48,18 +48,15 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `GODADDY_API_KEY` - API key.
-* `GODADDY_API_SECRET` - API secret.
+* `SELECTELV2_ACCOUNT_ID` - Selectel account ID (INT).
+* `SELECTELV2_PASSWORD` - Openstack username's password.
+* `SELECTELV2_PROJECT_ID` - Cloud project ID (UUID).
+* `SELECTELV2_USERNAME` - Openstack username.
 
-* `GODADDY_HTTP_TIMEOUT` - API request timeout.
-* `GODADDY_POLLING_INTERVAL` - Time between DNS propagation check.
-* `GODADDY_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `GODADDY_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `SELECTELV2_BASE_URL` - API endpoint URL.
+* `SELECTELV2_HTTP_TIMEOUT` - API request timeout.
+* `SELECTELV2_POLLING_INTERVAL` - Time between DNS propagation check.
+* `SELECTELV2_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `SELECTELV2_TTL` - The TTL of the TXT record used for the DNS challenge.
 
-GoDaddy has recently (2024-04) updated the account requirements to access parts of their production Domains API:
-
-- Availability API: Limited to accounts with 50 or more domains.
-- Management and DNS APIs: Limited to accounts with 10 or more domains and/or an active Discount Domain Club plan.
-
-https://community.letsencrypt.org/t/getting-unauthorized-url-error-while-trying-to-get-cert-for-subdomains/217329/12
 

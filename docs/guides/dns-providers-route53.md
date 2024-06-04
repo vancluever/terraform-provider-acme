@@ -56,6 +56,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `AWS_REGION` - Managed by the AWS client (`AWS_REGION_FILE` is not supported).
 * `AWS_SDK_LOAD_CONFIG` - Managed by the AWS client. Retrieve the region from the CLI config file (`AWS_SDK_LOAD_CONFIG_FILE` is not supported).
 * `AWS_SECRET_ACCESS_KEY` - Managed by the AWS client. Secret access key (`AWS_SECRET_ACCESS_KEY_FILE` is not supported, use `AWS_SHARED_CREDENTIALS_FILE` instead).
+* `AWS_WAIT_FOR_RECORD_SETS_CHANGED` - Wait for changes to be INSYNC (it can be unstable).
 
 * `AWS_MAX_RETRIES` - The number of maximum returns the service will use to make an individual API request.
 * `AWS_POLLING_INTERVAL` - Time between DNS propagation check.
