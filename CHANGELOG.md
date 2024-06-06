@@ -1,6 +1,10 @@
-## 2.22.1-pre (Unreleased)
+## 2.23.0 (Unreleased)
 
-Bumped version for dev.
+FEATURES:
+
+* The provider now supports PKCS8 private keys.
+  [#408](https://github.com/vancluever/terraform-provider-acme/pull/408)
+
 
 ## 2.22.0 (May 29, 2024)
 
