@@ -21,6 +21,10 @@ func Provider() *schema.Provider {
 			"acme_certificate":  resourceACMECertificate(),
 		},
 
+		DataSourcesMap: map[string]*schema.Resource{
+			"acme_server_url": dataSourceACMEServerURL(),
+		},
+
 		ConfigureFunc: configureProvider,
 	}
 }

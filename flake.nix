@@ -35,7 +35,12 @@
               gopls
               protoc-gen-go
               protoc-gen-go-grpc
+              gotestsum
             ];
+
+            shellHook = ''
+              export PATH="$HOME/go/bin:$PATH"
+            '';
           }
         );
     };
