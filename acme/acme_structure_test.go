@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-const testPrivateKeyText = `
+const testPrivateKeyPKCS1Text = `
 -----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEA8XXIc0dO5okTzukP2USWm5tbxY6FQzzvBbOpxIfVpdKpZcKV
 HfemqCZEIGu/3P3gI6rAYmDRYvLsbKSjKA5EzuUvVxrLzqPZyFI5mzF0gGEzEvYk
@@ -39,6 +39,25 @@ nilAFIXxkCrVPEeEEQr8NENcGNoyTDV5tWSdX2NAO5DsiY4bNpDFzhHnHJo5WbP8
 QmXDkRpJf+/xpaeknf6bj6x2r7FXfVoG5vNdB+Cdn3uepkRHPLSStTIwpPVTsQVy
 aTVLTgFnTNMM8whCrfR4eBwHVJIejHiA3cl5Ocq/J6u4kgtFkfwKaQ==
 -----END RSA PRIVATE KEY-----
+`
+
+const testPrivateKeyPKCS8Text = `
+-----BEGIN PRIVATE KEY-----
+MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAMYmYAydUoJY0rWW
+rtJqguhFlcF0Q/K47L42q2nDz3Tfg+1eZ2lFygd9rH43QkbU7lZMZ9e/A4ZVdt5i
+1aKoxWIapYF3F78HBrGvG379+CAeMtSPFW2EkZpJf+Yv8GVg0C5bCBNnmNk2L20g
+r+kB5wrvAh4oFd+6sr0huugLXi1/AgMBAAECgYBw40ILTcHJAwOgcqVMuWO1Iper
+7Cod6V7vC0Ri8CyL4B9QJ11w61KrK90O1zqKEhtqzQLINkmyyZP8JICjt9UjC2Ll
+S3ore0PP7Xd4eh6oS6hsqdMc2R63kTVA+Lr1/JYfOobioQ7d0UGw0WTrj4+L7uyW
+LHyGd0iHV7mKJ5YiQQJBAOePBGC/Mu2w5d5/6gecHs7r5Ck4G7M9a40H+ptqBqYT
+fXQpf+L37njnx3tZERWEfMlf68EwTZOkjThdrZCgo+ECQQDbEJ1kdV2DXI/qM0EV
+RjghwIeMDLv9D/g90uXCVxw+0AAHJF3/MsMDHAoV8B7BF63h41pt9EH+sQDhnf7X
+TP1fAkBpP5whzUX8u5b/1uwsoU1vh9Cg25vbkGM+Kw5BbaOwANPY5LP4GfEOi2sk
+KYuWWC3P6gViPe5E2VpG8G1fe2SBAkA2+4+VhEOpUdUpQh4Gue4iwpEC3LteQ+DZ
+m5JhWb3UIh6vrDgPcm0x3ZrGcNM3Qbs54/dxe4oI4+JFvoMVBNTfAkEA5gXaJYQE
+T9BKDLYkDaVra4zk1hNvSAPKrHNiWjP1clCAc+lcQ9vvihSVertNGy9a8wCm+Htp
+xe9MEyzqTI7zow==
+-----END PRIVATE KEY-----
 `
 
 // testBadCertBundleText is just simply the LE test intermediate cert
@@ -120,7 +139,7 @@ func registrationResourceData() *schema.ResourceData {
 	d := r.TestResourceData()
 
 	d.SetId("regurl")
-	d.Set("account_key_pem", testPrivateKeyText)
+	d.Set("account_key_pem", testPrivateKeyPKCS1Text)
 	d.Set("email_address", "nobody@example.com")
 
 	return d
@@ -129,7 +148,7 @@ func registrationResourceData() *schema.ResourceData {
 func blankCertificateResource() *schema.ResourceData {
 	r := resourceACMECertificate()
 	d := r.TestResourceData()
-	d.Set("account_key_pem", testPrivateKeyText)
+	d.Set("account_key_pem", testPrivateKeyPKCS1Text)
 	return d
 }
 
@@ -170,7 +189,29 @@ func TestACME_expandACMEUser(t *testing.T) {
 		t.Fatalf("Expected email to be nobody@example.com, got %s", u.GetEmail())
 	}
 
-	key, err := privateKeyFromPEM([]byte(testPrivateKeyText))
+	key, err := privateKeyFromPEM([]byte(testPrivateKeyPKCS1Text))
+	if err != nil {
+		t.Fatalf("fatal: %s", err.Error())
+	}
+
+	if reflect.DeepEqual(key, u.GetPrivateKey()) == false {
+		t.Fatalf("Expected private key to be %#v, got %#v", key, u.GetPrivateKey())
+	}
+}
+
+func TestACME_expandACMEUser_PKCS8(t *testing.T) {
+	d := registrationResourceData()
+	d.Set("account_key_pem", testPrivateKeyPKCS8Text)
+	u, err := expandACMEUser(d)
+	if err != nil {
+		t.Fatalf("fatal: %s", err.Error())
+	}
+
+	if u.GetEmail() != "nobody@example.com" {
+		t.Fatalf("Expected email to be nobody@example.com, got %s", u.GetEmail())
+	}
+
+	key, err := privateKeyFromPEM([]byte(testPrivateKeyPKCS8Text))
 	if err != nil {
 		t.Fatalf("fatal: %s", err.Error())
 	}
@@ -255,7 +296,7 @@ func TestACME_splitPEMBundle_CAFirst(t *testing.T) {
 
 func TestACME_bundleToPKCS12_base64IsPadded(t *testing.T) {
 	b := testPaddingBundle
-	key := testPrivateKeyText
+	key := testPrivateKeyPKCS1Text
 	pfxBase64, err := bundleToPKCS12([]byte(b), []byte(key), "")
 
 	if err != nil {
