@@ -4,6 +4,8 @@ FEATURES:
 
 * The provider now supports PKCS8 private keys.
   [#408](https://github.com/vancluever/terraform-provider-acme/pull/408)
+* `data/server_url`: New data source added to read the configured CA server URL.
+  [#413](https://github.com/vancluever/terraform-provider-acme/pull/413)
 
 BUG FIXES:
 
