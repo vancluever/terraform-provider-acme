@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-const testPrivateKeyText = `
+const testPrivateKeyPKCS1Text = `
 -----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEA8XXIc0dO5okTzukP2USWm5tbxY6FQzzvBbOpxIfVpdKpZcKV
 HfemqCZEIGu/3P3gI6rAYmDRYvLsbKSjKA5EzuUvVxrLzqPZyFI5mzF0gGEzEvYk
@@ -41,7 +41,7 @@ aTVLTgFnTNMM8whCrfR4eBwHVJIejHiA3cl5Ocq/J6u4kgtFkfwKaQ==
 -----END RSA PRIVATE KEY-----
 `
 
-const testPrivateKeyNewFormatText = `
+const testPrivateKeyPKCS8Text = `
 -----BEGIN PRIVATE KEY-----
 MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAMYmYAydUoJY0rWW
 rtJqguhFlcF0Q/K47L42q2nDz3Tfg+1eZ2lFygd9rH43QkbU7lZMZ9e/A4ZVdt5i
@@ -139,7 +139,7 @@ func registrationResourceData() *schema.ResourceData {
 	d := r.TestResourceData()
 
 	d.SetId("regurl")
-	d.Set("account_key_pem", testPrivateKeyText)
+	d.Set("account_key_pem", testPrivateKeyPKCS1Text)
 	d.Set("email_address", "nobody@example.com")
 
 	return d
@@ -148,7 +148,7 @@ func registrationResourceData() *schema.ResourceData {
 func blankCertificateResource() *schema.ResourceData {
 	r := resourceACMECertificate()
 	d := r.TestResourceData()
-	d.Set("account_key_pem", testPrivateKeyText)
+	d.Set("account_key_pem", testPrivateKeyPKCS1Text)
 	return d
 }
 
@@ -189,7 +189,7 @@ func TestACME_expandACMEUser(t *testing.T) {
 		t.Fatalf("Expected email to be nobody@example.com, got %s", u.GetEmail())
 	}
 
-	key, err := privateKeyFromPEM([]byte(testPrivateKeyRSAText))
+	key, err := privateKeyFromPEM([]byte(testPrivateKeyPKCS1Text))
 	if err != nil {
 		t.Fatalf("fatal: %s", err.Error())
 	}
@@ -199,9 +199,9 @@ func TestACME_expandACMEUser(t *testing.T) {
 	}
 }
 
-func TestACME_expandACMEUserNewKey(t *testing.T) {
+func TestACME_expandACMEUser_PKCS8(t *testing.T) {
 	d := registrationResourceData()
-	d.Set("account_key_pem", testPrivateKeyNewFormatText)
+	d.Set("account_key_pem", testPrivateKeyPKCS8Text)
 	u, err := expandACMEUser(d)
 	if err != nil {
 		t.Fatalf("fatal: %s", err.Error())
@@ -211,7 +211,7 @@ func TestACME_expandACMEUserNewKey(t *testing.T) {
 		t.Fatalf("Expected email to be nobody@example.com, got %s", u.GetEmail())
 	}
 
-	key, err := privateKeyFromPEM([]byte(testPrivateKey))
+	key, err := privateKeyFromPEM([]byte(testPrivateKeyPKCS8Text))
 	if err != nil {
 		t.Fatalf("fatal: %s", err.Error())
 	}
@@ -296,7 +296,7 @@ func TestACME_splitPEMBundle_CAFirst(t *testing.T) {
 
 func TestACME_bundleToPKCS12_base64IsPadded(t *testing.T) {
 	b := testPaddingBundle
-	key := testPrivateKeyText
+	key := testPrivateKeyPKCS1Text
 	pfxBase64, err := bundleToPKCS12([]byte(b), []byte(key), "")
 
 	if err != nil {
