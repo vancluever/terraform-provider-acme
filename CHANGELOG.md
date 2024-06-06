@@ -5,6 +5,11 @@ FEATURES:
 * The provider now supports PKCS8 private keys.
   [#408](https://github.com/vancluever/terraform-provider-acme/pull/408)
 
+BUG FIXES:
+
+* `resource/acme_registration`: The resource now recognizes 401 as a
+  registration being gone in addition to 403.
+  [#396](https://github.com/vancluever/terraform-provider-acme/pull/396)
 
 ## 2.22.0 (May 29, 2024)
 
