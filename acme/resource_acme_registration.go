@@ -132,6 +132,15 @@ func regGone(err error) bool {
 		// is set to true.
 		return true
 
+	case e.HTTPStatus == 401 && e.Type == "urn:ietf:params:acme:error:unauthorized":
+		// Usually happens when the account has been deactivated. The URN
+		// is a bit general for my liking, but it should be fine given
+		// the specific nature of the request this error would be
+		// returned for.
+		//
+		// Note that some registries return 401 here versus 403.
+		return true
+
 	case e.HTTPStatus == 403 && e.Type == "urn:ietf:params:acme:error:unauthorized":
 		// Usually happens when the account has been deactivated. The URN
 		// is a bit general for my liking, but it should be fine given
