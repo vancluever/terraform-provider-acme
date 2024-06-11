@@ -1,3 +1,7 @@
+## 2.23.1-pre (Unreleased)
+
+Bumped version for dev.
+
 ## 2.23.0 (June 11, 2024)
 
 SECURITY UPDATES:
