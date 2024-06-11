@@ -1,5 +1,11 @@
 ## 2.23.0 (Unreleased)
 
+SECURITY UPDATES:
+
+* The Azure Identity component of the Azure SDK (used by the `azuredns` DNS
+  provider) has been updated to 1.6.0 in response to CVE-2024-35255.
+  [#416](https://github.com/vancluever/terraform-provider-acme/pull/416)
+
 FEATURES:
 
 * The provider now supports PKCS8 private keys.
