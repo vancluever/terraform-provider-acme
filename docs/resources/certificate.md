@@ -632,3 +632,5 @@ Refer to that field for the current URL of the certificate.
   argument. This field is empty if creating a certificate from a CSR.
 * `certificate_not_after` - The expiry date of the certificate, laid out in
   RFC3339 format (`2006-01-02T15:04:05Z07:00`).
+* `certificate_serial` - The serial number, in string format, as reported by
+  the CA.

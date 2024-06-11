@@ -611,6 +611,13 @@ func testAccCheckACMECertificateValid(n, cn, san string) resource.TestCheckFunc 
 			return fmt.Errorf("expected certificate_not_after to be %q, got %q", expectedNotAfter, actualNotAfter)
 		}
 
+		// Serial
+		actualSerial := rs.Primary.Attributes["certificate_serial"]
+		expectedSerial := x509Cert.SerialNumber.String()
+		if expectedSerial != actualSerial {
+			return fmt.Errorf("expected certificate_serial to be %q, got %q", expectedSerial, actualSerial)
+		}
+
 		return nil
 	}
 }
