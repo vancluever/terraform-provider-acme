@@ -1,4 +1,4 @@
-## 2.23.0 (Unreleased)
+## 2.23.0 (June 11, 2024)
 
 SECURITY UPDATES:
 
