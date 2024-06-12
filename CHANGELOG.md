@@ -1,3 +1,7 @@
+## 2.23.2-pre (Unreleased)
+
+Bumped version for dev.
+
 ## 2.23.1 (June 12, 2024)
 
 This release covers 2.23.0 as well, which did not release due to build
