@@ -29,13 +29,14 @@
           pkgs.mkShell {
             packages = with pkgs; [
               buf
-              go_1_22
+              go
               golangci-lint
               golangci-lint-langserver
               gopls
               protoc-gen-go
               protoc-gen-go-grpc
               gotestsum
+              goreleaser
             ];
 
             shellHook = ''
