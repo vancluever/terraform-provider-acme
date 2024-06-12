@@ -1,4 +1,4 @@
-## 2.23.1-pre (Unreleased)
+## 2.23.1 (June 12, 2024)
 
 This release covers 2.23.0 as well, which did not release due to build
 configuration issues. Refer to that version for specific release notes there.
