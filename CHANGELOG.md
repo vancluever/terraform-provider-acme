@@ -1,6 +1,14 @@
 ## 2.23.1-pre (Unreleased)
 
-Bumped version for dev.
+This release covers 2.23.0 as well, which did not release due to build
+configuration issues. Refer to that version for specific release notes there.
+
+LEGO UPDATE:
+
+[lego](https://github.com/go-acme/lego) has been updated to v4.17.4 See the
+lego [CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.17.4/CHANGELOG.md)
+for more details on additions and changes to DNS providers, and other minor
+changes to the library.
 
 ## 2.23.0 (June 11, 2024)
 
