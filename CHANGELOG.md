@@ -1,4 +1,4 @@
-## 2.23.2 (Unreleased)
+## 2.23.2 (June 21, 2024)
 
 BUG FIXES:
 
