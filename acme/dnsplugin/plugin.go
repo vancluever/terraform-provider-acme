@@ -111,6 +111,25 @@ func (m *DnsProviderServer) Timeout(ctx context.Context, req *dnspluginproto.Tim
 	}, nil
 }
 
+// sequential mirrors lego's own internal DNS provider sequential interface.
+type sequential interface {
+	Sequential() time.Duration
+}
+
+func (m *DnsProviderServer) IsSequential(ctx context.Context, req *dnspluginproto.IsSequentialRequest) (*dnspluginproto.IsSequentialResponse, error) {
+	var seqOk bool
+	var interval time.Duration
+	if pt, ok := m.provider.(sequential); ok {
+		seqOk = true
+		interval = pt.Sequential()
+	}
+
+	return &dnspluginproto.IsSequentialResponse{
+		Interval: durationpb.New(interval),
+		Ok:       seqOk,
+	}, nil
+}
+
 // helper function to map environment variables if set
 func mapEnvironmentVariableValues(keyMapping map[string]string) {
 	for key := range keyMapping {

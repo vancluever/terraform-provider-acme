@@ -13,6 +13,13 @@ import (
 	dnspluginproto "github.com/vancluever/terraform-provider-acme/v2/proto/dnsplugin/v1"
 )
 
+type NewClientResult struct {
+	Provider           challenge.ProviderTimeout
+	Closer             func()
+	IsSequential       bool
+	SequentialInterval time.Duration
+}
+
 // NewClient creates a new DNS provider instance by dispatching to itself via
 // go-plugin. The client for the new provider is returned, along with a closer
 // function that should be called when done to shut down the plugin.
@@ -25,11 +32,11 @@ func NewClient(
 	providerName string,
 	config map[string]string,
 	recursiveNameservers []string,
-) (challenge.ProviderTimeout, func(), error) {
+) (NewClientResult, error) {
 	// Discover the path to the executable that we are running at.
 	execPath, err := os.Executable()
 	if err != nil {
-		return nil, nil, fmt.Errorf("error getting plugin path: %w", err)
+		return NewClientResult{}, fmt.Errorf("error getting plugin path: %w", err)
 	}
 
 	cmd := exec.Command(execPath, "-dnsplugin")
@@ -43,30 +50,40 @@ func NewClient(
 
 	rpcClient, err := client.Client()
 	if err != nil {
-		return nil, nil, fmt.Errorf("error getting plugin client: %w", err)
+		return NewClientResult{}, fmt.Errorf("error getting plugin client: %w", err)
 	}
 
 	raw, err := rpcClient.Dispense(PluginName)
 	if err != nil {
-		return nil, nil, fmt.Errorf("error dispensing plugin: %w", err)
+		return NewClientResult{}, fmt.Errorf("error dispensing plugin: %w", err)
 	}
 
 	// First call the plugin as its gRPC server interface so that we can
 	// configure it.
+	var isSequential bool
+	var sequentialInterval time.Duration
 	if dnsProviderClient, ok := raw.(*DnsProviderClient); ok {
 		if err := dnsProviderClient.Configure(providerName, config, recursiveNameservers); err != nil {
-			return nil, nil, fmt.Errorf("error configuring plugin: %w", err)
+			return NewClientResult{}, fmt.Errorf("error configuring plugin: %w", err)
 		}
+
+		// Probe for sequential providers
+		sequentialInterval, isSequential = dnsProviderClient.IsSequential()
 	} else {
-		return nil, nil, errors.New("internal error: returned plugin not a DnsProviderClient")
+		return NewClientResult{}, errors.New("internal error: returned plugin not a DnsProviderClient")
 	}
 
 	provider, ok := raw.(challenge.ProviderTimeout)
 	if !ok {
-		return nil, nil, errors.New("internal error: returned plugin not a challenge provider")
+		return NewClientResult{}, errors.New("internal error: returned plugin not a challenge provider")
 	}
 
-	return provider, func() { rpcClient.Close() }, nil
+	return NewClientResult{
+		Provider:           provider,
+		Closer:             func() { rpcClient.Close() },
+		IsSequential:       isSequential,
+		SequentialInterval: sequentialInterval,
+	}, nil
 }
 
 type DnsProviderClient struct {
@@ -103,4 +120,9 @@ func (m *DnsProviderClient) CleanUp(domain, token, keyAuth string) error {
 func (m *DnsProviderClient) Timeout() (time.Duration, time.Duration) {
 	resp, _ := m.client.Timeout(context.Background(), &dnspluginproto.TimeoutRequest{})
 	return resp.GetTimeout().AsDuration(), resp.GetInterval().AsDuration()
+}
+
+func (m *DnsProviderClient) IsSequential() (time.Duration, bool) {
+	resp, _ := m.client.IsSequential(context.Background(), &dnspluginproto.IsSequentialRequest{})
+	return resp.GetInterval().AsDuration(), resp.GetOk()
 }

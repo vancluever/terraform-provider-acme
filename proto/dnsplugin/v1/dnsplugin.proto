@@ -24,6 +24,14 @@ service DNSProviderService {
   // Timeout returns the provider's underlying timeout values. This wraps the
   // lego Timeout call.
   rpc Timeout(TimeoutRequest) returns (TimeoutResponse) {}
+
+  // IsSequential probes the plugin to see if it implements lego's internal
+  // sequential provider interfaces, which 1) indicates that it is a sequential
+  // provider (the presence of the interface means the provider is sequential)
+  // and 2) the duration of the interval between sequential queries. This is
+  // used to signal to the ACME provider's own wrappers what interface to
+  // present for the main plugin set.
+  rpc IsSequential(IsSequentialRequest) returns (IsSequentialResponse) {}
 }
 
 message ConfigureRequest {
@@ -55,4 +63,11 @@ message TimeoutRequest {}
 message TimeoutResponse {
   google.protobuf.Duration timeout = 1;
   google.protobuf.Duration interval = 2;
+}
+
+message IsSequentialRequest {}
+
+message IsSequentialResponse {
+  google.protobuf.Duration interval = 1;
+  bool ok = 2;
 }

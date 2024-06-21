@@ -867,6 +867,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -915,6 +916,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -973,6 +975,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -1032,6 +1035,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -1079,6 +1083,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -1124,6 +1129,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -1175,6 +1181,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -1223,6 +1230,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -1270,6 +1278,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -1317,6 +1326,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -1597,6 +1607,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }

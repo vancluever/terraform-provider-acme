@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	DNSProviderService_Configure_FullMethodName = "/dnsplugin.v1.DNSProviderService/Configure"
-	DNSProviderService_Present_FullMethodName   = "/dnsplugin.v1.DNSProviderService/Present"
-	DNSProviderService_CleanUp_FullMethodName   = "/dnsplugin.v1.DNSProviderService/CleanUp"
-	DNSProviderService_Timeout_FullMethodName   = "/dnsplugin.v1.DNSProviderService/Timeout"
+	DNSProviderService_Configure_FullMethodName    = "/dnsplugin.v1.DNSProviderService/Configure"
+	DNSProviderService_Present_FullMethodName      = "/dnsplugin.v1.DNSProviderService/Present"
+	DNSProviderService_CleanUp_FullMethodName      = "/dnsplugin.v1.DNSProviderService/CleanUp"
+	DNSProviderService_Timeout_FullMethodName      = "/dnsplugin.v1.DNSProviderService/Timeout"
+	DNSProviderService_IsSequential_FullMethodName = "/dnsplugin.v1.DNSProviderService/IsSequential"
 )
 
 // DNSProviderServiceClient is the client API for DNSProviderService service.
@@ -41,6 +42,13 @@ type DNSProviderServiceClient interface {
 	// Timeout returns the provider's underlying timeout values. This wraps the
 	// lego Timeout call.
 	Timeout(ctx context.Context, in *TimeoutRequest, opts ...grpc.CallOption) (*TimeoutResponse, error)
+	// IsSequential probes the plugin to see if it implements lego's internal
+	// sequential provider interfaces, which 1) indicates that it is a sequential
+	// provider (the presence of the interface means the provider is sequential)
+	// and 2) the duration of the interval between sequential queries. This is
+	// used to signal to the ACME provider's own wrappers what interface to
+	// present for the main plugin set.
+	IsSequential(ctx context.Context, in *IsSequentialRequest, opts ...grpc.CallOption) (*IsSequentialResponse, error)
 }
 
 type dNSProviderServiceClient struct {
@@ -87,6 +95,15 @@ func (c *dNSProviderServiceClient) Timeout(ctx context.Context, in *TimeoutReque
 	return out, nil
 }
 
+func (c *dNSProviderServiceClient) IsSequential(ctx context.Context, in *IsSequentialRequest, opts ...grpc.CallOption) (*IsSequentialResponse, error) {
+	out := new(IsSequentialResponse)
+	err := c.cc.Invoke(ctx, DNSProviderService_IsSequential_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DNSProviderServiceServer is the server API for DNSProviderService service.
 // All implementations must embed UnimplementedDNSProviderServiceServer
 // for forward compatibility
@@ -103,6 +120,13 @@ type DNSProviderServiceServer interface {
 	// Timeout returns the provider's underlying timeout values. This wraps the
 	// lego Timeout call.
 	Timeout(context.Context, *TimeoutRequest) (*TimeoutResponse, error)
+	// IsSequential probes the plugin to see if it implements lego's internal
+	// sequential provider interfaces, which 1) indicates that it is a sequential
+	// provider (the presence of the interface means the provider is sequential)
+	// and 2) the duration of the interval between sequential queries. This is
+	// used to signal to the ACME provider's own wrappers what interface to
+	// present for the main plugin set.
+	IsSequential(context.Context, *IsSequentialRequest) (*IsSequentialResponse, error)
 	mustEmbedUnimplementedDNSProviderServiceServer()
 }
 
@@ -121,6 +145,9 @@ func (UnimplementedDNSProviderServiceServer) CleanUp(context.Context, *CleanUpRe
 }
 func (UnimplementedDNSProviderServiceServer) Timeout(context.Context, *TimeoutRequest) (*TimeoutResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Timeout not implemented")
+}
+func (UnimplementedDNSProviderServiceServer) IsSequential(context.Context, *IsSequentialRequest) (*IsSequentialResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsSequential not implemented")
 }
 func (UnimplementedDNSProviderServiceServer) mustEmbedUnimplementedDNSProviderServiceServer() {}
 
@@ -207,6 +234,24 @@ func _DNSProviderService_Timeout_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DNSProviderService_IsSequential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsSequentialRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DNSProviderServiceServer).IsSequential(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DNSProviderService_IsSequential_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DNSProviderServiceServer).IsSequential(ctx, req.(*IsSequentialRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DNSProviderService_ServiceDesc is the grpc.ServiceDesc for DNSProviderService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -229,6 +274,10 @@ var DNSProviderService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Timeout",
 			Handler:    _DNSProviderService_Timeout_Handler,
+		},
+		{
+			MethodName: "IsSequential",
+			Handler:    _DNSProviderService_IsSequential_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

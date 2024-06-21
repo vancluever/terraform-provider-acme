@@ -39,17 +39,42 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 			return dnsCloser, err
 		}
 
+		var isSequential bool
+		var sequentialInterval time.Duration
 		for _, providerRaw := range providers.([]interface{}) {
-			if p, closer, err := expandDNSChallenge(providerRaw.(map[string]interface{}), expandRecursiveNameservers(d)); err == nil {
-				dnsProvider.providers = append(dnsProvider.providers, p)
-				dnsClosers = append(dnsClosers, closer)
+			if result, err := expandDNSChallenge(
+				providerRaw.(map[string]interface{}),
+				expandRecursiveNameservers(d),
+			); err == nil {
+				dnsProvider.providers = append(dnsProvider.providers, result.Provider)
+				dnsClosers = append(dnsClosers, result.Closer)
+				if result.IsSequential {
+					isSequential = true
+				}
+				if result.SequentialInterval > sequentialInterval {
+					sequentialInterval = result.SequentialInterval
+				}
 			} else {
 				return dnsCloser, err
 			}
 		}
 
-		if err := client.Challenge.SetDNS01Provider(dnsProvider, expandDNSChallengeOptions(d)...); err != nil {
-			return dnsCloser, err
+		if isSequential {
+			// Is our provider set sequential? If so, convert this to a sequential wrapper
+			if err := client.Challenge.SetDNS01Provider(
+				dnsProvider.ToSequential(sequentialInterval),
+				expandDNSChallengeOptions(d)...,
+			); err != nil {
+				return dnsCloser, err
+			}
+		} else {
+			// Otherwise, return as the regular wrapper
+			if err := client.Challenge.SetDNS01Provider(
+				dnsProvider,
+				expandDNSChallengeOptions(d)...,
+			); err != nil {
+				return dnsCloser, err
+			}
 		}
 	}
 
@@ -121,13 +146,13 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 	return dnsCloser, nil
 }
 
-func expandDNSChallenge(m map[string]interface{}, nameServers []string) (challenge.ProviderTimeout, func(), error) {
+func expandDNSChallenge(m map[string]interface{}, nameServers []string) (dnsplugin.NewClientResult, error) {
 	var providerName string
 
 	if v, ok := m["provider"]; ok && v.(string) != "" {
 		providerName = v.(string)
 	} else {
-		return nil, nil, fmt.Errorf("DNS challenge provider not defined")
+		return dnsplugin.NewClientResult{}, fmt.Errorf("DNS challenge provider not defined")
 	}
 
 	// Config only needs to be set if it's defined, otherwise existing env/SDK
@@ -235,4 +260,30 @@ func (d *DNSProviderWrapper) Timeout() (time.Duration, time.Duration) {
 	}
 
 	return timeout, interval
+}
+
+// DNSProviderWrapperSequential is a multi-provider wrapper to support multiple
+// DNS challenges.
+//
+// This wrapper is used whenever there is a sequential provider in the provider
+// set.
+type DNSProviderWrapperSequential struct {
+	*DNSProviderWrapper
+	interval time.Duration
+}
+
+// ToSequential converts the DNS provider wrapper to a sequential one with the
+// interval passed in.
+func (d *DNSProviderWrapper) ToSequential(interval time.Duration) *DNSProviderWrapperSequential {
+	return &DNSProviderWrapperSequential{
+		DNSProviderWrapper: d,
+		interval:           interval,
+	}
+}
+
+// Sequential implements the internal sequential interfaces that lego needs to
+// be able to probe for a sequential provider. This returns the pre-probed
+// duration.
+func (d *DNSProviderWrapperSequential) Sequential() time.Duration {
+	return d.interval
 }
