@@ -1,6 +1,10 @@
-## 2.23.2-pre (Unreleased)
+## 2.23.2 (Unreleased)
 
-Bumped version for dev.
+BUG FIXES:
+
+* `resource/acme_certificate`: Fixed an issue where sequential DNS providers
+  were not being executed sequentially.
+  [#420](https://github.com/vancluever/terraform-provider-acme/pull/420)
 
 ## 2.23.1 (June 12, 2024)
 
