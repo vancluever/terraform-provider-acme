@@ -1,3 +1,7 @@
+## 2.23.3-pre (Unreleased)
+
+Bumped version for dev.
+
 ## 2.23.2 (June 21, 2024)
 
 BUG FIXES:
