@@ -61,3 +61,5 @@ jobs:
         run: go mod verify
       - name: Run Tests
         run: make tools pebble-start memcached-start test
+        env:
+          ACME_ENABLE_MEMCACHE_TEST: yes

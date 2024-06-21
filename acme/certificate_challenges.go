@@ -26,7 +26,7 @@ import (
 // the CRUD functions are complete).
 func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceData) (func(), error) {
 	// DNS
-	dnsClosers := make([]func(), 0)
+	var dnsClosers []func()
 	dnsCloser := func() {
 		for _, f := range dnsClosers {
 			f()
@@ -34,21 +34,17 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 	}
 
 	if providers, ok := d.GetOk("dns_challenge"); ok {
-		dnsProvider, err := NewDNSProviderWrapper()
+		var providerWrapper challenge.Provider
+		var err error
+		providerWrapper, dnsClosers, err = expandDNSChallengeWrapperProvider(d, providers.([]interface{}))
 		if err != nil {
 			return dnsCloser, err
 		}
 
-		for _, providerRaw := range providers.([]interface{}) {
-			if p, closer, err := expandDNSChallenge(providerRaw.(map[string]interface{}), expandRecursiveNameservers(d)); err == nil {
-				dnsProvider.providers = append(dnsProvider.providers, p)
-				dnsClosers = append(dnsClosers, closer)
-			} else {
-				return dnsCloser, err
-			}
-		}
-
-		if err := client.Challenge.SetDNS01Provider(dnsProvider, expandDNSChallengeOptions(d)...); err != nil {
+		if err := client.Challenge.SetDNS01Provider(
+			providerWrapper,
+			expandDNSChallengeOptions(d)...,
+		); err != nil {
 			return dnsCloser, err
 		}
 	}
@@ -121,13 +117,52 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 	return dnsCloser, nil
 }
 
-func expandDNSChallenge(m map[string]interface{}, nameServers []string) (challenge.ProviderTimeout, func(), error) {
+func expandDNSChallengeWrapperProvider(
+	d *schema.ResourceData,
+	providers []interface{},
+) (challenge.Provider, []func(), error) {
+	dnsClosers := make([]func(), 0)
+	dnsProvider, err := NewDNSProviderWrapper()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var isSequential bool
+	var sequentialInterval time.Duration
+	for _, providerRaw := range providers {
+		if result, err := expandDNSChallenge(
+			providerRaw.(map[string]interface{}),
+			expandRecursiveNameservers(d),
+		); err == nil {
+			dnsProvider.providers = append(dnsProvider.providers, result.Provider)
+			dnsClosers = append(dnsClosers, result.Closer)
+			if result.IsSequential {
+				isSequential = true
+			}
+			if result.SequentialInterval > sequentialInterval {
+				sequentialInterval = result.SequentialInterval
+			}
+		} else {
+			return nil, nil, err
+		}
+	}
+
+	if isSequential {
+		// Is our provider set sequential? If so, convert this to a sequential wrapper
+		return dnsProvider.ToSequential(sequentialInterval), dnsClosers, nil
+	}
+
+	// Otherwise, return as the regular wrapper
+	return dnsProvider, dnsClosers, nil
+}
+
+func expandDNSChallenge(m map[string]interface{}, nameServers []string) (dnsplugin.NewClientResult, error) {
 	var providerName string
 
 	if v, ok := m["provider"]; ok && v.(string) != "" {
 		providerName = v.(string)
 	} else {
-		return nil, nil, fmt.Errorf("DNS challenge provider not defined")
+		return dnsplugin.NewClientResult{}, fmt.Errorf("DNS challenge provider not defined")
 	}
 
 	// Config only needs to be set if it's defined, otherwise existing env/SDK
@@ -235,4 +270,30 @@ func (d *DNSProviderWrapper) Timeout() (time.Duration, time.Duration) {
 	}
 
 	return timeout, interval
+}
+
+// DNSProviderWrapperSequential is a multi-provider wrapper to support multiple
+// DNS challenges.
+//
+// This wrapper is used whenever there is a sequential provider in the provider
+// set.
+type DNSProviderWrapperSequential struct {
+	*DNSProviderWrapper
+	interval time.Duration
+}
+
+// ToSequential converts the DNS provider wrapper to a sequential one with the
+// interval passed in.
+func (d *DNSProviderWrapper) ToSequential(interval time.Duration) *DNSProviderWrapperSequential {
+	return &DNSProviderWrapperSequential{
+		DNSProviderWrapper: d,
+		interval:           interval,
+	}
+}
+
+// Sequential implements the internal sequential interfaces that lego needs to
+// be able to probe for a sequential provider. This returns the pre-probed
+// duration.
+func (d *DNSProviderWrapperSequential) Sequential() time.Duration {
+	return d.interval
 }

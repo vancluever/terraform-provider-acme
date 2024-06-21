@@ -364,6 +364,8 @@ func TestAccACMECertificate_httpWebroot(t *testing.T) {
 }
 
 func TestAccACMECertificate_httpMemcache(t *testing.T) {
+	testAccACMECertificate_httpMemcache_preCheck(t)
+
 	wantEnv := os.Environ()
 	closeServer, err := testAccCheckACMECertificateMemcacheTestServer()
 	if err != nil {
@@ -387,6 +389,14 @@ func TestAccACMECertificate_httpMemcache(t *testing.T) {
 			},
 		},
 	})
+}
+
+func testAccACMECertificate_httpMemcache_preCheck(t *testing.T) {
+	t.Helper()
+
+	if os.Getenv("ACME_ENABLE_MEMCACHE_TEST") == "" {
+		t.Skip("ACME_ENABLE_MEMCACHE_TEST must be set for the HTTP memcached challenge acceptance test")
+	}
 }
 
 func TestAccACMECertificate_httpS3(t *testing.T) {
@@ -857,6 +867,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -905,6 +916,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -963,6 +975,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -1022,6 +1035,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -1069,6 +1083,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -1114,6 +1129,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -1165,6 +1181,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -1213,6 +1230,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -1260,6 +1278,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -1307,6 +1326,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
@@ -1587,6 +1607,7 @@ resource "acme_certificate" "certificate" {
     provider = "exec"
     config = {
       EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
 }
