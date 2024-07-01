@@ -162,7 +162,7 @@ func saveCertificateResource(d *schema.ResourceData, cert *certificate.Resource,
 	d.Set("certificate_url", cert.CertURL)
 	d.Set("certificate_domain", cert.Domain)
 	d.Set("private_key_pem", string(cert.PrivateKey))
-	issued, issuedNotAfter, issuer, err := splitPEMBundle(cert.Certificate)
+	issued, issuedNotAfter, issuedSerial, issuer, err := splitPEMBundle(cert.Certificate)
 	if err != nil {
 		return err
 	}
@@ -170,6 +170,7 @@ func saveCertificateResource(d *schema.ResourceData, cert *certificate.Resource,
 	d.Set("certificate_pem", string(issued))
 	d.Set("issuer_pem", string(issuer))
 	d.Set("certificate_not_after", issuedNotAfter)
+	d.Set("certificate_serial", issuedSerial)
 
 	// Set PKCS12 data. This is only set if there is a private key
 	// present.
@@ -226,7 +227,13 @@ func certDaysRemaining(cert *certificate.Resource) (int64, error) {
 // Technically, it will be possible for issuer to be empty, if there
 // are zero certificates in the intermediate chain. This is highly
 // unlikely, however.
-func splitPEMBundle(bundle []byte) (cert []byte, certNotAfter string, issuer []byte, err error) {
+func splitPEMBundle(bundle []byte) (
+	cert []byte,
+	certNotAfter string,
+	certSerial string,
+	issuer []byte,
+	err error,
+) {
 	cb, err := parsePEMBundle(bundle)
 	if err != nil {
 		return
@@ -240,6 +247,7 @@ func splitPEMBundle(bundle []byte) (cert []byte, certNotAfter string, issuer []b
 
 	cert = pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: cb[0].Raw})
 	certNotAfter = cb[0].NotAfter.Format(time.RFC3339)
+	certSerial = cb[0].SerialNumber.String()
 	issuer = make([]byte, 0)
 	for _, ic := range cb[1:] {
 		issuer = append(issuer, pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: ic.Raw})...)

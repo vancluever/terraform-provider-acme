@@ -254,6 +254,10 @@ func resourceACMECertificateV5() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"certificate_serial": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"certificate_p12_password": {
 				Type:      schema.TypeString,
 				Optional:  true,
