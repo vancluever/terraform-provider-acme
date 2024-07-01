@@ -1,6 +1,10 @@
-## 2.23.3-pre (Unreleased)
+## 2.24.0 (Unreleased)
 
-Bumped version for dev.
+FEATURES:
+
+* `resource/acme_certificate`: Added the `certificate_serial` attribute to
+  show the certificate serial number in state.
+  [#421](https://github.com/vancluever/terraform-provider-acme/pull/421)
 
 ## 2.23.2 (June 21, 2024)
 
