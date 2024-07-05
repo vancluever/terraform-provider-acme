@@ -26,6 +26,11 @@ func resourceACMERegistrationV1() *schema.Resource {
 				Computed:  true,
 				ForceNew:  true,
 				Sensitive: true,
+				ConflictsWith: []string{
+					"account_key_algorithm",
+					"account_key_ecdsa_curve",
+					"account_key_rsa_bits",
+				},
 			},
 			// https://letsencrypt.org/docs/integration-guide/#supported-key-algorithms
 			// NOTE: Our internal functions support more, but we need to restrict to
@@ -39,7 +44,8 @@ func resourceACMERegistrationV1() *schema.Resource {
 					[]string{keyAlgorithmRSA, keyAlgorithmECDSA},
 					false,
 				),
-				Default: keyAlgorithmECDSA,
+				Default:       keyAlgorithmECDSA,
+				ConflictsWith: []string{"account_key_pem"},
 			},
 			"account_key_ecdsa_curve": {
 				Type:     schema.TypeString,
@@ -49,14 +55,16 @@ func resourceACMERegistrationV1() *schema.Resource {
 					[]string{keyECDSACurveP256, keyECDSACurveP384},
 					false,
 				),
-				Default: keyECDSACurveP384,
+				Default:       keyECDSACurveP384,
+				ConflictsWith: []string{"account_key_pem", "account_key_rsa_bits"},
 			},
 			"account_key_rsa_bits": {
-				Type:         schema.TypeInt,
-				Optional:     true,
-				ForceNew:     true,
-				ValidateFunc: validation.IntInSlice([]int{2048, 3072, 4096}),
-				Default:      4096,
+				Type:          schema.TypeInt,
+				Optional:      true,
+				ForceNew:      true,
+				ValidateFunc:  validation.IntInSlice([]int{2048, 3072, 4096}),
+				Default:       4096,
+				ConflictsWith: []string{"account_key_pem", "account_key_ecdsa_curve"},
 			},
 			"email_address": {
 				Type:     schema.TypeString,

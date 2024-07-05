@@ -3,6 +3,7 @@ package acme
 import (
 	"errors"
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -123,6 +124,21 @@ func TestAccACMERegistration_externalKey(t *testing.T) {
 					),
 					testAccCheckACMERegistrationValid("acme_registration.reg", true, pebbleDirBasic),
 				),
+			},
+		},
+	})
+}
+
+func TestAccACMERegistration_externalKeyConflict(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		ProviderFactories:         testAccProviders,
+		ExternalProviders:         testAccExternalProviders,
+		CheckDestroy:              testAccCheckACMERegistrationValid("acme_registration.reg", false, pebbleDirBasic),
+		PreventPostDestroyRefresh: true,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccACMERegistrationConfigExternalKeyConflict(),
+				ExpectError: regexp.MustCompile(`(?s:"account_key_pem": conflicts with account_key_algorithm.*"account_key_algorithm": conflicts with account_key_pem)`),
 			},
 		},
 	})
@@ -301,6 +317,24 @@ resource "tls_private_key" "private_key" {
 
 resource "acme_registration" "reg" {
   account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  email_address   = "nobody@example.test"
+}
+`, pebbleDirBasic)
+}
+
+func testAccACMERegistrationConfigExternalKeyConflict() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "reg" {
+  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  account_key_algorithm = "ECDSA"
   email_address   = "nobody@example.test"
 }
 `, pebbleDirBasic)
