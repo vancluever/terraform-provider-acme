@@ -2,6 +2,11 @@
 
 FEATURES:
 
+* `resource/acme_registration`: `account_key_pem` no longer needs to be
+  supplied externally. If not supplied, the key will be created within the
+  resource itself according to the settings in `account_key_algorithm`,
+  `account_key_ecdsa_curve`, and `account_key_rsa_bits`.
+  [#423](https://github.com/vancluever/terraform-provider-acme/pull/423)
 * `resource/acme_certificate`: Added the `certificate_serial` attribute to
   show the certificate serial number in state.
   [#421](https://github.com/vancluever/terraform-provider-acme/pull/421)
