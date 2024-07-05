@@ -1,6 +1,7 @@
 package acme
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 
@@ -43,6 +44,84 @@ func TestAccACMERegistration_eab(t *testing.T) {
 						"acme_registration.reg", "registration_url",
 					),
 					testAccCheckACMERegistrationValid("acme_registration.reg", true, pebbleDirEAB),
+				),
+			},
+		},
+	})
+}
+
+func TestAccACMERegistration_eab_changeID(t *testing.T) {
+	var oldState *terraform.State
+
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		CheckDestroy:      testAccCheckACMERegistrationValid("acme_registration.reg", false, pebbleDirEAB),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMERegistrationConfigEAB(),
+				Check: resource.ComposeTestCheckFunc(
+					func(s *terraform.State) error {
+						oldState = s.DeepCopy()
+						return nil
+					},
+					resource.TestCheckResourceAttrPair(
+						"acme_registration.reg", "id",
+						"acme_registration.reg", "registration_url",
+					),
+					testAccCheckACMERegistrationValid("acme_registration.reg", true, pebbleDirEAB),
+				),
+			},
+			{
+				Config: testAccACMERegistrationConfigEABAlt(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrPair(
+						"acme_registration.reg", "id",
+						"acme_registration.reg", "registration_url",
+					),
+					testAccCheckACMERegistrationValid("acme_registration.reg", true, pebbleDirEAB),
+					func(newState *terraform.State) error {
+						oldID := oldState.RootModule().Resources["acme_registration.reg"].Primary.ID
+						newID := newState.RootModule().Resources["acme_registration.reg"].Primary.ID
+						if oldID == newID {
+							return errors.New("old registration and new registration IDs are identical")
+						}
+
+						return nil
+					},
+					func(newState *terraform.State) error {
+						oldKey := oldState.RootModule().Resources["acme_registration.reg"].Primary.Attributes["account_key_pem"]
+						newKey := newState.RootModule().Resources["acme_registration.reg"].Primary.Attributes["account_key_pem"]
+						if oldKey == newKey {
+							return errors.New("old and new private keys are identical")
+						}
+
+						return nil
+					},
+				),
+			},
+		},
+	})
+}
+
+func TestAccACMERegistration_externalKey(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		CheckDestroy:      testAccCheckACMERegistrationValid("acme_registration.reg", false, pebbleDirBasic),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMERegistrationConfigExternalKey(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrPair(
+						"acme_registration.reg", "id",
+						"acme_registration.reg", "registration_url",
+					),
+					resource.TestCheckResourceAttrPair(
+						"tls_private_key.private_key", "private_key_pem",
+						"acme_registration.reg", "account_key_pem",
+					),
+					testAccCheckACMERegistrationValid("acme_registration.reg", true, pebbleDirBasic),
 				),
 			},
 		},
@@ -172,18 +251,45 @@ provider "acme" {
   server_url = "%s"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "nobody@example.test"
 }
 `, pebbleDirBasic)
 }
 
 func testAccACMERegistrationConfigEAB() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+resource "acme_registration" "reg" {
+  email_address   = "nobody@example.test"
+  external_account_binding {
+    key_id      = "kid-1"
+    hmac_base64 = "zWNDZM6eQGHWpSRTPal5eIUYFTu7EajVIoguysqZ9wG44nMEtx3MUAsUDkMTQ12W"
+  }
+}
+`, pebbleDirEAB)
+}
+
+func testAccACMERegistrationConfigEABAlt() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+resource "acme_registration" "reg" {
+  email_address   = "nobody@example.test"
+  external_account_binding {
+    key_id      = "kid-2"
+    hmac_base64 = "b10lLJs8l1GPIzsLP0s6pMt8O0XVGnfTaCeROxQM0BIt2XrJMDHJZBM5NuQmQJQH"
+  }
+}
+`, pebbleDirEAB)
+}
+
+func testAccACMERegistrationConfigExternalKey() string {
 	return fmt.Sprintf(`
 provider "acme" {
   server_url = "%s"
@@ -196,10 +302,6 @@ resource "tls_private_key" "private_key" {
 resource "acme_registration" "reg" {
   account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "nobody@example.test"
-  external_account_binding {
-    key_id      = "kid-1"
-    hmac_base64 = "zWNDZM6eQGHWpSRTPal5eIUYFTu7EajVIoguysqZ9wG44nMEtx3MUAsUDkMTQ12W"
-  }
 }
-`, pebbleDirEAB)
+`, pebbleDirBasic)
 }

@@ -22,6 +22,23 @@ provider instances][multiple-provider-instances].
 
 ## Example
 
+### Basic Example
+
+The following is the most basic example, supplying only a contact email address
+to the resource.
+
+```hcl
+provider "acme" {
+  server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
+}
+
+resource "acme_registration" "reg" {
+  email_address   = "nobody@example.com"
+}
+```
+
+### Using a Pre-Existing Private Key
+
 The following creates an account off of a private key generated with the
 [`tls_private_key`][resource-tls-private-key] resource.
 
@@ -49,7 +66,17 @@ changed.
 
 The resource takes the following arguments:
 
-* `account_key_pem` (Required) - The private key used to identify the account.
+* `account_key_pem` (Optional) - The private key used to identify the account.
+  If not provided, the key will be generated according to the
+  `account_key_algorithm`, `account_key_ecdsa_curve`, and
+  `account_key_rsa_bits` settings.
+* `account_key_algorithm` (Optional) - The algorithm to use for the private key
+  when generating from scratch. Supported settings: `RSA` and `EDCSA`. Default
+  settings: `ECDSA`.
+* `account_key_ecdsa_curve` (Optional) - ECDSA curve to use for ECDSA key
+  types. Supported settings: `P256` and `P384`. Default: `P384`.
+* `account_key_rsa_bits` (Optional) - The key length to use for RSA key types.
+  Supported settings: `2048`, `3072`, and `4096`. Default: `4096`.
 * `email_address` (Required) - The contact email address for the account.
 * `external_account_binding` (Optional) - An external account binding for the
   registration, usually used to link the registration with an account in a
@@ -63,6 +90,8 @@ The resource takes the following arguments:
 The following attributes are exported:
 
 * `id`: The original full URL of the account.
+* `account_key_pem`: The private key used to identify the account (will be
+  generated if not provided).
 * `registration_url`: The current full URL of the account.
 
 -> `id` and `registration_url` will usually be the same and will usually only

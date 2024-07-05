@@ -4,7 +4,11 @@ package acme
 
 import (
 	"crypto"
+	"crypto/ecdsa"
+	"crypto/ed25519"
+	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/rsa"
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/pem"
@@ -22,7 +26,6 @@ import (
 
 // acmeUser implements acme.User.
 type acmeUser struct {
-
 	// The email address for the account.
 	Email string
 
@@ -245,12 +248,12 @@ func splitPEMBundle(bundle []byte) (
 		return
 	}
 
-	cert = pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: cb[0].Raw})
+	cert = pem.EncodeToMemory(&pem.Block{Type: preambleCertificate, Bytes: cb[0].Raw})
 	certNotAfter = cb[0].NotAfter.Format(time.RFC3339)
 	certSerial = cb[0].SerialNumber.String()
 	issuer = make([]byte, 0)
 	for _, ic := range cb[1:] {
-		issuer = append(issuer, pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: ic.Raw})...)
+		issuer = append(issuer, pem.EncodeToMemory(&pem.Block{Type: preambleCertificate, Bytes: ic.Raw})...)
 	}
 
 	return
@@ -302,7 +305,7 @@ func parsePEMBundle(bundle []byte) ([]*x509.Certificate, error) {
 			break
 		}
 
-		if certDERBlock.Type == "CERTIFICATE" {
+		if certDERBlock.Type == preambleCertificate {
 			cert, err := x509.ParseCertificate(certDERBlock.Bytes)
 			if err != nil {
 				return nil, err
@@ -327,6 +330,15 @@ func stringSlice(src []interface{}) []string {
 	return dst
 }
 
+const (
+	preamblePKCS8PrivateKey = "PRIVATE KEY"
+	preambleRSAPrivateKey   = "RSA PRIVATE KEY"
+	preambleECPrivateKey    = "EC PRIVATE KEY"
+
+	preambleCertificate        = "CERTIFICATE"
+	preambleCertificateRequest = "CERTIFICATE REQUEST"
+)
+
 // privateKeyFromPEM converts a PEM block into a crypto.PrivateKey.
 func privateKeyFromPEM(pemData []byte) (crypto.PrivateKey, error) {
 	var result *pem.Block
@@ -337,11 +349,11 @@ func privateKeyFromPEM(pemData []byte) (crypto.PrivateKey, error) {
 			return nil, fmt.Errorf("cannot decode supplied PEM data")
 		}
 		switch result.Type {
-		case "PRIVATE KEY":
+		case preamblePKCS8PrivateKey:
 			return x509.ParsePKCS8PrivateKey(result.Bytes)
-		case "RSA PRIVATE KEY":
+		case preambleRSAPrivateKey:
 			return x509.ParsePKCS1PrivateKey(result.Bytes)
-		case "EC PRIVATE KEY":
+		case preambleECPrivateKey:
 			return x509.ParseECPrivateKey(result.Bytes)
 		}
 	}
@@ -356,7 +368,7 @@ func csrFromPEM(pemData []byte) (*x509.CertificateRequest, error) {
 		if result == nil {
 			return nil, fmt.Errorf("cannot decode supplied PEM data")
 		}
-		if result.Type == "CERTIFICATE REQUEST" {
+		if result.Type == preambleCertificateRequest {
 			return x509.ParseCertificateRequest(result.Bytes)
 		}
 	}
@@ -406,4 +418,82 @@ func validateRevocationReason(v interface{}, k string) (ws []string, errors []er
 		errors = append(errors, err)
 	}
 	return
+}
+
+const (
+	keyAlgorithmRSA     = "RSA"
+	keyAlgorithmECDSA   = "ECDSA"
+	keyAlgorithmED25519 = "ED25519"
+
+	keyECDSACurveP224 = "P224"
+	keyECDSACurveP256 = "P256"
+	keyECDSACurveP384 = "P384"
+	keyECDSACurveP521 = "P521"
+)
+
+func generatePrivateKey(algo string, rsaBits int, ecCruve string) (string, error) {
+	var privateKeyPem *pem.Block
+	switch algo {
+	case keyAlgorithmRSA:
+		k, err := rsa.GenerateKey(rand.Reader, rsaBits)
+		if err != nil {
+			return "", fmt.Errorf("error generating RSA private key: %w", err)
+		}
+
+		privateKeyPem = &pem.Block{
+			Type:  preambleRSAPrivateKey,
+			Bytes: x509.MarshalPKCS1PrivateKey(k),
+		}
+
+	case keyAlgorithmECDSA:
+		var k *ecdsa.PrivateKey
+		var err error
+		switch ecCruve {
+		case keyECDSACurveP224:
+			k, err = ecdsa.GenerateKey(elliptic.P224(), rand.Reader)
+		case keyECDSACurveP256:
+			k, err = ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+		case keyECDSACurveP384:
+			k, err = ecdsa.GenerateKey(elliptic.P384(), rand.Reader)
+		case keyECDSACurveP521:
+			k, err = ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+		default:
+			return "", fmt.Errorf("invalid EC curve %q", ecCruve)
+		}
+
+		if err != nil {
+			return "", fmt.Errorf("error generating ECDSA private key: %w", err)
+		}
+
+		keyBytes, err := x509.MarshalECPrivateKey(k)
+		if err != nil {
+			return "", fmt.Errorf("error marshaling ECDSA private key: %w", err)
+		}
+
+		privateKeyPem = &pem.Block{
+			Type:  preambleECPrivateKey,
+			Bytes: keyBytes,
+		}
+
+	case keyAlgorithmED25519:
+		_, k, err := ed25519.GenerateKey(rand.Reader)
+		if err != nil {
+			return "", fmt.Errorf("error generating ED25519 private key: %w", err)
+		}
+
+		keyBytes, err := x509.MarshalPKCS8PrivateKey(k)
+		if err != nil {
+			return "", fmt.Errorf("error marshaling ED25519 private key: %w", err)
+		}
+
+		privateKeyPem = &pem.Block{
+			Type:  preamblePKCS8PrivateKey,
+			Bytes: keyBytes,
+		}
+
+	default:
+		return "", fmt.Errorf("invalid key algorithm %q", algo)
+	}
+
+	return string(pem.EncodeToMemory(privateKeyPem)), nil
 }

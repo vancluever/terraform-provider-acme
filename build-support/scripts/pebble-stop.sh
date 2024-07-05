@@ -59,7 +59,7 @@ fi
 
 # pebble-challtestsrv
 if [ -n "${PEBBLE_CHALLTESTSRV_PID}" ]; then
-  if [ "$(ps -p "${PEBBLE_CHALLTESTSRV_PID}" -o comm=)" != "pebble-challtestsrv" ]; then
+  if [[ "$(ps -p "${PEBBLE_CHALLTESTSRV_PID}" -o comm=)" =~ ^pebble-challtestsrv.* ]]; then
     echo "error: stale PID file ${PEBBLE_CHALLTESTSRV_PIDFILE}; PID ${PEBBLE_CHALLTESTSRV_PID} not found or not \"pebble-challtestsrv\".">&2
     PEBBLE_CHALLTESTSRV_ERROR="true"
   fi

@@ -1,6 +1,10 @@
 package acme
 
 import (
+	"crypto/ecdsa"
+	"crypto/ed25519"
+	"crypto/elliptic"
+	"crypto/rsa"
 	"math"
 	"reflect"
 	"strings"
@@ -381,6 +385,109 @@ func TestExpandACMEClient_config_certTimeout_default(t *testing.T) {
 			if tc.expected != c.Certificate.Timeout {
 				t.Fatalf("expected timeout to be %s, got %s", tc.expected, c.Certificate.Timeout)
 			}
+		})
+	}
+}
+
+func TestGeneratePrivateKey(t *testing.T) {
+	testCases := []struct {
+		desc      string
+		algo      string
+		rsaBits   int
+		ecCurve   string
+		expectErr string
+	}{
+		{
+			desc:    "RSA",
+			algo:    keyAlgorithmRSA,
+			rsaBits: 4096,
+		},
+		{
+			desc:    "ECDSA",
+			algo:    keyAlgorithmECDSA,
+			ecCurve: keyECDSACurveP384,
+		},
+		{
+			desc: "ED25519",
+			algo: keyAlgorithmED25519,
+		},
+		{
+			desc:    "RSA - odd key len",
+			algo:    keyAlgorithmRSA,
+			rsaBits: 1111,
+		},
+		{
+			desc:    "RSA - odd key len",
+			algo:    keyAlgorithmRSA,
+			rsaBits: 1111,
+		},
+		{
+			desc:      "ECDSA - unknown curve type",
+			algo:      keyAlgorithmECDSA,
+			ecCurve:   "foobar",
+			expectErr: "invalid EC curve \"foobar\"",
+		},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			gotKey, err := generatePrivateKey(tc.algo, tc.rsaBits, tc.ecCurve)
+			if err != nil {
+				if tc.expectErr != "" {
+					if tc.expectErr != err.Error() {
+						t.Fatalf("expected error:\n\t%s\ngot error:\n\t%s", tc.expectErr, err)
+					}
+
+					return
+				} else {
+					t.Fatal(err)
+				}
+			}
+
+			k, err := privateKeyFromPEM([]byte(gotKey))
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			var gotKeyType string
+			var gotRsaBits int
+			var gotEcCurve string
+			switch l := k.(type) {
+			case *rsa.PrivateKey:
+				gotKeyType = keyAlgorithmRSA
+				gotRsaBits = l.N.BitLen()
+
+			case *ecdsa.PrivateKey:
+				gotKeyType = keyAlgorithmECDSA
+				switch l.Curve {
+				case elliptic.P224():
+					gotEcCurve = keyECDSACurveP224
+				case elliptic.P256():
+					gotEcCurve = keyECDSACurveP256
+				case elliptic.P384():
+					gotEcCurve = keyECDSACurveP384
+				case elliptic.P521():
+					gotEcCurve = keyECDSACurveP521
+				default:
+					t.Fatalf("expected EDCSA curve %T", l.Curve)
+				}
+
+			case ed25519.PrivateKey:
+				gotKeyType = keyAlgorithmED25519
+
+			default:
+				t.Fatalf("unexpected key type %T was generated", k)
+			}
+
+			if tc.algo != gotKeyType {
+				t.Fatalf("expected key type %q, got %q", tc.algo, gotKeyType)
+			}
+			if tc.rsaBits != gotRsaBits {
+				t.Fatalf("expected key type %d, got %d", tc.rsaBits, gotRsaBits)
+			}
+			if tc.ecCurve != gotEcCurve {
+				t.Fatalf("expected EC curve to be %q, got %q", tc.algo, gotKeyType)
+			}
+
 		})
 	}
 }
