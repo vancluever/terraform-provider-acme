@@ -6,8 +6,7 @@ registration can be used to request authorizations for certificates.
 
 -> This resource is named `acme_registration` for historical reasons - in the
 ACME v1 spec, a _registration_ referred to the account entity.  This resource
-name is stable and more than likely will not change until a later major version
-of the provider, if at all.
+name is stable and there are no plans to change it.
 
 -> Keep in mind that when using this resource along with
 [`acme_certificate`][resource-certificate] within the same configuration, a
