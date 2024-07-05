@@ -4,6 +4,7 @@ import (
 	"github.com/go-acme/lego/v4/acme"
 	"github.com/go-acme/lego/v4/registration"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 // resourceACMERegistration returns the current version of the
@@ -21,9 +22,41 @@ func resourceACMERegistrationV1() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"account_key_pem": {
 				Type:      schema.TypeString,
-				Required:  true,
+				Optional:  true,
+				Computed:  true,
 				ForceNew:  true,
 				Sensitive: true,
+			},
+			// https://letsencrypt.org/docs/integration-guide/#supported-key-algorithms
+			// NOTE: Our internal functions support more, but we need to restrict to
+			// what's listed here for Let's Encrypt Specifically. This also applies
+			// to the specific RSA and ECDSA lengths/curves.
+			"account_key_algorithm": {
+				Type:     schema.TypeString,
+				Optional: true,
+				ForceNew: true,
+				ValidateFunc: validation.StringInSlice(
+					[]string{keyAlgorithmRSA, keyAlgorithmECDSA},
+					false,
+				),
+				Default: keyAlgorithmECDSA,
+			},
+			"account_key_ecdsa_curve": {
+				Type:     schema.TypeString,
+				Optional: true,
+				ForceNew: true,
+				ValidateFunc: validation.StringInSlice(
+					[]string{keyECDSACurveP256, keyECDSACurveP384},
+					false,
+				),
+				Default: keyECDSACurveP384,
+			},
+			"account_key_rsa_bits": {
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ForceNew:     true,
+				ValidateFunc: validation.IntInSlice([]int{2048, 3072, 4096}),
+				Default:      4096,
 			},
 			"email_address": {
 				Type:     schema.TypeString,
@@ -61,6 +94,20 @@ func resourceACMERegistrationV1() *schema.Resource {
 }
 
 func resourceACMERegistrationCreate(d *schema.ResourceData, meta interface{}) error {
+	// If we do not have a private key, create one.
+	if d.Get("account_key_pem").(string) == "" {
+		privateKeyPem, err := generatePrivateKey(
+			d.Get("account_key_algorithm").(string),
+			d.Get("account_key_rsa_bits").(int),
+			d.Get("account_key_ecdsa_curve").(string),
+		)
+		if err != nil {
+			return err
+		}
+
+		d.Set("account_key_pem", privateKeyPem)
+	}
+
 	// register and agree to the TOS
 	client, _, err := expandACMEClient(d, meta, false)
 	if err != nil {

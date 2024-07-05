@@ -32,15 +32,12 @@ CAs such as Let's Encrypt.
 
 The following example can be used to create an account using the
 [`acme_registration`][resource-acme-registration] resource, and a certificate
-using the [`acme_certificate`][resource-acme-certificate] resource. The
-initial private key is created using the
-[`tls_private_key`][resource-tls-private-key] resource, but can be supplied via
-other means. DNS validation is performed by using [Amazon Route 53][aws-route-53],
-for which appropriate credentials are assumed to be in your environment.
+using the [`acme_certificate`][resource-acme-certificate] resource. DNS
+validation is performed by using [Amazon Route 53][aws-route-53], for which
+appropriate credentials are assumed to be in your environment.
 
 [resource-acme-registration]: ./resources/registration.md
 [resource-acme-certificate]: ./resources/certificate.md
-[resource-tls-private-key]: https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key
 [aws-route-53]: https://aws.amazon.com/route53/
 
 -> The directory URLs in all examples in this provider reference Let's Encrypt's
@@ -63,12 +60,7 @@ provider "acme" {
   server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = tls_private_key.private_key.private_key_pem
   email_address   = "nobody@example.com"
 }
 

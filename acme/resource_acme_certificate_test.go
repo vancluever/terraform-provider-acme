@@ -853,12 +853,7 @@ variable "domain" {
   default = "%s"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
@@ -900,12 +895,7 @@ variable "domain" {
   default = "%s"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
@@ -949,12 +939,7 @@ variable "domain" {
   default = "%s"
 }
 
-resource "tls_private_key" "reg_private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.reg_private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
@@ -1008,12 +993,7 @@ variable "domain" {
   default = "%s"
 }
 
-resource "tls_private_key" "reg_private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.reg_private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
@@ -1069,12 +1049,7 @@ variable "domain" {
   default = "%s"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
@@ -1116,12 +1091,7 @@ variable "domain" {
   default = "%s"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
@@ -1166,12 +1136,7 @@ variable "password" {
   default = "%s"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
@@ -1215,12 +1180,7 @@ variable "domain" {
   default = "%s"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
@@ -1264,12 +1224,7 @@ variable "domain" {
   default = "%s"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
@@ -1311,12 +1266,7 @@ variable "domain" {
   default = "%s"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
@@ -1360,12 +1310,7 @@ variable "domain" {
   default = "%s"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
@@ -1398,12 +1343,7 @@ variable "domain" {
   default = "%s"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
@@ -1437,12 +1377,7 @@ variable "domain" {
   default = "%s"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
@@ -1476,12 +1411,7 @@ variable "domain" {
   default = "%s"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
@@ -1515,12 +1445,7 @@ variable "domain" {
   default = "%s"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
@@ -1554,12 +1479,7 @@ variable "domain" {
   default = "%s"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
   email_address   = "${var.email_address}"
 }
 
@@ -1592,12 +1512,7 @@ variable "domain" {
   default = "%s"
 }
 
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-
 resource "acme_registration" "reg" {
-  account_key_pem = tls_private_key.private_key.private_key_pem
   email_address   = var.email_address
 }
 
