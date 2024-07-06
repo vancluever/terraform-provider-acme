@@ -1,4 +1,4 @@
-## 2.24.1 (Unreleased)
+## 2.24.1 (July 5, 2024)
 
 This is a documentation-only fix for the `acme_server_url` data source. No
 other changes are being made.
