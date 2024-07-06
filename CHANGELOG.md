@@ -1,3 +1,7 @@
+## 2.24.2-pre (Unreleased)
+
+Bumped version for dev.
+
 ## 2.24.1 (July 5, 2024)
 
 This is a documentation-only fix for the `acme_server_url` data source. No
