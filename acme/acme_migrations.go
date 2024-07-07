@@ -9,6 +9,36 @@ import (
 	"github.com/mitchellh/copystructure"
 )
 
+// resourceACMERegistrationStateUpgraderV1 returns the state upgrader
+// that handles migrations from version 1 to version 2 for
+// acme_registration.
+func resourceACMERegistrationStateUpgraderV1() schema.StateUpgrader {
+	return schema.StateUpgrader{
+		Version: 1,
+		Type:    resourceACMERegistrationV1().CoreConfigSchema().ImpliedType(),
+		Upgrade: resourceACMERegistrationStateUpgraderV1Func,
+	}
+}
+
+// resourceACMERegistrationStateUpgraderV1Func provides Terraform 0.12
+// state upgrade functionality from schema version 1 to schema
+// version 2 for acme_registration.
+func resourceACMERegistrationStateUpgraderV1Func(
+	_ context.Context,
+	rawState map[string]interface{},
+	meta interface{},
+) (map[string]interface{}, error) {
+	z, err := copystructure.Copy(rawState)
+	if err != nil {
+		return nil, err
+	}
+	result := z.(map[string]interface{})
+	result["account_key_algorithm"] = keyAlgorithmECDSA
+	result["account_key_ecdsa_curve"] = keyECDSACurveP384
+	result["account_key_rsa_bits"] = 4096
+	return result, nil
+}
+
 // resourceACMECertificateStateUpgraderV4 returns the state upgrader
 // that handles migrations from version 4 to version 5 for
 // acme_certificate.
