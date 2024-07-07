@@ -1,6 +1,12 @@
-## 2.24.2-pre (Unreleased)
+## 2.24.2 (Unreleased)
 
-Bumped version for dev.
+BUG FIXES:
+
+* `resource/acme_registration`: Fixed an issue where registrations were
+  erroneously being re-created when being upgraded from 2.23.2 or earlier, due
+  to a lack of state migration for the new `account_key_algorithm`,
+  `account_key_ecdsa_curve`, and `account_key_rsa_bits` settings.
+  [#425](https://github.com/vancluever/terraform-provider-acme/pull/425)
 
 ## 2.24.1 (July 5, 2024)
 
