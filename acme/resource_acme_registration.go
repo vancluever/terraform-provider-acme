@@ -10,15 +10,18 @@ import (
 // resourceACMERegistration returns the current version of the
 // acme_registration resource and needs to be updated when the schema
 // version is incremented.
-func resourceACMERegistration() *schema.Resource { return resourceACMERegistrationV1() }
+func resourceACMERegistration() *schema.Resource { return resourceACMERegistrationV2() }
 
-func resourceACMERegistrationV1() *schema.Resource {
+func resourceACMERegistrationV2() *schema.Resource {
 	return &schema.Resource{
 		Create:        resourceACMERegistrationCreate,
 		Read:          resourceACMERegistrationRead,
 		Delete:        resourceACMERegistrationDelete,
 		MigrateState:  resourceACMERegistrationMigrateState,
-		SchemaVersion: 1,
+		SchemaVersion: 2,
+		StateUpgraders: []schema.StateUpgrader{
+			resourceACMERegistrationStateUpgraderV1(),
+		},
 		Schema: map[string]*schema.Schema{
 			"account_key_pem": {
 				Type:      schema.TypeString,

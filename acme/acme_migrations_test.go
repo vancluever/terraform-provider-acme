@@ -76,6 +76,39 @@ func testACMECertificateStateData012V5() map[string]interface{} {
 	}
 }
 
+func testACMERegistrationStateData012V1() map[string]interface{} {
+	return map[string]interface{}{
+		"account_key_pem": "key",
+		"email_address":   "hello@localhost",
+		"external_account_binding": []interface{}{
+			map[string]interface{}{
+				"key_id":      "kid",
+				"hmac_base64": "hmac",
+			},
+		},
+		"id":               "id",
+		"registration_url": "regurl",
+	}
+}
+
+func testACMERegistrationStateData012V2() map[string]interface{} {
+	return map[string]interface{}{
+		"account_key_pem":         "key",
+		"account_key_algorithm":   "ECDSA",
+		"account_key_ecdsa_curve": "P384",
+		"account_key_rsa_bits":    4096,
+		"email_address":           "hello@localhost",
+		"external_account_binding": []interface{}{
+			map[string]interface{}{
+				"key_id":      "kid",
+				"hmac_base64": "hmac",
+			},
+		},
+		"id":               "id",
+		"registration_url": "regurl",
+	}
+}
+
 func TestResourceACMECertificateStateUpgraderV3Func(t *testing.T) {
 	expected := testACMECertificateStateData012V4()
 	actual, err := resourceACMECertificateStateUpgraderV3Func(context.TODO(), testACMECertificateStateData012V3(), nil)
@@ -105,5 +138,17 @@ func TestResourceACMECertificateStateUpgraderV4Func(t *testing.T) {
 
 	if id := actual["id"].(string); !uuidRegexp.MatchString(id) {
 		t.Errorf("expected UUID as ID, got %q", id)
+	}
+}
+
+func TestResourceACMERegistrationStateUpgraderV1Func(t *testing.T) {
+	expected := testACMERegistrationStateData012V2()
+	actual, err := resourceACMERegistrationStateUpgraderV1Func(context.TODO(), testACMERegistrationStateData012V1(), nil)
+	if err != nil {
+		t.Fatalf("error migrating state: %s", err)
+	}
+
+	if diff := cmp.Diff(expected, actual, nil); diff != "" {
+		t.Errorf("state migration v1 -> v2 mismatch (-want +got):\n%s", diff)
 	}
 }
