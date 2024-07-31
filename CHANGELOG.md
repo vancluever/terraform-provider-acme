@@ -1,4 +1,4 @@
-## 2.25.0 (Unreleased)
+## 2.25.0 (July 31, 2024)
 
 FEATURES:
 
