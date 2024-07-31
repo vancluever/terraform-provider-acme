@@ -1,6 +1,12 @@
-## 2.24.3-pre (Unreleased)
+## 2.25.0 (Unreleased)
 
-Bumped version for dev.
+FEATURES:
+
+* `resource/acme_certificate`: Updated the `certificate_p12` field to use
+  modern encryption. Note that this means the field may no longer be readable
+  by (much older) versions of OpenSSL or other encryption software and
+  libraries.
+  [#427](https://github.com/vancluever/terraform-provider-acme/pull/427)
 
 ## 2.24.2 (July 7, 2024)
 
