@@ -280,7 +280,7 @@ func bundleToPKCS12(bundle, key []byte, password string) ([]byte, error) {
 		return nil, err
 	}
 
-	pfxData, err := pkcs12.Encode(rand.Reader, pk, cb[0], cb[1:], password)
+	pfxData, err := pkcs12.Modern2023.Encode(pk, cb[0], cb[1:], password)
 	if err != nil {
 		return nil, err
 	}
