@@ -1,3 +1,7 @@
+## 2.26.1-pre (Unreleased)
+
+Bumped version for dev.
+
 ## 2.26.0 (September 3, 2024)
 
 LEGO UPDATE:
