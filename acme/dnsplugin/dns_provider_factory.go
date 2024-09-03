@@ -29,6 +29,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/desec"
 	"github.com/go-acme/lego/v4/providers/dns/designate"
 	"github.com/go-acme/lego/v4/providers/dns/digitalocean"
+	"github.com/go-acme/lego/v4/providers/dns/directadmin"
 	"github.com/go-acme/lego/v4/providers/dns/dnshomede"
 	"github.com/go-acme/lego/v4/providers/dns/dnsimple"
 	"github.com/go-acme/lego/v4/providers/dns/dnsmadeeasy"
@@ -73,12 +74,15 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/joker"
 	"github.com/go-acme/lego/v4/providers/dns/liara"
 	"github.com/go-acme/lego/v4/providers/dns/lightsail"
+	"github.com/go-acme/lego/v4/providers/dns/limacity"
 	"github.com/go-acme/lego/v4/providers/dns/linode"
 	"github.com/go-acme/lego/v4/providers/dns/liquidweb"
 	"github.com/go-acme/lego/v4/providers/dns/loopia"
 	"github.com/go-acme/lego/v4/providers/dns/luadns"
 	"github.com/go-acme/lego/v4/providers/dns/mailinabox"
 	"github.com/go-acme/lego/v4/providers/dns/metaname"
+	"github.com/go-acme/lego/v4/providers/dns/mijnhost"
+	"github.com/go-acme/lego/v4/providers/dns/mittwald"
 	"github.com/go-acme/lego/v4/providers/dns/mydnsjp"
 	"github.com/go-acme/lego/v4/providers/dns/mythicbeasts"
 	"github.com/go-acme/lego/v4/providers/dns/namecheap"
@@ -358,6 +362,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"digitalocean": func() (challenge.Provider, error) {
 		p, err := digitalocean.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"directadmin": func() (challenge.Provider, error) {
+		p, err := directadmin.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -716,6 +728,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"limacity": func() (challenge.Provider, error) {
+		p, err := limacity.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"linode": func() (challenge.Provider, error) {
 		p, err := linode.NewDNSProvider()
 		if err != nil {
@@ -758,6 +778,22 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"metaname": func() (challenge.Provider, error) {
 		p, err := metaname.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"mijnhost": func() (challenge.Provider, error) {
+		p, err := mijnhost.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"mittwald": func() (challenge.Provider, error) {
+		p, err := mittwald.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

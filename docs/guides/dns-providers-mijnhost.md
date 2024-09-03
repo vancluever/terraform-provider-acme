@@ -1,5 +1,5 @@
 ---
-page_title: "bluecat"
+page_title: "mijnhost"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Bluecat DNS Challenge Provider
+# mijn.host DNS Challenge Provider
 
-The `bluecat` DNS challenge provider can be used to perform DNS challenges for
+The `mijnhost` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Bluecat](https://www.bluecatnetworks.com).
+[mijn.host](https://mijn.host/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "bluecat"
+    provider = "mijnhost"
   }
 }
 ```
@@ -48,16 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `BLUECAT_CONFIG_NAME` - Configuration name.
-* `BLUECAT_DNS_VIEW` - External DNS View Name.
-* `BLUECAT_PASSWORD` - API password.
-* `BLUECAT_SERVER_URL` - The server URL, should have scheme, hostname, and port (if required) of the authoritative Bluecat BAM serve.
-* `BLUECAT_USER_NAME` - API username.
+* `MIJNHOST_API_KEY` - The API key.
 
-* `BLUECAT_HTTP_TIMEOUT` - API request timeout.
-* `BLUECAT_POLLING_INTERVAL` - Time between DNS propagation check.
-* `BLUECAT_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `BLUECAT_SKIP_DEPLOY` - Skip deployements.
-* `BLUECAT_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `MIJNHOST_HTTP_TIMEOUT` - API request timeout.
+* `MIJNHOST_POLLING_INTERVAL` - Time between DNS propagation check.
+* `MIJNHOST_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `MIJNHOST_SEQUENCE_INTERVAL` - Time between sequential requests.
+* `MIJNHOST_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

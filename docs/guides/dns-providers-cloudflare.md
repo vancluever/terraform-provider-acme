@@ -57,10 +57,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `CLOUDFLARE_EMAIL` - Alias to CF_API_EMAIL.
 * `CLOUDFLARE_ZONE_API_TOKEN` - Alias to CF_ZONE_API_TOKEN.
 
-* `CLOUDFLARE_HTTP_TIMEOUT` - API request timeout.
-* `CLOUDFLARE_POLLING_INTERVAL` - Time between DNS propagation check.
-* `CLOUDFLARE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `CLOUDFLARE_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `CLOUDFLARE_HTTP_TIMEOUT` - API request timeout (in seconds).
+* `CLOUDFLARE_POLLING_INTERVAL` - Time between DNS propagation check (in seconds).
+* `CLOUDFLARE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation (in seconds).
+* `CLOUDFLARE_TTL` - The TTL of the TXT record used for the DNS challenge (in seconds).
 
 ## Description
 
