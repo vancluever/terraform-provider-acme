@@ -7,6 +7,14 @@ lego [CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.19.2/CHANGELOG.md)
 for more details on additions and changes to DNS providers, and other minor
 changes to the library.
 
+SECURITY:
+
+This update also contains a fix for
+[CVE-2024-51744](https://github.com/advisories/GHSA-29wx-vh33-7x7r) (low
+severity). This affects indirect dependencies within lego itself, but has been
+rolled into this update ahead of a lego release to address security alerts.
+[#446](https://github.com/vancluever/terraform-provider-acme/pull/446)
+
 ## 2.26.0 (September 3, 2024)
 
 LEGO UPDATE:
