@@ -48,6 +48,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
+* `OVH_ACCESS_TOKEN` - Access token.
 * `OVH_APPLICATION_KEY` - Application key (Application Key authentication).
 * `OVH_APPLICATION_SECRET` - Application secret (Application Key authentication).
 * `OVH_CLIENT_ID` - Client ID (OAuth2).
