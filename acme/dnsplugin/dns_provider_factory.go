@@ -45,7 +45,6 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/efficientip"
 	"github.com/go-acme/lego/v4/providers/dns/epik"
 	"github.com/go-acme/lego/v4/providers/dns/exec"
-	"github.com/go-acme/lego/v4/providers/dns/exoscale"
 	"github.com/go-acme/lego/v4/providers/dns/freemyip"
 	"github.com/go-acme/lego/v4/providers/dns/gandi"
 	"github.com/go-acme/lego/v4/providers/dns/gandiv5"
@@ -490,14 +489,6 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"exec": func() (challenge.Provider, error) {
 		p, err := exec.NewDNSProvider()
-		if err != nil {
-			return nil, err
-		}
-
-		return p, nil
-	},
-	"exoscale": func() (challenge.Provider, error) {
-		p, err := exoscale.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
