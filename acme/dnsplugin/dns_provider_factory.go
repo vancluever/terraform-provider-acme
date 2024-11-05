@@ -45,6 +45,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/efficientip"
 	"github.com/go-acme/lego/v4/providers/dns/epik"
 	"github.com/go-acme/lego/v4/providers/dns/exec"
+	"github.com/go-acme/lego/v4/providers/dns/exoscale"
 	"github.com/go-acme/lego/v4/providers/dns/freemyip"
 	"github.com/go-acme/lego/v4/providers/dns/gandi"
 	"github.com/go-acme/lego/v4/providers/dns/gandiv5"
@@ -58,6 +59,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/hosttech"
 	"github.com/go-acme/lego/v4/providers/dns/httpnet"
 	"github.com/go-acme/lego/v4/providers/dns/httpreq"
+	"github.com/go-acme/lego/v4/providers/dns/huaweicloud"
 	"github.com/go-acme/lego/v4/providers/dns/hurricane"
 	"github.com/go-acme/lego/v4/providers/dns/hyperone"
 	"github.com/go-acme/lego/v4/providers/dns/ibmcloud"
@@ -112,6 +114,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/scaleway"
 	"github.com/go-acme/lego/v4/providers/dns/selectel"
 	"github.com/go-acme/lego/v4/providers/dns/selectelv2"
+	"github.com/go-acme/lego/v4/providers/dns/selfhostde"
 	"github.com/go-acme/lego/v4/providers/dns/servercow"
 	"github.com/go-acme/lego/v4/providers/dns/shellrent"
 	"github.com/go-acme/lego/v4/providers/dns/simply"
@@ -495,6 +498,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"exoscale": func() (challenge.Provider, error) {
+		p, err := exoscale.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"freemyip": func() (challenge.Provider, error) {
 		p, err := freemyip.NewDNSProvider()
 		if err != nil {
@@ -593,6 +604,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"httpreq": func() (challenge.Provider, error) {
 		p, err := httpreq.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"huaweicloud": func() (challenge.Provider, error) {
+		p, err := huaweicloud.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -1025,6 +1044,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"selectelv2": func() (challenge.Provider, error) {
 		p, err := selectelv2.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"selfhostde": func() (challenge.Provider, error) {
+		p, err := selfhostde.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

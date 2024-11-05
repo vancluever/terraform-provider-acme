@@ -1,5 +1,5 @@
 ---
-page_title: "exoscale"
+page_title: "huaweicloud"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Exoscale DNS Challenge Provider
+# Huawei Cloud DNS Challenge Provider
 
-The `exoscale` DNS challenge provider can be used to perform DNS challenges for
+The `huaweicloud` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Exoscale](https://www.exoscale.com/).
+[Huawei Cloud](https://huaweicloud.com).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "exoscale"
+    provider = "huaweicloud"
   }
 }
 ```
@@ -48,13 +48,13 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `EXOSCALE_API_KEY` - API key.
-* `EXOSCALE_API_SECRET` - API secret.
+* `HUAWEICLOUD_ACCESS_KEY_ID` - Access key ID.
+* `HUAWEICLOUD_REGION` - Region.
+* `HUAWEICLOUD_SECRET_ACCESS_KEY` - Access Key secret.
 
-* `EXOSCALE_ENDPOINT` - API endpoint URL.
-* `EXOSCALE_HTTP_TIMEOUT` - API request timeout.
-* `EXOSCALE_POLLING_INTERVAL` - Time between DNS propagation check.
-* `EXOSCALE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `EXOSCALE_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `HUAWEICLOUD_HTTP_TIMEOUT` - API request timeout.
+* `HUAWEICLOUD_POLLING_INTERVAL` - Time between DNS propagation check.
+* `HUAWEICLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `HUAWEICLOUD_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 
