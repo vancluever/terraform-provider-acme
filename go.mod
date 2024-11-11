@@ -170,6 +170,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/pquerna/otp v1.4.0 // indirect
+	github.com/regfish/regfish-dnsapi-go v0.1.1 // indirect
 	github.com/sacloud/api-client-go v0.2.10 // indirect
 	github.com/sacloud/go-http v0.1.8 // indirect
 	github.com/sacloud/iaas-api-go v1.12.0 // indirect
@@ -201,6 +202,7 @@ require (
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
+	github.com/volcengine/volc-sdk-golang v1.0.183 // indirect
 	github.com/vultr/govultr/v3 v3.9.1 // indirect
 	github.com/yandex-cloud/go-genproto v0.0.0-20241101135610-76a0cfc1a773 // indirect
 	github.com/yandex-cloud/go-sdk v0.0.0-20241101143304-947cf519f6bd // indirect
