@@ -1,5 +1,5 @@
 ---
-page_title: "cloudxns"
+page_title: "timewebcloud"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# CloudXNS (Deprecated) DNS Challenge Provider
+# Timeweb Cloud DNS Challenge Provider
 
-The `cloudxns` DNS challenge provider can be used to perform DNS challenges for
+The `timewebcloud` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[CloudXNS (Deprecated)](https://github.com/go-acme/lego/issues/2323).
+[Timeweb Cloud](https://timeweb.cloud/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "cloudxns"
+    provider = "timewebcloud"
   }
 }
 ```
@@ -48,12 +48,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `CLOUDXNS_API_KEY` - The API key.
-* `CLOUDXNS_SECRET_KEY` - The API secret key.
+* `TIMEWEBCLOUD_AUTH_TOKEN` - Authentication token.
 
-* `CLOUDXNS_HTTP_TIMEOUT` - API request timeout.
-* `CLOUDXNS_POLLING_INTERVAL` - Time between DNS propagation check.
-* `CLOUDXNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `CLOUDXNS_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `TIMEWEBCLOUD_HTTP_TIMEOUT` - API request timeout.
+* `TIMEWEBCLOUD_POLLING_INTERVAL` - Time between DNS propagation check.
+* `TIMEWEBCLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
 
 

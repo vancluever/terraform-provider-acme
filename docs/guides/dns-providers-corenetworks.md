@@ -1,5 +1,5 @@
 ---
-page_title: "cloudxns"
+page_title: "corenetworks"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# CloudXNS (Deprecated) DNS Challenge Provider
+# Core-Networks DNS Challenge Provider
 
-The `cloudxns` DNS challenge provider can be used to perform DNS challenges for
+The `corenetworks` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[CloudXNS (Deprecated)](https://github.com/go-acme/lego/issues/2323).
+[Core-Networks](https://www.core-networks.de/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "cloudxns"
+    provider = "corenetworks"
   }
 }
 ```
@@ -48,12 +48,13 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `CLOUDXNS_API_KEY` - The API key.
-* `CLOUDXNS_SECRET_KEY` - The API secret key.
+* `CORENETWORKS_LOGIN` - The username of the API account.
+* `CORENETWORKS_PASSWORD` - The password.
 
-* `CLOUDXNS_HTTP_TIMEOUT` - API request timeout.
-* `CLOUDXNS_POLLING_INTERVAL` - Time between DNS propagation check.
-* `CLOUDXNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `CLOUDXNS_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `CORENETWORKS_HTTP_TIMEOUT` - API request timeout.
+* `CORENETWORKS_POLLING_INTERVAL` - Time between DNS propagation check.
+* `CORENETWORKS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `CORENETWORKS_SEQUENCE_INTERVAL` - Time between sequential requests.
+* `CORENETWORKS_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

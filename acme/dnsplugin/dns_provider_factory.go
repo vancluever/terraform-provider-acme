@@ -24,6 +24,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/cloudxns"
 	"github.com/go-acme/lego/v4/providers/dns/conoha"
 	"github.com/go-acme/lego/v4/providers/dns/constellix"
+	"github.com/go-acme/lego/v4/providers/dns/corenetworks"
 	"github.com/go-acme/lego/v4/providers/dns/cpanel"
 	"github.com/go-acme/lego/v4/providers/dns/derak"
 	"github.com/go-acme/lego/v4/providers/dns/desec"
@@ -105,6 +106,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/porkbun"
 	"github.com/go-acme/lego/v4/providers/dns/rackspace"
 	"github.com/go-acme/lego/v4/providers/dns/rcodezero"
+	"github.com/go-acme/lego/v4/providers/dns/regfish"
 	"github.com/go-acme/lego/v4/providers/dns/regru"
 	"github.com/go-acme/lego/v4/providers/dns/rfc2136"
 	"github.com/go-acme/lego/v4/providers/dns/rimuhosting"
@@ -120,7 +122,9 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/simply"
 	"github.com/go-acme/lego/v4/providers/dns/sonic"
 	"github.com/go-acme/lego/v4/providers/dns/stackpath"
+	"github.com/go-acme/lego/v4/providers/dns/technitium"
 	"github.com/go-acme/lego/v4/providers/dns/tencentcloud"
+	"github.com/go-acme/lego/v4/providers/dns/timewebcloud"
 	"github.com/go-acme/lego/v4/providers/dns/transip"
 	"github.com/go-acme/lego/v4/providers/dns/ultradns"
 	"github.com/go-acme/lego/v4/providers/dns/variomedia"
@@ -129,6 +133,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/versio"
 	"github.com/go-acme/lego/v4/providers/dns/vinyldns"
 	"github.com/go-acme/lego/v4/providers/dns/vkcloud"
+	"github.com/go-acme/lego/v4/providers/dns/volcengine"
 	"github.com/go-acme/lego/v4/providers/dns/vscale"
 	"github.com/go-acme/lego/v4/providers/dns/vultr"
 	"github.com/go-acme/lego/v4/providers/dns/webnames"
@@ -324,6 +329,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"constellix": func() (challenge.Provider, error) {
 		p, err := constellix.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"corenetworks": func() (challenge.Provider, error) {
+		p, err := corenetworks.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -978,6 +991,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"regfish": func() (challenge.Provider, error) {
+		p, err := regfish.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"regru": func() (challenge.Provider, error) {
 		p, err := regru.NewDNSProvider()
 		if err != nil {
@@ -1098,8 +1119,24 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"technitium": func() (challenge.Provider, error) {
+		p, err := technitium.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"tencentcloud": func() (challenge.Provider, error) {
 		p, err := tencentcloud.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"timewebcloud": func() (challenge.Provider, error) {
+		p, err := timewebcloud.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -1164,6 +1201,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"vkcloud": func() (challenge.Provider, error) {
 		p, err := vkcloud.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"volcengine": func() (challenge.Provider, error) {
+		p, err := volcengine.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

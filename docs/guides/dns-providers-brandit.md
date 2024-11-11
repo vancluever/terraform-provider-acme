@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Brandit DNS Challenge Provider
+# Brandit (deprecated) DNS Challenge Provider
 
 The `brandit` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Brandit](https://www.brandit.com/).
+[Brandit (deprecated)](https://www.brandit.com/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 

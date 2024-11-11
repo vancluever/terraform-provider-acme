@@ -50,10 +50,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `VARIOMEDIA_API_TOKEN` - API token.
 
-* `DODE_SEQUENCE_INTERVAL` - Time between sequential requests.
 * `VARIOMEDIA_HTTP_TIMEOUT` - API request timeout.
 * `VARIOMEDIA_POLLING_INTERVAL` - Time between DNS propagation check.
 * `VARIOMEDIA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `VARIOMEDIA_SEQUENCE_INTERVAL` - Time between sequential requests.
 * `VARIOMEDIA_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 

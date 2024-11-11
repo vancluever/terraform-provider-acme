@@ -1,5 +1,5 @@
 ---
-page_title: "cloudxns"
+page_title: "technitium"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# CloudXNS (Deprecated) DNS Challenge Provider
+# Technitium DNS Challenge Provider
 
-The `cloudxns` DNS challenge provider can be used to perform DNS challenges for
+The `technitium` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[CloudXNS (Deprecated)](https://github.com/go-acme/lego/issues/2323).
+[Technitium](https://technitium.com/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "cloudxns"
+    provider = "technitium"
   }
 }
 ```
@@ -48,12 +48,17 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `CLOUDXNS_API_KEY` - The API key.
-* `CLOUDXNS_SECRET_KEY` - The API secret key.
+* `TECHNITIUM_API_TOKEN` - API token.
+* `TECHNITIUM_SERVER_BASE_URL` - Server base URL.
 
-* `CLOUDXNS_HTTP_TIMEOUT` - API request timeout.
-* `CLOUDXNS_POLLING_INTERVAL` - Time between DNS propagation check.
-* `CLOUDXNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `CLOUDXNS_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `TECHNITIUM_HTTP_TIMEOUT` - API request timeout.
+* `TECHNITIUM_POLLING_INTERVAL` - Time between DNS propagation check.
+* `TECHNITIUM_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `TECHNITIUM_TTL` - The TTL of the TXT record used for the DNS challenge.
 
+Technitium DNS Server supports Dynamic Updates (RFC2136) for primary zones,
+so you can also use the [RFC2136 provider](https://go-acme.github.io/lego/dns/rfc2136/index.html).
+
+[RFC2136 provider](https://go-acme.github.io/lego/dns/rfc2136/index.html) is much better compared to the HTTP API option from security perspective.
+Technitium recommends to use it in production over the HTTP API.
 

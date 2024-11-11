@@ -1,5 +1,5 @@
 ---
-page_title: "cloudxns"
+page_title: "regfish"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# CloudXNS (Deprecated) DNS Challenge Provider
+# Regfish DNS Challenge Provider
 
-The `cloudxns` DNS challenge provider can be used to perform DNS challenges for
+The `regfish` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[CloudXNS (Deprecated)](https://github.com/go-acme/lego/issues/2323).
+[Regfish](https://regfish.de/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "cloudxns"
+    provider = "regfish"
   }
 }
 ```
@@ -48,12 +48,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `CLOUDXNS_API_KEY` - The API key.
-* `CLOUDXNS_SECRET_KEY` - The API secret key.
+* `REGFISH_API_KEY` - API key.
 
-* `CLOUDXNS_HTTP_TIMEOUT` - API request timeout.
-* `CLOUDXNS_POLLING_INTERVAL` - Time between DNS propagation check.
-* `CLOUDXNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `CLOUDXNS_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `REGFISH_HTTP_TIMEOUT` - API request timeout.
+* `REGFISH_POLLING_INTERVAL` - Time between DNS propagation check.
+* `REGFISH_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `REGFISH_TTL` - The TTL of the TXT record used for the DNS challenge.
 
 
