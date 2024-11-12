@@ -32,6 +32,20 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
+      - name: Delete unneeded software
+        run: |
+          echo "Free disk space before removing:"
+          df -h
+          echo ""
+          echo "Removing dotnet, android, GHC and CodeQL..."
+          echo "  > sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL"
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          echo "Removing all docker images..."
+          echo "  > sudo docker image prune --all --force"
+          sudo docker image prune --all --force
+          echo ""
+          echo "Free disk space after removing:"
+          df -h
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
