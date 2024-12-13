@@ -1,6 +1,14 @@
-## 2.28.2-pre (Unreleased)
+## 2.28.2 (Unreleased)
 
-Bumped version for dev.
+This update also contains a fix for
+[CVE-2024-45337](https://github.com/advisories/GHSA-v778-237x-gjrc).
+
+Note that this update is being made proactively and not in response to any known
+security issue.
+
+No other changes are being made.
+
+[#458](https://github.com/vancluever/terraform-provider-acme/pull/458)
 
 ## 2.28.1 (November 22, 2024)
 
