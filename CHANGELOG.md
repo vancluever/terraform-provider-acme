@@ -1,4 +1,4 @@
-## 2.28.3 (Unreleased)
+## 2.28.3 (December 19, 2024)
 
 This update contains a fix for
 [CVE-2024-45338](https://github.com/advisories/GHSA-w32m-9786-jp63). No other
