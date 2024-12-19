@@ -1,10 +1,13 @@
-## 2.28.3-pre (Unreleased)
+## 2.28.3 (Unreleased)
 
-Bumped version for dev.
+This update contains a fix for
+[CVE-2024-45338](https://github.com/advisories/GHSA-w32m-9786-jp63). No other
+changes are being made.
+[#462](https://github.com/vancluever/terraform-provider-acme/pull/462)
 
 ## 2.28.2 (December 13, 2024)
 
-This update also contains a fix for
+This update contains a fix for
 [CVE-2024-45337](https://github.com/advisories/GHSA-v778-237x-gjrc).
 
 Note that this update is being made proactively and not in response to any known
