@@ -82,6 +82,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/loopia"
 	"github.com/go-acme/lego/v4/providers/dns/luadns"
 	"github.com/go-acme/lego/v4/providers/dns/mailinabox"
+	"github.com/go-acme/lego/v4/providers/dns/manageengine"
 	"github.com/go-acme/lego/v4/providers/dns/metaname"
 	"github.com/go-acme/lego/v4/providers/dns/mijnhost"
 	"github.com/go-acme/lego/v4/providers/dns/mittwald"
@@ -105,6 +106,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/plesk"
 	"github.com/go-acme/lego/v4/providers/dns/porkbun"
 	"github.com/go-acme/lego/v4/providers/dns/rackspace"
+	"github.com/go-acme/lego/v4/providers/dns/rainyun"
 	"github.com/go-acme/lego/v4/providers/dns/rcodezero"
 	"github.com/go-acme/lego/v4/providers/dns/regfish"
 	"github.com/go-acme/lego/v4/providers/dns/regru"
@@ -139,6 +141,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/webnames"
 	"github.com/go-acme/lego/v4/providers/dns/websupport"
 	"github.com/go-acme/lego/v4/providers/dns/wedos"
+	"github.com/go-acme/lego/v4/providers/dns/westcn"
 	"github.com/go-acme/lego/v4/providers/dns/yandex"
 	"github.com/go-acme/lego/v4/providers/dns/yandex360"
 	"github.com/go-acme/lego/v4/providers/dns/yandexcloud"
@@ -799,6 +802,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"manageengine": func() (challenge.Provider, error) {
+		p, err := manageengine.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"metaname": func() (challenge.Provider, error) {
 		p, err := metaname.NewDNSProvider()
 		if err != nil {
@@ -977,6 +988,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"rackspace": func() (challenge.Provider, error) {
 		p, err := rackspace.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"rainyun": func() (challenge.Provider, error) {
+		p, err := rainyun.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -1249,6 +1268,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"wedos": func() (challenge.Provider, error) {
 		p, err := wedos.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"westcn": func() (challenge.Provider, error) {
+		p, err := westcn.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
