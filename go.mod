@@ -10,7 +10,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hashicorp/go-plugin v1.6.3
 	github.com/hashicorp/go-uuid v1.0.3
-	github.com/hashicorp/terraform-plugin-sdk/v2 v2.35.0
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.36.0
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/rainycape/memcache v0.0.0-20150622160815-1031fa0ce2f2
 	google.golang.org/grpc v1.70.0
@@ -41,7 +41,7 @@ require (
 	github.com/Azure/go-autorest/tracing v0.6.0 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v1.2.2 // indirect
 	github.com/OpenDNS/vegadns2client v0.0.0-20180418235048-a3fa4a771d87 // indirect
-	github.com/ProtonMail/go-crypto v1.1.0-alpha.2 // indirect
+	github.com/ProtonMail/go-crypto v1.1.3 // indirect
 	github.com/agext/levenshtein v1.2.2 // indirect
 	github.com/akamai/AkamaiOPEN-edgegrid-golang v1.2.2 // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.63.72 // indirect
@@ -110,15 +110,15 @@ require (
 	github.com/hashicorp/go-hclog v1.6.3 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.7 // indirect
 	github.com/hashicorp/go-version v1.7.0 // indirect
-	github.com/hashicorp/hc-install v0.9.0 // indirect
+	github.com/hashicorp/hc-install v0.9.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/hashicorp/hcl/v2 v2.22.0 // indirect
+	github.com/hashicorp/hcl/v2 v2.23.0 // indirect
 	github.com/hashicorp/logutils v1.0.0 // indirect
-	github.com/hashicorp/terraform-exec v0.21.0 // indirect
-	github.com/hashicorp/terraform-json v0.23.0 // indirect
-	github.com/hashicorp/terraform-plugin-go v0.25.0 // indirect
+	github.com/hashicorp/terraform-exec v0.22.0 // indirect
+	github.com/hashicorp/terraform-json v0.24.0 // indirect
+	github.com/hashicorp/terraform-plugin-go v0.26.0 // indirect
 	github.com/hashicorp/terraform-plugin-log v0.9.0 // indirect
-	github.com/hashicorp/terraform-registry-address v0.2.3 // indirect
+	github.com/hashicorp/terraform-registry-address v0.2.4 // indirect
 	github.com/hashicorp/terraform-svchost v0.1.1 // indirect
 	github.com/hashicorp/yamux v0.1.1 // indirect
 	github.com/huaweicloud/huaweicloud-sdk-go-v3 v0.1.128 // indirect
@@ -206,7 +206,7 @@ require (
 	github.com/vultr/govultr/v3 v3.9.1 // indirect
 	github.com/yandex-cloud/go-genproto v0.0.0-20241220122821-aeb3b05efd1c // indirect
 	github.com/yandex-cloud/go-sdk v0.0.0-20241220131134-2393e243c134 // indirect
-	github.com/zclconf/go-cty v1.15.0 // indirect
+	github.com/zclconf/go-cty v1.16.2 // indirect
 	go.mongodb.org/mongo-driver v1.12.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.54.0 // indirect
 	go.opentelemetry.io/otel v1.32.0 // indirect
