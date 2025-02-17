@@ -50,9 +50,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `YANDEX_PDD_TOKEN` - Basic authentication username.
 
-* `YANDEX_HTTP_TIMEOUT` - API request timeout.
-* `YANDEX_POLLING_INTERVAL` - Time between DNS propagation check.
-* `YANDEX_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `YANDEX_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `YANDEX_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `YANDEX_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `YANDEX_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `YANDEX_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 21600).
 
 

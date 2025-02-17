@@ -51,10 +51,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `DNSMADEEASY_API_KEY` - The API key.
 * `DNSMADEEASY_API_SECRET` - The API Secret key.
 
-* `DNSMADEEASY_HTTP_TIMEOUT` - API request timeout.
-* `DNSMADEEASY_POLLING_INTERVAL` - Time between DNS propagation check.
-* `DNSMADEEASY_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `DNSMADEEASY_HTTP_TIMEOUT` - API request timeout in seconds (Default: 10).
+* `DNSMADEEASY_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `DNSMADEEASY_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
 * `DNSMADEEASY_SANDBOX` - Activate the sandbox (boolean).
-* `DNSMADEEASY_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `DNSMADEEASY_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

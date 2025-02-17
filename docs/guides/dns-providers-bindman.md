@@ -50,8 +50,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `BINDMAN_MANAGER_ADDRESS` - The server URL, should have scheme, hostname, and port (if required) of the Bindman-DNS Manager server.
 
-* `BINDMAN_HTTP_TIMEOUT` - API request timeout.
-* `BINDMAN_POLLING_INTERVAL` - Time between DNS propagation check.
-* `BINDMAN_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `BINDMAN_HTTP_TIMEOUT` - API request timeout in seconds (Default: 60).
+* `BINDMAN_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `BINDMAN_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
 
 

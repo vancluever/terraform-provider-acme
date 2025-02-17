@@ -51,10 +51,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `CORENETWORKS_LOGIN` - The username of the API account.
 * `CORENETWORKS_PASSWORD` - The password.
 
-* `CORENETWORKS_HTTP_TIMEOUT` - API request timeout.
-* `CORENETWORKS_POLLING_INTERVAL` - Time between DNS propagation check.
-* `CORENETWORKS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `CORENETWORKS_SEQUENCE_INTERVAL` - Time between sequential requests.
-* `CORENETWORKS_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `CORENETWORKS_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `CORENETWORKS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `CORENETWORKS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `CORENETWORKS_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 60).
+* `CORENETWORKS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600).
 
 

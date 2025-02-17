@@ -52,8 +52,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `IIJ_DPF_DPM_SERVICE_CODE` - IIJ Managed DNS Service's service code.
 
 * `IIJ_DPF_API_ENDPOINT` - API endpoint URL, defaults to https://api.dns-platform.jp/dpf/v1.
-* `IIJ_DPF_POLLING_INTERVAL` - Time between DNS propagation check, defaults to 5 second.
-* `IIJ_DPF_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation, defaults to 660 second.
-* `IIJ_DPF_TTL` - The TTL of the TXT record used for the DNS challenge, default to 300.
+* `IIJ_DPF_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 5).
+* `IIJ_DPF_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 660).
+* `IIJ_DPF_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

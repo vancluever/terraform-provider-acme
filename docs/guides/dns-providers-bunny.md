@@ -50,8 +50,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `BUNNY_API_KEY` - API key.
 
-* `BUNNY_POLLING_INTERVAL` - Time between DNS propagation check.
-* `BUNNY_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `BUNNY_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `BUNNY_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `BUNNY_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `BUNNY_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
 
 

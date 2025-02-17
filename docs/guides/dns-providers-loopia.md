@@ -52,10 +52,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `LOOPIA_API_USER` - API username.
 
 * `LOOPIA_API_URL` - API endpoint. Ex: https://api.loopia.se/RPCSERV or https://api.loopia.rs/RPCSERV.
-* `LOOPIA_HTTP_TIMEOUT` - API request timeout.
-* `LOOPIA_POLLING_INTERVAL` - Time between DNS propagation check.
-* `LOOPIA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `LOOPIA_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `LOOPIA_HTTP_TIMEOUT` - API request timeout in seconds (Default: 60).
+* `LOOPIA_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2400).
+* `LOOPIA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `LOOPIA_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 ### API user
 

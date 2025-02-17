@@ -52,9 +52,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `HUAWEICLOUD_REGION` - Region.
 * `HUAWEICLOUD_SECRET_ACCESS_KEY` - Access Key secret.
 
-* `HUAWEICLOUD_HTTP_TIMEOUT` - API request timeout.
-* `HUAWEICLOUD_POLLING_INTERVAL` - Time between DNS propagation check.
-* `HUAWEICLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `HUAWEICLOUD_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `HUAWEICLOUD_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `HUAWEICLOUD_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `HUAWEICLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `HUAWEICLOUD_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

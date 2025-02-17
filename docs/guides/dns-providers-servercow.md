@@ -51,9 +51,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `SERVERCOW_PASSWORD` - API password.
 * `SERVERCOW_USERNAME` - API username.
 
-* `SERVERCOW_HTTP_TIMEOUT` - API request timeout.
-* `SERVERCOW_POLLING_INTERVAL` - Time between DNS propagation check.
-* `SERVERCOW_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `SERVERCOW_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `SERVERCOW_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `SERVERCOW_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `SERVERCOW_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `SERVERCOW_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

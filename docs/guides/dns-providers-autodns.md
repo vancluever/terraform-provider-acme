@@ -53,9 +53,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `AUTODNS_CONTEXT` - API context (4 for production, 1 for testing. Defaults to 4).
 * `AUTODNS_ENDPOINT` - API endpoint URL, defaults to https://api.autodns.com/v1/.
-* `AUTODNS_HTTP_TIMEOUT` - API request timeout, defaults to 30 seconds.
-* `AUTODNS_POLLING_INTERVAL` - Time between DNS propagation check.
-* `AUTODNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `AUTODNS_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `AUTODNS_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `AUTODNS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `AUTODNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `AUTODNS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 600).
 
 

@@ -50,9 +50,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `DREAMHOST_API_KEY` - The API key.
 
-* `DREAMHOST_HTTP_TIMEOUT` - API request timeout.
-* `DREAMHOST_POLLING_INTERVAL` - Time between DNS propagation check.
-* `DREAMHOST_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `DREAMHOST_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `DREAMHOST_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `DREAMHOST_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 60).
+* `DREAMHOST_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 3600).
 
 

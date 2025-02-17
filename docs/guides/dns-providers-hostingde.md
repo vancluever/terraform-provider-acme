@@ -50,10 +50,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `HOSTINGDE_API_KEY` - API key.
 
-* `HOSTINGDE_HTTP_TIMEOUT` - API request timeout.
-* `HOSTINGDE_POLLING_INTERVAL` - Time between DNS propagation check.
-* `HOSTINGDE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `HOSTINGDE_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `HOSTINGDE_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `HOSTINGDE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `HOSTINGDE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `HOSTINGDE_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 * `HOSTINGDE_ZONE_NAME` - Zone name in ACE format.
 
 

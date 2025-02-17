@@ -50,8 +50,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `NAMESILO_API_KEY` - Client ID.
 
-* `NAMESILO_POLLING_INTERVAL` - Time between DNS propagation check.
-* `NAMESILO_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation, it is better to set larger than 15m.
-* `NAMESILO_TTL` - The TTL of the TXT record used for the DNS challenge, should be in [3600, 2592000].
+* `NAMESILO_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `NAMESILO_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60), it is better to set larger than 15 minutes.
+* `NAMESILO_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600), should be in [3600, 2592000].
 
 

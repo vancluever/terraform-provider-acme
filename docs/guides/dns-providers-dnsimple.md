@@ -51,9 +51,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `DNSIMPLE_OAUTH_TOKEN` - OAuth token.
 
 * `DNSIMPLE_BASE_URL` - API endpoint URL.
-* `DNSIMPLE_POLLING_INTERVAL` - Time between DNS propagation check.
-* `DNSIMPLE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `DNSIMPLE_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `DNSIMPLE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `DNSIMPLE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `DNSIMPLE_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 ## Description
 

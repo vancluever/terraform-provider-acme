@@ -51,9 +51,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `LUADNS_API_TOKEN` - API token.
 * `LUADNS_API_USERNAME` - Username (your email).
 
-* `LUADNS_HTTP_TIMEOUT` - API request timeout.
-* `LUADNS_POLLING_INTERVAL` - Time between DNS propagation check.
-* `LUADNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `LUADNS_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `LUADNS_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `LUADNS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `LUADNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `LUADNS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

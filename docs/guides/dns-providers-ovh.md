@@ -56,10 +56,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `OVH_CONSUMER_KEY` - Consumer key (Application Key authentication).
 * `OVH_ENDPOINT` - Endpoint URL (ovh-eu or ovh-ca).
 
-* `OVH_HTTP_TIMEOUT` - API request timeout.
-* `OVH_POLLING_INTERVAL` - Time between DNS propagation check.
-* `OVH_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `OVH_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `OVH_HTTP_TIMEOUT` - API request timeout in seconds (Default: 180).
+* `OVH_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `OVH_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `OVH_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 ## Application Key and Secret
 

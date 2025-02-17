@@ -52,9 +52,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `NETCUP_API_PASSWORD` - API password.
 * `NETCUP_CUSTOMER_NUMBER` - Customer number.
 
-* `NETCUP_HTTP_TIMEOUT` - API request timeout.
-* `NETCUP_POLLING_INTERVAL` - Time between DNS propagation check.
-* `NETCUP_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `NETCUP_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `NETCUP_HTTP_TIMEOUT` - API request timeout in seconds (Default: 10).
+* `NETCUP_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 30).
+* `NETCUP_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 900).
 
 

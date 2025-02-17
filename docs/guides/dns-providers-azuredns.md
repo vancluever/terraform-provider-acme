@@ -56,13 +56,13 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `AZURE_AUTH_METHOD` - Specify which authentication method to use.
 * `AZURE_AUTH_MSI_TIMEOUT` - Managed Identity timeout duration.
 * `AZURE_ENVIRONMENT` - Azure environment, one of: public, usgovernment, and china.
-* `AZURE_POLLING_INTERVAL` - Time between DNS propagation check.
+* `AZURE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
 * `AZURE_PRIVATE_ZONE` - Set to true to use Azure Private DNS Zones and not public.
-* `AZURE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `AZURE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
 * `AZURE_RESOURCE_GROUP` - DNS zone resource group.
 * `AZURE_SERVICEDISCOVERY_FILTER` - Advanced ServiceDiscovery filter using Kusto query condition.
 * `AZURE_SUBSCRIPTION_ID` - DNS zone subscription ID.
-* `AZURE_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `AZURE_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
 * `AZURE_ZONE_NAME` - Zone name to use inside Azure DNS service to add the TXT record in.
 
 The following variables are **Terraform-specific** aliases for the above

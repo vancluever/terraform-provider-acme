@@ -51,8 +51,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `TRANSIP_ACCOUNT_NAME` - Account name.
 * `TRANSIP_PRIVATE_KEY_PATH` - Private key path.
 
-* `TRANSIP_POLLING_INTERVAL` - Time between DNS propagation check.
-* `TRANSIP_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `TRANSIP_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `TRANSIP_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 10).
+* `TRANSIP_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 600).
+* `TRANSIP_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 10).
 
 

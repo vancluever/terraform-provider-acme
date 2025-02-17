@@ -50,10 +50,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `LIMACITY_API_KEY` - The API key.
 
-* `LIMACITY_HTTP_TIMEOUT` - API request timeout.
-* `LIMACITY_POLLING_INTERVAL` - Time between DNS propagation check.
-* `LIMACITY_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `LIMACITY_SEQUENCE_INTERVAL` - Time between sequential requests.
-* `LIMACITY_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `LIMACITY_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `LIMACITY_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 80).
+* `LIMACITY_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 480).
+* `LIMACITY_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 90).
+* `LIMACITY_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
 
 

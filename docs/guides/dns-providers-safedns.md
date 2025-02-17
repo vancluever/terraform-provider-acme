@@ -50,9 +50,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `SAFEDNS_AUTH_TOKEN` - Authentication token.
 
-* `SAFEDNS_HTTP_TIMEOUT` - API request timeout.
-* `SAFEDNS_POLLING_INTERVAL` - Time between DNS propagation check.
-* `SAFEDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `SAFEDNS_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `SAFEDNS_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `SAFEDNS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `SAFEDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `SAFEDNS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

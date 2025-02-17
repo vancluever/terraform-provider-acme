@@ -52,9 +52,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `DYN_PASSWORD` - Password.
 * `DYN_USER_NAME` - User name.
 
-* `DYN_HTTP_TIMEOUT` - API request timeout.
-* `DYN_POLLING_INTERVAL` - Time between DNS propagation check.
-* `DYN_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `DYN_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `DYN_HTTP_TIMEOUT` - API request timeout in seconds (Default: 10).
+* `DYN_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `DYN_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `DYN_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

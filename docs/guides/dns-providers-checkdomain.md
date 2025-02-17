@@ -51,9 +51,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `CHECKDOMAIN_TOKEN` - API token.
 
 * `CHECKDOMAIN_ENDPOINT` - API endpoint URL, defaults to https://api.checkdomain.de.
-* `CHECKDOMAIN_HTTP_TIMEOUT` - API request timeout, defaults to 30 seconds.
-* `CHECKDOMAIN_POLLING_INTERVAL` - Time between DNS propagation check.
-* `CHECKDOMAIN_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `CHECKDOMAIN_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `CHECKDOMAIN_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `CHECKDOMAIN_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 300).
+* `CHECKDOMAIN_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 7).
+* `CHECKDOMAIN_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

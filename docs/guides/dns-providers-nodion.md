@@ -50,9 +50,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `NODION_API_TOKEN` - The API token.
 
-* `NODION_HTTP_TIMEOUT` - API request timeout.
-* `NODION_POLLING_INTERVAL` - Time between DNS propagation check.
-* `NODION_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `NODION_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `NODION_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `NODION_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `NODION_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `NODION_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

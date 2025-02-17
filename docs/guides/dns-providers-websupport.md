@@ -51,10 +51,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `WEBSUPPORT_API_KEY` - API key.
 * `WEBSUPPORT_SECRET` - API secret.
 
-* `WEBSUPPORT_HTTP_TIMEOUT` - API request timeout.
-* `WEBSUPPORT_POLLING_INTERVAL` - Time between DNS propagation check.
-* `WEBSUPPORT_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `WEBSUPPORT_SEQUENCE_INTERVAL` - Time between sequential requests.
-* `WEBSUPPORT_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `WEBSUPPORT_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `WEBSUPPORT_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `WEBSUPPORT_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `WEBSUPPORT_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 60).
+* `WEBSUPPORT_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 600).
 
 

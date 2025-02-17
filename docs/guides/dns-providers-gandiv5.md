@@ -51,9 +51,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `GANDIV5_API_KEY` - API key (Deprecated).
 * `GANDIV5_PERSONAL_ACCESS_TOKEN` - Personal Access Token.
 
-* `GANDIV5_HTTP_TIMEOUT` - API request timeout.
-* `GANDIV5_POLLING_INTERVAL` - Time between DNS propagation check.
-* `GANDIV5_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `GANDIV5_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `GANDIV5_HTTP_TIMEOUT` - API request timeout in seconds (Default: 10).
+* `GANDIV5_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 20).
+* `GANDIV5_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 1200).
+* `GANDIV5_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

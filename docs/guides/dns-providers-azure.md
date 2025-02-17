@@ -57,10 +57,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `instance metadata service` - If the credentials are **not** set via the environment, then it will attempt to get a bearer token via the [instance metadata service](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/instance-metadata-service)..
 
 * `AZURE_METADATA_ENDPOINT` - Metadata Service endpoint URL.
-* `AZURE_POLLING_INTERVAL` - Time between DNS propagation check.
+* `AZURE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
 * `AZURE_PRIVATE_ZONE` - Set to true to use Azure Private DNS Zones and not public.
-* `AZURE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `AZURE_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `AZURE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `AZURE_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
 * `AZURE_ZONE_NAME` - Zone name to use inside Azure DNS service to add the TXT record in.
 
 The following variables are **Terraform-specific** aliases for the above

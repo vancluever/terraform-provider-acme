@@ -52,9 +52,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `ZONEEE_API_USER` - API user.
 
 * `ZONEEE_ENDPOINT` - API endpoint URL.
-* `ZONEEE_HTTP_TIMEOUT` - API request timeout.
-* `ZONEEE_POLLING_INTERVAL` - Time between DNS propagation check.
-* `ZONEEE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `ZONEEE_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `ZONEEE_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `ZONEEE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 5).
+* `ZONEEE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 300).
 
 

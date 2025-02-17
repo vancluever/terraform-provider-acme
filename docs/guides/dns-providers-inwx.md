@@ -51,10 +51,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `INWX_PASSWORD` - Password.
 * `INWX_USERNAME` - Username.
 
-* `INWX_POLLING_INTERVAL` - Time between DNS propagation check.
-* `INWX_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation (default 360s).
+* `INWX_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `INWX_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 360).
 * `INWX_SANDBOX` - Activate the sandbox (boolean).
 * `INWX_SHARED_SECRET` - shared secret related to 2FA.
-* `INWX_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `INWX_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

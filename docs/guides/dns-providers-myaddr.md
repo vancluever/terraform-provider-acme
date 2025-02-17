@@ -1,5 +1,5 @@
 ---
-page_title: "liara"
+page_title: "myaddr"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Liara DNS Challenge Provider
+# myaddr.{tools,dev,io} DNS Challenge Provider
 
-The `liara` DNS challenge provider can be used to perform DNS challenges for
+The `myaddr` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Liara](https://liara.ir).
+[myaddr.{tools,dev,io}](https://myaddr.tools/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "liara"
+    provider = "myaddr"
   }
 }
 ```
@@ -48,11 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `LIARA_API_KEY` - The API key.
+* `MYADDR_PRIVATE_KEYS_MAPPING` - Mapping between subdomains and private keys. The format is: `<subdomain1>:<private_key1>,<subdomain2>:<private_key2>,<subdomain3>:<private_key3>`.
 
-* `LIARA_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `LIARA_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `LIARA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `LIARA_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600).
+* `MYADDR_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `MYADDR_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `MYADDR_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `MYADDR_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 2).
+* `MYADDR_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

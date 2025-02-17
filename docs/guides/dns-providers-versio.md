@@ -52,11 +52,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `VERSIO_USERNAME` - Basic authentication username.
 
 * `VERSIO_ENDPOINT` - The endpoint URL of the API Server.
-* `VERSIO_HTTP_TIMEOUT` - API request timeout.
-* `VERSIO_POLLING_INTERVAL` - Time between DNS propagation check.
-* `VERSIO_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `VERSIO_SEQUENCE_INTERVAL` - Time between sequential requests, default 60s.
-* `VERSIO_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `VERSIO_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `VERSIO_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 5).
+* `VERSIO_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `VERSIO_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 60).
+* `VERSIO_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 To test with the sandbox environment set ```VERSIO_ENDPOINT=https://www.versio.nl/testapi/v1/```
 

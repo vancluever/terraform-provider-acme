@@ -51,9 +51,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `NAMECOM_API_TOKEN` - API token.
 * `NAMECOM_USERNAME` - Username.
 
-* `NAMECOM_HTTP_TIMEOUT` - API request timeout.
-* `NAMECOM_POLLING_INTERVAL` - Time between DNS propagation check.
-* `NAMECOM_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `NAMECOM_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `NAMECOM_HTTP_TIMEOUT` - API request timeout in seconds (Default: 10).
+* `NAMECOM_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 20).
+* `NAMECOM_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 900).
+* `NAMECOM_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

@@ -50,10 +50,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `DODE_TOKEN` - API token.
 
-* `DODE_HTTP_TIMEOUT` - API request timeout.
-* `DODE_POLLING_INTERVAL` - Time between DNS propagation check.
-* `DODE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `DODE_SEQUENCE_INTERVAL` - Time between sequential requests.
-* `DODE_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `DODE_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `DODE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `DODE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `DODE_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 60).
+* `DODE_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

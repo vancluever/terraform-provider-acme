@@ -52,8 +52,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `AURORA_SECRET` - Secret password to be used.
 
 * `AURORA_ENDPOINT` - API endpoint URL.
-* `AURORA_POLLING_INTERVAL` - Time between DNS propagation check.
-* `AURORA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `AURORA_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `AURORA_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `AURORA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `AURORA_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

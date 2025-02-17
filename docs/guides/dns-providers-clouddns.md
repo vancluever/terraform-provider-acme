@@ -52,9 +52,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `CLOUDDNS_EMAIL` - Account email.
 * `CLOUDDNS_PASSWORD` - Account password.
 
-* `CLOUDDNS_HTTP_TIMEOUT` - API request timeout.
-* `CLOUDDNS_POLLING_INTERVAL` - Time between DNS propagation check.
-* `CLOUDDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `CLOUDDNS_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `CLOUDDNS_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `CLOUDDNS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 5).
+* `CLOUDDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `CLOUDDNS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

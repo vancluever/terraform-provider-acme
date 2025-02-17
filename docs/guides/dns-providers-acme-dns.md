@@ -49,7 +49,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
 * `ACME_DNS_API_BASE` - The ACME-DNS API address.
+* `ACME_DNS_STORAGE_BASE_URL` - The ACME-DNS JSON account data server..
 * `ACME_DNS_STORAGE_PATH` - The ACME-DNS JSON account data file. A per-domain account will be registered/persisted to this file and used for TXT updates..
 
+* `ACME_DNS_ALLOWLIST` - Source networks using CIDR notation (multiple values should be separated with a comma)..
 
 

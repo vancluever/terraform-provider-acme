@@ -50,10 +50,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `DUCKDNS_TOKEN` - Account token.
 
-* `DUCKDNS_HTTP_TIMEOUT` - API request timeout.
-* `DUCKDNS_POLLING_INTERVAL` - Time between DNS propagation check.
-* `DUCKDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `DUCKDNS_SEQUENCE_INTERVAL` - Time between sequential requests.
-* `DUCKDNS_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `DUCKDNS_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `DUCKDNS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `DUCKDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `DUCKDNS_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 60).
+* `DUCKDNS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

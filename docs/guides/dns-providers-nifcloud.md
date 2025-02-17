@@ -51,9 +51,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `NIFCLOUD_ACCESS_KEY_ID` - Access key.
 * `NIFCLOUD_SECRET_ACCESS_KEY` - Secret access key.
 
-* `NIFCLOUD_HTTP_TIMEOUT` - API request timeout.
-* `NIFCLOUD_POLLING_INTERVAL` - Time between DNS propagation check.
-* `NIFCLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `NIFCLOUD_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `NIFCLOUD_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `NIFCLOUD_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `NIFCLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `NIFCLOUD_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

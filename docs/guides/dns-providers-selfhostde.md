@@ -52,10 +52,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `SELFHOSTDE_RECORDS_MAPPING` - Record IDs mapping with domains (ex: example.com:123:456,example.org:789,foo.example.com:147).
 * `SELFHOSTDE_USERNAME` - Username.
 
-* `SELFHOSTDE_HTTP_TIMEOUT` - API request timeout.
-* `SELFHOSTDE_POLLING_INTERVAL` - Time between DNS propagation check.
-* `SELFHOSTDE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `SELFHOSTDE_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `SELFHOSTDE_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `SELFHOSTDE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 30).
+* `SELFHOSTDE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 240).
+* `SELFHOSTDE_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 SelfHost.de doesn't have an API to create or delete TXT records,
 there is only an "unofficial" and undocumented endpoint to update an existing TXT record.

@@ -51,9 +51,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `MYDNSJP_MASTER_ID` - Master ID.
 * `MYDNSJP_PASSWORD` - Password.
 
-* `MYDNSJP_HTTP_TIMEOUT` - API request timeout.
-* `MYDNSJP_POLLING_INTERVAL` - Time between DNS propagation check.
-* `MYDNSJP_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `MYDNSJP_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `MYDNSJP_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `MYDNSJP_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `MYDNSJP_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
 
 

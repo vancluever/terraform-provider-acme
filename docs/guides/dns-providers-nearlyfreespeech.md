@@ -51,10 +51,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `NEARLYFREESPEECH_API_KEY` - API Key for API requests.
 * `NEARLYFREESPEECH_LOGIN` - Username for API requests.
 
-* `NEARLYFREESPEECH_HTTP_TIMEOUT` - API request timeout.
-* `NEARLYFREESPEECH_POLLING_INTERVAL` - Time between DNS propagation check.
-* `NEARLYFREESPEECH_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `NEARLYFREESPEECH_SEQUENCE_INTERVAL` - Time between sequential requests.
-* `NEARLYFREESPEECH_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `NEARLYFREESPEECH_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `NEARLYFREESPEECH_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `NEARLYFREESPEECH_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `NEARLYFREESPEECH_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 60).
+* `NEARLYFREESPEECH_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600).
 
 

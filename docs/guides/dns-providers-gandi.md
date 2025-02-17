@@ -50,9 +50,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `GANDI_API_KEY` - API key.
 
-* `GANDI_HTTP_TIMEOUT` - API request timeout.
-* `GANDI_POLLING_INTERVAL` - Time between DNS propagation check.
-* `GANDI_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `GANDI_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `GANDI_HTTP_TIMEOUT` - API request timeout in seconds (Default: 60).
+* `GANDI_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 60).
+* `GANDI_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 2400).
+* `GANDI_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

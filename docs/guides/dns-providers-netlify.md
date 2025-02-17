@@ -50,9 +50,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `NETLIFY_TOKEN` - Token.
 
-* `NETLIFY_HTTP_TIMEOUT` - API request timeout.
-* `NETLIFY_POLLING_INTERVAL` - Time between DNS propagation check.
-* `NETLIFY_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `NETLIFY_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `NETLIFY_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `NETLIFY_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `NETLIFY_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `NETLIFY_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

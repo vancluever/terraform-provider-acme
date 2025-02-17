@@ -50,10 +50,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `WEBNAMES_API_KEY` - Domain API key.
 
-* `WEBNAMES_HTTP_TIMEOUT` - API request timeout.
-* `WEBNAMES_POLLING_INTERVAL` - Time between DNS propagation check.
-* `WEBNAMES_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `WEBNAMES_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `WEBNAMES_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `WEBNAMES_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `WEBNAMES_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
 
 ## API Key
 

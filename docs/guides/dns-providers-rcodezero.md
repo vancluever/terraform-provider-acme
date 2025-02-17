@@ -50,10 +50,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `RCODEZERO_API_TOKEN` - API token.
 
-* `RCODEZERO_HTTP_TIMEOUT` - API request timeout.
-* `RCODEZERO_POLLING_INTERVAL` - Time between DNS propagation check.
-* `RCODEZERO_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `RCODEZERO_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `RCODEZERO_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `RCODEZERO_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 10).
+* `RCODEZERO_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 240).
+* `RCODEZERO_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 ## Description
 

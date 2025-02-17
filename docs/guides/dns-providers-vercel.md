@@ -50,10 +50,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `VERCEL_API_TOKEN` - Authentication token.
 
-* `VERCEL_HTTP_TIMEOUT` - API request timeout.
-* `VERCEL_POLLING_INTERVAL` - Time between DNS propagation check.
-* `VERCEL_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `VERCEL_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `VERCEL_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 5).
+* `VERCEL_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
 * `VERCEL_TEAM_ID` - Team ID (ex: team_xxxxxxxxxxxxxxxxxxxxxxxx).
-* `VERCEL_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `VERCEL_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
 
 

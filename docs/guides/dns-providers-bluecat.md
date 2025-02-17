@@ -54,10 +54,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `BLUECAT_SERVER_URL` - The server URL, should have scheme, hostname, and port (if required) of the authoritative Bluecat BAM serve.
 * `BLUECAT_USER_NAME` - API username.
 
-* `BLUECAT_HTTP_TIMEOUT` - API request timeout.
-* `BLUECAT_POLLING_INTERVAL` - Time between DNS propagation check.
-* `BLUECAT_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `BLUECAT_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `BLUECAT_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `BLUECAT_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
 * `BLUECAT_SKIP_DEPLOY` - Skip deployements.
-* `BLUECAT_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `BLUECAT_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

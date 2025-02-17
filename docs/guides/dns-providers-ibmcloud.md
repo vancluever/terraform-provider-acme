@@ -51,9 +51,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `SOFTLAYER_API_KEY` - Classic Infrastructure API key.
 * `SOFTLAYER_USERNAME` - Username (IBM Cloud is <accountID>_<emailAddress>).
 
-* `SOFTLAYER_POLLING_INTERVAL` - Time between DNS propagation check.
-* `SOFTLAYER_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `SOFTLAYER_TIMEOUT` - API request timeout.
-* `SOFTLAYER_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `SOFTLAYER_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `SOFTLAYER_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `SOFTLAYER_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `SOFTLAYER_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

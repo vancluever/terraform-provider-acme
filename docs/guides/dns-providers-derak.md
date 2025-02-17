@@ -50,10 +50,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `DERAK_API_KEY` - The API key.
 
-* `DERAK_HTTP_TIMEOUT` - API request timeout.
-* `DERAK_POLLING_INTERVAL` - Time between DNS propagation check.
-* `DERAK_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `DERAK_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `DERAK_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `DERAK_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 5).
+* `DERAK_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `DERAK_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 * `DERAK_WEBSITE_ID` - Force the zone/website ID.
 
 

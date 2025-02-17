@@ -51,9 +51,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `SELECTEL_API_TOKEN` - API token.
 
 * `SELECTEL_BASE_URL` - API endpoint URL.
-* `SELECTEL_HTTP_TIMEOUT` - API request timeout.
-* `SELECTEL_POLLING_INTERVAL` - Time between DNS propagation check.
-* `SELECTEL_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `SELECTEL_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `SELECTEL_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `SELECTEL_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `SELECTEL_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `SELECTEL_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
 
 

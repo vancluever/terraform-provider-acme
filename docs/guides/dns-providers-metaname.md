@@ -51,8 +51,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `METANAME_ACCOUNT_REFERENCE` - The four-digit reference of a Metaname account.
 * `METANAME_API_KEY` - API Key.
 
-* `METANAME_POLLING_INTERVAL` - Time between DNS propagation check.
-* `METANAME_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `METANAME_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `METANAME_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `METANAME_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `METANAME_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

@@ -52,11 +52,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `EASYDNS_TOKEN` - API Token.
 
 * `EASYDNS_ENDPOINT` - The endpoint URL of the API Server.
-* `EASYDNS_HTTP_TIMEOUT` - API request timeout.
-* `EASYDNS_POLLING_INTERVAL` - Time between DNS propagation check.
-* `EASYDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `EASYDNS_SEQUENCE_INTERVAL` - Time between sequential requests.
-* `EASYDNS_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `EASYDNS_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `EASYDNS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `EASYDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `EASYDNS_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 60).
+* `EASYDNS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 To test with the sandbox environment set ```EASYDNS_ENDPOINT=https://sandbox.rest.easydns.net```
 

@@ -53,11 +53,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `JOKER_PASSWORD` - Joker.com password.
 * `JOKER_USERNAME` - Joker.com username.
 
-* `JOKER_HTTP_TIMEOUT` - API request timeout.
-* `JOKER_POLLING_INTERVAL` - Time between DNS propagation check.
-* `JOKER_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `JOKER_SEQUENCE_INTERVAL` - Time between sequential requests (only with 'SVC' mode).
-* `JOKER_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `JOKER_HTTP_TIMEOUT` - API request timeout in seconds (Default: 60).
+* `JOKER_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `JOKER_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `JOKER_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 60), only with 'SVC' mode.
+* `JOKER_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 ## SVC mode
 

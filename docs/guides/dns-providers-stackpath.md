@@ -52,8 +52,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `STACKPATH_CLIENT_SECRET` - Client secret.
 * `STACKPATH_STACK_ID` - Stack ID.
 
-* `STACKPATH_POLLING_INTERVAL` - Time between DNS propagation check.
-* `STACKPATH_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `STACKPATH_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `STACKPATH_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `STACKPATH_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `STACKPATH_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

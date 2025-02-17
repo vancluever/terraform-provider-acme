@@ -52,8 +52,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `ULTRADNS_USERNAME` - API Username.
 
 * `ULTRADNS_ENDPOINT` - API endpoint URL, defaults to https://api.ultradns.com/.
-* `ULTRADNS_POLLING_INTERVAL` - Time between DNS propagation check.
-* `ULTRADNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `ULTRADNS_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `ULTRADNS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 4).
+* `ULTRADNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `ULTRADNS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

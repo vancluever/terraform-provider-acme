@@ -51,9 +51,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `RACKSPACE_API_KEY` - API key.
 * `RACKSPACE_USER` - API user.
 
-* `RACKSPACE_HTTP_TIMEOUT` - API request timeout.
-* `RACKSPACE_POLLING_INTERVAL` - Time between DNS propagation check.
-* `RACKSPACE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `RACKSPACE_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `RACKSPACE_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `RACKSPACE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 3).
+* `RACKSPACE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `RACKSPACE_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

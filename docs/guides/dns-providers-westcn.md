@@ -51,9 +51,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `WESTCN_PASSWORD` - API password.
 * `WESTCN_USERNAME` - Username.
 
-* `WESTCN_HTTP_TIMEOUT` - API request timeout.
-* `WESTCN_POLLING_INTERVAL` - Time between DNS propagation check.
-* `WESTCN_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `WESTCN_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `WESTCN_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `WESTCN_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 10).
+* `WESTCN_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `WESTCN_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
 
 

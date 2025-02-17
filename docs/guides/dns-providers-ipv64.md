@@ -50,9 +50,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `IPV64_API_KEY` - Account API Key.
 
-* `IPV64_HTTP_TIMEOUT` - API request timeout.
-* `IPV64_POLLING_INTERVAL` - Time between DNS propagation check.
-* `IPV64_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `IPV64_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `IPV64_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `IPV64_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `IPV64_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
 
 

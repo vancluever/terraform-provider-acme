@@ -51,10 +51,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `INFOMANIAK_ACCESS_TOKEN` - Access token.
 
 * `INFOMANIAK_ENDPOINT` - https://api.infomaniak.com.
-* `INFOMANIAK_HTTP_TIMEOUT` - API request timeout.
-* `INFOMANIAK_POLLING_INTERVAL` - Time between DNS propagation check.
-* `INFOMANIAK_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `INFOMANIAK_TTL` - The TTL of the TXT record used for the DNS challenge in seconds.
+* `INFOMANIAK_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `INFOMANIAK_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 10).
+* `INFOMANIAK_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `INFOMANIAK_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 ## Access token
 

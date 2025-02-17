@@ -51,9 +51,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `SAKURACLOUD_ACCESS_TOKEN` - Access token.
 * `SAKURACLOUD_ACCESS_TOKEN_SECRET` - Access token secret.
 
-* `SAKURACLOUD_HTTP_TIMEOUT` - API request timeout.
-* `SAKURACLOUD_POLLING_INTERVAL` - Time between DNS propagation check.
-* `SAKURACLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `SAKURACLOUD_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `SAKURACLOUD_HTTP_TIMEOUT` - API request timeout in seconds (Default: 10).
+* `SAKURACLOUD_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `SAKURACLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `SAKURACLOUD_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

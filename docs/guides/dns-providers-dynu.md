@@ -50,9 +50,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `DYNU_API_KEY` - API key.
 
-* `DYNU_HTTP_TIMEOUT` - API request timeout.
-* `DYNU_POLLING_INTERVAL` - Time between DNS propagation check.
-* `DYNU_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `DYNU_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `DYNU_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `DYNU_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 10).
+* `DYNU_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 180).
+* `DYNU_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

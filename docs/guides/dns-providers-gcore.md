@@ -50,9 +50,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `GCORE_PERMANENT_API_TOKEN` - Permanent API token (https://gcore.com/blog/permanent-api-token-explained/).
 
-* `GCORE_HTTP_TIMEOUT` - API request timeout.
-* `GCORE_POLLING_INTERVAL` - Time between DNS propagation check.
-* `GCORE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `GCORE_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `GCORE_HTTP_TIMEOUT` - API request timeout in seconds (Default: 10).
+* `GCORE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 20).
+* `GCORE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 360).
+* `GCORE_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

@@ -86,6 +86,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/metaname"
 	"github.com/go-acme/lego/v4/providers/dns/mijnhost"
 	"github.com/go-acme/lego/v4/providers/dns/mittwald"
+	"github.com/go-acme/lego/v4/providers/dns/myaddr"
 	"github.com/go-acme/lego/v4/providers/dns/mydnsjp"
 	"github.com/go-acme/lego/v4/providers/dns/mythicbeasts"
 	"github.com/go-acme/lego/v4/providers/dns/namecheap"
@@ -123,6 +124,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/shellrent"
 	"github.com/go-acme/lego/v4/providers/dns/simply"
 	"github.com/go-acme/lego/v4/providers/dns/sonic"
+	"github.com/go-acme/lego/v4/providers/dns/spaceship"
 	"github.com/go-acme/lego/v4/providers/dns/stackpath"
 	"github.com/go-acme/lego/v4/providers/dns/technitium"
 	"github.com/go-acme/lego/v4/providers/dns/tencentcloud"
@@ -834,6 +836,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"myaddr": func() (challenge.Provider, error) {
+		p, err := myaddr.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"mydnsjp": func() (challenge.Provider, error) {
 		p, err := mydnsjp.NewDNSProvider()
 		if err != nil {
@@ -1124,6 +1134,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"sonic": func() (challenge.Provider, error) {
 		p, err := sonic.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"spaceship": func() (challenge.Provider, error) {
+		p, err := spaceship.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

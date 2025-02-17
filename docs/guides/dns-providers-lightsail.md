@@ -53,8 +53,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `DNS_ZONE` - Domain name of the DNS zone.
 
 * `AWS_SHARED_CREDENTIALS_FILE` - Managed by the AWS client. Shared credentials file..
-* `LIGHTSAIL_POLLING_INTERVAL` - Time between DNS propagation check.
-* `LIGHTSAIL_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `LIGHTSAIL_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `LIGHTSAIL_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
 
 ## Description
 

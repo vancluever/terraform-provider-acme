@@ -52,10 +52,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `CLOUDRU_SECRET` - Key Secret.
 * `CLOUDRU_SERVICE_INSTANCE_ID` - Service Instance ID (parentId).
 
-* `CLOUDRU_HTTP_TIMEOUT` - API request timeout.
-* `CLOUDRU_POLLING_INTERVAL` - Time between DNS propagation check.
-* `CLOUDRU_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `CLOUDRU_SEQUENCE_INTERVAL` - Time between sequential requests.
-* `CLOUDRU_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `CLOUDRU_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `CLOUDRU_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 5).
+* `CLOUDRU_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 300).
+* `CLOUDRU_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 120).
+* `CLOUDRU_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

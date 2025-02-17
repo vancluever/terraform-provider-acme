@@ -51,11 +51,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `SONIC_API_KEY` - API Key.
 * `SONIC_USER_ID` - User ID.
 
-* `SONIC_HTTP_TIMEOUT` - API request timeout.
-* `SONIC_POLLING_INTERVAL` - Time between DNS propagation check.
-* `SONIC_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `SONIC_SEQUENCE_INTERVAL` - Time between sequential requests.
-* `SONIC_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `SONIC_HTTP_TIMEOUT` - API request timeout in seconds (Default: 10).
+* `SONIC_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `SONIC_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `SONIC_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 60).
+* `SONIC_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 ## API keys
 

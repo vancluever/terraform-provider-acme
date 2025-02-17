@@ -51,9 +51,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `DOMENESHOP_API_SECRET` - API secret.
 * `DOMENESHOP_API_TOKEN` - API token.
 
-* `DOMENESHOP_HTTP_TIMEOUT` - API request timeout.
-* `DOMENESHOP_POLLING_INTERVAL` - Time between DNS propagation check.
-* `DOMENESHOP_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `DOMENESHOP_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `DOMENESHOP_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 20).
+* `DOMENESHOP_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 300).
 
 ### API credentials
 

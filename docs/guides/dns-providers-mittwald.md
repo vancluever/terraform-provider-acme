@@ -50,10 +50,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `MITTWALD_TOKEN` - API token.
 
-* `MITTWALD_HTTP_TIMEOUT` - API request timeout.
-* `MITTWALD_POLLING_INTERVAL` - Time between DNS propagation check.
-* `MITTWALD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `MITTWALD_SEQUENCE_INTERVAL` - Time between sequential requests.
-* `MITTWALD_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `MITTWALD_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `MITTWALD_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 10).
+* `MITTWALD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `MITTWALD_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 120).
+* `MITTWALD_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

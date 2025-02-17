@@ -59,10 +59,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `AWS_WAIT_FOR_RECORD_SETS_CHANGED` - Wait for changes to be INSYNC (it can be unstable).
 
 * `AWS_MAX_RETRIES` - The number of maximum returns the service will use to make an individual API request.
-* `AWS_POLLING_INTERVAL` - Time between DNS propagation check.
-* `AWS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `AWS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 4).
+* `AWS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
 * `AWS_SHARED_CREDENTIALS_FILE` - Managed by the AWS client. Shared credentials file..
-* `AWS_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `AWS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 10).
 
 ## Description
 

@@ -51,10 +51,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `TECHNITIUM_API_TOKEN` - API token.
 * `TECHNITIUM_SERVER_BASE_URL` - Server base URL.
 
-* `TECHNITIUM_HTTP_TIMEOUT` - API request timeout.
-* `TECHNITIUM_POLLING_INTERVAL` - Time between DNS propagation check.
-* `TECHNITIUM_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `TECHNITIUM_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `TECHNITIUM_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `TECHNITIUM_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `TECHNITIUM_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `TECHNITIUM_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 Technitium DNS Server supports Dynamic Updates (RFC2136) for primary zones,
 so you can also use the [RFC2136 provider](https://go-acme.github.io/lego/dns/rfc2136/index.html).

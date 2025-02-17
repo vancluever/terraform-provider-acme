@@ -50,9 +50,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `DNSHOMEDE_CREDENTIALS` - Comma-separated list of domain:password credential pairs.
 
-* `DNSHOMEDE_HTTP_TIMEOUT` - API request timeout.
-* `DNSHOMEDE_POLLING_INTERVAL` - Time between DNS propagation checks.
-* `DNSHOMEDE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation; defaults to 300s (5 minutes).
-* `DNSHOMEDE_SEQUENCE_INTERVAL` - Time between sequential requests.
+* `DNSHOMEDE_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `DNSHOMEDE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 1200).
+* `DNSHOMEDE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 2).
+* `DNSHOMEDE_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 120).
 
 

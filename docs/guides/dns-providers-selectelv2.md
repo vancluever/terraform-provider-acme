@@ -54,9 +54,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `SELECTELV2_USERNAME` - Openstack username.
 
 * `SELECTELV2_BASE_URL` - API endpoint URL.
-* `SELECTELV2_HTTP_TIMEOUT` - API request timeout.
-* `SELECTELV2_POLLING_INTERVAL` - Time between DNS propagation check.
-* `SELECTELV2_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `SELECTELV2_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `SELECTELV2_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `SELECTELV2_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 5).
+* `SELECTELV2_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `SELECTELV2_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
 
 

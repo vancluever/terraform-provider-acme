@@ -51,9 +51,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `YANDEX360_OAUTH_TOKEN` - The OAuth Token.
 * `YANDEX360_ORG_ID` - The organization ID.
 
-* `YANDEX360_HTTP_TIMEOUT` - API request timeout.
-* `YANDEX360_POLLING_INTERVAL` - Time between DNS propagation check.
-* `YANDEX360_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `YANDEX360_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `YANDEX360_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `YANDEX360_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `YANDEX360_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `YANDEX360_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 21600).
 
 

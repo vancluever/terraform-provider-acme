@@ -52,8 +52,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `IIJ_API_SECRET_KEY` - API secret key.
 * `IIJ_DO_SERVICE_CODE` - DO service code.
 
-* `IIJ_POLLING_INTERVAL` - Time between DNS propagation check.
-* `IIJ_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `IIJ_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `IIJ_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 4).
+* `IIJ_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 240).
+* `IIJ_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

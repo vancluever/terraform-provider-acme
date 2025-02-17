@@ -51,10 +51,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `GODADDY_API_KEY` - API key.
 * `GODADDY_API_SECRET` - API secret.
 
-* `GODADDY_HTTP_TIMEOUT` - API request timeout.
-* `GODADDY_POLLING_INTERVAL` - Time between DNS propagation check.
-* `GODADDY_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `GODADDY_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `GODADDY_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `GODADDY_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `GODADDY_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `GODADDY_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 600).
 
 GoDaddy has recently (2024-04) updated the account requirements to access parts of their production Domains API:
 

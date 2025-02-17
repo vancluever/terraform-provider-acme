@@ -50,9 +50,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `RAINYUN_API_KEY` - API key.
 
-* `RAINYUN_HTTP_TIMEOUT` - API request timeout.
-* `RAINYUN_POLLING_INTERVAL` - Time between DNS propagation check.
-* `RAINYUN_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `RAINYUN_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `RAINYUN_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `RAINYUN_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `RAINYUN_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `RAINYUN_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

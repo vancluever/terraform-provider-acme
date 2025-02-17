@@ -51,9 +51,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `CLOUDXNS_API_KEY` - The API key.
 * `CLOUDXNS_SECRET_KEY` - The API secret key.
 
-* `CLOUDXNS_HTTP_TIMEOUT` - API request timeout.
-* `CLOUDXNS_POLLING_INTERVAL` - Time between DNS propagation check.
-* `CLOUDXNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `CLOUDXNS_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `CLOUDXNS_HTTP_TIMEOUT` - API request timeout in seconds (Default: ).
+* `CLOUDXNS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: ).
+* `CLOUDXNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: ).
+* `CLOUDXNS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: ).
 
 

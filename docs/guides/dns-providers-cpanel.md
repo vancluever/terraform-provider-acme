@@ -52,11 +52,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `CPANEL_TOKEN` - API token.
 * `CPANEL_USERNAME` - username.
 
-* `CPANEL_HTTP_TIMEOUT` - API request timeout.
+* `CPANEL_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
 * `CPANEL_MODE` - use cpanel API or WHM API (Default: cpanel).
-* `CPANEL_POLLING_INTERVAL` - Time between DNS propagation check.
-* `CPANEL_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `CPANEL_REGION` - The region.
-* `CPANEL_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `CPANEL_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `CPANEL_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `CPANEL_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

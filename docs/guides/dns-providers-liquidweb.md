@@ -51,10 +51,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `LWAPI_PASSWORD` - Liquid Web API Password.
 * `LWAPI_USERNAME` - Liquid Web API Username.
 
-* `LWAPI_HTTP_TIMEOUT` - Maximum waiting time for the DNS records to be created (not verified).
-* `LWAPI_POLLING_INTERVAL` - Time between DNS propagation check.
-* `LWAPI_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `LWAPI_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `LWAPI_HTTP_TIMEOUT` - API request timeout in seconds (Default: 60).
+* `LWAPI_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `LWAPI_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `LWAPI_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 * `LWAPI_URL` - Liquid Web API endpoint.
 * `LWAPI_ZONE` - DNS Zone.
 

@@ -53,9 +53,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `ALICLOUD_SECRET_KEY` - Access Key secret.
 * `ALICLOUD_SECURITY_TOKEN` - STS Security Token (optional).
 
-* `ALICLOUD_HTTP_TIMEOUT` - API request timeout.
-* `ALICLOUD_POLLING_INTERVAL` - Time between DNS propagation check.
-* `ALICLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `ALICLOUD_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `ALICLOUD_HTTP_TIMEOUT` - API request timeout in seconds (Default: 10).
+* `ALICLOUD_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `ALICLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `ALICLOUD_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 600).
 
 

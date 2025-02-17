@@ -50,8 +50,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `GOOGLE_DOMAINS_ACCESS_TOKEN` - Access token.
 
-* `GOOGLE_DOMAINS_HTTP_TIMEOUT` - API request timeout.
-* `GOOGLE_DOMAINS_POLLING_INTERVAL` - Time between DNS propagation check.
-* `GOOGLE_DOMAINS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
+* `GOOGLE_DOMAINS_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `GOOGLE_DOMAINS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `GOOGLE_DOMAINS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
 
 

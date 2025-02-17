@@ -55,9 +55,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `AKAMAI_EDGERC_SECTION` - Configuration section, managed by the Akamai EdgeGrid client.
 * `AKAMAI_HOST` - API host, managed by the Akamai EdgeGrid client.
 
-* `AKAMAI_POLLING_INTERVAL` - Time between DNS propagation check. Default: 15 seconds.
-* `AKAMAI_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation. Default: 3 minutes.
-* `AKAMAI_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `AKAMAI_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 15).
+* `AKAMAI_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 180).
+* `AKAMAI_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 Akamai's credentials are automatically detected in the following locations and prioritized in the following order:
 

@@ -1,5 +1,5 @@
 ---
-page_title: "liara"
+page_title: "spaceship"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Liara DNS Challenge Provider
+# Spaceship DNS Challenge Provider
 
-The `liara` DNS challenge provider can be used to perform DNS challenges for
+The `spaceship` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Liara](https://liara.ir).
+[Spaceship](https://www.spaceship.com/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "liara"
+    provider = "spaceship"
   }
 }
 ```
@@ -48,11 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `LIARA_API_KEY` - The API key.
+* `SPACESHIP_API_KEY` - API key.
+* `SPACESHIP_API_SECRET` - API secret.
 
-* `LIARA_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `LIARA_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `LIARA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `LIARA_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600).
+* `SPACESHIP_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `SPACESHIP_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `SPACESHIP_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `SPACESHIP_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

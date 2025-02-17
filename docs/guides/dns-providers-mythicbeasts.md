@@ -53,10 +53,10 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `MYTHICBEASTS_API_ENDPOINT` - The endpoint for the API (must implement v2).
 * `MYTHICBEASTS_AUTH_API_ENDPOINT` - The endpoint for Mythic Beasts' Authentication.
-* `MYTHICBEASTS_HTTP_TIMEOUT` - API request timeout.
-* `MYTHICBEASTS_POLLING_INTERVAL` - Time between DNS propagation check.
-* `MYTHICBEASTS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `MYTHICBEASTS_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `MYTHICBEASTS_HTTP_TIMEOUT` - API request timeout in seconds (Default: 10).
+* `MYTHICBEASTS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `MYTHICBEASTS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `MYTHICBEASTS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 If you are using specific API keys, then the username is the API ID for your API key, and the password is the API secret.
 

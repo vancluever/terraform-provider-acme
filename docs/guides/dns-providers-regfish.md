@@ -50,9 +50,9 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `REGFISH_API_KEY` - API key.
 
-* `REGFISH_HTTP_TIMEOUT` - API request timeout.
-* `REGFISH_POLLING_INTERVAL` - Time between DNS propagation check.
-* `REGFISH_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation.
-* `REGFISH_TTL` - The TTL of the TXT record used for the DNS challenge.
+* `REGFISH_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `REGFISH_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `REGFISH_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `REGFISH_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 
