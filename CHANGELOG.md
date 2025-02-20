@@ -1,3 +1,7 @@
+## 2.30.2-pre (Unreleased)
+
+Bumped version for dev.
+
 ## 2.30.1 (February 20, 2025)
 
 [lego](https://github.com/go-acme/lego) has been updated to v4.22.2 See the
