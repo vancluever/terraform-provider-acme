@@ -1,4 +1,4 @@
-## 2.30.1 (Unreleased)
+## 2.30.1 (February 20, 2025)
 
 [lego](https://github.com/go-acme/lego) has been updated to v4.22.2 See the
 lego [CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.22.2/CHANGELOG.md)
