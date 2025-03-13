@@ -1,6 +1,10 @@
-## 2.30.2-pre (Unreleased)
+## 2.30.2 (Unreleased)
 
-Bumped version for dev.
+This update contains a fix for
+[CVE-2025-22870](https://github.com/advisories/GHSA-qxp5-gwg8-xv66). No other
+changes are being made.
+[#482](https://github.com/vancluever/terraform-provider-acme/pull/482)
+
 
 ## 2.30.1 (February 20, 2025)
 
