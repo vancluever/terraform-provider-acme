@@ -1,4 +1,4 @@
-## 2.30.2 (Unreleased)
+## 2.30.2 (March 12, 2025)
 
 This update contains a fix for
 [CVE-2025-22870](https://github.com/advisories/GHSA-qxp5-gwg8-xv66). No other
