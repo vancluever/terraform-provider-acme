@@ -1,6 +1,10 @@
-## 2.30.3-pre (Unreleased)
+## 2.30.3 (Unreleased)
 
-Bumped version for dev.
+This update contains a fix for
+[CVE-2025-30204](https://github.com/advisories/GHSA-mh63-6h87-95cp). No other
+changes are being made.
+[#487](https://github.com/vancluever/terraform-provider-acme/pull/487),
+[#488](https://github.com/vancluever/terraform-provider-acme/pull/488)
 
 ## 2.30.2 (March 12, 2025)
 
@@ -9,14 +13,12 @@ This update contains a fix for
 changes are being made.
 [#482](https://github.com/vancluever/terraform-provider-acme/pull/482)
 
-
 ## 2.30.1 (February 20, 2025)
 
 [lego](https://github.com/go-acme/lego) has been updated to v4.22.2 See the
 lego [CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.22.2/CHANGELOG.md)
 for more details on additions and changes to DNS providers, and other minor
 changes to the library.
-
 
 ## 2.30.0 (February 17, 2025)
 
