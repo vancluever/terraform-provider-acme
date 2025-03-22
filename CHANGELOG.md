@@ -1,4 +1,4 @@
-## 2.30.3 (Unreleased)
+## 2.30.3 (March 21, 2025)
 
 This update contains a fix for
 [CVE-2025-30204](https://github.com/advisories/GHSA-mh63-6h87-95cp). No other
