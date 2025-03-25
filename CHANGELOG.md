@@ -1,6 +1,10 @@
-## 2.30.4-pre (Unreleased)
+## 2.31.0 (Unreleased)
 
-Bumped version for dev.
+FEATURES:
+
+* `resource/acme_certificate`: `common_name` no longer needs to be defined if
+  `subject_alternative_names` is defined.
+  [#490](https://github.com/vancluever/terraform-provider-acme/pull/490)
 
 ## 2.30.3 (March 21, 2025)
 
