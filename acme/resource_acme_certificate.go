@@ -58,6 +58,7 @@ func resourceACMECertificateV5() *schema.Resource {
 				Type:          schema.TypeString,
 				Optional:      true,
 				ForceNew:      true,
+				AtLeastOneOf:  []string{"common_name", "subject_alternative_names", "certificate_request_pem"},
 				ConflictsWith: []string{"certificate_request_pem"},
 			},
 			"subject_alternative_names": {
@@ -66,6 +67,7 @@ func resourceACMECertificateV5() *schema.Resource {
 				Elem:          &schema.Schema{Type: schema.TypeString},
 				Set:           schema.HashString,
 				ForceNew:      true,
+				AtLeastOneOf:  []string{"common_name", "subject_alternative_names", "certificate_request_pem"},
 				ConflictsWith: []string{"certificate_request_pem"},
 			},
 			"key_type": {
@@ -80,6 +82,7 @@ func resourceACMECertificateV5() *schema.Resource {
 				Type:          schema.TypeString,
 				Optional:      true,
 				ForceNew:      true,
+				AtLeastOneOf:  []string{"common_name", "subject_alternative_names", "certificate_request_pem"},
 				ConflictsWith: []string{"common_name", "subject_alternative_names", "key_type"},
 			},
 			"min_days_remaining": {
@@ -88,9 +91,16 @@ func resourceACMECertificateV5() *schema.Resource {
 				Default:  30,
 			},
 			"dns_challenge": {
-				Type:         schema.TypeList,
-				Optional:     true,
-				AtLeastOneOf: []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "http_s3_challenge", "tls_challenge"},
+				Type:     schema.TypeList,
+				Optional: true,
+				AtLeastOneOf: []string{
+					"dns_challenge",
+					"http_challenge",
+					"http_webroot_challenge",
+					"http_memcached_challenge",
+					"http_s3_challenge",
+					"tls_challenge",
+				},
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"provider": {
@@ -107,11 +117,22 @@ func resourceACMECertificateV5() *schema.Resource {
 				},
 			},
 			"http_challenge": {
-				Type:          schema.TypeList,
-				Optional:      true,
-				AtLeastOneOf:  []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "http_s3_challenge", "tls_challenge"},
-				ConflictsWith: []string{"http_webroot_challenge", "http_memcached_challenge", "http_s3_challenge"},
-				MaxItems:      1,
+				Type:     schema.TypeList,
+				Optional: true,
+				AtLeastOneOf: []string{
+					"dns_challenge",
+					"http_challenge",
+					"http_webroot_challenge",
+					"http_memcached_challenge",
+					"http_s3_challenge",
+					"tls_challenge",
+				},
+				ConflictsWith: []string{
+					"http_webroot_challenge",
+					"http_memcached_challenge",
+					"http_s3_challenge",
+				},
+				MaxItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"port": {
@@ -128,11 +149,22 @@ func resourceACMECertificateV5() *schema.Resource {
 				},
 			},
 			"http_webroot_challenge": {
-				Type:          schema.TypeList,
-				Optional:      true,
-				AtLeastOneOf:  []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "http_s3_challenge", "tls_challenge"},
-				ConflictsWith: []string{"http_challenge", "http_memcached_challenge", "http_s3_challenge"},
-				MaxItems:      1,
+				Type:     schema.TypeList,
+				Optional: true,
+				AtLeastOneOf: []string{
+					"dns_challenge",
+					"http_challenge",
+					"http_webroot_challenge",
+					"http_memcached_challenge",
+					"http_s3_challenge",
+					"tls_challenge",
+				},
+				ConflictsWith: []string{
+					"http_challenge",
+					"http_memcached_challenge",
+					"http_s3_challenge",
+				},
+				MaxItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"directory": {
@@ -143,9 +175,16 @@ func resourceACMECertificateV5() *schema.Resource {
 				},
 			},
 			"http_memcached_challenge": {
-				Type:          schema.TypeList,
-				Optional:      true,
-				AtLeastOneOf:  []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "http_s3_challenge", "tls_challenge"},
+				Type:     schema.TypeList,
+				Optional: true,
+				AtLeastOneOf: []string{
+					"dns_challenge",
+					"http_challenge",
+					"http_webroot_challenge",
+					"http_memcached_challenge",
+					"http_s3_challenge",
+					"tls_challenge",
+				},
 				ConflictsWith: []string{"http_challenge", "http_webroot_challenge", "http_s3_challenge"},
 				MaxItems:      1,
 				Elem: &schema.Resource{
@@ -161,9 +200,16 @@ func resourceACMECertificateV5() *schema.Resource {
 				},
 			},
 			"http_s3_challenge": {
-				Type:          schema.TypeList,
-				Optional:      true,
-				AtLeastOneOf:  []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "http_s3_challenge", "tls_challenge"},
+				Type:     schema.TypeList,
+				Optional: true,
+				AtLeastOneOf: []string{
+					"dns_challenge",
+					"http_challenge",
+					"http_webroot_challenge",
+					"http_memcached_challenge",
+					"http_s3_challenge",
+					"tls_challenge",
+				},
 				ConflictsWith: []string{"http_challenge", "http_webroot_challenge", "http_memcached_challenge"},
 				MaxItems:      1,
 				Elem: &schema.Resource{
@@ -176,10 +222,17 @@ func resourceACMECertificateV5() *schema.Resource {
 				},
 			},
 			"tls_challenge": {
-				Type:         schema.TypeList,
-				Optional:     true,
-				AtLeastOneOf: []string{"dns_challenge", "http_challenge", "http_webroot_challenge", "http_memcached_challenge", "http_s3_challenge", "tls_challenge"},
-				MaxItems:     1,
+				Type:     schema.TypeList,
+				Optional: true,
+				AtLeastOneOf: []string{
+					"dns_challenge",
+					"http_challenge",
+					"http_webroot_challenge",
+					"http_memcached_challenge",
+					"http_s3_challenge",
+					"tls_challenge",
+				},
+				MaxItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"port": {
@@ -316,8 +369,12 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 			PreferredChain: d.Get("preferred_chain").(string),
 		})
 	} else {
+		domains := []string{}
 		cn := d.Get("common_name").(string)
-		domains := []string{cn}
+		if cn != "" {
+			domains = append(domains, cn)
+		}
+
 		if s, ok := d.GetOk("subject_alternative_names"); ok {
 			for _, v := range stringSlice(s.(*schema.Set).List()) {
 				if v != cn {

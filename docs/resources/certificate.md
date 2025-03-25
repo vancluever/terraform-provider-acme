@@ -101,11 +101,10 @@ be specified. It's recommended you use `dns_challenge` whenever possible).
 * `account_key_pem` (Required) - The private key of the account that is
   requesting the certificate. Forces a new resource when changed.
 * `common_name` - The certificate's common name, the primary domain that the
-  certificate will be recognized for. Required when not specifying a CSR. Forces
-  a new resource when changed.
-* `subject_alternative_names` - The certificate's subject alternative names,
-  domains that this certificate will also be recognized for. Only valid when not
-  specifying a CSR. Forces a new resource when changed.
+  certificate will be recognized for. Forces a new resource when changed.
+* `subject_alternative_names` - The certificate's subject alternative names;
+  domains that this certificate will also be recognized for. Forces a new
+  resource when changed.
 * `key_type` - The key type for the certificate's private key. Can be one of:
   `P256` and `P384` (for ECDSA keys of respective length) or `2048`, `4096`, and
   `8192` (for RSA keys of respective length). Required when not specifying a
@@ -113,9 +112,17 @@ be specified. It's recommended you use `dns_challenge` whenever possible).
   changed.
 * `certificate_request_pem` - A pre-created certificate request, such as one
   from [`tls_cert_request`][tls-cert-request], or one from an external source,
-  in PEM format.  Either this, or the in-resource request options
-  (`common_name`, `key_type`, and optionally `subject_alternative_names`) need
-  to be specified. Forces a new resource when changed.
+  in PEM format. Forces a new resource when changed.
+
+-> One of `common_name`, `subject_alternative_names`, or
+`certificate_request_pem` must be specified. `certificate_request_pem`
+conflicts with `common_name` and `subject_alternative_names`; You cannot have
+`certificate_request_pem` defined at the same time as `common_name` or
+`subject_alternative_names`, and vice versa. Finally, `common_name` can be
+blank while `subject_alternative_names` is defined, and vice versa; in this
+case with the `classic` Let's Encrypt profile, the first domain defined in
+`subject_alternative_names` becomes the common name.
+
 * `dns_challenge` (Optional) - The [DNS challenges](#using-dns-challenges) to
   use in fulfilling the request.
 * `recursive_nameservers` (Optional) - The recursive nameservers that will be
