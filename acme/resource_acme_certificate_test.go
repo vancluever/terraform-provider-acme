@@ -75,6 +75,29 @@ func TestAccACMECertificate_basic_revoke_reason(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_noCommonName(t *testing.T) {
+	wantEnv := os.Environ()
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		CheckDestroy:      testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusRevoked),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigNoCN(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					// Using the classic LE profile, the first SAN will become the common name.
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www", "www"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusValid),
+					testAccCheckEnvironNotChanged(wantEnv),
+				),
+			},
+		},
+	})
+}
+
 func TestAccACMECertificate_CSR(t *testing.T) {
 	wantEnv := os.Environ()
 	resource.Test(t, resource.TestCase{
@@ -513,6 +536,19 @@ func TestAccACMECertificate_noRevoke(t *testing.T) {
 					testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusValid),
 					testAccCheckEnvironNotChanged(wantEnv),
 				),
+			},
+		},
+	})
+}
+
+func TestAccACMECertificate_noDomains(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccACMECertificateConfigNoDomains(),
+				ExpectError: regexp.MustCompile("\"subject_alternative_names\": one of\\s+`certificate_request_pem,common_name,subject_alternative_names` must be\\s+specified"),
 			},
 		},
 	})
@@ -1524,6 +1560,87 @@ resource "acme_certificate" "certificate" {
   recursive_nameservers         = ["%s"]
   disable_complete_propagation  = true
   revoke_certificate_on_destroy = false
+
+  dns_challenge {
+    provider = "exec"
+    config = {
+      EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
+    }
+  }
+}
+`, pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		pebbleChallTestDNSSrv,
+		pebbleChallTestDNSScriptPath,
+	)
+}
+
+func testAccACMECertificateConfigNoDomains() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "acme_registration" "reg" {
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+
+  recursive_nameservers        = ["%s"]
+  disable_complete_propagation = true
+
+  dns_challenge {
+    provider = "exec"
+    config = {
+      EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
+    }
+  }
+}
+`, pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		pebbleChallTestDNSSrv,
+		pebbleChallTestDNSScriptPath,
+	)
+}
+
+func testAccACMECertificateConfigNoCN() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "acme_registration" "reg" {
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  subject_alternative_names = ["www.${var.domain}"]
+
+  recursive_nameservers        = ["%s"]
+  disable_complete_propagation = true
 
   dns_challenge {
     provider = "exec"
