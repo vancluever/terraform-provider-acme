@@ -83,7 +83,7 @@ clean-pre-release:
 
 .PHONY: test
 test:
-	TF_LOG=debug TF_ACC=1 gotestsum --format=short-verbose $(TEST) $(TESTARGS)
+	TF_ACC=1 gotestsum --format=short-verbose $(TEST) $(TESTARGS)
 
 .PHONY: go-version-sync
 go-version-sync:
