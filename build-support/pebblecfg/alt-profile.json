@@ -1,0 +1,18 @@
+{
+  "pebble": {
+    "listenAddress": "0.0.0.0:14002",
+    "managementListenAddress": "0.0.0.0:15002",
+    "certificate": "test/certs/localhost/cert.pem",
+    "privateKey": "test/certs/localhost/key.pem",
+    "httpPort": 7002,
+    "tlsPort": 7001,
+    "ocspResponderURL": "",
+    "externalAccountBindingRequired": false,
+    "profiles": {
+      "tfacmetest": {
+        "description": "Mock TF ACME test profile",
+        "validityPeriod": 576000
+      }
+    }
+  }
+}

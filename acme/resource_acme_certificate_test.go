@@ -29,7 +29,7 @@ import (
 )
 
 var uuidRegexp = regexp.MustCompile(`^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$`)
-var certURLRegexp = regexp.MustCompile(`^https://localhost:1400[01]/certZ/[a-z0-9]+(/alternate/\d+)?$`)
+var certURLRegexp = regexp.MustCompile(`^https://localhost:1400[012]/certZ/[a-z0-9]+(/alternate/\d+)?$`)
 
 func TestAccACMECertificate_basic(t *testing.T) {
 	wantEnv := os.Environ()
@@ -98,6 +98,26 @@ func TestAccACMECertificate_noCommonName(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_withProfile(t *testing.T) {
+	wantEnv := os.Environ()
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigWithProfile(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "", "www"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(profileIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
+				),
+			},
+		},
+	})
+}
+
 func TestAccACMECertificate_CSR(t *testing.T) {
 	wantEnv := os.Environ()
 	resource.Test(t, resource.TestCase{
@@ -131,6 +151,26 @@ func TestAccACMECertificate_CSR_PreferredChain(t *testing.T) {
 					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
 					testAccCheckACMECertificateValid("acme_certificate.certificate", "www3", "www4"),
 					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(alternateIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
+				),
+			},
+		},
+	})
+}
+
+func TestAccACMECertificate_CSR_Profile(t *testing.T) {
+	wantEnv := os.Environ()
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateCSRConfigWithProfile(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "", "www3"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(profileIntermediateURL)),
 					testAccCheckEnvironNotChanged(wantEnv),
 				),
 			},
@@ -621,10 +661,17 @@ func testAccCheckACMECertificateValid(n, cn, san string) resource.TestCheckFunc 
 
 		// domains
 		domain := "." + pebbleCertDomain
-		expectedCN := cn + domain
+		var expectedCN string
+		if cn != "" {
+			expectedCN = cn + domain
+		}
 		var expectedSANs []string
-		if san != "" && cn != san {
-			expectedSANs = []string{cn + domain, san + domain}
+		if san != "" {
+			if cn != "" && cn != san {
+				expectedSANs = []string{cn + domain, san + domain}
+			} else {
+				expectedSANs = []string{san + domain}
+			}
 		} else {
 			expectedSANs = []string{cn + domain}
 		}
@@ -645,6 +692,22 @@ func testAccCheckACMECertificateValid(n, cn, san string) resource.TestCheckFunc 
 		expectedNotAfter := x509Cert.NotAfter.Format(time.RFC3339)
 		if expectedNotAfter != actualNotAfter {
 			return fmt.Errorf("expected certificate_not_after to be %q, got %q", expectedNotAfter, actualNotAfter)
+		}
+
+		// Expiry based on profile
+		if _, ok := rs.Primary.Attributes["profile"]; ok {
+			// We only have one test profile in pebble right now with a validity
+			// period of 160 hours, so we just round the NotAfter date and the current
+			// date down to the current day and test against that.
+			expectedTime := time.Now().UTC().Add(time.Hour * 160).Round(time.Hour)
+			gotTime := x509Cert.NotAfter.Round(time.Hour)
+			if expectedTime != gotTime {
+				return fmt.Errorf(
+					"expiry date mismatch for profile (hour-rounded), expected %q, got %q",
+					expectedTime,
+					gotTime,
+				)
+			}
 		}
 
 		// Serial
@@ -909,7 +972,8 @@ resource "acme_certificate" "certificate" {
     }
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 		pebbleChallTestDNSSrv,
@@ -953,7 +1017,8 @@ resource "acme_certificate" "certificate" {
     }
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 		pebbleChallTestDNSSrv,
@@ -1007,7 +1072,8 @@ resource "acme_certificate" "certificate" {
     }
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 		pebbleChallTestDNSSrv,
@@ -1062,11 +1128,65 @@ resource "acme_certificate" "certificate" {
     }
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 		pebbleChallTestDNSSrv,
 		getPebbleCertificateIssuer(alternateIntermediateURL),
+		pebbleChallTestDNSScriptPath,
+	)
+}
+
+func testAccACMECertificateCSRConfigWithProfile() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "acme_registration" "reg" {
+  email_address   = "${var.email_address}"
+}
+
+resource "tls_private_key" "cert_private_key" {
+  algorithm = "RSA"
+}
+
+resource "tls_cert_request" "req" {
+  private_key_pem = "${tls_private_key.cert_private_key.private_key_pem}"
+  dns_names       = ["www3.${var.domain}"]
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem         = "${acme_registration.reg.account_key_pem}"
+  certificate_request_pem = "${tls_cert_request.req.cert_request_pem}"
+  profile                 = "tfacmetest"
+  min_days_remaining      = 1
+
+  recursive_nameservers        = ["%s"]
+  disable_complete_propagation = true
+
+  dns_challenge {
+    provider = "exec"
+    config = {
+      EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
+    }
+  }
+}
+`,
+		pebbleDirProfile,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		pebbleChallTestDNSSrv,
 		pebbleChallTestDNSScriptPath,
 	)
 }
@@ -1105,7 +1225,8 @@ resource "acme_certificate" "certificate" {
     }
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 		pebbleChallTestDNSSrv,
@@ -1146,7 +1267,8 @@ resource "acme_certificate" "certificate" {
     }
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 		pebbleChallTestDNSSrv,
@@ -1193,7 +1315,8 @@ resource "acme_certificate" "certificate" {
     }
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 		password,
@@ -1237,7 +1360,8 @@ resource "acme_certificate" "certificate" {
     }
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 		pebbleChallTestDNSSrv,
@@ -1280,7 +1404,8 @@ resource "acme_certificate" "certificate" {
     }
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 		pebbleChallTestDNSSrv,
@@ -1323,7 +1448,8 @@ resource "acme_certificate" "certificate" {
     }
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 		pebbleChallTestDNSSrv,
@@ -1359,7 +1485,8 @@ resource "acme_certificate" "certificate" {
     port = 5002
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 	)
@@ -1392,7 +1519,8 @@ resource "acme_certificate" "certificate" {
     directory = "%s"
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 		dir,
@@ -1426,7 +1554,8 @@ resource "acme_certificate" "certificate" {
     hosts = ["%s"]
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 		memcacheHost,
@@ -1460,7 +1589,8 @@ resource "acme_certificate" "certificate" {
     s3_bucket = "%s"
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 		bucket,
@@ -1495,7 +1625,8 @@ resource "acme_certificate" "certificate" {
     proxy_header = "Forwarded"
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 	)
@@ -1528,7 +1659,8 @@ resource "acme_certificate" "certificate" {
     port = 5001
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 	)
@@ -1569,7 +1701,8 @@ resource "acme_certificate" "certificate" {
     }
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 		pebbleChallTestDNSSrv,
@@ -1609,7 +1742,8 @@ resource "acme_certificate" "certificate" {
     }
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
 		pebbleChallTestDNSSrv,
@@ -1650,7 +1784,52 @@ resource "acme_certificate" "certificate" {
     }
   }
 }
-`, pebbleDirBasic,
+`,
+		pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		pebbleChallTestDNSSrv,
+		pebbleChallTestDNSScriptPath,
+	)
+}
+
+func testAccACMECertificateConfigWithProfile() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "acme_registration" "reg" {
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  subject_alternative_names = ["www.${var.domain}"]
+  profile                   = "tfacmetest"
+  min_days_remaining        = 1
+
+  recursive_nameservers        = ["%s"]
+  disable_complete_propagation = true
+
+  dns_challenge {
+    provider = "exec"
+    config = {
+      EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
+    }
+  }
+}
+`,
+		pebbleDirProfile,
 		pebbleCertDomain,
 		pebbleCertDomain,
 		pebbleChallTestDNSSrv,

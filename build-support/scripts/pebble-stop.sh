@@ -2,6 +2,7 @@
 
 PEBBLE_PIDFILE="/tmp/pebble.pid"
 PEBBLE_EAB_PIDFILE="/tmp/pebble-eab.pid"
+PEBBLE_PROFILE_PIDFILE="/tmp/pebble-profile.pid"
 PEBBLE_CHALLTESTSRV_PIDFILE="/tmp/pebble-challtestsrv.pid"
 
 PEBBLE_ERROR="false"
@@ -18,12 +19,17 @@ if [ -f "${PEBBLE_EAB_PIDFILE}" ]; then
   PEBBLE_EAB_PID="$(cat "${PEBBLE_EAB_PIDFILE}")"
 fi
 
+PEBBLE_PROFILE_PID=""
+if [ -f "${PEBBLE_PROFILE_PIDFILE}" ]; then
+  PEBBLE_PROFILE_PID="$(cat "${PEBBLE_PROFILE_PIDFILE}")"
+fi
+
 PEBBLE_CHALLTESTSRV_PID=""
 if [ -f "${PEBBLE_CHALLTESTSRV_PIDFILE}" ]; then
   PEBBLE_CHALLTESTSRV_PID="$(cat "${PEBBLE_CHALLTESTSRV_PIDFILE}")"
 fi
 
-if [ -z "${PEBBLE_PID}" ] && [ -z "${PEBBLE_EAB_PID}" ] && [ -z "${PEBBLE_CHALLTESTSRV_PID}" ]; then
+if [ -z "${PEBBLE_PID}" ] && [ -z "${PEBBLE_EAB_PID}" ] && [ -z "${PEBBLE_PROFILE_PID}" ] && [ -z "${PEBBLE_CHALLTESTSRV_PID}" ]; then
   echo "no pebble instances nor pebble-challtestsrv are running; do not need to stop.">&2
   exit 0
 fi
@@ -54,6 +60,21 @@ if [ -n "${PEBBLE_EAB_PID}" ]; then
     kill "${PEBBLE_EAB_PID}" && \
       echo "pebble (PID ${PEBBLE_EAB_PID}) stopped." && \
       rm "${PEBBLE_EAB_PIDFILE}"
+  fi
+fi
+
+# pebble (Profile)
+
+if [ -n "${PEBBLE_PROFILE_PID}" ]; then
+  if [ "$(ps -p "${PEBBLE_PROFILE_PID}" -o comm=)" != "pebble" ]; then
+    echo "error: stale PID file ${PEBBLE_PROFILE_PIDFILE}; PID ${PEBBLE_PROFILE_PID} not found or is not \"pebble\".">&2
+    PEBBLE_PROFILE_ERROR="true"
+  fi
+
+  if [ "${PEBBLE_PROFILE_ERROR}"  != "true" ]; then
+    kill "${PEBBLE_PROFILE_PID}" && \
+      echo "pebble (PID ${PEBBLE_PROFILE_PID}) stopped." && \
+      rm "${PEBBLE_PROFILE_PIDFILE}"
   fi
 fi
 
