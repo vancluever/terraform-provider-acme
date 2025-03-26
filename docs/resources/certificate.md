@@ -202,6 +202,14 @@ equivalent in the [staging
 environment](https://letsencrypt.org/docs/staging-environment/) is `(STAGING)
 Pretend Pear X1`.
 
+* `profile` - (Optional) The ACME profile to use when requesting the
+  certificate. This can be used to control generation parameters according to
+  the specific CA. The default is blank (no profile); forces a new resource
+  when changed.
+
+-> Let's Encrypt publishes details on their profiles at
+<https://letsencrypt.org/docs/profiles/>.
+
 * `revoke_certificate_on_destroy` - Enables revocation of a certificate upon destroy,
 which includes when a resource is re-created. Default is `true`.
 

@@ -272,6 +272,12 @@ func resourceACMECertificateV5() *schema.Resource {
 				Default:  "",
 				ForceNew: true,
 			},
+			"profile": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "",
+				ForceNew: true,
+			},
 			"cert_timeout": {
 				Type:     schema.TypeInt,
 				Optional: true,
@@ -367,6 +373,7 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 			CSR:            csr,
 			Bundle:         true,
 			PreferredChain: d.Get("preferred_chain").(string),
+			Profile:        d.Get("profile").(string),
 		})
 	} else {
 		domains := []string{}
@@ -388,6 +395,7 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 			Bundle:         true,
 			MustStaple:     d.Get("must_staple").(bool),
 			PreferredChain: d.Get("preferred_chain").(string),
+			Profile:        d.Get("profile").(string),
 		})
 	}
 

@@ -45,6 +45,9 @@ const pebbleDirBasic = "https://localhost:14000/dir"
 // URL for the EAB pebble directory
 const pebbleDirEAB = "https://localhost:14001/dir"
 
+// URL for the static-profile pebble directory
+const pebbleDirProfile = "https://localhost:14002/dir"
+
 // Address for the challenge/test recursive nameserver
 const pebbleChallTestDNSSrv = "localhost:5553"
 
@@ -56,6 +59,9 @@ const mainIntermediateURL = "https://localhost:15000/intermediates/0"
 
 // URL to the alternate certificate for preferred chain tests
 const alternateIntermediateURL = "https://localhost:15000/intermediates/1"
+
+// URL to the main certificate for static-profile tests
+const profileIntermediateURL = "https://localhost:15002/intermediates/0"
 
 // URL to cert status (non-EAB)
 const certStatusURL = "https://localhost:15000/cert-status-by-serial/"
