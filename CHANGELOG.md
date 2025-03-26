@@ -1,4 +1,4 @@
-## 2.31.0 (Unreleased)
+## 2.31.0 (March 26, 2025)
 
 FEATURES:
 
