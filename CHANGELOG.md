@@ -2,6 +2,9 @@
 
 FEATURES:
 
+* `resource/acme_certificate`: Added the `profile` attribute, which can be used
+  to control the certificate generation parameters according to a specific
+  CA. [#491](https://github.com/vancluever/terraform-provider-acme/pull/491)
 * `resource/acme_certificate`: `common_name` no longer needs to be defined if
   `subject_alternative_names` is defined.
   [#490](https://github.com/vancluever/terraform-provider-acme/pull/490)
