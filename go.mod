@@ -1,7 +1,6 @@
 module github.com/vancluever/terraform-provider-acme/v2
 
 go 1.24.1
-
 require (
 	github.com/BurntSushi/toml v1.5.0
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
@@ -13,7 +12,7 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.36.1
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/rainycape/memcache v0.0.0-20150622160815-1031fa0ce2f2
-	google.golang.org/grpc v1.71.0
+	google.golang.org/grpc v1.71.1
 	google.golang.org/protobuf v1.36.6
 	software.sslmate.com/src/go-pkcs12 v0.5.0
 )
