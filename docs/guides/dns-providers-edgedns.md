@@ -55,6 +55,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `AKAMAI_EDGERC_SECTION` - Configuration section, managed by the Akamai EdgeGrid client.
 * `AKAMAI_HOST` - API host, managed by the Akamai EdgeGrid client.
 
+* `AKAMAI_ACCOUNT_SWITCH_KEY` - Target account ID when the DNS zone and credentials belong to different accounts.
 * `AKAMAI_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 15).
 * `AKAMAI_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 180).
 * `AKAMAI_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
@@ -85,4 +86,5 @@ See also:
 - [.edgerc Format](https://developer.akamai.com/legacy/introduction/Conf_Client.html#edgercformat)
 - [API Client Authentication](https://developer.akamai.com/legacy/introduction/Client_Auth.html)
 - [Config from Env](https://github.com/akamai/AkamaiOPEN-edgegrid-golang/blob/master/pkg/edgegrid/config.go#L118)
+- [Manage many accounts](https://techdocs.akamai.com/developer/docs/manage-many-accounts-with-one-api-client)
 

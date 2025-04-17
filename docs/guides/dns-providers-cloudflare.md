@@ -57,6 +57,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `CLOUDFLARE_EMAIL` - Alias to CF_API_EMAIL.
 * `CLOUDFLARE_ZONE_API_TOKEN` - Alias to CF_ZONE_API_TOKEN.
 
+* `CLOUDFLARE_BASE_URL` - API base URL (Default: https://api.cloudflare.com/client/v4).
 * `CLOUDFLARE_HTTP_TIMEOUT` - API request timeout in seconds (Default: ).
 * `CLOUDFLARE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
 * `CLOUDFLARE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).

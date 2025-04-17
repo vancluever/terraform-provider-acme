@@ -4,15 +4,19 @@ package dnsplugin
 import (
 	"github.com/go-acme/lego/v4/challenge"
 	"github.com/go-acme/lego/v4/providers/dns/acmedns"
+	"github.com/go-acme/lego/v4/providers/dns/active24"
 	"github.com/go-acme/lego/v4/providers/dns/alidns"
 	"github.com/go-acme/lego/v4/providers/dns/allinkl"
 	"github.com/go-acme/lego/v4/providers/dns/arvancloud"
 	"github.com/go-acme/lego/v4/providers/dns/auroradns"
 	"github.com/go-acme/lego/v4/providers/dns/autodns"
+	"github.com/go-acme/lego/v4/providers/dns/axelname"
 	"github.com/go-acme/lego/v4/providers/dns/azure"
 	"github.com/go-acme/lego/v4/providers/dns/azuredns"
+	"github.com/go-acme/lego/v4/providers/dns/baiducloud"
 	"github.com/go-acme/lego/v4/providers/dns/bindman"
 	"github.com/go-acme/lego/v4/providers/dns/bluecat"
+	"github.com/go-acme/lego/v4/providers/dns/bookmyname"
 	"github.com/go-acme/lego/v4/providers/dns/brandit"
 	"github.com/go-acme/lego/v4/providers/dns/bunny"
 	"github.com/go-acme/lego/v4/providers/dns/checkdomain"
@@ -47,6 +51,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/epik"
 	"github.com/go-acme/lego/v4/providers/dns/exec"
 	"github.com/go-acme/lego/v4/providers/dns/exoscale"
+	"github.com/go-acme/lego/v4/providers/dns/f5xc"
 	"github.com/go-acme/lego/v4/providers/dns/freemyip"
 	"github.com/go-acme/lego/v4/providers/dns/gandi"
 	"github.com/go-acme/lego/v4/providers/dns/gandiv5"
@@ -84,6 +89,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/mailinabox"
 	"github.com/go-acme/lego/v4/providers/dns/manageengine"
 	"github.com/go-acme/lego/v4/providers/dns/metaname"
+	"github.com/go-acme/lego/v4/providers/dns/metaregistrar"
 	"github.com/go-acme/lego/v4/providers/dns/mijnhost"
 	"github.com/go-acme/lego/v4/providers/dns/mittwald"
 	"github.com/go-acme/lego/v4/providers/dns/myaddr"
@@ -166,6 +172,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"active24": func() (challenge.Provider, error) {
+		p, err := active24.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"alidns": func() (challenge.Provider, error) {
 		p, err := alidns.NewDNSProvider()
 		if err != nil {
@@ -206,6 +220,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"axelname": func() (challenge.Provider, error) {
+		p, err := axelname.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"azure": func() (challenge.Provider, error) {
 		mapEnvironmentVariableValues(map[string]string{
 			"ARM_CLIENT_ID":       "AZURE_CLIENT_ID",
@@ -236,6 +258,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"baiducloud": func() (challenge.Provider, error) {
+		p, err := baiducloud.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"bindman": func() (challenge.Provider, error) {
 		p, err := bindman.NewDNSProvider()
 		if err != nil {
@@ -246,6 +276,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"bluecat": func() (challenge.Provider, error) {
 		p, err := bluecat.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"bookmyname": func() (challenge.Provider, error) {
+		p, err := bookmyname.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -518,6 +556,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"exoscale": func() (challenge.Provider, error) {
 		p, err := exoscale.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"f5xc": func() (challenge.Provider, error) {
+		p, err := f5xc.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -814,6 +860,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"metaname": func() (challenge.Provider, error) {
 		p, err := metaname.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"metaregistrar": func() (challenge.Provider, error) {
+		p, err := metaregistrar.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

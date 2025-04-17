@@ -1,5 +1,5 @@
 ---
-page_title: "infoblox"
+page_title: "axelname"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Infoblox DNS Challenge Provider
+# Axelname DNS Challenge Provider
 
-The `infoblox` DNS challenge provider can be used to perform DNS challenges for
+The `axelname` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Infoblox](https://www.infoblox.com/).
+[Axelname](https://axelname.ru).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "infoblox"
+    provider = "axelname"
   }
 }
 ```
@@ -48,19 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `INFOBLOX_HOST` - Host URI.
-* `INFOBLOX_PASSWORD` - Account Password.
-* `INFOBLOX_USERNAME` - Account Username.
+* `AXELNAME_NICKNAME` - Account nickname.
+* `AXELNAME_TOKEN` - API token.
 
-* `INFOBLOX_CA_CERTIFICATE` - The path to the CA certificate (PEM encoded).
-* `INFOBLOX_DNS_VIEW` - The view for the TXT records (Default: External).
-* `INFOBLOX_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `INFOBLOX_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `INFOBLOX_PORT` - The port for the infoblox grid manager  (Default: 443).
-* `INFOBLOX_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `INFOBLOX_SSL_VERIFY` - Whether or not to verify the TLS certificate  (Default: true).
-* `INFOBLOX_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
-* `INFOBLOX_WAPI_VERSION` - The version of WAPI being used  (Default: 2.11).
+* `AXELNAME_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `AXELNAME_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `AXELNAME_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `AXELNAME_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
-When creating an API's user ensure it has the proper permissions for the view you are working with.
 
