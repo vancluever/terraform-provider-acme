@@ -7,6 +7,12 @@ lego [CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.23.0/CHANGELOG.md)
 for more details on additions and changes to DNS providers, and other minor
 changes to the library.
 
+SECURITY:
+
+This update contains a fix for
+[CVE-2025-22872](https://github.com/advisories/GHSA-vvgc-356p-c3xw).
+[#499](https://github.com/vancluever/terraform-provider-acme/pull/499)
+
 ## 2.31.0 (March 26, 2025)
 
 FEATURES:
