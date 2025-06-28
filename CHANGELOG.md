@@ -1,4 +1,4 @@
-## 2.32.1 (Unreleased)
+## 2.32.1 (June 27, 2025)
 
 This update contains a fix for
 [GHSA-fv92-fjc5-jj9h](https://github.com/advisories/GHSA-fv92-fjc5-jj9h).
