@@ -1,6 +1,9 @@
-## 2.32.1-pre (Unreleased)
+## 2.32.1 (Unreleased)
 
-Bumped version for dev.
+This update contains a fix for
+[GHSA-fv92-fjc5-jj9h](https://github.com/advisories/GHSA-fv92-fjc5-jj9h).
+No other changes are being made.
+[#508](https://github.com/vancluever/terraform-provider-acme/pull/508)
 
 ## 2.32.0 (April 16, 2025)
 
