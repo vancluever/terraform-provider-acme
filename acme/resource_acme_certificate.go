@@ -480,6 +480,7 @@ func resourceACMECertificateCustomizeDiff(_ context.Context, d *schema.ResourceD
 		d.SetNewComputed("certificate_p12")
 		d.SetNewComputed("certificate_url")
 		d.SetNewComputed("certificate_domain")
+		d.SetNewComputed("certificate_not_after")
 		d.SetNewComputed("private_key_pem")
 		d.SetNewComputed("issuer_pem")
 	}
