@@ -1,6 +1,10 @@
-## 2.32.2-pre (Unreleased)
+## 2.33.0 (Unreleased)
 
-Bumped version for dev.
+BUG FIXES:
+
+* `resource/acme_certificate`: Ensured that all computed attributes are set to
+  reset when a certificate renewal is triggered.
+  [#509](https://github.com/vancluever/terraform-provider-acme/pull/509)
 
 ## 2.32.1 (June 27, 2025)
 
