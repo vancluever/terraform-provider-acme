@@ -12,7 +12,7 @@ apply to the Terraform provider as well.
 
 The `googledomains` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Google Domains](https://domains.google).
+[Google Domains](https://github.com/go-acme/lego/issues/2553).
 
 [resource-acme-certificate]: ../resources/certificate.md
 

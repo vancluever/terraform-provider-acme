@@ -1,5 +1,5 @@
 ---
-page_title: "conoha"
+page_title: "dyndnsfree"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# ConoHa v2 DNS Challenge Provider
+# DynDnsFree.de DNS Challenge Provider
 
-The `conoha` DNS challenge provider can be used to perform DNS challenges for
+The `dyndnsfree` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[ConoHa v2](https://www.conoha.jp/).
+[DynDnsFree.de](https://www.dyndnsfree.de).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "conoha"
+    provider = "dyndnsfree"
   }
 }
 ```
@@ -48,14 +48,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `CONOHA_API_PASSWORD` - The API password.
-* `CONOHA_API_USERNAME` - The API username.
-* `CONOHA_TENANT_ID` - Tenant ID.
+* `DYNDNSFREE_PASSWORD` - Password.
+* `DYNDNSFREE_USERNAME` - Username.
 
-* `CONOHA_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `CONOHA_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `CONOHA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `CONOHA_REGION` - The region (Default: tyo1).
-* `CONOHA_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
+* `DYNDNSFREE_HTTP_TIMEOUT` - Request timeout in seconds (Default: 30).
+* `DYNDNSFREE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `DYNDNSFREE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
 
 

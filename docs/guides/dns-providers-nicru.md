@@ -1,5 +1,5 @@
 ---
-page_title: "conoha"
+page_title: "nicru"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# ConoHa v2 DNS Challenge Provider
+# RU CENTER DNS Challenge Provider
 
-The `conoha` DNS challenge provider can be used to perform DNS challenges for
+The `nicru` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[ConoHa v2](https://www.conoha.jp/).
+[RU CENTER](https://nic.ru/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "conoha"
+    provider = "nicru"
   }
 }
 ```
@@ -48,14 +48,24 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `CONOHA_API_PASSWORD` - The API password.
-* `CONOHA_API_USERNAME` - The API username.
-* `CONOHA_TENANT_ID` - Tenant ID.
+* `NICRU_PASSWORD` - Password for an account in RU CENTER.
+* `NICRU_SECRET` - Secret for application in DNS-hosting RU CENTER.
+* `NICRU_SERVICE_ID` - Service ID for application in DNS-hosting RU CENTER.
+* `NICRU_SERVICE_NAME` - Service Name for DNS-hosting RU CENTER.
+* `NICRU_USER` - Agreement for an account in RU CENTER.
 
-* `CONOHA_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `CONOHA_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `CONOHA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `CONOHA_REGION` - The region (Default: tyo1).
-* `CONOHA_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
+* `NICRU_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 60).
+* `NICRU_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 600).
+* `NICRU_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 30).
 
+## Credential information
+
+You can find information about service ID and secret https://www.nic.ru/manager/oauth.cgi?step=oauth.app_list
+
+| ENV Variable        | Parameter from page            | Example           |
+|---------------------|--------------------------------|-------------------|
+| NICRU_USER          | Username (Number of agreement) | NNNNNNN/NIC-D     |
+| NICRU_PASSWORD      | Password account               |                   |
+| NICRU_SERVICE_ID    | Application ID                 | hex-based, len 32 |
+| NICRU_SECRET        | Identity endpoint              | string len 91     |
 

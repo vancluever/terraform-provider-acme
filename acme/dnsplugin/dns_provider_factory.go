@@ -11,6 +11,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/auroradns"
 	"github.com/go-acme/lego/v4/providers/dns/autodns"
 	"github.com/go-acme/lego/v4/providers/dns/axelname"
+	"github.com/go-acme/lego/v4/providers/dns/azion"
 	"github.com/go-acme/lego/v4/providers/dns/azure"
 	"github.com/go-acme/lego/v4/providers/dns/azuredns"
 	"github.com/go-acme/lego/v4/providers/dns/baiducloud"
@@ -27,6 +28,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/cloudru"
 	"github.com/go-acme/lego/v4/providers/dns/cloudxns"
 	"github.com/go-acme/lego/v4/providers/dns/conoha"
+	"github.com/go-acme/lego/v4/providers/dns/conohav3"
 	"github.com/go-acme/lego/v4/providers/dns/constellix"
 	"github.com/go-acme/lego/v4/providers/dns/corenetworks"
 	"github.com/go-acme/lego/v4/providers/dns/cpanel"
@@ -44,6 +46,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/dreamhost"
 	"github.com/go-acme/lego/v4/providers/dns/duckdns"
 	"github.com/go-acme/lego/v4/providers/dns/dyn"
+	"github.com/go-acme/lego/v4/providers/dns/dyndnsfree"
 	"github.com/go-acme/lego/v4/providers/dns/dynu"
 	"github.com/go-acme/lego/v4/providers/dns/easydns"
 	"github.com/go-acme/lego/v4/providers/dns/edgedns"
@@ -102,6 +105,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/netcup"
 	"github.com/go-acme/lego/v4/providers/dns/netlify"
 	"github.com/go-acme/lego/v4/providers/dns/nicmanager"
+	"github.com/go-acme/lego/v4/providers/dns/nicru"
 	"github.com/go-acme/lego/v4/providers/dns/nifcloud"
 	"github.com/go-acme/lego/v4/providers/dns/njalla"
 	"github.com/go-acme/lego/v4/providers/dns/nodion"
@@ -222,6 +226,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"axelname": func() (challenge.Provider, error) {
 		p, err := axelname.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"azion": func() (challenge.Provider, error) {
+		p, err := azion.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -370,6 +382,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"conohav3": func() (challenge.Provider, error) {
+		p, err := conohav3.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"constellix": func() (challenge.Provider, error) {
 		p, err := constellix.NewDNSProvider()
 		if err != nil {
@@ -500,6 +520,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"dyn": func() (challenge.Provider, error) {
 		p, err := dyn.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"dyndnsfree": func() (challenge.Provider, error) {
+		p, err := dyndnsfree.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -964,6 +992,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"nicmanager": func() (challenge.Provider, error) {
 		p, err := nicmanager.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"nicru": func() (challenge.Provider, error) {
+		p, err := nicru.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

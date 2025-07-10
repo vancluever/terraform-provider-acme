@@ -54,9 +54,15 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `GCE_SERVICE_ACCOUNT_FILE` - Account file path.
 
 * `GCE_ALLOW_PRIVATE_ZONE` - Allows requested domain to be in private DNS zone, works only with a private ACME server (by default: false).
+* `GCE_IMPERSONATE_SERVICE_ACCOUNT` - Service account email to impersonate.
 * `GCE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 5).
 * `GCE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 180).
 * `GCE_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 * `GCE_ZONE_ID` - Allows to skip the automatic detection of the zone.
 
+Supports service account impersonation to access Google Cloud DNS resources across different projects or with restricted permissions.
+
+When using impersonation, the source service account must have:
+1. The "Service Account Token Creator" role on the source service account
+2. The "https://www.googleapis.com/auth/cloud-platform" scope
 

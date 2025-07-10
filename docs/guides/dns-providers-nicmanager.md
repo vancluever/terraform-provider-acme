@@ -53,7 +53,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `NICMANAGER_API_PASSWORD` - Password, always required.
 * `NICMANAGER_API_USERNAME` - Username, used for Username-based login.
 
-* `NICMANAGER_API_MODE` - mode: 'anycast' or 'zone' (default: 'anycast').
+* `NICMANAGER_API_MODE` - mode: 'anycast' or 'zones' (for FreeDNS) (default: 'anycast').
 * `NICMANAGER_API_OTP` - TOTP Secret (optional).
 * `NICMANAGER_HTTP_TIMEOUT` - API request timeout in seconds (Default: 10).
 * `NICMANAGER_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
@@ -63,5 +63,5 @@ supplied by supplying the argument with the `_FILE` suffix. See
 ## Description
 
 You can log in using your account name + username or using your email address.
-Optionally if TOTP is configured for your account, set `NICMANAGER_API_OTP`.
+Optionally, if TOTP is configured for your account, set `NICMANAGER_API_OTP`.
 

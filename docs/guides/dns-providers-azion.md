@@ -1,5 +1,5 @@
 ---
-page_title: "conoha"
+page_title: "azion"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# ConoHa v2 DNS Challenge Provider
+# Azion DNS Challenge Provider
 
-The `conoha` DNS challenge provider can be used to perform DNS challenges for
+The `azion` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[ConoHa v2](https://www.conoha.jp/).
+[Azion](https://www.azion.com/en/products/edge-dns/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "conoha"
+    provider = "azion"
   }
 }
 ```
@@ -48,14 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `CONOHA_API_PASSWORD` - The API password.
-* `CONOHA_API_USERNAME` - The API username.
-* `CONOHA_TENANT_ID` - Tenant ID.
+* `AZION_PERSONAL_TOKEN` - Your Azion personal token..
 
-* `CONOHA_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `CONOHA_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `CONOHA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `CONOHA_REGION` - The region (Default: tyo1).
-* `CONOHA_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
+* `AZION_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `AZION_PAGE_SIZE` - The page size for the API request (Default: 50).
+* `AZION_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `AZION_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `AZION_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

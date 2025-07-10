@@ -1,5 +1,5 @@
 ---
-page_title: "conoha"
+page_title: "conohav3"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# ConoHa v2 DNS Challenge Provider
+# ConoHa v3 DNS Challenge Provider
 
-The `conoha` DNS challenge provider can be used to perform DNS challenges for
+The `conohav3` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[ConoHa v2](https://www.conoha.jp/).
+[ConoHa v3](https://www.conoha.jp/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "conoha"
+    provider = "conohav3"
   }
 }
 ```
@@ -48,14 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `CONOHA_API_PASSWORD` - The API password.
-* `CONOHA_API_USERNAME` - The API username.
-* `CONOHA_TENANT_ID` - Tenant ID.
+* `CONOHAV3_API_PASSWORD` - The API password.
+* `CONOHAV3_API_USER_ID` - The API user ID.
+* `CONOHAV3_TENANT_ID` - Tenant ID.
 
-* `CONOHA_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `CONOHA_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `CONOHA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `CONOHA_REGION` - The region (Default: tyo1).
-* `CONOHA_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
+* `CONOHAV3_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `CONOHAV3_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `CONOHAV3_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `CONOHAV3_REGION` - The region (Default: c3j1).
+* `CONOHAV3_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
 
 

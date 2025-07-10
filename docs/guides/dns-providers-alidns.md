@@ -49,7 +49,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
 * `ALICLOUD_ACCESS_KEY` - Access key ID.
-* `ALICLOUD_RAM_ROLE` - Your instance RAM role (https://www.alibabacloud.com/help/doc-detail/54579.htm).
+* `ALICLOUD_RAM_ROLE` - Your instance RAM role (https://www.alibabacloud.com/help/en/ecs/user-guide/attach-an-instance-ram-role-to-an-ecs-instance).
 * `ALICLOUD_SECRET_KEY` - Access Key secret.
 * `ALICLOUD_SECURITY_TOKEN` - STS Security Token (optional).
 
