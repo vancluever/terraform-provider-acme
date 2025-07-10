@@ -1,5 +1,12 @@
 ## 2.33.0 (Unreleased)
 
+LEGO UPDATE:
+
+[lego](https://github.com/go-acme/lego) has been updated to v4.24.0 See the
+lego [CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.24.0/CHANGELOG.md)
+for more details on additions and changes to DNS providers, and other minor
+changes to the library.
+
 BUG FIXES:
 
 * `resource/acme_certificate`: Ensured that all computed attributes are set to
