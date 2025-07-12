@@ -10,7 +10,7 @@ import (
 // resourceACMERegistrationMigrateState is the outer migration function for
 // acme_registration, dispatching to specific incremental version upgraders as
 // need be.
-func resourceACMERegistrationMigrateState(version int, os *terraform.InstanceState, meta interface{}) (*terraform.InstanceState, error) {
+func resourceACMERegistrationMigrateState(version int, os *terraform.InstanceState, meta any) (*terraform.InstanceState, error) {
 	// Guard against a nil state.
 	if os == nil {
 		return nil, nil
@@ -21,7 +21,7 @@ func resourceACMERegistrationMigrateState(version int, os *terraform.InstanceSta
 		return os, nil
 	}
 
-	var migrateFunc func(*terraform.InstanceState, interface{}) error
+	var migrateFunc func(*terraform.InstanceState, any) error
 	switch version {
 	case 0:
 		log.Printf("[DEBUG] Migrating acme_registration state: old v%d state: %#v", version, os)
@@ -41,7 +41,7 @@ func resourceACMERegistrationMigrateState(version int, os *terraform.InstanceSta
 
 // migrateACMERegistrationStateV1 handles migration of acme_registration from
 // schema version 0 to version 1.
-func migrateACMERegistrationStateV1(is *terraform.InstanceState, meta interface{}) error {
+func migrateACMERegistrationStateV1(is *terraform.InstanceState, meta any) error {
 	delete(is.Attributes, "server_url")
 	delete(is.Attributes, "registration_body")
 	delete(is.Attributes, "registration_new_authz_url")
@@ -53,7 +53,7 @@ func migrateACMERegistrationStateV1(is *terraform.InstanceState, meta interface{
 // resourceACMECertificateMigrateState is the outer migration function for
 // acme_certificate, dispatching to specific incremental version upgraders as
 // need be.
-func resourceACMECertificateMigrateState(version int, os *terraform.InstanceState, meta interface{}) (*terraform.InstanceState, error) {
+func resourceACMECertificateMigrateState(version int, os *terraform.InstanceState, meta any) (*terraform.InstanceState, error) {
 	// Guard against a nil state.
 	if os == nil {
 		return nil, nil
@@ -64,7 +64,7 @@ func resourceACMECertificateMigrateState(version int, os *terraform.InstanceStat
 		return os, nil
 	}
 
-	var migrateFunc func(*terraform.InstanceState, interface{}) error
+	var migrateFunc func(*terraform.InstanceState, any) error
 	switch version {
 	case 3:
 		log.Printf("[DEBUG] Migrating acme_certificate state: old v%d state: %#v", version, os)
@@ -93,7 +93,7 @@ func resourceACMECertificateMigrateState(version int, os *terraform.InstanceStat
 
 // migrateACMECertificateStateV4 handles migration of
 // acme_certificate from schema version 3 to version 4.
-func migrateACMECertificateStateV4(is *terraform.InstanceState, meta interface{}) error {
+func migrateACMECertificateStateV4(is *terraform.InstanceState, meta any) error {
 	// There has ever only been one "dns_challenge" key allowed in
 	// state, so we should be safe to just iterate over every key and
 	// look for the set hash, and re-write that back to zero.
@@ -122,7 +122,7 @@ func migrateACMECertificateStateV4(is *terraform.InstanceState, meta interface{}
 
 // migrateACMECertificateStateV1 handles migration of
 // acme_certificate from schema version 2 to version 3.
-func migrateACMECertificateStateV3(is *terraform.InstanceState, meta interface{}) error {
+func migrateACMECertificateStateV3(is *terraform.InstanceState, meta any) error {
 	// There has ever only been one "dns_challenge" key allowed in
 	// state, so we should be safe to just iterate over every key and
 	// look for the set hash, and re-write that back to zero.
@@ -154,7 +154,7 @@ func migrateACMECertificateStateV3(is *terraform.InstanceState, meta interface{}
 
 // migrateACMECertificateStateV1 handles migration of acme_certificate from
 // schema version 1 to version 2.
-func migrateACMECertificateStateV2(is *terraform.InstanceState, meta interface{}) error {
+func migrateACMECertificateStateV2(is *terraform.InstanceState, meta any) error {
 	delete(is.Attributes, "account_ref")
 
 	return nil
@@ -162,7 +162,7 @@ func migrateACMECertificateStateV2(is *terraform.InstanceState, meta interface{}
 
 // migrateACMECertificateStateV1 handles migration of acme_certificate from
 // schema version 0 to version 1.
-func migrateACMECertificateStateV1(is *terraform.InstanceState, meta interface{}) error {
+func migrateACMECertificateStateV1(is *terraform.InstanceState, meta any) error {
 	delete(is.Attributes, "server_url")
 	delete(is.Attributes, "http_challenge_port")
 	delete(is.Attributes, "tls_challenge_port")

@@ -337,7 +337,7 @@ func resourceACMECertificateV5() *schema.Resource {
 	}
 }
 
-func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceACMECertificateCreate(d *schema.ResourceData, meta any) error {
 	// Pre-generate resource UUID here, in case there is a serious
 	// issue with UUID generation that would lead to inconsistency.
 	//
@@ -412,7 +412,7 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta interface{}) err
 	return resourceACMECertificateRead(d, meta)
 }
 
-func resourceACMECertificateRead(d *schema.ResourceData, meta interface{}) error {
+func resourceACMECertificateRead(d *schema.ResourceData, meta any) error {
 	// This is a workaround to correct issues with some versions of the
 	// resource prior to 1.3.2 where a renewal failure would possibly
 	// delete the certificate.
@@ -447,11 +447,11 @@ func resourceACMECertificateRead(d *schema.ResourceData, meta interface{}) error
 
 // resourceACMECertificateCustomizeDiff checks the certificate for renewal and
 // flags it as NewComputed if it needs a renewal.
-func resourceACMECertificateCustomizeDiff(_ context.Context, d *schema.ResourceDiff, meta interface{}) error {
+func resourceACMECertificateCustomizeDiff(_ context.Context, d *schema.ResourceDiff, meta any) error {
 	// Ensure duplicate providers for dns_challenge are not provided.
 	providerMap := make(map[string]bool)
-	for _, v := range d.Get("dns_challenge").([]interface{}) {
-		m := v.(map[string]interface{})
+	for _, v := range d.Get("dns_challenge").([]any) {
+		m := v.(map[string]any)
 		if v, ok := m["provider"]; ok && v.(string) != "" {
 			provider := v.(string)
 			if _, ok := providerMap[provider]; ok {
@@ -490,7 +490,7 @@ func resourceACMECertificateCustomizeDiff(_ context.Context, d *schema.ResourceD
 }
 
 // resourceACMECertificateUpdate renews a certificate if it has been flagged as changed.
-func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceACMECertificateUpdate(d *schema.ResourceData, meta any) error {
 	// We don't need to do anything else here if the certificate hasn't been diffed
 	expired, err := resourceACMECertificateHasExpired(d)
 	if err != nil {
@@ -541,7 +541,7 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta interface{}) err
 }
 
 // resourceACMECertificateDelete "deletes" the certificate by revoking it.
-func resourceACMECertificateDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceACMECertificateDelete(d *schema.ResourceData, meta any) error {
 	if !d.Get("revoke_certificate_on_destroy").(bool) {
 		return nil
 	}

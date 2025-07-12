@@ -10,18 +10,18 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
-func testACMECertificateStateData012V3() map[string]interface{} {
-	return map[string]interface{}{
+func testACMECertificateStateData012V3() map[string]any {
+	return map[string]any{
 		"account_key_pem":           "key",
 		"common_name":               "foobar",
-		"subject_alternative_names": []interface{}{"barbar", "bazbar"},
+		"subject_alternative_names": []any{"barbar", "bazbar"},
 		"key_type":                  "2048",
 		"certificate_request_pem":   "req",
 		"min_days_remaining":        "30",
-		"dns_challenge": []interface{}{
-			map[string]interface{}{
+		"dns_challenge": []any{
+			map[string]any{
 				"provider":              "route53",
-				"recursive_nameservers": []interface{}{"my.name.server"},
+				"recursive_nameservers": []any{"my.name.server"},
 			},
 		},
 		"must_staple":        "0",
@@ -32,20 +32,20 @@ func testACMECertificateStateData012V3() map[string]interface{} {
 	}
 }
 
-func testACMECertificateStateData012V4() map[string]interface{} {
-	return map[string]interface{}{
+func testACMECertificateStateData012V4() map[string]any {
+	return map[string]any{
 		"account_key_pem":           "key",
 		"common_name":               "foobar",
-		"subject_alternative_names": []interface{}{"barbar", "bazbar"},
+		"subject_alternative_names": []any{"barbar", "bazbar"},
 		"key_type":                  "2048",
 		"certificate_request_pem":   "req",
 		"min_days_remaining":        "30",
-		"dns_challenge": []interface{}{
-			map[string]interface{}{
+		"dns_challenge": []any{
+			map[string]any{
 				"provider": "route53",
 			},
 		},
-		"recursive_nameservers": []interface{}{"my.name.server"},
+		"recursive_nameservers": []any{"my.name.server"},
 		"must_staple":           "0",
 		"certificate_domain":    "foobar",
 		"private_key_pem":       "certkey",
@@ -54,20 +54,20 @@ func testACMECertificateStateData012V4() map[string]interface{} {
 	}
 }
 
-func testACMECertificateStateData012V5() map[string]interface{} {
-	return map[string]interface{}{
+func testACMECertificateStateData012V5() map[string]any {
+	return map[string]any{
 		"account_key_pem":           "key",
 		"common_name":               "foobar",
-		"subject_alternative_names": []interface{}{"barbar", "bazbar"},
+		"subject_alternative_names": []any{"barbar", "bazbar"},
 		"key_type":                  "2048",
 		"certificate_request_pem":   "req",
 		"min_days_remaining":        "30",
-		"dns_challenge": []interface{}{
-			map[string]interface{}{
+		"dns_challenge": []any{
+			map[string]any{
 				"provider": "route53",
 			},
 		},
-		"recursive_nameservers": []interface{}{"my.name.server"},
+		"recursive_nameservers": []any{"my.name.server"},
 		"must_staple":           "0",
 		"certificate_domain":    "foobar",
 		"private_key_pem":       "certkey",
@@ -76,12 +76,12 @@ func testACMECertificateStateData012V5() map[string]interface{} {
 	}
 }
 
-func testACMERegistrationStateData012V1() map[string]interface{} {
-	return map[string]interface{}{
+func testACMERegistrationStateData012V1() map[string]any {
+	return map[string]any{
 		"account_key_pem": "key",
 		"email_address":   "hello@localhost",
-		"external_account_binding": []interface{}{
-			map[string]interface{}{
+		"external_account_binding": []any{
+			map[string]any{
 				"key_id":      "kid",
 				"hmac_base64": "hmac",
 			},
@@ -91,15 +91,15 @@ func testACMERegistrationStateData012V1() map[string]interface{} {
 	}
 }
 
-func testACMERegistrationStateData012V2() map[string]interface{} {
-	return map[string]interface{}{
+func testACMERegistrationStateData012V2() map[string]any {
+	return map[string]any{
 		"account_key_pem":         "key",
 		"account_key_algorithm":   "ECDSA",
 		"account_key_ecdsa_curve": "P384",
 		"account_key_rsa_bits":    4096,
 		"email_address":           "hello@localhost",
-		"external_account_binding": []interface{}{
-			map[string]interface{}{
+		"external_account_binding": []any{
+			map[string]any{
 				"key_id":      "kid",
 				"hmac_base64": "hmac",
 			},
@@ -128,7 +128,7 @@ func TestResourceACMECertificateStateUpgraderV4Func(t *testing.T) {
 		t.Fatalf("error migrating state: %s", err)
 	}
 
-	ignore := cmpopts.IgnoreMapEntries(func(k string, _ interface{}) bool {
+	ignore := cmpopts.IgnoreMapEntries(func(k string, _ any) bool {
 		return k == "id"
 	})
 

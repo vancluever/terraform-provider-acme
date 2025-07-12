@@ -26,18 +26,18 @@ func initLegoLogger() {
 	l.log("Messages from the lego library will show up as DEBUG messages.")
 }
 
-func (l *legoLogger) Fatal(args ...interface{})                 { l.log(args) }
-func (l *legoLogger) Fatalln(args ...interface{})               { l.log(args) }
-func (l *legoLogger) Fatalf(format string, args ...interface{}) { l.log(fmt.Sprintf(format, args...)) }
-func (l *legoLogger) Print(args ...interface{})                 { l.log(args) }
-func (l *legoLogger) Println(args ...interface{})               { l.log(args) }
-func (l *legoLogger) Printf(format string, args ...interface{}) { l.log(fmt.Sprintf(format, args...)) }
+func (l *legoLogger) Fatal(args ...any)                 { l.log(args) }
+func (l *legoLogger) Fatalln(args ...any)               { l.log(args) }
+func (l *legoLogger) Fatalf(format string, args ...any) { l.log(fmt.Sprintf(format, args...)) }
+func (l *legoLogger) Print(args ...any)                 { l.log(args) }
+func (l *legoLogger) Println(args ...any)               { l.log(args) }
+func (l *legoLogger) Printf(format string, args ...any) { l.log(fmt.Sprintf(format, args...)) }
 
 // log logs the raw message sent to it to the Terraform logger with a
 // prefix indicating it came from lego.
 //
 // All messages are logged at the debug level.
-func (l *legoLogger) log(args ...interface{}) {
+func (l *legoLogger) log(args ...any) {
 	// Strip any lego-based log level from the string. This should
 	// always be in the first argument.
 	if len(args) > 0 {
@@ -52,5 +52,5 @@ func (l *legoLogger) log(args ...interface{}) {
 		}
 	}
 
-	log.Println(append([]interface{}{"[DEBUG]", "lego:"}, args...)...)
+	log.Println(append([]any{"[DEBUG]", "lego:"}, args...)...)
 }

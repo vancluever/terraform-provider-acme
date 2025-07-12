@@ -52,7 +52,7 @@ func (p *DnsPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Server) error 
 	return nil
 }
 
-func (p *DnsPlugin) GRPCClient(ctx context.Context, broker *plugin.GRPCBroker, c *grpc.ClientConn) (interface{}, error) {
+func (p *DnsPlugin) GRPCClient(ctx context.Context, broker *plugin.GRPCBroker, c *grpc.ClientConn) (any, error) {
 	return &DnsProviderClient{client: dnspluginproto.NewDNSProviderServiceClient(c)}, nil
 }
 
