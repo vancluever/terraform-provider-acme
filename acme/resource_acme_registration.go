@@ -104,7 +104,7 @@ func resourceACMERegistrationV2() *schema.Resource {
 	}
 }
 
-func resourceACMERegistrationCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceACMERegistrationCreate(d *schema.ResourceData, meta any) error {
 	// If we do not have a private key, create one.
 	if d.Get("account_key_pem").(string) == "" {
 		privateKeyPem, err := generatePrivateKey(
@@ -130,8 +130,8 @@ func resourceACMERegistrationCreate(d *schema.ResourceData, meta interface{}) er
 	if v, ok := d.GetOk("external_account_binding"); ok {
 		reg, err = client.Registration.RegisterWithExternalAccountBinding(registration.RegisterEABOptions{
 			TermsOfServiceAgreed: true,
-			Kid:                  v.([]interface{})[0].(map[string]interface{})["key_id"].(string),
-			HmacEncoded:          v.([]interface{})[0].(map[string]interface{})["hmac_base64"].(string),
+			Kid:                  v.([]any)[0].(map[string]any)["key_id"].(string),
+			HmacEncoded:          v.([]any)[0].(map[string]any)["hmac_base64"].(string),
 		})
 	} else {
 		// Normal registration.
@@ -154,7 +154,7 @@ func resourceACMERegistrationCreate(d *schema.ResourceData, meta interface{}) er
 	return saveACMERegistration(d, user.Registration)
 }
 
-func resourceACMERegistrationRead(d *schema.ResourceData, meta interface{}) error {
+func resourceACMERegistrationRead(d *schema.ResourceData, meta any) error {
 	_, user, err := expandACMEClient(d, meta, true)
 	if err != nil {
 		if regGone(err) {
@@ -169,7 +169,7 @@ func resourceACMERegistrationRead(d *schema.ResourceData, meta interface{}) erro
 	return saveACMERegistration(d, user.Registration)
 }
 
-func resourceACMERegistrationDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceACMERegistrationDelete(d *schema.ResourceData, meta any) error {
 	client, _, err := expandACMEClient(d, meta, true)
 	if err != nil {
 		return err

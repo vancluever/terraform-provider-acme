@@ -17,7 +17,7 @@ func dataSourceACMEServerURL() *schema.Resource {
 	}
 }
 
-func dataSourceACMEServerURLRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceACMEServerURLRead(d *schema.ResourceData, meta any) error {
 	d.SetId(meta.(*Config).ServerURL)
 	d.Set("server_url", meta.(*Config).ServerURL)
 	return nil

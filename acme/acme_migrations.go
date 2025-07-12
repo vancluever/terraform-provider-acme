@@ -25,14 +25,14 @@ func resourceACMERegistrationStateUpgraderV1() schema.StateUpgrader {
 // version 2 for acme_registration.
 func resourceACMERegistrationStateUpgraderV1Func(
 	_ context.Context,
-	rawState map[string]interface{},
-	meta interface{},
-) (map[string]interface{}, error) {
+	rawState map[string]any,
+	meta any,
+) (map[string]any, error) {
 	z, err := copystructure.Copy(rawState)
 	if err != nil {
 		return nil, err
 	}
-	result := z.(map[string]interface{})
+	result := z.(map[string]any)
 	result["account_key_algorithm"] = keyAlgorithmECDSA
 	result["account_key_ecdsa_curve"] = keyECDSACurveP384
 	result["account_key_rsa_bits"] = 4096
@@ -55,9 +55,9 @@ func resourceACMECertificateStateUpgraderV4() schema.StateUpgrader {
 // version 5 for acme_certificate.
 func resourceACMECertificateStateUpgraderV4Func(
 	_ context.Context,
-	rawState map[string]interface{},
-	meta interface{},
-) (map[string]interface{}, error) {
+	rawState map[string]any,
+	meta any,
+) (map[string]any, error) {
 	resourceUUID, err := uuid.GenerateUUID()
 	if err != nil {
 		return nil, fmt.Errorf("error generating new UUID for resource: %s", err)
@@ -67,7 +67,7 @@ func resourceACMECertificateStateUpgraderV4Func(
 	if err != nil {
 		return nil, err
 	}
-	result := z.(map[string]interface{})
+	result := z.(map[string]any)
 	result["id"] = resourceUUID
 	return result, nil
 }
@@ -88,25 +88,25 @@ func resourceACMECertificateStateUpgraderV3() schema.StateUpgrader {
 // version 4 for acme_certificate.
 func resourceACMECertificateStateUpgraderV3Func(
 	_ context.Context,
-	rawState map[string]interface{},
-	meta interface{},
-) (map[string]interface{}, error) {
+	rawState map[string]any,
+	meta any,
+) (map[string]any, error) {
 	z, err := copystructure.Copy(rawState)
 	if err != nil {
 		return nil, err
 	}
-	result := z.(map[string]interface{})
+	result := z.(map[string]any)
 
 	a, ok := rawState["dns_challenge"]
 	if ok {
-		b, ok := a.([]interface{})
+		b, ok := a.([]any)
 		if ok && len(b) > 0 {
-			c, ok := b[0].(map[string]interface{})
+			c, ok := b[0].(map[string]any)
 			if ok {
 				d, ok := c["recursive_nameservers"]
 				if ok {
 					// Should be safe here to access this key directly.
-					delete(result["dns_challenge"].([]interface{})[0].(map[string]interface{}), "recursive_nameservers")
+					delete(result["dns_challenge"].([]any)[0].(map[string]any), "recursive_nameservers")
 					result["recursive_nameservers"] = d
 				}
 			}

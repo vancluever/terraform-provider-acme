@@ -22,8 +22,8 @@ func TestExpandDNSChallengeWrapperProvider(t *testing.T) {
 				r := resourceACMECertificate()
 				d := r.TestResourceData()
 
-				d.Set("dns_challenge", []interface{}{
-					map[string]interface{}{
+				d.Set("dns_challenge", []any{
+					map[string]any{
 						"provider": "route53",
 					},
 				})
@@ -40,10 +40,10 @@ func TestExpandDNSChallengeWrapperProvider(t *testing.T) {
 				r := resourceACMECertificate()
 				d := r.TestResourceData()
 
-				d.Set("dns_challenge", []interface{}{
-					map[string]interface{}{
+				d.Set("dns_challenge", []any{
+					map[string]any{
 						"provider": "exec",
-						"config": map[string]interface{}{
+						"config": map[string]any{
 							"EXEC_PATH": "exit 0",
 						},
 					},
@@ -62,10 +62,10 @@ func TestExpandDNSChallengeWrapperProvider(t *testing.T) {
 				r := resourceACMECertificate()
 				d := r.TestResourceData()
 
-				d.Set("dns_challenge", []interface{}{
-					map[string]interface{}{
+				d.Set("dns_challenge", []any{
+					map[string]any{
 						"provider": "exec",
-						"config": map[string]interface{}{
+						"config": map[string]any{
 							"EXEC_PATH":              "exit 0",
 							"EXEC_SEQUENCE_INTERVAL": "123",
 						},
@@ -85,13 +85,13 @@ func TestExpandDNSChallengeWrapperProvider(t *testing.T) {
 				r := resourceACMECertificate()
 				d := r.TestResourceData()
 
-				d.Set("dns_challenge", []interface{}{
-					map[string]interface{}{
+				d.Set("dns_challenge", []any{
+					map[string]any{
 						"provider": "route53",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"provider": "exec",
-						"config": map[string]interface{}{
+						"config": map[string]any{
 							"EXEC_PATH": "exit 0",
 						},
 					},
@@ -110,17 +110,17 @@ func TestExpandDNSChallengeWrapperProvider(t *testing.T) {
 				r := resourceACMECertificate()
 				d := r.TestResourceData()
 
-				d.Set("dns_challenge", []interface{}{
-					map[string]interface{}{
+				d.Set("dns_challenge", []any{
+					map[string]any{
 						"provider": "exec",
-						"config": map[string]interface{}{
+						"config": map[string]any{
 							"EXEC_PATH":              "exit 0",
 							"EXEC_SEQUENCE_INTERVAL": "60", // explicit default
 						},
 					},
-					map[string]interface{}{
+					map[string]any{
 						"provider": "exec",
-						"config": map[string]interface{}{
+						"config": map[string]any{
 							"EXEC_PATH":              "exit 0",
 							"EXEC_SEQUENCE_INTERVAL": "123",
 						},
@@ -139,7 +139,7 @@ func TestExpandDNSChallengeWrapperProvider(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			got, gotClosers, err := expandDNSChallengeWrapperProvider(
 				tc.resourceData,
-				tc.resourceData.Get("dns_challenge").([]interface{}),
+				tc.resourceData.Get("dns_challenge").([]any),
 			)
 			if err != nil {
 				t.Fatal(err)

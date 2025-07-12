@@ -81,7 +81,7 @@ func saveACMERegistration(d *schema.ResourceData, reg *registration.Resource) er
 // If loadReg is supplied, the registration information is loaded in to the
 // user's registration, if it exists - if the account cannot be resolved by the
 // private key, then the appropriate error is returned.
-func expandACMEClient(d *schema.ResourceData, meta interface{}, loadReg bool) (*lego.Client, *acmeUser, error) {
+func expandACMEClient(d *schema.ResourceData, meta any, loadReg bool) (*lego.Client, *acmeUser, error) {
 	user, err := expandACMEUser(d)
 	if err != nil {
 		return nil, nil, fmt.Errorf("error getting user data: %s", err.Error())
@@ -103,7 +103,7 @@ func expandACMEClient(d *schema.ResourceData, meta interface{}, loadReg bool) (*
 	return client, user, nil
 }
 
-func expandACMEClient_config(d *schema.ResourceData, meta interface{}, user registration.User) *lego.Config {
+func expandACMEClient_config(d *schema.ResourceData, meta any, user registration.User) *lego.Config {
 	config := lego.NewConfig(user)
 	config.CADirURL = meta.(*Config).ServerURL
 
@@ -126,9 +126,9 @@ func expandACMEClient_config(d *schema.ResourceData, meta interface{}, user regi
 // certificateResourceExpander is a simple interface to allow us to use the Get
 // function that is in ResourceData and ResourceDiff under the same function.
 type certificateResourceExpander interface {
-	Get(string) interface{}
-	GetOk(string) (interface{}, bool)
-	GetChange(string) (interface{}, interface{})
+	Get(string) any
+	GetOk(string) (any, bool)
+	GetChange(string) (any, any)
 }
 
 // expandCertificateResource takes saved state in the certificate resource
@@ -322,7 +322,7 @@ func parsePEMBundle(bundle []byte) ([]*x509.Certificate, error) {
 }
 
 // stringSlice converts an interface slice to a string slice.
-func stringSlice(src []interface{}) []string {
+func stringSlice(src []any) []string {
 	var dst []string
 	for _, v := range src {
 		dst = append(dst, v.(string))
@@ -375,7 +375,7 @@ func csrFromPEM(pemData []byte) (*x509.CertificateRequest, error) {
 }
 
 // validateKeyType validates a key_type resource parameter is correct.
-func validateKeyType(v interface{}, k string) (ws []string, errors []error) {
+func validateKeyType(v any, k string) (ws []string, errors []error) {
 	value := v.(string)
 	found := false
 	for _, w := range []string{"P256", "P384", "2048", "4096", "8192"} {
@@ -393,8 +393,8 @@ func validateKeyType(v interface{}, k string) (ws []string, errors []error) {
 // validateDNSChallengeConfig ensures that the values supplied to the
 // dns_challenge resource parameter in the acme_certificate resource
 // are string values only.
-func validateDNSChallengeConfig(v interface{}, k string) (ws []string, errors []error) {
-	value := v.(map[string]interface{})
+func validateDNSChallengeConfig(v any, k string) (ws []string, errors []error) {
+	value := v.(map[string]any)
 	bad := false
 	for _, w := range value {
 		switch w.(type) {
@@ -411,7 +411,7 @@ func validateDNSChallengeConfig(v interface{}, k string) (ws []string, errors []
 	return
 }
 
-func validateRevocationReason(v interface{}, k string) (ws []string, errors []error) {
+func validateRevocationReason(v any, k string) (ws []string, errors []error) {
 	value := RevocationReason(v.(string))
 	_, err := GetRevocationReason(value)
 	if err != nil {

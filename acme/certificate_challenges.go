@@ -36,7 +36,7 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 	if providers, ok := d.GetOk("dns_challenge"); ok {
 		var providerWrapper challenge.Provider
 		var err error
-		providerWrapper, dnsClosers, err = expandDNSChallengeWrapperProvider(d, providers.([]interface{}))
+		providerWrapper, dnsClosers, err = expandDNSChallengeWrapperProvider(d, providers.([]any))
 		if err != nil {
 			return dnsCloser, err
 		}
@@ -51,7 +51,7 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 
 	// HTTP (server)
 	if provider, ok := d.GetOk("http_challenge"); ok {
-		opts := provider.([]interface{})[0].(map[string]interface{})
+		opts := provider.([]any)[0].(map[string]any)
 		httpServerProvider := http01.NewProviderServer("", strconv.Itoa(opts["port"].(int)))
 		if proxyHeader, ok := opts["proxy_header"]; ok {
 			httpServerProvider.SetProxyHeader(proxyHeader.(string))
@@ -65,7 +65,7 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 	// HTTP (webroot)
 	if provider, ok := d.GetOk("http_webroot_challenge"); ok {
 		httpWebrootProvider, err := webroot.NewHTTPProvider(
-			provider.([]interface{})[0].(map[string]interface{})["directory"].(string))
+			provider.([]any)[0].(map[string]any)["directory"].(string))
 
 		if err != nil {
 			return dnsCloser, err
@@ -79,7 +79,7 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 	// HTTP (memcached)
 	if provider, ok := d.GetOk("http_memcached_challenge"); ok {
 		httpMemcachedProvider, err := memcached.NewMemcachedProvider(
-			stringSlice(provider.([]interface{})[0].(map[string]interface{})["hosts"].(*schema.Set).List()))
+			stringSlice(provider.([]any)[0].(map[string]any)["hosts"].(*schema.Set).List()))
 
 		if err != nil {
 			return dnsCloser, err
@@ -93,7 +93,7 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 	// HTTP (s3)
 	if provider, ok := d.GetOk("http_s3_challenge"); ok {
 		httpS3Provider, err := s3.NewHTTPProvider(
-			provider.([]interface{})[0].(map[string]interface{})["s3_bucket"].(string))
+			provider.([]any)[0].(map[string]any)["s3_bucket"].(string))
 
 		if err != nil {
 			return dnsCloser, err
@@ -107,7 +107,7 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 	// TLS
 	if provider, ok := d.GetOk("tls_challenge"); ok {
 		tlsProvider := tlsalpn01.NewProviderServer(
-			"", strconv.Itoa(provider.([]interface{})[0].(map[string]interface{})["port"].(int)))
+			"", strconv.Itoa(provider.([]any)[0].(map[string]any)["port"].(int)))
 
 		if err := client.Challenge.SetTLSALPN01Provider(tlsProvider); err != nil {
 			return dnsCloser, err
@@ -119,7 +119,7 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 
 func expandDNSChallengeWrapperProvider(
 	d *schema.ResourceData,
-	providers []interface{},
+	providers []any,
 ) (challenge.Provider, []func(), error) {
 	dnsClosers := make([]func(), 0)
 	dnsProvider, err := NewDNSProviderWrapper()
@@ -131,7 +131,7 @@ func expandDNSChallengeWrapperProvider(
 	var sequentialInterval time.Duration
 	for _, providerRaw := range providers {
 		if result, err := expandDNSChallenge(
-			providerRaw.(map[string]interface{}),
+			providerRaw.(map[string]any),
 			expandRecursiveNameservers(d),
 		); err == nil {
 			dnsProvider.providers = append(dnsProvider.providers, result.Provider)
@@ -156,7 +156,7 @@ func expandDNSChallengeWrapperProvider(
 	return dnsProvider, dnsClosers, nil
 }
 
-func expandDNSChallenge(m map[string]interface{}, nameServers []string) (dnsplugin.NewClientResult, error) {
+func expandDNSChallenge(m map[string]any, nameServers []string) (dnsplugin.NewClientResult, error) {
 	var providerName string
 
 	if v, ok := m["provider"]; ok && v.(string) != "" {
@@ -169,7 +169,7 @@ func expandDNSChallenge(m map[string]interface{}, nameServers []string) (dnsplug
 	// defaults are fine.
 	config := make(map[string]string)
 	if v, ok := m["config"]; ok {
-		for k, v := range v.(map[string]interface{}) {
+		for k, v := range v.(map[string]any) {
 			config[k] = v.(string)
 		}
 	}
@@ -196,7 +196,7 @@ func expandDNSChallengeOptions(d *schema.ResourceData) []dns01.ChallengeOption {
 
 func expandRecursiveNameservers(d *schema.ResourceData) []string {
 	s := make([]string, 0)
-	if nameservers := d.Get("recursive_nameservers").([]interface{}); len(nameservers) > 0 {
+	if nameservers := d.Get("recursive_nameservers").([]any); len(nameservers) > 0 {
 		for _, ns := range nameservers {
 			s = append(s, ns.(string))
 		}

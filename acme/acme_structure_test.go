@@ -163,7 +163,7 @@ func blankCertificateResource() *schema.ResourceData {
 // registrationResourceData since it actually does a diff based on the
 // attributes in the schema, versus working with a blank ResourceData.
 func registrationResourceDataDefaultConfig(t *testing.T) *schema.ResourceData {
-	return schema.TestResourceDataRaw(t, resourceACMERegistration().Schema, make(map[string]interface{}))
+	return schema.TestResourceDataRaw(t, resourceACMERegistration().Schema, make(map[string]any))
 }
 
 // certificateResourceDataDefaultConfig returns the schema.ResourceData for a
@@ -179,7 +179,7 @@ func certificateResourceDataDefaultConfig(t *testing.T) *schema.ResourceData {
 	// able to differentiate between a schema that does not have this value in
 	// the client (registrations) versus one that does (certificates) as we can't
 	// test on the zero value for registrations.
-	return schema.TestResourceDataRaw(t, resourceACMECertificate().Schema, map[string]interface{}{"cert_timeout": 90})
+	return schema.TestResourceDataRaw(t, resourceACMECertificate().Schema, map[string]any{"cert_timeout": 90})
 }
 
 func TestACME_expandACMEUser(t *testing.T) {
@@ -340,7 +340,7 @@ func TestACME_validateKeyType_invalid(t *testing.T) {
 }
 
 func TestACME_validateDNSChallengeConfig(t *testing.T) {
-	m := map[string]interface{}{
+	m := map[string]any{
 		"AWS_FOO": "bar",
 	}
 
@@ -351,7 +351,7 @@ func TestACME_validateDNSChallengeConfig(t *testing.T) {
 }
 
 func TestACME_validateDNSChallengeConfig_invalid(t *testing.T) {
-	s := map[string]interface{}{
+	s := map[string]any{
 		"AWS_FOO": 1,
 	}
 

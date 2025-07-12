@@ -35,7 +35,7 @@ type Config struct {
 	ServerURL string
 }
 
-func configureProvider(d *schema.ResourceData) (interface{}, error) {
+func configureProvider(d *schema.ResourceData) (any, error) {
 	return &Config{
 		ServerURL: d.Get("server_url").(string),
 	}, nil
