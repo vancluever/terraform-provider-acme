@@ -626,10 +626,7 @@ func resourceACMECertificatePreCheckDelay(delay int) dns01.WrapPreCheckFunc {
 				if remaining < interval {
 					// To honor the specified timeout, make our next interval the
 					// time remaining. Minimum one second.
-					interval = remaining
-					if interval < 1 {
-						interval = 1
-					}
+					interval = max(remaining, 1)
 				}
 
 				log.Printf("[DEBUG] [%s] acme: Waiting an additional %d second(s) for DNS record propagation.", domain, remaining)
