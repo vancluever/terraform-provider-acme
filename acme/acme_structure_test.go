@@ -245,7 +245,7 @@ func TestACME_expandACMEClient_badKey(t *testing.T) {
 
 func TestACME_certDaysRemaining_noCertData(t *testing.T) {
 	c := &certificate.Resource{}
-	_, err := certDaysRemaining(c)
+	_, err := certDaysRemaining(c, time.Now())
 	if err == nil {
 		t.Fatalf("expected error due to bad cert data")
 	}
@@ -276,7 +276,7 @@ func TestACME_certDaysRemaining_CACert(t *testing.T) {
 	c := &certificate.Resource{
 		Certificate: []byte(b),
 	}
-	_, err := certDaysRemaining(c)
+	_, err := certDaysRemaining(c, time.Now())
 	if err == nil {
 		t.Fatalf("expected error due to cert being a CA")
 	}

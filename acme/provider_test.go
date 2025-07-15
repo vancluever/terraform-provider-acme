@@ -1,6 +1,7 @@
 package acme
 
 import (
+	"bytes"
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
@@ -11,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -66,8 +68,26 @@ const profileIntermediateURL = "https://localhost:15002/intermediates/0"
 // URL to cert status (non-EAB)
 const certStatusURL = "https://localhost:15000/cert-status-by-serial/"
 
+// URL to set custom ARI data (default endpoint)
+const setRenewalInfoURL = "https://localhost:15000/set-renewal-info/"
+
 // Host:port for memcached
 const memcacheHost = "localhost:11211"
+
+type setCustomARIWindowRequest struct {
+	Certificate string
+	ARIResponse string
+}
+
+type setCustomARIWindowRequestARIResponse struct {
+	SuggestedWindow setCustomARIWindowRequestARIResponseSuggestedWindow `json:"suggestedWindow"`
+	ExplanationURL  string                                              `json:"explanationURL"`
+}
+
+type setCustomARIWindowRequestARIResponseSuggestedWindow struct {
+	Start time.Time `json:"start"`
+	End   time.Time `json:"end"`
+}
 
 // getPebbleCertificate gets the certificate at the supplied URL.
 func getPebbleCertificate(url string) *x509.Certificate {
@@ -145,6 +165,60 @@ func getStatusForCertificate(cert *x509.Certificate) string {
 	}
 
 	return result.Status
+}
+
+// setCustomARIWindow sets a custom ARI window for the supplied cert. This is
+// needed to test ARI renewals correctly.
+func setCustomARIWindow(certPEM string, start, end time.Time, explanationURL string) {
+	ariResponse := setCustomARIWindowRequestARIResponse{
+		SuggestedWindow: setCustomARIWindowRequestARIResponseSuggestedWindow{
+			Start: start,
+			End:   end,
+		},
+		ExplanationURL: explanationURL,
+	}
+	ariResponseBytes, err := json.Marshal(&ariResponse)
+	if err != nil {
+		panic(fmt.Errorf("setCustomARIWindow: error encoding custom ARI response: %w", err))
+	}
+
+	setCustomARIWindowData(certPEM, string(ariResponseBytes))
+}
+
+func setCustomARIWindowData(certPEM, data string) {
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true,
+			},
+		},
+	}
+
+	reqBody := setCustomARIWindowRequest{
+		Certificate: certPEM,
+		ARIResponse: data,
+	}
+
+	reqBodyBuf, err := json.Marshal(&reqBody)
+	if err != nil {
+		panic(fmt.Errorf("setCustomARIWindow: error encoding request body: %w", err))
+	}
+
+	resp, err := client.Post(setRenewalInfoURL, "application/json", bytes.NewReader(reqBodyBuf))
+	if err != nil {
+		panic(fmt.Errorf("setCustomARIWindow: error sending request: %w", err))
+	}
+
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		panic(fmt.Errorf("setCustomARIWindow: error reading response body: %w", err))
+	}
+
+	if resp.StatusCode != 200 {
+		panic(
+			fmt.Errorf("setCustomARIWindow: unexpected response: %s\n\n%s\n\n%s", resp.Status, body, reqBodyBuf))
+	}
 }
 
 // External providers (tls)

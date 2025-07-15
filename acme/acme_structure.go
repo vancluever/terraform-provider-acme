@@ -123,9 +123,9 @@ func expandACMEClient_config(d *schema.ResourceData, meta any, user registration
 	return config
 }
 
-// certificateResourceExpander is a simple interface to allow us to use the Get
+// resourceDataOrDiff is a simple interface to allow us to use the Get
 // function that is in ResourceData and ResourceDiff under the same function.
-type certificateResourceExpander interface {
+type resourceDataOrDiff interface {
 	Get(string) any
 	GetOk(string) (any, bool)
 	GetChange(string) (any, any)
@@ -133,7 +133,7 @@ type certificateResourceExpander interface {
 
 // expandCertificateResource takes saved state in the certificate resource
 // and returns an certificate.Resource.
-func expandCertificateResource(d certificateResourceExpander) *certificate.Resource {
+func expandCertificateResource(d resourceDataOrDiff) *certificate.Resource {
 	cert := &certificate.Resource{
 		Domain:  d.Get("certificate_domain").(string),
 		CertURL: d.Get("certificate_url").(string),
@@ -193,7 +193,7 @@ func saveCertificateResource(d *schema.ResourceData, cert *certificate.Resource,
 
 // certSecondsRemaining takes an certificate.Resource, parses the
 // certificate, and computes the seconds that it has remaining.
-func certSecondsRemaining(cert *certificate.Resource) (int64, error) {
+func certSecondsRemaining(cert *certificate.Resource, now time.Time) (int64, error) {
 	x509Certs, err := parsePEMBundle(cert.Certificate)
 	if err != nil {
 		return 0, err
@@ -204,16 +204,13 @@ func certSecondsRemaining(cert *certificate.Resource) (int64, error) {
 		return 0, fmt.Errorf("first certificate is a CA certificate")
 	}
 
-	expiry := c.NotAfter.Unix()
-	now := time.Now().Unix()
-
-	return (expiry - now), nil
+	return (c.NotAfter.Unix() - now.Unix()), nil
 }
 
 // certDaysRemaining takes an certificate.Resource, parses the
 // certificate, and computes the days that it has remaining.
-func certDaysRemaining(cert *certificate.Resource) (int64, error) {
-	remaining, err := certSecondsRemaining(cert)
+func certDaysRemaining(cert *certificate.Resource, now time.Time) (int64, error) {
+	remaining, err := certSecondsRemaining(cert, now)
 	if err != nil {
 		return 0, fmt.Errorf("unable to calculate time to certificate expiry: %s", err)
 	}

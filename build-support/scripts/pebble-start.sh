@@ -3,7 +3,7 @@
 set -e
 
 GOPATH="$(go env GOPATH)"
-PEBBLE_VERSION="2.8.0-vancluever3"
+PEBBLE_VERSION="2.8.0-vancluever4"
 # config files are relative to script dir
 PEBBLE_CFGFILE="../pebblecfg/basic.json"
 PEBBLE_PIDFILE="/tmp/pebble.pid"

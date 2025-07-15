@@ -28,6 +28,8 @@ import (
 	"software.sslmate.com/src/go-pkcs12"
 )
 
+const standardResourceName = "acme_certificate.certificate"
+
 var uuidRegexp = regexp.MustCompile(`^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$`)
 var certURLRegexp = regexp.MustCompile(`^https://localhost:1400[012]/certZ/[a-z0-9]+(/alternate/\d+)?$`)
 
@@ -492,6 +494,83 @@ func TestAccACMECertificate_httpS3(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_renewalInfo_basic(t *testing.T) {
+	wantEnv := os.Environ()
+	expectedStandard := testAccCheckACMECertificateStandardOpts{
+		CommonName:             "www",
+		SubjectAlternativeName: "www2",
+		IntermediateURL:        mainIntermediateURL,
+		ExpectedStatus:         certificateStatusValid,
+		ExpectedEnv:            wantEnv,
+	}
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigRenewalInfo(true, 0, false),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckACMECertificateStandard(expectedStandard),
+					testAccCheckACMECertificateRenewalInfo(),
+				),
+			},
+		},
+	})
+}
+
+func TestAccACMECertificate_renewalInfo_renew(t *testing.T) {
+	var cert string
+	var certSerial string
+	wantEnv := os.Environ()
+	expectedStandard := testAccCheckACMECertificateStandardOpts{
+		CommonName:             "www",
+		SubjectAlternativeName: "www2",
+		IntermediateURL:        mainIntermediateURL,
+		ExpectedStatus:         certificateStatusValid,
+		ExpectedEnv:            wantEnv,
+	}
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigRenewalInfo(false, 0, true),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckACMECertificateStandard(expectedStandard),
+					testAccCheckACMECertificateRenewalInfo(),
+					testAccCheckACMECertificateSaveCert(&cert),
+					testAccCheckACMECertificateSaveSerial(&certSerial),
+				),
+			},
+			{
+				PreConfig: func() {
+					now := time.Now().UTC()
+					setCustomARIWindow(
+						cert,
+						now.Add(time.Minute),
+						now.Add(time.Minute*2),
+						"https://acme.example.com/docs/ari",
+					)
+				},
+				Config: testAccACMECertificateConfigRenewalInfo(true, 0, true),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckACMECertificateStandard(expectedStandard),
+					testAccCheckACMECertificateRenewalInfo(),
+					testAccCheckACMECertificateCheckSerialEqual(&certSerial, true),
+				),
+			},
+			{
+				Config: testAccACMECertificateConfigRenewalInfo(true, 120, true),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckACMECertificateStandard(expectedStandard),
+					testAccCheckACMECertificateRenewalInfo(),
+					testAccCheckACMECertificateCheckSerialEqual(&certSerial, false),
+				),
+			},
+		},
+	})
+}
+
 func testAccACMECertificate_httpS3_preCheck(t *testing.T) {
 	t.Helper()
 
@@ -592,6 +671,45 @@ func TestAccACMECertificate_noDomains(t *testing.T) {
 			},
 		},
 	})
+}
+
+type testAccCheckACMECertificateStandardOpts struct {
+	CommonName             string
+	SubjectAlternativeName string
+	IntermediateURL        string
+	ExpectedStatus         string
+	ExpectedEnv            []string
+}
+
+func testAccCheckACMECertificateStandard(
+	opts testAccCheckACMECertificateStandardOpts,
+) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		resource.TestMatchResourceAttr(
+			standardResourceName,
+			"id",
+			uuidRegexp,
+		),
+		resource.TestMatchResourceAttr(
+			standardResourceName,
+			"certificate_url",
+			certURLRegexp,
+		),
+		testAccCheckACMECertificateValid(
+			standardResourceName,
+			opts.CommonName,
+			opts.SubjectAlternativeName,
+		),
+		testAccCheckACMECertificateIntermediateEqual(
+			standardResourceName,
+			getPebbleCertificate(opts.IntermediateURL),
+		),
+		testAccCheckACMECertificateStatus(
+			standardResourceName,
+			opts.ExpectedStatus,
+		),
+		testAccCheckEnvironNotChanged(opts.ExpectedEnv),
+	)
 }
 
 func testAccCheckACMECertificateValid(n, cn, san string) resource.TestCheckFunc {
@@ -932,6 +1050,109 @@ func testAccCheckEnvironNotChanged(want []string) resource.TestCheckFunc {
 	return func(_ *terraform.State) error {
 		if diff := cmp.Diff(want, os.Environ(), cmpopts.IgnoreSliceElements(ignoreFunc)); diff != "" {
 			return fmt.Errorf("environment altered but should not have been (-want +got):\n%s", diff)
+		}
+
+		return nil
+	}
+}
+
+func testAccCheckACMECertificateRenewalInfo() resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs, ok := s.RootModule().Resources[standardResourceName]
+		if !ok {
+			return fmt.Errorf("Can't find ACME certificate: %s", standardResourceName)
+		}
+
+		renewalInfoWindowStartString := rs.Primary.Attributes["renewal_info_window_start"]
+		renewalInfoWindowEndString := rs.Primary.Attributes["renewal_info_window_end"]
+		renewalInfoWindowSelectedString := rs.Primary.Attributes["renewal_info_window_selected"]
+		renewalInfoRetryAfterString := rs.Primary.Attributes["renewal_info_retry_after"]
+
+		var renewalInfoWindowStart, renewalInfoWindowEnd time.Time
+		var err error
+
+		renewalInfoWindowStart, err = time.Parse(time.RFC3339, renewalInfoWindowStartString)
+		if err != nil {
+			return fmt.Errorf("malformed renewal_info_window_start %q", renewalInfoWindowStartString)
+		}
+
+		renewalInfoWindowEnd, err = time.Parse(time.RFC3339, renewalInfoWindowEndString)
+		if err != nil {
+			return fmt.Errorf("malformed renewal_info_window_end %q", renewalInfoWindowEndString)
+		}
+
+		// Only simple parse check on renewal_info_window_selected; time can
+		// possibly be outside window (usually after) depending on certain
+		// circumstances
+		if _, err := time.Parse(time.RFC3339, renewalInfoWindowSelectedString); err != nil {
+			return fmt.Errorf("malformed renewal_info_window_selected %q", renewalInfoWindowSelectedString)
+		}
+
+		// renewal_info_retry_after simple parse check as it is not really tied
+		// to anything else
+		if _, err := time.Parse(time.RFC3339, renewalInfoRetryAfterString); err != nil {
+			return fmt.Errorf("malformed renewal_info_retry_after %q", renewalInfoRetryAfterString)
+		}
+
+		if renewalInfoWindowStart.After(renewalInfoWindowEnd) {
+			return fmt.Errorf(
+				"renewal_info_window_start (%s) after renewal_info_window_end (%s)",
+				renewalInfoWindowStart,
+				renewalInfoWindowEnd,
+			)
+		}
+
+		// Check the URL if it's non-empty
+		if rawURL := rs.Primary.Attributes["renewal_info_explanation_url"]; rawURL != "" {
+			if _, err := url.Parse(rawURL); err != nil {
+				return fmt.Errorf("malformed renewal_info_explanation_url %q", rawURL)
+			}
+		}
+
+		return nil
+	}
+}
+
+func testAccCheckACMECertificateSaveCert(ptr *string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs, ok := s.RootModule().Resources[standardResourceName]
+		if !ok {
+			return fmt.Errorf("Can't find ACME certificate: %s", standardResourceName)
+		}
+
+		*ptr = rs.Primary.Attributes["certificate_pem"]
+		return nil
+	}
+}
+
+func testAccCheckACMECertificateSaveSerial(ptr *string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs, ok := s.RootModule().Resources[standardResourceName]
+		if !ok {
+			return fmt.Errorf("Can't find ACME certificate: %s", standardResourceName)
+		}
+
+		*ptr = rs.Primary.Attributes["certificate_serial"]
+		return nil
+	}
+}
+
+func testAccCheckACMECertificateCheckSerialEqual(want *string, equal bool) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs, ok := s.RootModule().Resources[standardResourceName]
+		if !ok {
+			return fmt.Errorf("Can't find ACME certificate: %s", standardResourceName)
+		}
+
+		got := rs.Primary.Attributes["certificate_serial"]
+		if equal {
+			if *want != got {
+				return fmt.Errorf("certificate serial mismatch: want %q, got %q", *want, got)
+			}
+		} else {
+			if *want == got {
+				return fmt.Errorf("expected certificate serial (%s) to have changed", got)
+			}
 		}
 
 		return nil
@@ -1832,6 +2053,56 @@ resource "acme_certificate" "certificate" {
 		pebbleDirProfile,
 		pebbleCertDomain,
 		pebbleCertDomain,
+		pebbleChallTestDNSSrv,
+		pebbleChallTestDNSScriptPath,
+	)
+}
+
+func testAccACMECertificateConfigRenewalInfo(enabled bool, maxSleep int, ignoreRetry bool) string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "acme_registration" "reg" {
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem                 = "${acme_registration.reg.account_key_pem}"
+  common_name                     = "www.${var.domain}"
+  subject_alternative_names       = ["www2.${var.domain}"]
+	use_renewal_info 					      = %t
+	renewal_info_max_sleep          = %d
+	renewal_info_ignore_retry_after = %t
+
+
+  recursive_nameservers        = ["%s"]
+  disable_complete_propagation = true
+
+  dns_challenge {
+    provider = "exec"
+    config = {
+      EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
+    }
+  }
+}
+`,
+		pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		enabled,
+		maxSleep,
+		ignoreRetry,
 		pebbleChallTestDNSSrv,
 		pebbleChallTestDNSScriptPath,
 	)
