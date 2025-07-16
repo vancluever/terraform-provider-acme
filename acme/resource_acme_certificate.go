@@ -3,13 +3,17 @@ package acme
 import (
 	"context"
 	"crypto/x509"
+	"errors"
 	"fmt"
 	"log"
+	"math/rand"
 	"time"
 
 	"github.com/go-acme/lego/v4/acme"
+	"github.com/go-acme/lego/v4/acme/api"
 	"github.com/go-acme/lego/v4/certificate"
 	"github.com/go-acme/lego/v4/challenge/dns01"
+	"github.com/go-acme/lego/v4/lego"
 	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -89,6 +93,22 @@ func resourceACMECertificateV5() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 				Default:  30,
+			},
+			"use_renewal_info": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
+			"renewal_info_max_sleep": {
+				Type:         schema.TypeInt,
+				Optional:     true,
+				Default:      0,
+				ValidateFunc: validation.IntBetween(0, 900),
+			},
+			"renewal_info_ignore_retry_after": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
 			},
 			"dns_challenge": {
 				Type:     schema.TypeList,
@@ -333,6 +353,26 @@ func resourceACMECertificateV5() *schema.Resource {
 				Optional:     true,
 				ValidateFunc: validateRevocationReason,
 			},
+			"renewal_info_window_start": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"renewal_info_window_end": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"renewal_info_window_selected": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"renewal_info_explanation_url": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"renewal_info_retry_after": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 		},
 	}
 }
@@ -413,16 +453,17 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta any) error {
 }
 
 func resourceACMECertificateRead(d *schema.ResourceData, meta any) error {
-	// This is a workaround to correct issues with some versions of the
-	// resource prior to 1.3.2 where a renewal failure would possibly
-	// delete the certificate.
-	if _, ok := d.GetOk("certificate_pem"); !ok {
-		// Try to recover the certificate from the ACME API.
-		client, _, err := expandACMEClient(d, meta, true)
-		if err != nil {
-			return err
-		}
+	client, _, err := expandACMEClient(d, meta, true)
+	if err != nil {
+		return err
+	}
 
+	if _, ok := d.GetOk("certificate_pem"); !ok {
+		// This is a workaround to correct issues with some versions of the
+		// resource prior to 1.3.2 where a renewal failure would possibly delete
+		// the certificate.
+		//
+		// Try to recover the certificate from the ACME API.
 		srcCR, err := client.Certificate.Get(d.Get("certificate_url").(string), true)
 		if err != nil {
 			// There are probably some cases that we will want to just drop
@@ -440,6 +481,10 @@ func resourceACMECertificateRead(d *schema.ResourceData, meta any) error {
 		if err := saveCertificateResource(d, dstCR, password); err != nil {
 			return err
 		}
+	}
+
+	if err := resourceACMECertificateRenewalInfoRefresh(d, client, time.Now()); err != nil {
+		return err
 	}
 
 	return nil
@@ -470,12 +515,12 @@ func resourceACMECertificateCustomizeDiff(_ context.Context, d *schema.ResourceD
 		return nil
 	}
 
-	expired, err := resourceACMECertificateHasExpired(d)
+	shouldRenew, err := resourceACMECertificateShouldRenew(d, time.Now())
 	if err != nil {
 		return err
 	}
 
-	if expired {
+	if shouldRenew {
 		d.SetNewComputed("certificate_pem")
 		d.SetNewComputed("certificate_p12")
 		d.SetNewComputed("certificate_url")
@@ -484,6 +529,11 @@ func resourceACMECertificateCustomizeDiff(_ context.Context, d *schema.ResourceD
 		d.SetNewComputed("private_key_pem")
 		d.SetNewComputed("issuer_pem")
 		d.SetNewComputed("certificate_serial")
+		d.SetNewComputed("renewal_info_window_start")
+		d.SetNewComputed("renewal_info_window_end")
+		d.SetNewComputed("renewal_info_window_selected")
+		d.SetNewComputed("renewal_info_explanation_url")
+		d.SetNewComputed("renewal_info_retry_after")
 	}
 
 	return nil
@@ -491,13 +541,12 @@ func resourceACMECertificateCustomizeDiff(_ context.Context, d *schema.ResourceD
 
 // resourceACMECertificateUpdate renews a certificate if it has been flagged as changed.
 func resourceACMECertificateUpdate(d *schema.ResourceData, meta any) error {
-	// We don't need to do anything else here if the certificate hasn't been diffed
-	expired, err := resourceACMECertificateHasExpired(d)
+	shouldRenew, err := resourceACMECertificateShouldRenew(d, time.Now())
 	if err != nil {
 		return err
 	}
 
-	if !expired {
+	if !shouldRenew {
 		// when the certificate hasn't changed but the p12 password has, we still need to regenerate the p12
 		if d.HasChange("certificate_p12_password") {
 			cert := expandCertificateResource(d)
@@ -506,38 +555,63 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta any) error {
 				return err
 			}
 		}
-		return nil
+	} else {
+		// Enable partial mode to protect the certificate during renewal
+		d.Partial(true)
+
+		// Sleep until renewal time if necessary (in the case of ARI)
+		if err := resourceACMECertificateSleepUntilRenewalTime(d); err != nil {
+			return err
+		}
+
+		client, _, err := expandACMEClient(d, meta, true)
+		if err != nil {
+			return err
+		}
+
+		cert := expandCertificateResource(d)
+
+		dnsCloser, err := setCertificateChallengeProviders(client, d)
+		defer dnsCloser()
+		if err != nil {
+			return err
+		}
+
+		newCert, err := renewWithOptions(
+			client.Certificate,
+			*cert,
+			localRenewOptions{
+				RenewOptions: certificate.RenewOptions{
+					Bundle:         true,
+					PreferredChain: d.Get("preferred_chain").(string),
+					Profile:        d.Get("profile").(string),
+					MustStaple:     d.Get("must_staple").(bool),
+				},
+				UseARI: d.Get("use_renewal_info").(bool),
+			},
+		)
+		if err != nil {
+			return err
+		}
+
+		password := d.Get("certificate_p12_password").(string)
+		if err := saveCertificateResource(d, newCert, password); err != nil {
+			return err
+		}
+
+		// Complete, safe to turn off partial mode now.
+		d.Partial(false)
+
+		// Clear out ARI computed data so that it can be properly refreshed on the
+		// below read.
+		d.Set("renewal_info_window_start", "")
+		d.Set("renewal_info_window_end", "")
+		d.Set("renewal_info_window_selected", "")
+		d.Set("renewal_info_explanation_url", "")
+		d.Set("renewal_info_retry_after", "")
 	}
 
-	// Enable partial mode to protect the certificate during renewal
-	d.Partial(true)
-
-	client, _, err := expandACMEClient(d, meta, true)
-	if err != nil {
-		return err
-	}
-
-	cert := expandCertificateResource(d)
-
-	dnsCloser, err := setCertificateChallengeProviders(client, d)
-	defer dnsCloser()
-	if err != nil {
-		return err
-	}
-
-	newCert, err := client.Certificate.Renew(*cert, true, d.Get("must_staple").(bool), d.Get("preferred_chain").(string))
-	if err != nil {
-		return err
-	}
-
-	password := d.Get("certificate_p12_password").(string)
-	if err := saveCertificateResource(d, newCert, password); err != nil {
-		return err
-	}
-
-	// Complete, safe to turn off partial mode now.
-	d.Partial(false)
-	return nil
+	return resourceACMECertificateRead(d, meta)
 }
 
 // resourceACMECertificateDelete "deletes" the certificate by revoking it.
@@ -552,7 +626,7 @@ func resourceACMECertificateDelete(d *schema.ResourceData, meta any) error {
 	}
 
 	cert := expandCertificateResource(d)
-	remaining, err := certSecondsRemaining(cert)
+	remaining, err := certSecondsRemaining(cert, time.Now())
 	if err != nil {
 		return err
 	}
@@ -574,7 +648,7 @@ func resourceACMECertificateDelete(d *schema.ResourceData, meta any) error {
 
 // resourceACMECertificateHasExpired checks the acme_certificate
 // resource to see if it has expired.
-func resourceACMECertificateHasExpired(d certificateResourceExpander) (bool, error) {
+func resourceACMECertificateHasExpired(d resourceDataOrDiff, now time.Time) (bool, error) {
 	mindays := d.Get("min_days_remaining").(int)
 	if mindays < 0 {
 		log.Printf("[WARN] min_days_remaining is set to less than 0, certificate will never be renewed")
@@ -582,7 +656,7 @@ func resourceACMECertificateHasExpired(d certificateResourceExpander) (bool, err
 	}
 
 	cert := expandCertificateResource(d)
-	remaining, err := certDaysRemaining(cert)
+	remaining, err := certDaysRemaining(cert, now)
 	if err != nil {
 		return false, err
 	}
@@ -664,5 +738,181 @@ func GetRevocationReason(reason RevocationReason) (uint, error) {
 		return acme.CRLReasonAACompromise, nil
 	default:
 		return acme.CRLReasonUnspecified, fmt.Errorf("unknown revocation reason: %s", reason)
+	}
+}
+
+func resourceACMECertificateRenewalInfoRefresh(
+	d *schema.ResourceData,
+	client *lego.Client,
+	now time.Time,
+) error {
+	// Check to see if we have a retry-after response, if we do, honor it
+	// (i.e., skip if we are before it).
+	retryAfterString, ok := d.GetOk("renewal_info_retry_after")
+	if ok && !d.Get("renewal_info_ignore_retry_after").(bool) {
+		retryAfter, err := time.Parse(time.RFC3339, retryAfterString.(string))
+		if err != nil {
+			return fmt.Errorf("malformed renewal_info_retry_after: %w", err)
+		} else if now.Before(retryAfter) {
+			return nil
+		}
+	}
+
+	// Need to grab the cert from the PEM bundle
+	cb, err := parsePEMBundle([]byte(d.Get("certificate_pem").(string)))
+	if err != nil {
+		return err
+	}
+	// lego always returns the issued cert first, if the CA is first there is a problem
+	if cb[0].IsCA {
+		return errors.New("cannot parse PEM bundle correctly: first certificate is a CA certificate")
+	}
+
+	cert := cb[0]
+	if now.After(cert.NotAfter) {
+		// Early exit here, as renewalInfo does not work for expired certificates.
+		// Our diff logic will start the renewal process during CustomizeDiff.
+		log.Println("[WARN] certificate is expired, cannot retrieve ARI data")
+		d.Set("renewal_info_window_start", "")
+		d.Set("renewal_info_window_end", "")
+		d.Set("renewal_info_window_selected", "")
+		d.Set("renewal_info_explanation_url", "")
+		d.Set("renewal_info_retry_after", "")
+		return nil
+	}
+
+	renewalInfoResp, err := client.Certificate.GetRenewalInfo(certificate.RenewalInfoRequest{
+		Cert: cert,
+	})
+	if err != nil {
+		if errors.Is(err, api.ErrNoARI) {
+			// No ARI detail, set blank values and return
+			log.Println("[WARN] cannot retrieve ARI data as it is unsupported on the endpoint")
+			d.Set("renewal_info_window_start", "")
+			d.Set("renewal_info_window_end", "")
+			d.Set("renewal_info_window_selected", "")
+			d.Set("renewal_info_explanation_url", "")
+			d.Set("renewal_info_retry_after", "")
+			return nil
+		}
+
+		return err
+	}
+
+	// Select a random time from within the window to renew.
+	//
+	// Note that this differs from lego's logic - we don't use the provided
+	// helper from the response as it will not return a renewal time at all if
+	// it's too far in the future, past when the client is willing to sleep. This
+	// can create some inconsistent results for us in Terraform - first, each
+	// refresh will non-deterministically select different renew times, some that
+	// may not fall in the max sleep, but some that may. Additionally, this full
+	// reliance on state can prevent us from being able to check effectively in
+	// the diff whether or not we can renew, if the presence of the selected time
+	// is the sole the thing that determines it. Having a stable, one-time
+	// selected timestamp saved to state allows us to run the diff with the
+	// configured sleep value and get a consistent result every time. This also
+	// allows us to generate diffs immediately on the setting of either
+	// use_renewal_info or renewal_info_max_sleep, which would not have been
+	// possible otherwise.
+	windowStart := renewalInfoResp.SuggestedWindow.Start
+	windowEnd := renewalInfoResp.SuggestedWindow.End
+	windowSelected := windowStart
+	if windowDuration := windowEnd.Sub(windowStart); windowDuration > 0 {
+		randomDuration := time.Duration(rand.Int63n(int64(windowDuration)))
+		windowSelected = windowSelected.Add(randomDuration)
+	}
+
+	d.Set("renewal_info_window_start", windowStart.UTC().Format(time.RFC3339))
+	d.Set("renewal_info_window_end", windowEnd.UTC().Format(time.RFC3339))
+	d.Set("renewal_info_explanation_url", renewalInfoResp.ExplanationURL)
+	d.Set("renewal_info_retry_after", now.Add(renewalInfoResp.RetryAfter).UTC().Format(time.RFC3339))
+	d.Set("renewal_info_window_selected", windowSelected.UTC().Format(time.RFC3339))
+
+	return nil
+}
+
+func resourceACMECertificateShouldRenew(d resourceDataOrDiff, now time.Time) (bool, error) {
+	if d.Get("use_renewal_info").(bool) {
+		canSleep, err := resourceACMECertificateRenewalInfoCanSleepUntilSelected(d, now)
+		if err != nil {
+			return false, err
+		}
+
+		if canSleep {
+			return true, nil
+		}
+	}
+
+	return resourceACMECertificateHasExpired(d, now)
+}
+
+func resourceACMECertificateRenewalInfoCanSleepUntilSelected(
+	d resourceDataOrDiff,
+	now time.Time,
+) (bool, error) {
+	var selectedTime time.Time
+	if selected := d.Get("renewal_info_window_selected").(string); selected != "" {
+		var err error
+		selectedTime, err = time.Parse(time.RFC3339, selected)
+		if err != nil {
+			return false, fmt.Errorf("malformed renewal_info_window_selected: %w", err)
+		}
+	} else {
+		return false, errors.New(
+			"renewal_info_window_selected expected to be set. This is a bug, please report it")
+	}
+
+	canSleepUntil := now.Add(time.Second * time.Duration(d.Get("renewal_info_max_sleep").(int)))
+	if canSleepUntil.Before(selectedTime) {
+		return false, nil
+	}
+
+	return true, nil
+}
+
+func resourceACMECertificateSleepUntilRenewalTime(d *schema.ResourceData) error {
+	if !d.Get("use_renewal_info").(bool) {
+		return nil
+	}
+
+	var selectedTime time.Time
+	if selected := d.Get("renewal_info_window_selected").(string); selected != "" {
+		var err error
+		selectedTime, err = time.Parse(time.RFC3339, selected)
+		if err != nil {
+			return fmt.Errorf("malformed renewal_info_window_selected: %w", err)
+		}
+	} else {
+		return errors.New("renewal_info_window_selected expected to be set. This is a bug, please report it")
+	}
+
+	sleepDuration := time.Until(selectedTime)
+	log.Printf(
+		"[DEBUG] sleeping %s until renewal time: %s",
+		sleepDuration.Truncate(time.Second),
+		selectedTime,
+	)
+
+	ticker := time.NewTicker(time.Second * 30)
+	defer ticker.Stop()
+	done := make(chan bool)
+	go func() {
+		time.Sleep(sleepDuration)
+		done <- true
+	}()
+	for {
+		select {
+		case <-done:
+			log.Println("[DEBUG] sleep complete, proceeding with renewal")
+			return nil
+		case <-ticker.C:
+			sleepDurationRemaining := time.Until(selectedTime)
+			log.Printf(
+				"[DEBUG] (%s remaining) sleeping until renewal time: %s",
+				sleepDurationRemaining.Truncate(time.Second),
+				selectedTime,
+			)
+		}
 	}
 }

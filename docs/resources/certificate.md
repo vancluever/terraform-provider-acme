@@ -184,6 +184,36 @@ provider can be configured correctly.
   expiration of a certificate before a renewal is attempted. The default is
   `30`. A value of less than `0` means that the certificate will never be
   renewed.
+* `use_renewal_info` (Optional) - When enabled, use information available from
+  the CA's ACME Renewal Information (ARI) endpoint for renewing certificates.
+  Default: `false`.
+
+-> More detail on ARI can be found in [RFC
+9773](https://datatracker.ietf.org/doc/rfc9773/).
+
+-> Note that `use_renewal_info` does not disable `min_days_remaining`! If the
+selected time within an ARI renewal window value cannot be reached at plan time
+(based on the current time plus the value of
+[`renewal_info_max_sleep`](#renewal_info_max_sleep)), or if the CA has no ARI
+endpoint, renewal behavior will fall back to comparing the certificate expiry
+time with the value in `min_days_remaining`. This means for short-lived
+certificates, you may wish to turn this value down so that the settings do not
+conflict; however, don't disable it altogether, as this may prevent the
+certificate from being renewed!
+
+* `renewal_info_max_sleep` (Optional) - The maximum amount of time, in seconds,
+  that the resource is willing to sleep during apply to reach a selected
+  renewal window time when `use_renewal_info` is set to `true`. Default: `0`.
+
+-> It's recommended to only use small values here (a few minutes maximum).
+Using extremely high values increases the risk of resource timeouts. To prevent
+hard resource timeouts, the maximum value allowed here is 900 seconds, or 15
+minutes.
+
+* `renewal_info_ignore_retry_after` (Optional) - Ignores the retry interval
+  supplied by the ARI endpoint for re-fetching renewal window data. Should only
+  be used for testing. Default: `false`.
+
 * `certificate_p12_password` - (Optional) Password to be used when generating
   the PFX file stored in [`certificate_p12`](#certificate_p12). Defaults to an
   empty string.
@@ -639,3 +669,15 @@ Refer to that field for the current URL of the certificate.
   RFC3339 format (`2006-01-02T15:04:05Z07:00`).
 * `certificate_serial` - The serial number, in string format, as reported by
   the CA.
+* `renewal_info_window_start` - The start of the discovered ARI renewal window
+  (see [`use_renewal_info`](#use_renewal_info)).
+* `renewal_info_window_end` - The end of the discovered ARI renewal window (see
+  [`use_renewal_info`](#use_renewal_info)).
+* `renewal_info_window_selected` - The selected time within the ARI renewal
+  window that a certificate will be renewed, if
+  [`use_renewal_info`](#use_renewal_info) is enabled.
+* `renewal_info_explanation_url` - A URL that can be optionally supplied by an
+  ARI endpoint explaining the renewal window policy (see
+  [`use_renewal_info`](#use_renewal_info)).
+* `renewal_info_retry_after` - A timestamp describing when ARI details will be
+  refreshed if already fetched (see [`use_renewal_info`](#use_renewal_info)).
