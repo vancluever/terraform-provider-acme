@@ -1,6 +1,17 @@
-## 2.33.1-pre (Unreleased)
+## 2.34.0 (Unreleased)
 
-Bumped version for dev.
+FEATURES:
+
+* `resource/acme_certificate`: Added support for ACME Renewal Information (ARI)
+  endpoints, controllable through `use_renewal_info` and
+  `renewal_info_max_sleep`. This allows for better planning of renewal
+  strategies outside of the standard `max_days_remaining` setting, with the CA
+  supplying an optimal window where a certificate can be renewed while
+  bypassing things like rate limits, etc. You can get more detail about ARI in
+  RFC 9773 (<https://datatracker.ietf.org/doc/rfc9773/>), and how Let's Encrypt
+  uses ARI to exempt rate limits at
+  <https://letsencrypt.org/docs/rate-limits/#ari-renewals>.
+  [#512](https://github.com/vancluever/terraform-provider-acme/pull/512)
 
 ## 2.33.0 (July 10, 2025)
 
