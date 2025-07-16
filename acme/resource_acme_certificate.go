@@ -303,6 +303,11 @@ func resourceACMECertificateV5() *schema.Resource {
 				Optional: true,
 				Default:  30,
 			},
+			"deactivate_authorizations": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
 			"certificate_url": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -410,10 +415,11 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta any) error {
 			return err
 		}
 		cert, err = client.Certificate.ObtainForCSR(certificate.ObtainForCSRRequest{
-			CSR:            csr,
-			Bundle:         true,
-			PreferredChain: d.Get("preferred_chain").(string),
-			Profile:        d.Get("profile").(string),
+			CSR:                            csr,
+			Bundle:                         true,
+			PreferredChain:                 d.Get("preferred_chain").(string),
+			Profile:                        d.Get("profile").(string),
+			AlwaysDeactivateAuthorizations: d.Get("deactivate_authorizations").(bool),
 		})
 	} else {
 		domains := []string{}
@@ -431,11 +437,12 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta any) error {
 		}
 
 		cert, err = client.Certificate.Obtain(certificate.ObtainRequest{
-			Domains:        domains,
-			Bundle:         true,
-			MustStaple:     d.Get("must_staple").(bool),
-			PreferredChain: d.Get("preferred_chain").(string),
-			Profile:        d.Get("profile").(string),
+			Domains:                        domains,
+			Bundle:                         true,
+			MustStaple:                     d.Get("must_staple").(bool),
+			PreferredChain:                 d.Get("preferred_chain").(string),
+			Profile:                        d.Get("profile").(string),
+			AlwaysDeactivateAuthorizations: d.Get("deactivate_authorizations").(bool),
 		})
 	}
 
@@ -582,10 +589,11 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta any) error {
 			*cert,
 			localRenewOptions{
 				RenewOptions: certificate.RenewOptions{
-					Bundle:         true,
-					PreferredChain: d.Get("preferred_chain").(string),
-					Profile:        d.Get("profile").(string),
-					MustStaple:     d.Get("must_staple").(bool),
+					Bundle:                         true,
+					PreferredChain:                 d.Get("preferred_chain").(string),
+					Profile:                        d.Get("profile").(string),
+					MustStaple:                     d.Get("must_staple").(bool),
+					AlwaysDeactivateAuthorizations: d.Get("deactivate_authorizations").(bool),
 				},
 				UseARI: d.Get("use_renewal_info").(bool),
 			},
