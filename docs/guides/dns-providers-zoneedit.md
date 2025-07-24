@@ -1,5 +1,5 @@
 ---
-page_title: "ionos"
+page_title: "zoneedit"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Ionos DNS Challenge Provider
+# ZoneEdit DNS Challenge Provider
 
-The `ionos` DNS challenge provider can be used to perform DNS challenges for
+The `zoneedit` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Ionos](https://ionos.com).
+[ZoneEdit](https://www.zoneedit.com).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "ionos"
+    provider = "zoneedit"
   }
 }
 ```
@@ -48,11 +48,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `IONOS_API_KEY` - API key `<prefix>.<secret>` https://developer.hosting.ionos.com/docs/getstarted.
+* `ZONEEDIT_AUTH_TOKEN` - Authentication token.
+* `ZONEEDIT_USER` - User ID.
 
-* `IONOS_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `IONOS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `IONOS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 900).
-* `IONOS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
+* `ZONEEDIT_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `ZONEEDIT_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `ZONEEDIT_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
 
 

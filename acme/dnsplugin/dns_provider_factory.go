@@ -157,6 +157,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/yandex"
 	"github.com/go-acme/lego/v4/providers/dns/yandex360"
 	"github.com/go-acme/lego/v4/providers/dns/yandexcloud"
+	"github.com/go-acme/lego/v4/providers/dns/zoneedit"
 	"github.com/go-acme/lego/v4/providers/dns/zoneee"
 	"github.com/go-acme/lego/v4/providers/dns/zonomi"
 )
@@ -1408,6 +1409,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"yandexcloud": func() (challenge.Provider, error) {
 		p, err := yandexcloud.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"zoneedit": func() (challenge.Provider, error) {
+		p, err := zoneedit.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
