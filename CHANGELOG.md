@@ -1,6 +1,14 @@
-## 2.35.1-pre (Unreleased)
+## 2.35.1 (Unreleased)
 
-Bumped version for dev.
+LEGO UPDATE:
+
+[lego](https://github.com/go-acme/lego) has been updated to v4.25.2 See the
+lego [CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.25.2/CHANGELOG.md)
+for more details on additions and changes to DNS providers, and other minor
+changes to the library.
+
+ * This lego update contains the fix for
+   [CVE-2025-54799](https://github.com/go-acme/lego/security/advisories/GHSA-q82r-2j7m-9rv4).
 
 ## 2.35.0 (July 24, 2025)
 
