@@ -13,7 +13,7 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.37.0
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/rainycape/memcache v0.0.0-20150622160815-1031fa0ce2f2
-	google.golang.org/grpc v1.75.0
+	google.golang.org/grpc v1.75.1
 	google.golang.org/protobuf v1.36.9
 	software.sslmate.com/src/go-pkcs12 v0.6.0
 )
