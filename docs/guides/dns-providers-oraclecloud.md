@@ -49,16 +49,22 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
 * `OCI_COMPARTMENT_OCID` - Compartment OCID.
-* `OCI_PRIVKEY_FILE` - Private key file.
-* `OCI_PRIVKEY_PASS` - Private key password.
-* `OCI_PUBKEY_FINGERPRINT` - Public key fingerprint.
-* `OCI_REGION` - Region.
-* `OCI_TENANCY_OCID` - Tenancy OCID.
-* `OCI_USER_OCID` - User OCID.
+* `OCI_FINGERPRINT` - Public key fingerprint (ignored if `OCI_AUTH_TYPE=instance_principal`).
+* `OCI_PRIVATE_KEY_PASSWORD` - Private key password (ignored if `OCI_AUTH_TYPE=instance_principal`).
+* `OCI_PRIVATE_KEY_PATH` - Private key file (ignored if `OCI_AUTH_TYPE=instance_principal`).
+* `OCI_REGION` - Region (it can be empty if `OCI_AUTH_TYPE=instance_principal`)..
+* `OCI_TENANCY_OCID` - Tenancy OCID (ignored if `OCI_AUTH_TYPE=instance_principal`).
+* `OCI_USER_OCID` - User OCID (ignored if `OCI_AUTH_TYPE=instance_principal`).
 
+* `OCI_AUTH_TYPE` - Authorization type. Possible values: 'instance_principal', ''  (Default: '').
 * `OCI_HTTP_TIMEOUT` - API request timeout in seconds (Default: 60).
 * `OCI_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
 * `OCI_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
 * `OCI_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
+* `TF_VAR_fingerprint` - Alias on `OCI_FINGERPRINT`.
+* `TF_VAR_private_key_path` - Alias on `OCI_PRIVATE_KEY_PATH`.
+* `TF_VAR_region` - Alias on `OCI_REGION`.
+* `TF_VAR_tenancy_ocid` - Alias on `OCI_TENANCY_OCID`.
+* `TF_VAR_user_ocid` - Alias on `OCI_USER_OCID`.
 
 

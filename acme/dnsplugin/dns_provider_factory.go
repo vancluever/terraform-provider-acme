@@ -15,6 +15,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/azure"
 	"github.com/go-acme/lego/v4/providers/dns/azuredns"
 	"github.com/go-acme/lego/v4/providers/dns/baiducloud"
+	"github.com/go-acme/lego/v4/providers/dns/binarylane"
 	"github.com/go-acme/lego/v4/providers/dns/bindman"
 	"github.com/go-acme/lego/v4/providers/dns/bluecat"
 	"github.com/go-acme/lego/v4/providers/dns/bookmyname"
@@ -50,6 +51,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/dynu"
 	"github.com/go-acme/lego/v4/providers/dns/easydns"
 	"github.com/go-acme/lego/v4/providers/dns/edgedns"
+	"github.com/go-acme/lego/v4/providers/dns/edgeone"
 	"github.com/go-acme/lego/v4/providers/dns/efficientip"
 	"github.com/go-acme/lego/v4/providers/dns/epik"
 	"github.com/go-acme/lego/v4/providers/dns/exec"
@@ -82,6 +84,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/ipv64"
 	"github.com/go-acme/lego/v4/providers/dns/iwantmyname"
 	"github.com/go-acme/lego/v4/providers/dns/joker"
+	"github.com/go-acme/lego/v4/providers/dns/keyhelp"
 	"github.com/go-acme/lego/v4/providers/dns/liara"
 	"github.com/go-acme/lego/v4/providers/dns/lightsail"
 	"github.com/go-acme/lego/v4/providers/dns/limacity"
@@ -273,6 +276,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"baiducloud": func() (challenge.Provider, error) {
 		p, err := baiducloud.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"binarylane": func() (challenge.Provider, error) {
+		p, err := binarylane.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -559,6 +570,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"edgeone": func() (challenge.Provider, error) {
+		p, err := edgeone.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"efficientip": func() (challenge.Provider, error) {
 		p, err := efficientip.NewDNSProvider()
 		if err != nil {
@@ -809,6 +828,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"joker": func() (challenge.Provider, error) {
 		p, err := joker.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"keyhelp": func() (challenge.Provider, error) {
+		p, err := keyhelp.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

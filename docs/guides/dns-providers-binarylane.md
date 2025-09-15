@@ -1,5 +1,5 @@
 ---
-page_title: "tencentcloud"
+page_title: "binarylane"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Tencent Cloud DNS DNS Challenge Provider
+# Binary Lane DNS Challenge Provider
 
-The `tencentcloud` DNS challenge provider can be used to perform DNS challenges for
+The `binarylane` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Tencent Cloud DNS](https://cloud.tencent.com/product/dns).
+[Binary Lane](https://www.binarylane.com.au/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "tencentcloud"
+    provider = "binarylane"
   }
 }
 ```
@@ -48,14 +48,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `TENCENTCLOUD_SECRET_ID` - Access key ID.
-* `TENCENTCLOUD_SECRET_KEY` - Access Key secret.
+* `BINARYLANE_API_TOKEN` - API token.
 
-* `TENCENTCLOUD_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `TENCENTCLOUD_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `TENCENTCLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `TENCENTCLOUD_REGION` - Region.
-* `TENCENTCLOUD_SESSION_TOKEN` - Access Key token.
-* `TENCENTCLOUD_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 600).
+* `BINARYLANE_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `BINARYLANE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `BINARYLANE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `BINARYLANE_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

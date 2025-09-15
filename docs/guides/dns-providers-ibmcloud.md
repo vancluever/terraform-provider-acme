@@ -49,7 +49,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
 * `SOFTLAYER_API_KEY` - Classic Infrastructure API key.
-* `SOFTLAYER_USERNAME` - Username (IBM Cloud is <accountID>_<emailAddress>).
+* `SOFTLAYER_USERNAME` - Username (IBM Cloud is {accountID}_{emailAddress}).
 
 * `SOFTLAYER_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
 * `SOFTLAYER_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
