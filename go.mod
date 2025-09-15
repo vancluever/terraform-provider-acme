@@ -89,6 +89,7 @@ require (
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-acme/alidns-20150109/v4 v4.6.0 // indirect
 	github.com/go-acme/tencentclouddnspod v1.1.10 // indirect
+	github.com/go-acme/tencentedgdeone v1.1.19 // indirect
 	github.com/go-errors/errors v1.0.1 // indirect
 	github.com/go-jose/go-jose/v4 v4.1.2 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
