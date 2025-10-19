@@ -15,6 +15,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/azure"
 	"github.com/go-acme/lego/v4/providers/dns/azuredns"
 	"github.com/go-acme/lego/v4/providers/dns/baiducloud"
+	"github.com/go-acme/lego/v4/providers/dns/beget"
 	"github.com/go-acme/lego/v4/providers/dns/binarylane"
 	"github.com/go-acme/lego/v4/providers/dns/bindman"
 	"github.com/go-acme/lego/v4/providers/dns/bluecat"
@@ -67,6 +68,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/googledomains"
 	"github.com/go-acme/lego/v4/providers/dns/hetzner"
 	"github.com/go-acme/lego/v4/providers/dns/hostingde"
+	"github.com/go-acme/lego/v4/providers/dns/hostinger"
 	"github.com/go-acme/lego/v4/providers/dns/hosttech"
 	"github.com/go-acme/lego/v4/providers/dns/httpnet"
 	"github.com/go-acme/lego/v4/providers/dns/httpreq"
@@ -113,6 +115,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/njalla"
 	"github.com/go-acme/lego/v4/providers/dns/nodion"
 	"github.com/go-acme/lego/v4/providers/dns/ns1"
+	"github.com/go-acme/lego/v4/providers/dns/octenium"
 	"github.com/go-acme/lego/v4/providers/dns/oraclecloud"
 	"github.com/go-acme/lego/v4/providers/dns/otc"
 	"github.com/go-acme/lego/v4/providers/dns/ovh"
@@ -276,6 +279,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"baiducloud": func() (challenge.Provider, error) {
 		p, err := baiducloud.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"beget": func() (challenge.Provider, error) {
+		p, err := beget.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -698,6 +709,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"hostinger": func() (challenge.Provider, error) {
+		p, err := hostinger.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"hosttech": func() (challenge.Provider, error) {
 		p, err := hosttech.NewDNSProvider()
 		if err != nil {
@@ -1060,6 +1079,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"ns1": func() (challenge.Provider, error) {
 		p, err := ns1.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"octenium": func() (challenge.Provider, error) {
+		p, err := octenium.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

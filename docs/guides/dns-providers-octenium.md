@@ -1,5 +1,5 @@
 ---
-page_title: "otc"
+page_title: "octenium"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Open Telekom Cloud DNS Challenge Provider
+# Octenium DNS Challenge Provider
 
-The `otc` DNS challenge provider can be used to perform DNS challenges for
+The `octenium` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Open Telekom Cloud](https://cloud.telekom.de/en).
+[Octenium](https://octenium.com/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "otc"
+    provider = "octenium"
   }
 }
 ```
@@ -48,17 +48,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `OTC_DOMAIN_NAME` - Domain name.
-* `OTC_PASSWORD` - Password.
-* `OTC_PROJECT_NAME` - Project name.
-* `OTC_USER_NAME` - User name.
+* `OCTENIUM_API_KEY` - API key.
 
-* `OTC_HTTP_TIMEOUT` - API request timeout in seconds (Default: 10).
-* `OTC_IDENTITY_ENDPOINT` - Identity endpoint URL (default: https://iam.eu-de.otc.t-systems.com:443/v3/auth/tokens).
-* `OTC_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `OTC_PRIVATE_ZONE` - Set to true to use private zones only (default: use public zones only).
-* `OTC_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `OTC_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 60).
-* `OTC_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
+* `OCTENIUM_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `OCTENIUM_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `OCTENIUM_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `OCTENIUM_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

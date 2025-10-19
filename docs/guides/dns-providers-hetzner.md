@@ -48,11 +48,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `HETZNER_API_KEY` - API key.
+* `HETZNER_API_TOKEN` - API token.
 
 * `HETZNER_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
 * `HETZNER_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `HETZNER_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
-* `HETZNER_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
+* `HETZNER_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `HETZNER_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 
