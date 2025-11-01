@@ -52,6 +52,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `MAILINABOX_EMAIL` - User email.
 * `MAILINABOX_PASSWORD` - User password.
 
+* `MAILINABOX_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
 * `MAILINABOX_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 4).
 * `MAILINABOX_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
 

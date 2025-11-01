@@ -1,5 +1,5 @@
 ---
-page_title: "transip"
+page_title: "anexia"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# TransIP DNS Challenge Provider
+# Anexia CloudDNS DNS Challenge Provider
 
-The `transip` DNS challenge provider can be used to perform DNS challenges for
+The `anexia` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[TransIP](https://www.transip.nl/).
+[Anexia CloudDNS](https://www.anexia-it.com/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "transip"
+    provider = "anexia"
   }
 }
 ```
@@ -48,12 +48,17 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `TRANSIP_ACCOUNT_NAME` - Account name.
-* `TRANSIP_PRIVATE_KEY_PATH` - Private key path.
+* `ANEXIA_TOKEN` - API token for Anexia Engine.
 
-* `TRANSIP_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `TRANSIP_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 10).
-* `TRANSIP_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 600).
-* `TRANSIP_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 10).
+* `ANEXIA_API_URL` - API endpoint URL (default: https://engine.anexia-it.com).
+* `ANEXIA_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `ANEXIA_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `ANEXIA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 300).
+* `ANEXIA_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
+## Description
+
+You need to create an API token in the [Anexia Engine](https://engine.anexia-it.com/).
+
+The token must have permissions to manage DNS zones and records.
 

@@ -1,5 +1,5 @@
 ---
-page_title: "transip"
+page_title: "webnamesca"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# TransIP DNS Challenge Provider
+# webnames.ca DNS Challenge Provider
 
-The `transip` DNS challenge provider can be used to perform DNS challenges for
+The `webnamesca` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[TransIP](https://www.transip.nl/).
+[webnames.ca](https://www.webnames.ca/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "transip"
+    provider = "webnamesca"
   }
 }
 ```
@@ -48,12 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `TRANSIP_ACCOUNT_NAME` - Account name.
-* `TRANSIP_PRIVATE_KEY_PATH` - Private key path.
+* `WEBNAMESCA_API_KEY` - API key.
+* `WEBNAMESCA_API_USER` - API username.
 
-* `TRANSIP_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `TRANSIP_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 10).
-* `TRANSIP_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 600).
-* `TRANSIP_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 10).
+* `WEBNAMESCA_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `WEBNAMESCA_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `WEBNAMESCA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `WEBNAMESCA_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

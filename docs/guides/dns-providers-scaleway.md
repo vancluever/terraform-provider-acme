@@ -52,6 +52,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `SCW_SECRET_KEY` - Secret key.
 
 * `SCW_ACCESS_KEY` - Access key.
+* `SCW_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
 * `SCW_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 10).
 * `SCW_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
 * `SCW_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).

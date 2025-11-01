@@ -7,6 +7,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/active24"
 	"github.com/go-acme/lego/v4/providers/dns/alidns"
 	"github.com/go-acme/lego/v4/providers/dns/allinkl"
+	"github.com/go-acme/lego/v4/providers/dns/anexia"
 	"github.com/go-acme/lego/v4/providers/dns/arvancloud"
 	"github.com/go-acme/lego/v4/providers/dns/auroradns"
 	"github.com/go-acme/lego/v4/providers/dns/autodns"
@@ -157,6 +158,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/vscale"
 	"github.com/go-acme/lego/v4/providers/dns/vultr"
 	"github.com/go-acme/lego/v4/providers/dns/webnames"
+	"github.com/go-acme/lego/v4/providers/dns/webnamesca"
 	"github.com/go-acme/lego/v4/providers/dns/websupport"
 	"github.com/go-acme/lego/v4/providers/dns/wedos"
 	"github.com/go-acme/lego/v4/providers/dns/westcn"
@@ -201,6 +203,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"allinkl": func() (challenge.Provider, error) {
 		p, err := allinkl.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"anexia": func() (challenge.Provider, error) {
+		p, err := anexia.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -1415,6 +1425,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"webnames": func() (challenge.Provider, error) {
 		p, err := webnames.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"webnamesca": func() (challenge.Provider, error) {
+		p, err := webnamesca.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

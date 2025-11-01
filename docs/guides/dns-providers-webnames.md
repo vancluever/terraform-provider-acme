@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Webnames DNS Challenge Provider
+# webnames.ru DNS Challenge Provider
 
 The `webnames` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Webnames](https://www.webnames.ru/).
+[webnames.ru](https://www.webnames.ru/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -48,11 +48,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `WEBNAMES_API_KEY` - Domain API key.
+* `WEBNAMESRU_API_KEY` - Domain API key.
 
-* `WEBNAMES_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `WEBNAMES_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `WEBNAMES_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `WEBNAMESRU_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `WEBNAMESRU_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `WEBNAMESRU_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
 
 ## API Key
 
