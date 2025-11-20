@@ -1,4 +1,4 @@
-## 2.38.1 (Unreleased)
+## 2.38.1 (November 20, 2025)
 
 This update contains fixes for
 [CVE-2025-58181](https://github.com/advisories/GHSA-j5w8-q4qc-rx2x) and
