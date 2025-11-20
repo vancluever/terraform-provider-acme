@@ -1,3 +1,7 @@
+## 2.38.2-pre (Unreleased)
+
+Bumped version for dev.
+
 ## 2.38.1 (November 20, 2025)
 
 This update contains fixes for
