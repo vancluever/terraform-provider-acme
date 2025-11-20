@@ -1,6 +1,10 @@
-## 2.38.1-pre (Unreleased)
+## 2.38.1 (Unreleased)
 
-Bumped version for dev.
+This update contains fixes for
+[CVE-2025-58181](https://github.com/advisories/GHSA-j5w8-q4qc-rx2x) and
+[CVE-2025-47914](https://github.com/advisories/GHSA-f6x5-jh6r-wrfv). No other
+changes are being made.
+[#542](https://github.com/vancluever/terraform-provider-acme/pull/542)
 
 ## 2.38.0 (November 1, 2025)
 
