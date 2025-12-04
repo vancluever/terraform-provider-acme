@@ -1,5 +1,5 @@
 ---
-page_title: "edgeone"
+page_title: "aliesa"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Tencent EdgeOne DNS Challenge Provider
+# AlibabaCloud ESA DNS Challenge Provider
 
-The `edgeone` DNS challenge provider can be used to perform DNS challenges for
+The `aliesa` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Tencent EdgeOne](https://edgeone.ai).
+[AlibabaCloud ESA](https://www.alibabacloud.com/en/product/esa).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "edgeone"
+    provider = "aliesa"
   }
 }
 ```
@@ -48,15 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `EDGEONE_SECRET_ID` - Access key ID.
-* `EDGEONE_SECRET_KEY` - Access Key secret.
+* `ALIESA_ACCESS_KEY` - Access key ID.
+* `ALIESA_RAM_ROLE` - Your instance RAM role (https://www.alibabacloud.com/help/en/ecs/user-guide/attach-an-instance-ram-role-to-an-ecs-instance).
+* `ALIESA_SECRET_KEY` - Access Key secret.
+* `ALIESA_SECURITY_TOKEN` - STS Security Token (optional).
 
-* `EDGEONE_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `EDGEONE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 30).
-* `EDGEONE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 1200).
-* `EDGEONE_REGION` - Region.
-* `EDGEONE_SESSION_TOKEN` - Access Key token.
-* `EDGEONE_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
-* `EDGEONE_ZONES_MAPPING` - Mapping between DNS zones and site IDs. (ex: 'example.org:id1,example.com:id2').
+* `ALIESA_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `ALIESA_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `ALIESA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `ALIESA_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

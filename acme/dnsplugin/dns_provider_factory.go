@@ -6,6 +6,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/acmedns"
 	"github.com/go-acme/lego/v4/providers/dns/active24"
 	"github.com/go-acme/lego/v4/providers/dns/alidns"
+	"github.com/go-acme/lego/v4/providers/dns/aliesa"
 	"github.com/go-acme/lego/v4/providers/dns/allinkl"
 	"github.com/go-acme/lego/v4/providers/dns/anexia"
 	"github.com/go-acme/lego/v4/providers/dns/arvancloud"
@@ -52,6 +53,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/dyndnsfree"
 	"github.com/go-acme/lego/v4/providers/dns/dynu"
 	"github.com/go-acme/lego/v4/providers/dns/easydns"
+	"github.com/go-acme/lego/v4/providers/dns/edgecenter"
 	"github.com/go-acme/lego/v4/providers/dns/edgedns"
 	"github.com/go-acme/lego/v4/providers/dns/edgeone"
 	"github.com/go-acme/lego/v4/providers/dns/efficientip"
@@ -64,6 +66,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/gandiv5"
 	"github.com/go-acme/lego/v4/providers/dns/gcloud"
 	"github.com/go-acme/lego/v4/providers/dns/gcore"
+	"github.com/go-acme/lego/v4/providers/dns/gigahostno"
 	"github.com/go-acme/lego/v4/providers/dns/glesys"
 	"github.com/go-acme/lego/v4/providers/dns/godaddy"
 	"github.com/go-acme/lego/v4/providers/dns/googledomains"
@@ -148,6 +151,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/timewebcloud"
 	"github.com/go-acme/lego/v4/providers/dns/transip"
 	"github.com/go-acme/lego/v4/providers/dns/ultradns"
+	"github.com/go-acme/lego/v4/providers/dns/uniteddomains"
 	"github.com/go-acme/lego/v4/providers/dns/variomedia"
 	"github.com/go-acme/lego/v4/providers/dns/vegadns"
 	"github.com/go-acme/lego/v4/providers/dns/vercel"
@@ -195,6 +199,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"alidns": func() (challenge.Provider, error) {
 		p, err := alidns.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"aliesa": func() (challenge.Provider, error) {
+		p, err := aliesa.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -583,6 +595,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"edgecenter": func() (challenge.Provider, error) {
+		p, err := edgecenter.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"edgedns": func() (challenge.Provider, error) {
 		p, err := edgedns.NewDNSProvider()
 		if err != nil {
@@ -673,6 +693,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"gcore": func() (challenge.Provider, error) {
 		p, err := gcore.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"gigahostno": func() (challenge.Provider, error) {
+		p, err := gigahostno.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -1345,6 +1373,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"ultradns": func() (challenge.Provider, error) {
 		p, err := ultradns.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"uniteddomains": func() (challenge.Provider, error) {
+		p, err := uniteddomains.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

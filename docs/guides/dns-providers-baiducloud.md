@@ -53,6 +53,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `BAIDUCLOUD_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
 * `BAIDUCLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `BAIDUCLOUD_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
+* `BAIDUCLOUD_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 

@@ -1,5 +1,5 @@
 ---
-page_title: "edgeone"
+page_title: "edgecenter"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Tencent EdgeOne DNS Challenge Provider
+# EdgeCenter DNS Challenge Provider
 
-The `edgeone` DNS challenge provider can be used to perform DNS challenges for
+The `edgecenter` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Tencent EdgeOne](https://edgeone.ai).
+[EdgeCenter](https://edgecenter.ru/dns).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "edgeone"
+    provider = "edgecenter"
   }
 }
 ```
@@ -48,15 +48,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `EDGEONE_SECRET_ID` - Access key ID.
-* `EDGEONE_SECRET_KEY` - Access Key secret.
+* `EDGECENTER_PERMANENT_API_TOKEN` - Permanent API token (https://edgecenter.ru/blog/permanent-api-token-explained/).
 
-* `EDGEONE_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `EDGEONE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 30).
-* `EDGEONE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 1200).
-* `EDGEONE_REGION` - Region.
-* `EDGEONE_SESSION_TOKEN` - Access Key token.
-* `EDGEONE_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
-* `EDGEONE_ZONES_MAPPING` - Mapping between DNS zones and site IDs. (ex: 'example.org:id1,example.com:id2').
+* `EDGECENTER_HTTP_TIMEOUT` - API request timeout in seconds (Default: 10).
+* `EDGECENTER_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 20).
+* `EDGECENTER_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 360).
+* `EDGECENTER_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

@@ -1,5 +1,5 @@
 ---
-page_title: "edgeone"
+page_title: "uniteddomains"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Tencent EdgeOne DNS Challenge Provider
+# United-Domains DNS Challenge Provider
 
-The `edgeone` DNS challenge provider can be used to perform DNS challenges for
+The `uniteddomains` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Tencent EdgeOne](https://edgeone.ai).
+[United-Domains](https://www.united-domains.de/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "edgeone"
+    provider = "uniteddomains"
   }
 }
 ```
@@ -48,15 +48,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `EDGEONE_SECRET_ID` - Access key ID.
-* `EDGEONE_SECRET_KEY` - Access Key secret.
+* `UNITEDDOMAINS_API_KEY` - API key `<prefix>.<secret>` https://www.united-domains.de/help/faq-article/getting-started-with-the-united-domains-dns-api/.
 
-* `EDGEONE_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `EDGEONE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 30).
-* `EDGEONE_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 1200).
-* `EDGEONE_REGION` - Region.
-* `EDGEONE_SESSION_TOKEN` - Access Key token.
-* `EDGEONE_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 60).
-* `EDGEONE_ZONES_MAPPING` - Mapping between DNS zones and site IDs. (ex: 'example.org:id1,example.com:id2').
+* `UNITEDDOMAINS_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `UNITEDDOMAINS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `UNITEDDOMAINS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 900).
+* `UNITEDDOMAINS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
 
