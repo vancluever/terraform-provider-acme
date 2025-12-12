@@ -14,7 +14,7 @@ require (
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/rainycape/memcache v0.0.0-20150622160815-1031fa0ce2f2
 	google.golang.org/grpc v1.77.0
-	google.golang.org/protobuf v1.36.10
+	google.golang.org/protobuf v1.36.11
 	software.sslmate.com/src/go-pkcs12 v0.6.0
 )
 
