@@ -70,9 +70,11 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/glesys"
 	"github.com/go-acme/lego/v4/providers/dns/godaddy"
 	"github.com/go-acme/lego/v4/providers/dns/googledomains"
+	"github.com/go-acme/lego/v4/providers/dns/gravity"
 	"github.com/go-acme/lego/v4/providers/dns/hetzner"
 	"github.com/go-acme/lego/v4/providers/dns/hostingde"
 	"github.com/go-acme/lego/v4/providers/dns/hostinger"
+	"github.com/go-acme/lego/v4/providers/dns/hostingnl"
 	"github.com/go-acme/lego/v4/providers/dns/hosttech"
 	"github.com/go-acme/lego/v4/providers/dns/httpnet"
 	"github.com/go-acme/lego/v4/providers/dns/httpreq"
@@ -87,6 +89,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/internetbs"
 	"github.com/go-acme/lego/v4/providers/dns/inwx"
 	"github.com/go-acme/lego/v4/providers/dns/ionos"
+	"github.com/go-acme/lego/v4/providers/dns/ionoscloud"
 	"github.com/go-acme/lego/v4/providers/dns/ipv64"
 	"github.com/go-acme/lego/v4/providers/dns/iwantmyname"
 	"github.com/go-acme/lego/v4/providers/dns/joker"
@@ -100,6 +103,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/luadns"
 	"github.com/go-acme/lego/v4/providers/dns/mailinabox"
 	"github.com/go-acme/lego/v4/providers/dns/manageengine"
+	"github.com/go-acme/lego/v4/providers/dns/manual"
 	"github.com/go-acme/lego/v4/providers/dns/metaname"
 	"github.com/go-acme/lego/v4/providers/dns/metaregistrar"
 	"github.com/go-acme/lego/v4/providers/dns/mijnhost"
@@ -111,6 +115,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/namedotcom"
 	"github.com/go-acme/lego/v4/providers/dns/namesilo"
 	"github.com/go-acme/lego/v4/providers/dns/nearlyfreespeech"
+	"github.com/go-acme/lego/v4/providers/dns/neodigit"
 	"github.com/go-acme/lego/v4/providers/dns/netcup"
 	"github.com/go-acme/lego/v4/providers/dns/netlify"
 	"github.com/go-acme/lego/v4/providers/dns/nicmanager"
@@ -146,6 +151,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/sonic"
 	"github.com/go-acme/lego/v4/providers/dns/spaceship"
 	"github.com/go-acme/lego/v4/providers/dns/stackpath"
+	"github.com/go-acme/lego/v4/providers/dns/syse"
 	"github.com/go-acme/lego/v4/providers/dns/technitium"
 	"github.com/go-acme/lego/v4/providers/dns/tencentcloud"
 	"github.com/go-acme/lego/v4/providers/dns/timewebcloud"
@@ -157,6 +163,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/vercel"
 	"github.com/go-acme/lego/v4/providers/dns/versio"
 	"github.com/go-acme/lego/v4/providers/dns/vinyldns"
+	"github.com/go-acme/lego/v4/providers/dns/virtualname"
 	"github.com/go-acme/lego/v4/providers/dns/vkcloud"
 	"github.com/go-acme/lego/v4/providers/dns/volcengine"
 	"github.com/go-acme/lego/v4/providers/dns/vscale"
@@ -731,6 +738,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"gravity": func() (challenge.Provider, error) {
+		p, err := gravity.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"hetzner": func() (challenge.Provider, error) {
 		p, err := hetzner.NewDNSProvider()
 		if err != nil {
@@ -749,6 +764,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"hostinger": func() (challenge.Provider, error) {
 		p, err := hostinger.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"hostingnl": func() (challenge.Provider, error) {
+		p, err := hostingnl.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -867,6 +890,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"ionoscloud": func() (challenge.Provider, error) {
+		p, err := ionoscloud.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"ipv64": func() (challenge.Provider, error) {
 		p, err := ipv64.NewDNSProvider()
 		if err != nil {
@@ -971,6 +1002,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"manual": func() (challenge.Provider, error) {
+		p, err := manual.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"metaname": func() (challenge.Provider, error) {
 		p, err := metaname.NewDNSProvider()
 		if err != nil {
@@ -1053,6 +1092,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"nearlyfreespeech": func() (challenge.Provider, error) {
 		p, err := nearlyfreespeech.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"neodigit": func() (challenge.Provider, error) {
+		p, err := neodigit.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -1339,6 +1386,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"syse": func() (challenge.Provider, error) {
+		p, err := syse.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"technitium": func() (challenge.Provider, error) {
 		p, err := technitium.NewDNSProvider()
 		if err != nil {
@@ -1421,6 +1476,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"vinyldns": func() (challenge.Provider, error) {
 		p, err := vinyldns.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"virtualname": func() (challenge.Provider, error) {
+		p, err := virtualname.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
