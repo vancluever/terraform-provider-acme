@@ -1,5 +1,5 @@
 ---
-page_title: "f5xc"
+page_title: "ispconfigddns"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# F5 XC DNS Challenge Provider
+# ISPConfig 3 - Dynamic DNS (DDNS) Module DNS Challenge Provider
 
-The `f5xc` DNS challenge provider can be used to perform DNS challenges for
+The `ispconfigddns` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[F5 XC](https://www.f5.com/products/distributed-cloud-services).
+[ISPConfig 3 - Dynamic DNS (DDNS) Module](https://www.ispconfig.org/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "f5xc"
+    provider = "ispconfigddns"
   }
 }
 ```
@@ -48,14 +48,17 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `F5XC_API_TOKEN` - API token.
-* `F5XC_GROUP_NAME` - Group name.
-* `F5XC_TENANT_NAME` - XC Tenant shortname.
+* `ISPCONFIG_DDNS_SERVER_URL` - API server URL (ex: https://panel.example.com:8080).
+* `ISPCONFIG_DDNS_TOKEN` - DDNS API token.
 
-* `F5XC_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `F5XC_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `F5XC_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `F5XC_SERVER` - Server domain (Default: console.ves.volterra.io).
-* `F5XC_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
+* `ISPCONFIG_DDNS_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `ISPCONFIG_DDNS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `ISPCONFIG_DDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `ISPCONFIG_DDNS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600).
 
+ISPConfig DNS provider supports leveraging the [ISPConfig 3 Dynamic DNS (DDNS) Module](https://github.com/mhofer117/ispconfig-ddns-module).
+
+Requires the DDNS module described at https://www.ispconfig.org/ispconfig/download/
+
+See https://www.howtoforge.com/community/threads/ispconfig-3-danymic-dns-ddns-module.87967/ for additional details.
 

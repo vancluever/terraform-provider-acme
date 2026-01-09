@@ -8,6 +8,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/alidns"
 	"github.com/go-acme/lego/v4/providers/dns/aliesa"
 	"github.com/go-acme/lego/v4/providers/dns/allinkl"
+	"github.com/go-acme/lego/v4/providers/dns/alwaysdata"
 	"github.com/go-acme/lego/v4/providers/dns/anexia"
 	"github.com/go-acme/lego/v4/providers/dns/arvancloud"
 	"github.com/go-acme/lego/v4/providers/dns/auroradns"
@@ -31,6 +32,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/cloudns"
 	"github.com/go-acme/lego/v4/providers/dns/cloudru"
 	"github.com/go-acme/lego/v4/providers/dns/cloudxns"
+	"github.com/go-acme/lego/v4/providers/dns/com35"
 	"github.com/go-acme/lego/v4/providers/dns/conoha"
 	"github.com/go-acme/lego/v4/providers/dns/conohav3"
 	"github.com/go-acme/lego/v4/providers/dns/constellix"
@@ -91,7 +93,10 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/ionos"
 	"github.com/go-acme/lego/v4/providers/dns/ionoscloud"
 	"github.com/go-acme/lego/v4/providers/dns/ipv64"
+	"github.com/go-acme/lego/v4/providers/dns/ispconfig"
+	"github.com/go-acme/lego/v4/providers/dns/ispconfigddns"
 	"github.com/go-acme/lego/v4/providers/dns/iwantmyname"
+	"github.com/go-acme/lego/v4/providers/dns/jdcloud"
 	"github.com/go-acme/lego/v4/providers/dns/joker"
 	"github.com/go-acme/lego/v4/providers/dns/keyhelp"
 	"github.com/go-acme/lego/v4/providers/dns/liara"
@@ -222,6 +227,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"allinkl": func() (challenge.Provider, error) {
 		p, err := allinkl.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"alwaysdata": func() (challenge.Provider, error) {
+		p, err := alwaysdata.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -420,6 +433,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"cloudxns": func() (challenge.Provider, error) {
 		p, err := cloudxns.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"com35": func() (challenge.Provider, error) {
+		p, err := com35.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -906,8 +927,32 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"ispconfig": func() (challenge.Provider, error) {
+		p, err := ispconfig.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"ispconfigddns": func() (challenge.Provider, error) {
+		p, err := ispconfigddns.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"iwantmyname": func() (challenge.Provider, error) {
 		p, err := iwantmyname.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"jdcloud": func() (challenge.Provider, error) {
+		p, err := jdcloud.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

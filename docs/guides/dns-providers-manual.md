@@ -37,7 +37,7 @@ resource "acme_certificate" "certificate" {
 To start using the CLI prompt "provider", start lego with `--dns manual`:
 
 ```console
-$ lego --email "you@example.com" --domains="example.com" --dns "manual" run
+$ lego --dns manual -d example.com run
 ```
 
 What follows are a few log print-outs, interspersed with some prompts, asking for you to do perform some actions:

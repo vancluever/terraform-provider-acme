@@ -1,5 +1,5 @@
 ---
-page_title: "f5xc"
+page_title: "jdcloud"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# F5 XC DNS Challenge Provider
+# JD Cloud DNS Challenge Provider
 
-The `f5xc` DNS challenge provider can be used to perform DNS challenges for
+The `jdcloud` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[F5 XC](https://www.f5.com/products/distributed-cloud-services).
+[JD Cloud](https://www.jdcloud.com/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "f5xc"
+    provider = "jdcloud"
   }
 }
 ```
@@ -48,14 +48,13 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `F5XC_API_TOKEN` - API token.
-* `F5XC_GROUP_NAME` - Group name.
-* `F5XC_TENANT_NAME` - XC Tenant shortname.
+* `JDCLOUD_ACCESS_KEY_ID` - Access key ID.
+* `JDCLOUD_ACCESS_KEY_SECRET` - Access key secret.
 
-* `F5XC_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `F5XC_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `F5XC_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `F5XC_SERVER` - Server domain (Default: console.ves.volterra.io).
-* `F5XC_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
+* `JDCLOUD_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `JDCLOUD_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `JDCLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `JDCLOUD_REGION_ID` - Region ID (Default: cn-north-1).
+* `JDCLOUD_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 
