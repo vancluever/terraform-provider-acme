@@ -1,6 +1,9 @@
-## 2.41.1-pre (Unreleased)
+## 2.42.0 (Unreleased)
 
-Bumped version for dev.
+ENHANCEMENTS:
+
+* `resource/acme_registration`: `email_address` is no longer required.
+  [#554](https://github.com/vancluever/terraform-provider-acme/pull/554)
 
 ## 2.41.0 (January 9, 2026)
 
