@@ -23,17 +23,15 @@ provider instances][multiple-provider-instances].
 
 ### Basic Example
 
-The following is the most basic example, supplying only a contact email address
-to the resource.
+The following is the most basic example. In this case, the account private key
+is managed for you.
 
 ```hcl
 provider "acme" {
   server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
 }
 
-resource "acme_registration" "reg" {
-  email_address   = "nobody@example.com"
-}
+resource "acme_registration" "reg" {}
 ```
 
 ### Using a Pre-Existing Private Key
@@ -54,7 +52,6 @@ resource "tls_private_key" "private_key" {
 
 resource "acme_registration" "reg" {
   account_key_pem = tls_private_key.private_key.private_key_pem
-  email_address   = "nobody@example.com"
 }
 ```
 
@@ -76,7 +73,15 @@ The resource takes the following arguments:
   types. Supported settings: `P256` and `P384`. Default: `P384`.
 * `account_key_rsa_bits` (Optional) - The key length to use for RSA key types.
   Supported settings: `2048`, `3072`, and `4096`. Default: `4096`.
-* `email_address` (Required) - The contact email address for the account.
+* `email_address` (Optional) - The contact email address for the account.
+
+-> Note that Let's Encrypt no longer sends expiry emails, and only uses this
+field for possible email list onboarding (see
+<https://letsencrypt.org/2025/06/26/expiration-notification-service-has-ended>).
+As such, it is not recommended to set this field when using Let's Encrypt.
+Other CAs may or may not require this field - consult the documentation of the
+CA you are using in this case.
+
 * `external_account_binding` (Optional) - An external account binding for the
   registration, usually used to link the registration with an account in a
   commercial CA. Sub-options are:

@@ -71,7 +71,7 @@ func resourceACMERegistrationV2() *schema.Resource {
 			},
 			"email_address": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 				ForceNew: true,
 			},
 			"external_account_binding": {
