@@ -31,6 +31,26 @@ func TestAccACMERegistration_basic(t *testing.T) {
 	})
 }
 
+func TestAccACMERegistration_noEmail(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		CheckDestroy:      testAccCheckACMERegistrationValid("acme_registration.reg", false, pebbleDirBasic),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMERegistrationConfigNoEmail(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrPair(
+						"acme_registration.reg", "id",
+						"acme_registration.reg", "registration_url",
+					),
+					testAccCheckACMERegistrationValid("acme_registration.reg", true, pebbleDirBasic),
+				),
+			},
+		},
+	})
+}
+
 func TestAccACMERegistration_eab(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviders,
@@ -270,6 +290,16 @@ provider "acme" {
 resource "acme_registration" "reg" {
   email_address   = "nobody@example.test"
 }
+`, pebbleDirBasic)
+}
+
+func testAccACMERegistrationConfigNoEmail() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+resource "acme_registration" "reg" {}
 `, pebbleDirBasic)
 }
 
