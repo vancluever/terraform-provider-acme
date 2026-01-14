@@ -134,7 +134,8 @@ case with the `classic` Let's Encrypt profile, the first domain defined in
   Defaults to `false`.
 
 -> See [About DNS propagation checks](#about-dns-propagation-checks) for details
-on the `recursive_nameservers` and `disable_complete_propagation` settings.
+on the `recursive_nameservers`, `disable_complete_propagation`, and
+`propagation_wait` settings.
 
 * `pre_check_delay` (Optional) - Insert a delay after _every_ DNS challenge
   record to allow for extra time for DNS propagation before the certificate is
@@ -145,6 +146,14 @@ on the `recursive_nameservers` and `disable_complete_propagation` settings.
 -> Be careful with `pre_check_delay` since the delay is executed _per-domain_.
 Take your expected delay and divide it by the number of domains you have
 configured (`common_name` + `subject_alternative_names`).
+
+* `propagation_wait` (Optional) - Disable DNS propagation checks and wait the
+  specified number of seconds before validation proceeds. Defaults to 0 (no
+  wait).
+
+-> The wait is applied _per-domain_. When `propagation_wait` is set, propagation
+checks are skipped and `recursive_nameservers` / `disable_complete_propagation`
+have no effect. `propagation_wait` conflicts with `pre_check_delay`.
 
 * `http_challenge` (Optional) - Defines an HTTP challenge to use in fulfilling
   the request.
@@ -391,6 +400,11 @@ such as in the aforementioned air-gapped scenario where the system running
 Terraform has no outbound DNS access, or for testing purposes. If you encounter
 problems using this setting, consider removing it and moving your Terraform
 operations to a system that can access your domain's authoritative DNS servers.
+
+If you cannot perform propagation checks at all, set `propagation_wait` to a
+fixed delay (in seconds). This skips all propagation checks and waits the
+specified time before validation, so pick a value that matches your DNS
+provider's typical propagation behavior. The wait is applied per domain.
 
 #### Using multiple primary DNS providers
 

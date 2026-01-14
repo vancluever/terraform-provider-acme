@@ -265,10 +265,11 @@ func resourceACMECertificateV5() *schema.Resource {
 				},
 			},
 			"pre_check_delay": {
-				Type:         schema.TypeInt,
-				Optional:     true,
-				Default:      0,
-				ValidateFunc: validation.IntAtLeast(0),
+				Type:          schema.TypeInt,
+				Optional:      true,
+				Default:       0,
+				ValidateFunc:  validation.IntAtLeast(0),
+				ConflictsWith: []string{"propagation_wait"},
 			},
 			"recursive_nameservers": {
 				Type:     schema.TypeList,
@@ -279,6 +280,13 @@ func resourceACMECertificateV5() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
+			},
+			"propagation_wait": {
+				Type:          schema.TypeInt,
+				Optional:      true,
+				Default:       0,
+				ValidateFunc:  validation.IntAtLeast(0),
+				ConflictsWith: []string{"pre_check_delay"},
 			},
 			"must_staple": {
 				Type:     schema.TypeBool,

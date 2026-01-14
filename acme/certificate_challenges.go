@@ -187,6 +187,10 @@ func expandDNSChallengeOptions(d *schema.ResourceData) []dns01.ChallengeOption {
 		opts = append(opts, dns01.DisableCompletePropagationRequirement())
 	}
 
+	if propagationWait := d.Get("propagation_wait").(int); propagationWait > 0 {
+		opts = append(opts, dns01.PropagationWait(time.Duration(propagationWait)*time.Second, true))
+	}
+
 	if preCheckDelay := d.Get("pre_check_delay").(int); preCheckDelay > 0 {
 		opts = append(opts, dns01.WrapPreCheck(resourceACMECertificatePreCheckDelay(preCheckDelay)))
 	}
