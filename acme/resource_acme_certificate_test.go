@@ -342,6 +342,69 @@ func TestAccACMECertificate_preCheckDelay(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_propagationWait(t *testing.T) {
+	wantEnv := os.Environ()
+	var step1Start, step1End, step2Start, step2End time.Time
+	const delay = 15
+
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				PreConfig: func() { step1Start = time.Now() },
+				Config:    testAccACMECertificateConfigPropagationWait(0),
+				Check: resource.ComposeTestCheckFunc(
+					func(_ *terraform.State) error {
+						step1End = time.Now()
+						return nil
+					},
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www14", "www15"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
+				),
+			},
+			{
+				Config:  testAccACMECertificateConfigPropagationWait(0),
+				Destroy: true,
+			},
+			{
+				PreConfig: func() { step2Start = time.Now() },
+				Config:    testAccACMECertificateConfigPropagationWait(delay),
+				Check: resource.ComposeTestCheckFunc(
+					func(_ *terraform.State) error {
+						step2End = time.Now()
+						step1Elapsed := step1End.Sub(step1Start)
+						step2Elapsed := step2End.Sub(step2Start)
+
+						// Allow a margin of error since elapsed time can vary
+						// based on system load/caching. The propagation wait is
+						// applied per domain.
+						const deltaThreshold = 10
+
+						expectedDelay := delay * 2
+						actualDelay := int((step2Elapsed - step1Elapsed) / time.Second)
+						delayDelta := expectedDelay - actualDelay
+						if delayDelta > deltaThreshold || delayDelta < -deltaThreshold {
+							return fmt.Errorf(
+								"delta too large between standard and propagation wait applies; expected %ds, got approx. %ds", expectedDelay, actualDelay)
+						}
+
+						return nil
+					},
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www14", "www15"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckEnvironNotChanged(wantEnv),
+				),
+			},
+		},
+	})
+}
+
 func TestAccACMECertificate_duplicateDomain(t *testing.T) {
 	wantEnv := os.Environ()
 	resource.Test(t, resource.TestCase{
@@ -1542,6 +1605,51 @@ resource "acme_certificate" "certificate" {
 		pebbleCertDomain,
 		password,
 		pebbleChallTestDNSSrv,
+		pebbleChallTestDNSScriptPath,
+	)
+}
+
+func testAccACMECertificateConfigPropagationWait(wait int) string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "acme_registration" "reg" {
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "www14.${var.domain}"
+  subject_alternative_names = ["www15.${var.domain}"]
+
+  recursive_nameservers        = ["%s"]
+  disable_complete_propagation = true
+  propagation_wait             = %d
+
+  dns_challenge {
+    provider = "exec"
+    config = {
+      EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
+    }
+  }
+}
+`,
+		pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		pebbleChallTestDNSSrv,
+		wait,
 		pebbleChallTestDNSScriptPath,
 	)
 }
