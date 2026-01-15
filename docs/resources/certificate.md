@@ -273,6 +273,10 @@ By default, no reason provided in revocation requests. The reason is a string, w
 If you are looking to control timeouts related to a particular challenge (such
 as a DNS challenge), see that challenge provider's specific options.
 
+* `deactivate_authorizations` - Controls if authorizations are explicitly
+  deactivated after a certificate has been obtained, preventing their re-use.
+  Default: `true`.
+
 ### Using DNS challenges
 
 This method authenticates certificate domains by requiring the requester to
