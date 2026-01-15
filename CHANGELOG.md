@@ -1,6 +1,10 @@
-## 2.42.1-pre (Unreleased)
+## 2.43.0 (Unreleased)
 
-Bumped version for dev.
+ENHANCEMENTS:
+
+* `resource/acme_registration`: Added the `propagation_wait` option, which
+  allows the insertion of a wait delay in lieu of DNS propagation checks. 
+  [#555](https://github.com/vancluever/terraform-provider-acme/pull/555)
 
 ## 2.42.0 (January 13, 2026)
 
