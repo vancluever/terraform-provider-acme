@@ -306,6 +306,11 @@ func resourceACMECertificateV5() *schema.Resource {
 				Default:  "",
 				ForceNew: true,
 			},
+			"not_after": {
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validation.IsRFC3339Time,
+			},
 			"cert_timeout": {
 				Type:     schema.TypeInt,
 				Optional: true,
@@ -416,6 +421,14 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta any) error {
 
 	var cert *certificate.Resource
 
+	var notAfter time.Time
+	if v, ok := d.GetOk("not_after"); ok {
+		notAfter, err = time.Parse(time.RFC3339, v.(string))
+		if err != nil {
+			return fmt.Errorf("error parsing not_after: %s", err)
+		}
+	}
+
 	if v, ok := d.GetOk("certificate_request_pem"); ok {
 		var csr *x509.CertificateRequest
 		csr, err = csrFromPEM([]byte(v.(string)))
@@ -424,6 +437,7 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta any) error {
 		}
 		cert, err = client.Certificate.ObtainForCSR(certificate.ObtainForCSRRequest{
 			CSR:                            csr,
+			NotAfter:                       notAfter,
 			Bundle:                         true,
 			PreferredChain:                 d.Get("preferred_chain").(string),
 			Profile:                        d.Get("profile").(string),
@@ -446,6 +460,7 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta any) error {
 
 		cert, err = client.Certificate.Obtain(certificate.ObtainRequest{
 			Domains:                        domains,
+			NotAfter:                       notAfter,
 			Bundle:                         true,
 			MustStaple:                     d.Get("must_staple").(bool),
 			PreferredChain:                 d.Get("preferred_chain").(string),
@@ -524,6 +539,27 @@ func resourceACMECertificateCustomizeDiff(_ context.Context, d *schema.ResourceD
 		}
 	}
 
+	// Validate that not_after does not fall within min_days_remaining, which
+	// would cause the certificate to be renewed on every apply.
+	if v, ok := d.GetOk("not_after"); ok {
+		notAfter, err := time.Parse(time.RFC3339, v.(string))
+		if err != nil {
+			return fmt.Errorf("error parsing not_after: %s", err)
+		}
+		minDays := d.Get("min_days_remaining").(int)
+		if minDays >= 0 {
+			daysUntilExpiry := int(time.Until(notAfter).Hours() / 24)
+			if daysUntilExpiry <= minDays {
+				return fmt.Errorf(
+					"not_after is %d day(s) from now, which is within min_days_remaining (%d); "+
+						"this would trigger immediate renewal on every apply — "+
+						"set min_days_remaining to less than %d, or adjust not_after",
+					daysUntilExpiry, minDays, daysUntilExpiry,
+				)
+			}
+		}
+	}
+
 	// There's nothing for us to do in a Create diff, so if there's no ID yet,
 	// just pass this part.
 	if d.Id() == "" {
@@ -533,6 +569,10 @@ func resourceACMECertificateCustomizeDiff(_ context.Context, d *schema.ResourceD
 	shouldRenew, err := resourceACMECertificateShouldRenew(d, time.Now())
 	if err != nil {
 		return err
+	}
+
+	if !shouldRenew && d.HasChange("not_after") {
+		shouldRenew = true
 	}
 
 	if shouldRenew {
@@ -559,6 +599,10 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta any) error {
 	shouldRenew, err := resourceACMECertificateShouldRenew(d, time.Now())
 	if err != nil {
 		return err
+	}
+
+	if !shouldRenew && d.HasChange("not_after") {
+		shouldRenew = true
 	}
 
 	if !shouldRenew {
@@ -592,11 +636,20 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta any) error {
 			return err
 		}
 
+		var renewNotAfter time.Time
+		if v, ok := d.GetOk("not_after"); ok {
+			renewNotAfter, err = time.Parse(time.RFC3339, v.(string))
+			if err != nil {
+				return fmt.Errorf("error parsing not_after: %s", err)
+			}
+		}
+
 		newCert, err := renewWithOptions(
 			client.Certificate,
 			*cert,
 			localRenewOptions{
 				RenewOptions: certificate.RenewOptions{
+					NotAfter:                       renewNotAfter,
 					Bundle:                         true,
 					PreferredChain:                 d.Get("preferred_chain").(string),
 					Profile:                        d.Get("profile").(string),

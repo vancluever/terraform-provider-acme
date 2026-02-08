@@ -249,6 +249,12 @@ Pretend Pear X1`.
 -> Let's Encrypt publishes details on their profiles at
 <https://letsencrypt.org/docs/profiles/>.
 
+* `not_after` - (Optional) The desired expiration date of the certificate, in
+  RFC3339 format (`2006-01-02T15:04:05Z07:00`). This sets the `notAfter` field
+  in the ACME order, requesting that the CA issue a certificate that expires at
+  the specified time. Not all ACME CAs support this field. Changing this value
+  triggers a certificate renewal rather than a resource replacement.
+
 * `revoke_certificate_on_destroy` - Enables revocation of a certificate upon destroy,
 which includes when a resource is re-created. Default is `true`.
 
