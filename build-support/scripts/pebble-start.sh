@@ -3,7 +3,7 @@
 set -e
 
 GOPATH="$(go env GOPATH)"
-PEBBLE_VERSION="2.8.0-vancluever4"
+PEBBLE_VERSION="2.9.0"
 # config files are relative to script dir
 PEBBLE_CFGFILE="../pebblecfg/basic.json"
 PEBBLE_PIDFILE="/tmp/pebble.pid"
@@ -19,7 +19,7 @@ PEBBLE_PROFILE_LOGFILE="/tmp/pebble-profile.log"
 PEBBLE_CHALLTESTSRV_PIDFILE="/tmp/pebble-challtestsrv.pid"
 PEBBLE_CHALLTESTSRV_LOGFILE="/tmp/pebble-challtestsrv.log"
 PEBBLE_CHALLTESTSRV_DNS_SERVER="0.0.0.0:5553"
-PEBBLE_SRC="https://github.com/vancluever/pebble.git"
+PEBBLE_SRC="https://github.com/letsencrypt/pebble.git"
 PEBBLE_DIR="src/github.com/letsencrypt/pebble"
 PEBBLE_CA_CERT="test/certs/pebble.minica.pem"
 
