@@ -1,6 +1,12 @@
-## 2.43.1-pre (Unreleased)
+## 2.44.0
 
-Bumped version for dev.
+ENHANCEMENTS:
+
+* `resource/acme_certificate`: Added the `deactivate_authorizations` (on by
+  default), that just drops authorizations for a certificate order immediately
+  after the order has been completed. 
+  [#513](https://github.com/vancluever/terraform-provider-acme/pull/513)
+
 
 ## 2.43.0 (January 15, 2026)
 
