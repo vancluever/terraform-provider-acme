@@ -249,6 +249,13 @@ Pretend Pear X1`.
 -> Let's Encrypt publishes details on their profiles at
 <https://letsencrypt.org/docs/profiles/>.
 
+* `validity_days` (Optional) - The desired validity duration for the
+  certificate, in days (e.g. `7` for 7 days, `90` for 90 days). When set,
+  the provider computes `notBefore` and `notAfter` relative to the current
+  time at creation or renewal and includes them in the ACME order. Not all
+  ACME CAs support these fields. Changing this value triggers a certificate
+  renewal.
+
 * `revoke_certificate_on_destroy` - Enables revocation of a certificate upon destroy,
 which includes when a resource is re-created. Default is `true`.
 
