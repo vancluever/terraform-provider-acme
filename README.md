@@ -21,10 +21,15 @@ website][terraform-io] and the [GitHub project page][terraform-gh].
 Documentation for this provider can be found at
 https://registry.terraform.io/providers/vancluever/acme/latest/docs.
 
+## Contributing
+
+Note that public pull requests to this repository are closed. See
+[`CONTRIBUTING.md`](/CONTRIBUTING.md) for more details.
+
 ## License
 
 ```
-Copyright 2018-2025 Chris Marchesi
+Copyright 2018-2026 Chris Marchesi
 Copyright 2016-2018 PayByPhone Technologies, Inc.
 
 This Source Code Form is subject to the terms of the Mozilla Public
