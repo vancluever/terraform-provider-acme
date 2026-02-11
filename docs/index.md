@@ -17,7 +17,7 @@ that implements the ACME standard with Let's Encrypt's
 
 [lets-encrypt]: https://letsencrypt.org
 [boulder-gh]: https://github.com/letsencrypt/boulder
-[lets-encrypt-divergences]: https://github.com/letsencrypt/boulder/blob/master/docs/acme-divergences.md
+[lets-encrypt-divergences]: https://github.com/letsencrypt/boulder/blob/main/docs/acme-divergences.md
 
 For more detail on the ACME process, see [here][lets-encrypt-how-it-works]. For
 the ACME spec, click [here][about-acme]. Note that as mentioned in the last
