@@ -2,9 +2,12 @@
 
 ENHANCEMENTS:
 
-* `resource/acme_certificate`: Added the `deactivate_authorizations` (on by
-  default), that just drops authorizations for a certificate order immediately
-  after the order has been completed. 
+* `resource/acme_certificate`: Added the `validity_days` option to allow
+  control over the validity period for an ordered certificate.
+  [#561](https://github.com/vancluever/terraform-provider-acme/pull/561)
+* `resource/acme_certificate`: Added the `deactivate_authorizations` option (on
+  by default), that just drops authorizations for a certificate order
+  immediately after the order has been completed.
   [#513](https://github.com/vancluever/terraform-provider-acme/pull/513)
 
 
