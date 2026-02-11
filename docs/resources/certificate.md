@@ -189,10 +189,22 @@ to tolerate prolonged outages of the OCSP service. Consider this when using
 `must_staple`, and only enable it if you are sure your webserver or service
 provider can be configured correctly.
 
+* `validity_days` (Optional) - The desired validity duration for the
+  certificate, in days (e.g., `7` for 7 days, `90` for 90 days). Changing this
+  value triggers a certificate renewal.
+
+-> Note that not all ACME CAs may support user-set certificate durations; most
+famously, [Let's Encrypt does
+not](https://github.com/letsencrypt/boulder/blob/main/docs/acme-divergences.md#section-74).
+Check with your CA to ensure this feature is supported before using it.
+
 * `min_days_remaining` (Optional) - The minimum amount of days remaining on the
   expiration of a certificate before a renewal is attempted. The default is
   `30`. A value of less than `0` means that the certificate will never be
   renewed.
+
+-> `min_days_remaining` must be lower than `validity_days` (if defined).
+
 * `use_renewal_info` (Optional) - When enabled, use information available from
   the CA's ACME Renewal Information (ARI) endpoint for renewing certificates.
   Default: `false`.
@@ -248,13 +260,6 @@ Pretend Pear X1`.
 
 -> Let's Encrypt publishes details on their profiles at
 <https://letsencrypt.org/docs/profiles/>.
-
-* `validity_days` (Optional) - The desired validity duration for the
-  certificate, in days (e.g. `7` for 7 days, `90` for 90 days). When set,
-  the provider computes `notBefore` and `notAfter` relative to the current
-  time at creation or renewal and includes them in the ACME order. Not all
-  ACME CAs support these fields. Changing this value triggers a certificate
-  renewal.
 
 * `revoke_certificate_on_destroy` - Enables revocation of a certificate upon destroy,
 which includes when a resource is re-created. Default is `true`.

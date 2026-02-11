@@ -736,6 +736,66 @@ func TestAccACMECertificate_noDomains(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_validityDays(t *testing.T) {
+	wantEnv := os.Environ()
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigValidityDays(7, 6),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www-vd", "www-vd2"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckACMECertificateNotAfter("acme_certificate.certificate", 7),
+					testAccCheckEnvironNotChanged(wantEnv),
+				),
+			},
+		},
+	})
+}
+
+func TestAccACMECertificate_validityDays_renewalOnChange(t *testing.T) {
+	wantEnv := os.Environ()
+	var certSerial string
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigValidityDays(7, 6),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					testAccCheckACMECertificateSaveSerial(&certSerial),
+					testAccCheckEnvironNotChanged(wantEnv),
+				),
+			},
+			{
+				Config: testAccACMECertificateConfigValidityDays(5, 4),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckACMECertificateCheckSerialEqual(&certSerial, false),
+					testAccCheckEnvironNotChanged(wantEnv),
+				),
+			},
+		},
+	})
+}
+
+func TestAccACMECertificate_validityDays_validation(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccACMECertificateConfigValidityDays(1, 30),
+				ExpectError: regexp.MustCompile(`validity_days .* is within min_days_remaining`),
+			},
+		},
+	})
+}
+
 type testAccCheckACMECertificateStandardOpts struct {
 	CommonName             string
 	SubjectAlternativeName string
@@ -1216,6 +1276,35 @@ func testAccCheckACMECertificateCheckSerialEqual(want *string, equal bool) resou
 			if *want == got {
 				return fmt.Errorf("expected certificate serial (%s) to have changed", got)
 			}
+		}
+
+		return nil
+	}
+}
+
+func testAccCheckACMECertificateNotAfter(name string, expectedDays int) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs, ok := s.RootModule().Resources[name]
+		if !ok {
+			return fmt.Errorf("Can't find ACME certificate: %s", name)
+		}
+
+		certPem := rs.Primary.Attributes["certificate_pem"]
+		certs, err := parsePEMBundle([]byte(certPem))
+		if err != nil {
+			return err
+		}
+		x509Cert := certs[0]
+
+		// We do a 20-minute skew here, which is 5m longer than our normal skew for
+		// validity_days.
+		const skew = time.Minute * 20
+		expectedNotAfter := time.Now().Add(time.Duration(expectedDays)*24*time.Hour + skew)
+		if x509Cert.NotAfter.After(expectedNotAfter) {
+			return fmt.Errorf(
+				"certificate NotAfter (%s) is still after expected with %s of applied skew (%s)",
+				x509Cert.NotAfter.Local(), skew, expectedNotAfter,
+			)
 		}
 
 		return nil
@@ -2166,124 +2255,7 @@ resource "acme_certificate" "certificate" {
 	)
 }
 
-func TestAccACMECertificate_validityDays(t *testing.T) {
-	wantEnv := os.Environ()
-	resource.Test(t, resource.TestCase{
-		ProviderFactories: testAccProviders,
-		ExternalProviders: testAccExternalProviders,
-		Steps: []resource.TestStep{
-			{
-				Config: testAccACMECertificateConfigValidityDays(7),
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
-					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
-					testAccCheckACMECertificateValid("acme_certificate.certificate", "www-vd", "www-vd2"),
-					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
-					testAccCheckACMECertificateNotAfter("acme_certificate.certificate", 7),
-					testAccCheckEnvironNotChanged(wantEnv),
-				),
-			},
-		},
-	})
-}
-
-func TestAccACMECertificate_validityDays_renewalOnChange(t *testing.T) {
-	wantEnv := os.Environ()
-	var certSerial string
-	resource.Test(t, resource.TestCase{
-		ProviderFactories: testAccProviders,
-		ExternalProviders: testAccExternalProviders,
-		Steps: []resource.TestStep{
-			{
-				Config: testAccACMECertificateConfigValidityDays(7),
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
-					testAccCheckACMECertificateSaveSerial(&certSerial),
-					testAccCheckEnvironNotChanged(wantEnv),
-				),
-			},
-			{
-				Config: testAccACMECertificateConfigValidityDays(5),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckACMECertificateCheckSerialEqual(&certSerial, false),
-					testAccCheckEnvironNotChanged(wantEnv),
-				),
-			},
-		},
-	})
-}
-
-func TestAccACMECertificate_validityDays_renewalUsesNewValue(t *testing.T) {
-	wantEnv := os.Environ()
-	var certSerial string
-	resource.Test(t, resource.TestCase{
-		ProviderFactories: testAccProviders,
-		ExternalProviders: testAccExternalProviders,
-		Steps: []resource.TestStep{
-			{
-				Config: testAccACMECertificateConfigValidityDaysForceRenew(7),
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
-					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
-					testAccCheckACMECertificateSaveSerial(&certSerial),
-					testAccCheckEnvironNotChanged(wantEnv),
-				),
-				ExpectNonEmptyPlan: true,
-			},
-			{
-				Config: testAccACMECertificateConfigValidityDaysForceRenew(7),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckACMECertificateCheckSerialEqual(&certSerial, false),
-					testAccCheckEnvironNotChanged(wantEnv),
-				),
-				ExpectNonEmptyPlan: true,
-			},
-		},
-	})
-}
-
-func TestAccACMECertificate_validityDays_validation(t *testing.T) {
-	resource.Test(t, resource.TestCase{
-		ProviderFactories: testAccProviders,
-		ExternalProviders: testAccExternalProviders,
-		Steps: []resource.TestStep{
-			{
-				Config:      testAccACMECertificateConfigValidityDaysForceRenew(1),
-				ExpectError: regexp.MustCompile(`validity_days .* is within min_days_remaining`),
-			},
-		},
-	})
-}
-
-func testAccCheckACMECertificateNotAfter(name string, expectedDays int) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		rs, ok := s.RootModule().Resources[name]
-		if !ok {
-			return fmt.Errorf("Can't find ACME certificate: %s", name)
-		}
-
-		certPem := rs.Primary.Attributes["certificate_pem"]
-		certs, err := parsePEMBundle([]byte(certPem))
-		if err != nil {
-			return err
-		}
-		x509Cert := certs[0]
-
-		expectedNotAfter := time.Now().Add(time.Duration(expectedDays) * 24 * time.Hour)
-		tolerance := 5 * time.Minute
-		diff := x509Cert.NotAfter.Sub(expectedNotAfter)
-		if diff < -tolerance || diff > tolerance {
-			return fmt.Errorf(
-				"certificate NotAfter (%s) is not within %s of expected (%s), diff: %s",
-				x509Cert.NotAfter, tolerance, expectedNotAfter, diff,
-			)
-		}
-
-		return nil
-	}
-}
-
-func testAccACMECertificateConfigValidityDays(validityDays int) string {
+func testAccACMECertificateConfigValidityDays(validityDays int, minDays int) string {
 	return fmt.Sprintf(`
 provider "acme" {
   server_url = "%s"
@@ -2306,6 +2278,7 @@ resource "acme_certificate" "certificate" {
   common_name               = "www-vd.${var.domain}"
   subject_alternative_names = ["www-vd2.${var.domain}"]
   validity_days             = %d
+	min_days_remaining        = %d
 
   recursive_nameservers        = ["%s"]
   disable_complete_propagation = true
@@ -2323,51 +2296,7 @@ resource "acme_certificate" "certificate" {
 		pebbleCertDomain,
 		pebbleCertDomain,
 		validityDays,
-		pebbleChallTestDNSSrv,
-		pebbleChallTestDNSScriptPath,
-	)
-}
-
-func testAccACMECertificateConfigValidityDaysForceRenew(validityDays int) string {
-	return fmt.Sprintf(`
-provider "acme" {
-  server_url = "%s"
-}
-
-variable "email_address" {
-  default = "nobody@%s"
-}
-
-variable "domain" {
-  default = "%s"
-}
-
-resource "acme_registration" "reg" {
-  email_address   = "${var.email_address}"
-}
-
-resource "acme_certificate" "certificate" {
-  account_key_pem    = "${acme_registration.reg.account_key_pem}"
-  common_name        = "www-vdfr.${var.domain}"
-  validity_days      = %d
-  min_days_remaining = 18250
-
-  recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
-
-  dns_challenge {
-    provider = "exec"
-    config = {
-      EXEC_PATH = "%s"
-      EXEC_SEQUENCE_INTERVAL = "5"
-    }
-  }
-}
-`,
-		pebbleDirBasic,
-		pebbleCertDomain,
-		pebbleCertDomain,
-		validityDays,
+		minDays,
 		pebbleChallTestDNSSrv,
 		pebbleChallTestDNSScriptPath,
 	)

@@ -421,10 +421,11 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta any) error {
 
 	var cert *certificate.Resource
 
-	var notBefore, notAfter time.Time
+	var notAfter time.Time
 	if v, ok := d.GetOk("validity_days"); ok {
-		notBefore = time.Now()
-		notAfter = notBefore.Add(time.Duration(v.(int)) * 24 * time.Hour)
+		// Note that we add a 15 minute skew to the duration to account for delays
+		// between the start of the challenge and the actual order.
+		notAfter = time.Now().Add(time.Duration(v.(int))*24*time.Hour + time.Minute*15)
 	}
 
 	if v, ok := d.GetOk("certificate_request_pem"); ok {
@@ -435,7 +436,6 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta any) error {
 		}
 		cert, err = client.Certificate.ObtainForCSR(certificate.ObtainForCSRRequest{
 			CSR:                            csr,
-			NotBefore:                      notBefore,
 			NotAfter:                       notAfter,
 			Bundle:                         true,
 			PreferredChain:                 d.Get("preferred_chain").(string),
@@ -459,7 +459,6 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta any) error {
 
 		cert, err = client.Certificate.Obtain(certificate.ObtainRequest{
 			Domains:                        domains,
-			NotBefore:                      notBefore,
 			NotAfter:                       notAfter,
 			Bundle:                         true,
 			MustStaple:                     d.Get("must_staple").(bool),
@@ -544,7 +543,7 @@ func resourceACMECertificateCustomizeDiff(_ context.Context, d *schema.ResourceD
 	if v, ok := d.GetOk("validity_days"); ok {
 		days := v.(int)
 		minDays := d.Get("min_days_remaining").(int)
-		if minDays >= 0 && days <= minDays {
+		if days <= minDays {
 			return fmt.Errorf(
 				"validity_days (%d day(s)) is within min_days_remaining (%d); "+
 					"this would trigger immediate renewal on every apply - "+
@@ -630,10 +629,11 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta any) error {
 			return err
 		}
 
-		var renewNotBefore, renewNotAfter time.Time
+		var notAfter time.Time
 		if v, ok := d.GetOk("validity_days"); ok {
-			renewNotBefore = time.Now()
-			renewNotAfter = renewNotBefore.Add(time.Duration(v.(int)) * 24 * time.Hour)
+			// Note that we add a 15 minute skew to the duration to account for delays
+			// between the start of the challenge and the actual order.
+			notAfter = time.Now().Add(time.Duration(v.(int))*24*time.Hour + time.Minute*15)
 		}
 
 		newCert, err := renewWithOptions(
@@ -641,8 +641,7 @@ func resourceACMECertificateUpdate(d *schema.ResourceData, meta any) error {
 			*cert,
 			localRenewOptions{
 				RenewOptions: certificate.RenewOptions{
-					NotBefore:                      renewNotBefore,
-					NotAfter:                       renewNotAfter,
+					NotAfter:                       notAfter,
 					Bundle:                         true,
 					PreferredChain:                 d.Get("preferred_chain").(string),
 					Profile:                        d.Get("profile").(string),
