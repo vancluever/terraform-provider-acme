@@ -13,6 +13,8 @@ Thanks for your interest in using the Terraform ACME provider!
 
 Please read and consider the following before submitting your report.
 
+**Please do not use AI to open issues**. If you are using AI or an agent to understand an issue, take the time to comprehend the output and explain the issue **in your own words** before submitting.
+
 This provider integrates [lego](https://github.com/go-acme/lego) and ultimately uses its exported primitives in a Terraform context. A large number of the issues submitted to this repository are actually issues related to lego, particularly its DNS providers.
 
 Before you submit an issue:
