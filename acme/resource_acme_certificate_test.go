@@ -2270,15 +2270,15 @@ variable "domain" {
 }
 
 resource "acme_registration" "reg" {
-  email_address   = "${var.email_address}"
+  email_address = var.email_address
 }
 
 resource "acme_certificate" "certificate" {
-  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  account_key_pem           = acme_registration.reg.account_key_pem
   common_name               = "www-vd.${var.domain}"
   subject_alternative_names = ["www-vd2.${var.domain}"]
   validity_days             = %d
-	min_days_remaining        = %d
+  min_days_remaining        = %d
 
   recursive_nameservers        = ["%s"]
   disable_complete_propagation = true
@@ -2286,7 +2286,7 @@ resource "acme_certificate" "certificate" {
   dns_challenge {
     provider = "exec"
     config = {
-      EXEC_PATH = "%s"
+      EXEC_PATH              = "%s"
       EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
