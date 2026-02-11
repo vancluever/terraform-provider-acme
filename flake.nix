@@ -3,7 +3,8 @@
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
-  outputs = { nixpkgs, ... }:
+  outputs =
+    { nixpkgs, ... }:
     let
       supportedSystems = [
         "aarch64-darwin"
@@ -12,37 +13,40 @@
         "x86_64-linux"
       ];
 
-      defaultForEachSupportedSystem = (func:
+      defaultForEachSupportedSystem = (
+        func:
         nixpkgs.lib.genAttrs supportedSystems (system: {
           default = func system;
         })
       );
     in
     {
-      devShells = defaultForEachSupportedSystem
-        (system:
-          let
-            pkgs = import nixpkgs {
-              inherit system;
-            };
-          in
-          pkgs.mkShell {
-            packages = with pkgs; [
-              buf
-              go
-              golangci-lint
-              golangci-lint-langserver
-              gopls
-              protoc-gen-go
-              protoc-gen-go-grpc
-              gotestsum
-              goreleaser
-            ];
+      devShells = defaultForEachSupportedSystem (
+        system:
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
+        in
+        pkgs.mkShell {
+          packages = with pkgs; [
+            buf
+            go
+            golangci-lint
+            golangci-lint-langserver
+            gopls
+            protoc-gen-go
+            protoc-gen-go-grpc
+            gotestsum
+            goreleaser
+            terraform
+          ];
 
-            shellHook = ''
-              export PATH="$HOME/go/bin:$PATH"
-            '';
-          }
-        );
+          shellHook = ''
+            export PATH="$HOME/go/bin:$PATH"
+          '';
+        }
+      );
     };
 }
