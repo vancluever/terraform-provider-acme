@@ -193,7 +193,7 @@ provider can be configured correctly.
   certificate, in days (e.g., `7` for 7 days, `90` for 90 days). Changing this
   value triggers a certificate renewal.
 
--> Note that not all ACME CAs may support user-set certificate durations; most
+-> Note that not all ACME CAs support user-set certificate durations; most
 famously, [Let's Encrypt does
 not](https://github.com/letsencrypt/boulder/blob/main/docs/acme-divergences.md#section-74).
 Check with your CA to ensure this feature is supported before using it.
