@@ -1,6 +1,6 @@
-## 2.44.1-pre (Unreleased)
+## 2.44.1 (Unreleased)
 
-Bumped version for dev.
+This is a change to fix the broken 2.44.0 build. No other changes are being made.
 
 ## 2.44.0 (February 12, 2026)
 
