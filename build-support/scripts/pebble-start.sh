@@ -30,6 +30,9 @@ PROFILE_CFG="$(realpath "$(dirname "$0")"/${PEBBLE_PROFILE_CFGFILE})"
 
 # Enable alternate roots
 export PEBBLE_ALTERNATE_ROOTS="1"
+# Disable the random delay that pebble inserts between validations, it's not
+# relevant to what we need to do, and it causes test issues.
+export PEBBLE_VA_NOSLEEP="1"
 
 if [ "$1" == "--install" ]; then
   INSTALL="yes"
