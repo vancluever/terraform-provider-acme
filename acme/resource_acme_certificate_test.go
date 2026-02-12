@@ -634,6 +634,52 @@ func TestAccACMECertificate_renewalInfo_renew(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_minDaysDynamic_basic(t *testing.T) {
+	wantEnv := os.Environ()
+	expectedStandard := testAccCheckACMECertificateStandardOpts{
+		CommonName:             "www",
+		SubjectAlternativeName: "www2",
+		IntermediateURL:        mainIntermediateURL,
+		ExpectedStatus:         certificateStatusValid,
+		ExpectedEnv:            wantEnv,
+	}
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigMinDaysDynamic(11),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckACMECertificateStandard(expectedStandard),
+				),
+			},
+		},
+	})
+}
+
+func TestAccACMECertificate_minDaysDynamic_short(t *testing.T) {
+	wantEnv := os.Environ()
+	expectedStandard := testAccCheckACMECertificateStandardOpts{
+		CommonName:             "www",
+		SubjectAlternativeName: "www2",
+		IntermediateURL:        mainIntermediateURL,
+		ExpectedStatus:         certificateStatusValid,
+		ExpectedEnv:            wantEnv,
+	}
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigMinDaysDynamic(10),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckACMECertificateStandard(expectedStandard),
+				),
+			},
+		},
+	})
+}
+
 func testAccACMECertificate_httpS3_preCheck(t *testing.T) {
 	t.Helper()
 
@@ -928,7 +974,12 @@ func testAccCheckACMECertificateValid(n, cn, san string) resource.TestCheckFunc 
 			return fmt.Errorf("Expected SANs to be %#v, got %#v", expectedSANs, actualSANs)
 		}
 
-		// Expiry
+		// Lifetime fields
+		actualNotBefore := rs.Primary.Attributes["certificate_not_before"]
+		expectedNotBefore := x509Cert.NotBefore.Format(time.RFC3339)
+		if expectedNotBefore != actualNotBefore {
+			return fmt.Errorf("expected certificate_not_before to be %q, got %q", expectedNotBefore, actualNotBefore)
+		}
 		actualNotAfter := rs.Primary.Attributes["certificate_not_after"]
 		expectedNotAfter := x509Cert.NotAfter.Format(time.RFC3339)
 		if expectedNotAfter != actualNotAfter {
@@ -2347,6 +2398,53 @@ resource "acme_certificate" "certificate" {
 		enabled,
 		maxSleep,
 		ignoreRetry,
+		pebbleChallTestDNSSrv,
+		pebbleChallTestDNSScriptPath,
+	)
+}
+
+func testAccACMECertificateConfigMinDaysDynamic(validityDays int) string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "acme_registration" "reg" {
+  email_address = var.email_address
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = acme_registration.reg.account_key_pem
+  common_name               = "www.${var.domain}"
+  subject_alternative_names = ["www2.${var.domain}"]
+  min_days_dynamic          = true
+  validity_days             = %d
+
+
+  recursive_nameservers        = ["%s"]
+  disable_complete_propagation = true
+
+  dns_challenge {
+    provider = "exec"
+    config = {
+      EXEC_PATH              = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
+    }
+  }
+}
+`,
+		pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		validityDays,
 		pebbleChallTestDNSSrv,
 		pebbleChallTestDNSScriptPath,
 	)

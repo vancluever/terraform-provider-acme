@@ -205,6 +205,14 @@ Check with your CA to ensure this feature is supported before using it.
 
 -> `min_days_remaining` must be lower than `validity_days` (if defined).
 
+* `min_days_dynamic` (Optional) - Derive the renewal threshold from the
+  certificate lifetime instead of a static value. When set, the threshold is
+  set to 1/3 of the certificate's lifetime, or 1/2 if the lifetime is 10 days
+  or less. Default: `false.`
+
+-> `min_days_dynamic` conflicts with `min_days_remaining` - only one may be set
+at once.
+
 * `use_renewal_info` (Optional) - When enabled, use information available from
   the CA's ACME Renewal Information (ARI) endpoint for renewing certificates.
   Default: `false`.
@@ -219,8 +227,7 @@ selected time within an ARI renewal window value cannot be reached at plan time
 endpoint, renewal behavior will fall back to comparing the certificate expiry
 time with the value in `min_days_remaining`. This means for short-lived
 certificates, you may wish to turn this value down so that the settings do not
-conflict; however, don't disable it altogether, as this may prevent the
-certificate from being renewed!
+conflict, or consider using [`min_days_dynamic`](#min_days_dynamic) instead.
 
 * `renewal_info_max_sleep` (Optional) - The maximum amount of time, in seconds,
   that the resource is willing to sleep during apply to reach a selected
@@ -668,6 +675,15 @@ certificate to be renewed on the next apply.
 
 Note that a value less than `0` supplied to `min_days_remaining` will cause
 renewal checks to be bypassed, and the certificate will never renew.
+
+### Dynamic renewal
+
+When working with short certificate lifetimes (possibly set using
+[`validity_days`](#validity_days), or via short-lifetime ACME profiles), or
+utilizing ARI using [`use_renewal_info`](#use_renewal_info), you may find it
+easier to use [`min_days_dynamic`](#min_days_dynamic) instead. When using this
+over `min_days_remaining`, the certificate renewal threshold is automatically
+set to 1/3 of its lifetime, or 1/2 if the lifetime is 10 days or less.
 
 ## Attribute Reference
 

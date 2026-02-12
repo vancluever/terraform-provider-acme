@@ -165,13 +165,14 @@ func saveCertificateResource(d *schema.ResourceData, cert *certificate.Resource,
 	d.Set("certificate_url", cert.CertURL)
 	d.Set("certificate_domain", cert.Domain)
 	d.Set("private_key_pem", string(cert.PrivateKey))
-	issued, issuedNotAfter, issuedSerial, issuer, err := splitPEMBundle(cert.Certificate)
+	issued, issuedNotBefore, issuedNotAfter, issuedSerial, issuer, err := splitPEMBundle(cert.Certificate)
 	if err != nil {
 		return err
 	}
 
 	d.Set("certificate_pem", string(issued))
 	d.Set("issuer_pem", string(issuer))
+	d.Set("certificate_not_before", issuedNotBefore)
 	d.Set("certificate_not_after", issuedNotAfter)
 	d.Set("certificate_serial", issuedSerial)
 
@@ -218,6 +219,21 @@ func certDaysRemaining(cert *certificate.Resource, now time.Time) (int64, error)
 	return remaining / 86400, nil
 }
 
+// certLifetimeDays returns the total certificate lifetime in days.
+func certLifetimeDays(cert *certificate.Resource) (float64, error) {
+	x509Certs, err := parsePEMBundle(cert.Certificate)
+	if err != nil {
+		return 0, err
+	}
+	c := x509Certs[0]
+
+	if c.IsCA {
+		return 0, fmt.Errorf("first certificate is a CA certificate")
+	}
+
+	return c.NotAfter.Sub(c.NotBefore).Round(time.Hour).Hours() / 24.0, nil
+}
+
 // splitPEMBundle gets a slice of x509 certificates from
 // parsePEMBundle.
 //
@@ -229,6 +245,7 @@ func certDaysRemaining(cert *certificate.Resource, now time.Time) (int64, error)
 // unlikely, however.
 func splitPEMBundle(bundle []byte) (
 	cert []byte,
+	certNotBefore string,
 	certNotAfter string,
 	certSerial string,
 	issuer []byte,
@@ -246,6 +263,7 @@ func splitPEMBundle(bundle []byte) (
 	}
 
 	cert = pem.EncodeToMemory(&pem.Block{Type: preambleCertificate, Bytes: cb[0].Raw})
+	certNotBefore = cb[0].NotAfter.Format(time.RFC3339)
 	certNotAfter = cb[0].NotAfter.Format(time.RFC3339)
 	certSerial = cb[0].SerialNumber.String()
 	issuer = make([]byte, 0)
