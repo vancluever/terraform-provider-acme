@@ -1,4 +1,4 @@
-## 2.44.0 (Unreleased)
+## 2.44.0 (February 12, 2026)
 
 ENHANCEMENTS:
 
