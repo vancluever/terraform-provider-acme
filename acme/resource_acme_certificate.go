@@ -89,10 +89,22 @@ func resourceACMECertificateV5() *schema.Resource {
 				AtLeastOneOf:  []string{"common_name", "subject_alternative_names", "certificate_request_pem"},
 				ConflictsWith: []string{"common_name", "subject_alternative_names", "key_type"},
 			},
+			"validity_days": {
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ValidateFunc: validation.IntAtLeast(1),
+			},
 			"min_days_remaining": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  30,
+				Type:          schema.TypeInt,
+				Optional:      true,
+				Default:       30,
+				ConflictsWith: []string{"min_days_dynamic"},
+			},
+			"min_days_dynamic": {
+				Type:          schema.TypeBool,
+				Optional:      true,
+				Default:       false,
+				ConflictsWith: []string{"min_days_remaining"},
 			},
 			"use_renewal_info": {
 				Type:     schema.TypeBool,
@@ -306,11 +318,6 @@ func resourceACMECertificateV5() *schema.Resource {
 				Default:  "",
 				ForceNew: true,
 			},
-			"validity_days": {
-				Type:         schema.TypeInt,
-				Optional:     true,
-				ValidateFunc: validation.IntAtLeast(1),
-			},
 			"cert_timeout": {
 				Type:     schema.TypeInt,
 				Optional: true,
@@ -346,6 +353,10 @@ func resourceACMECertificateV5() *schema.Resource {
 				Type:      schema.TypeString,
 				Computed:  true,
 				Sensitive: true,
+			},
+			"certificate_not_before": {
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"certificate_not_after": {
 				Type:     schema.TypeString,
@@ -540,7 +551,7 @@ func resourceACMECertificateCustomizeDiff(_ context.Context, d *schema.ResourceD
 
 	// Validate that validity_days does not fall within min_days_remaining,
 	// which would cause the certificate to be renewed on every apply.
-	if v, ok := d.GetOk("validity_days"); ok {
+	if v, ok := d.GetOk("validity_days"); ok && !d.Get("min_days_dynamic").(bool) {
 		days := v.(int)
 		minDays := d.Get("min_days_remaining").(int)
 		if days <= minDays {
@@ -573,6 +584,7 @@ func resourceACMECertificateCustomizeDiff(_ context.Context, d *schema.ResourceD
 		d.SetNewComputed("certificate_p12")
 		d.SetNewComputed("certificate_url")
 		d.SetNewComputed("certificate_domain")
+		d.SetNewComputed("certificate_not_before")
 		d.SetNewComputed("certificate_not_after")
 		d.SetNewComputed("private_key_pem")
 		d.SetNewComputed("issuer_pem")
@@ -710,16 +722,42 @@ func resourceACMECertificateDelete(d *schema.ResourceData, meta any) error {
 // resourceACMECertificateHasExpired checks the acme_certificate
 // resource to see if it has expired.
 func resourceACMECertificateHasExpired(d resourceDataOrDiff, now time.Time) (bool, error) {
-	mindays := d.Get("min_days_remaining").(int)
-	if mindays < 0 {
-		log.Printf("[WARN] min_days_remaining is set to less than 0, certificate will never be renewed")
-		return false, nil
-	}
-
 	cert := expandCertificateResource(d)
 	remaining, err := certDaysRemaining(cert, now)
 	if err != nil {
 		return false, err
+	}
+
+	if d.Get("min_days_dynamic").(bool) {
+		lifetimeDays, err := certLifetimeDays(cert)
+		if err != nil {
+			return false, err
+		}
+
+		threshold := 1.0 / 3.0
+		if lifetimeDays <= 10.0 {
+			threshold = 0.5
+		}
+
+		remF := float64(remaining)
+		remPct := remF / lifetimeDays
+		result := remPct <= threshold
+		log.Printf("[DEBUG] acme_certificate dynamic renewal check: (remaining / lifetimeDays <= threshold) => (%.2f / %.2f <= %.2f) => (%.2f <= %.2f) => %t",
+			remF,
+			lifetimeDays,
+			threshold,
+			remPct,
+			threshold,
+			result,
+		)
+
+		return result, nil
+	}
+
+	mindays := d.Get("min_days_remaining").(int)
+	if mindays < 0 {
+		log.Printf("[WARN] min_days_remaining is set to less than 0, certificate will never be renewed")
+		return false, nil
 	}
 
 	if int64(mindays) >= remaining {

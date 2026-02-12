@@ -282,9 +282,20 @@ func TestACME_certDaysRemaining_CACert(t *testing.T) {
 	}
 }
 
+func TestACME_certLifetimeDays_CACert(t *testing.T) {
+	b := testBadCertBundleText
+	c := &certificate.Resource{
+		Certificate: []byte(b),
+	}
+	_, err := certLifetimeDays(c)
+	if err == nil {
+		t.Fatalf("expected error due to cert being a CA")
+	}
+}
+
 func TestACME_splitPEMBundle_noData(t *testing.T) {
 	b := []byte{}
-	_, _, _, _, err := splitPEMBundle(b)
+	_, _, _, _, _, err := splitPEMBundle(b)
 	if err == nil {
 		t.Fatalf("expected error due to no PEM data")
 	}
@@ -292,7 +303,7 @@ func TestACME_splitPEMBundle_noData(t *testing.T) {
 
 func TestACME_splitPEMBundle_CAFirst(t *testing.T) {
 	b := testBadCertBundleText + testBadCertBundleText
-	_, _, _, _, err := splitPEMBundle([]byte(b))
+	_, _, _, _, _, err := splitPEMBundle([]byte(b))
 	if err == nil {
 		t.Fatalf("expected error due to CA cert being first")
 	}
@@ -315,7 +326,7 @@ func TestACME_bundleToPKCS12_base64IsPadded(t *testing.T) {
 
 func TestACME_splitPEMBundle_singleCert(t *testing.T) {
 	b := testBadCertBundleText
-	_, _, _, _, err := splitPEMBundle([]byte(b))
+	_, _, _, _, _, err := splitPEMBundle([]byte(b))
 	if err == nil {
 		t.Fatalf("expected error due to only one cert being present")
 	}
