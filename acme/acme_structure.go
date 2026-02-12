@@ -263,7 +263,7 @@ func splitPEMBundle(bundle []byte) (
 	}
 
 	cert = pem.EncodeToMemory(&pem.Block{Type: preambleCertificate, Bytes: cb[0].Raw})
-	certNotBefore = cb[0].NotAfter.Format(time.RFC3339)
+	certNotBefore = cb[0].NotBefore.Format(time.RFC3339)
 	certNotAfter = cb[0].NotAfter.Format(time.RFC3339)
 	certSerial = cb[0].SerialNumber.String()
 	issuer = make([]byte, 0)
