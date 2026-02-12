@@ -1,4 +1,4 @@
-## 2.44.1 (Unreleased)
+## 2.44.1 (February 12, 2026)
 
 This is a change to fix the broken 2.44.0 build. No other changes are being made.
 
