@@ -7,7 +7,8 @@ ENHANCEMENTS:
   fraction of the complete lifetime of the certificate; 1/3 for certificates
   with lifetimes over 10 days, and 1/2 for certificates with lifetimes of 10
   days or less.
-  [#563](https://github.com/vancluever/terraform-provider-acme/pull/563)
+  [#563](https://github.com/vancluever/terraform-provider-acme/pull/563),
+  [#564](https://github.com/vancluever/terraform-provider-acme/pull/564)
 * `resource/acme_certificate`: Added the `validity_days` option to allow
   control over the validity period for an ordered certificate.
   [#561](https://github.com/vancluever/terraform-provider-acme/pull/561)
