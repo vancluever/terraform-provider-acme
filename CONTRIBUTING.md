@@ -7,14 +7,8 @@
 > issue](https://github.com/vancluever/terraform-provider-acme/issues/new/choose)
 > to get your specific problem or feature request looked at.
 
-The Terraform ACME provider is now closed to public pull requests. Any pull
-request opened will be closed using the
-[Vouch](https://github.com/mitchellh/vouch) workflow, with a message directing
-you to this document to explain why.
-
-Note that unlike other projects that might be implementing Vouch, it is
-unlikely I will be opening this project up to external contributors. If you
-have a feature request or bug, please open an issue to get further help.
+The Terraform ACME provider is now closed to public pull requests. If you have
+a feature request or bug, please open an issue to get further help.
 
 **Please do not use AI to open issues**. If you are using AI or an agent to
 understand an issue, take the time to comprehend the output and explain the
@@ -35,12 +29,10 @@ will not burn me out as a maintainer.
 
 The open source landscape has also changed significantly since this project has
 started, particularly recently due to the advent of AI coding tools and agents.
-Vouch has a [great section explaining
-this](https://github.com/mitchellh/vouch/blob/f0591095f3c46406301604874d2482797fab7bab/README.md#why).
-To add to this, on a personal level, I am not very interested in even having to
-engage with content created by AI coding agents and/or other tools (see last
-section). **This is not a blanket judgment of the work produced by such tools,
-or those that use them.** To each their own.
+On a personal level, I am not very interested in even having to engage with
+content created by AI coding agents and/or other tools. **This is not a blanket
+judgment of the work produced by such tools, or those that use them.** To each
+their own.
 
 ## Open source, not open contribution
 
