@@ -1,5 +1,5 @@
 ---
-page_title: "alidns"
+page_title: "todaynic"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Alibaba Cloud DNS DNS Challenge Provider
+# TodayNIC/时代互联 DNS Challenge Provider
 
-The `alidns` DNS challenge provider can be used to perform DNS challenges for
+The `todaynic` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Alibaba Cloud DNS](https://www.alibabacloud.com/product/dns).
+[TodayNIC/时代互联](https://www.todaynic.com/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "alidns"
+    provider = "todaynic"
   }
 }
 ```
@@ -48,16 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `ALICLOUD_ACCESS_KEY` - Access key ID.
-* `ALICLOUD_RAM_ROLE` - Your instance RAM role (https://www.alibabacloud.com/help/en/ecs/user-guide/attach-an-instance-ram-role-to-an-ecs-instance).
-* `ALICLOUD_SECRET_KEY` - Access Key secret.
-* `ALICLOUD_SECURITY_TOKEN` - STS Security Token (optional).
+* `TODAYNIC_API_KEY` - API key.
+* `TODAYNIC_AUTH_USER_ID` - account ID.
 
-* `ALICLOUD_HTTP_TIMEOUT` - API request timeout in seconds (Default: 10).
-* `ALICLOUD_LINE` - Line (Default: default).
-* `ALICLOUD_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `ALICLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `ALICLOUD_REGION_ID` - Region ID (Default: cn-hangzhou).
-* `ALICLOUD_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 600).
+* `TODAYNIC_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `TODAYNIC_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `TODAYNIC_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `TODAYNIC_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 600).
 
 

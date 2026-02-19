@@ -1,5 +1,5 @@
 ---
-page_title: "alidns"
+page_title: "namesurfer"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Alibaba Cloud DNS DNS Challenge Provider
+# FusionLayer NameSurfer DNS Challenge Provider
 
-The `alidns` DNS challenge provider can be used to perform DNS challenges for
+The `namesurfer` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Alibaba Cloud DNS](https://www.alibabacloud.com/product/dns).
+[FusionLayer NameSurfer](https://www.fusionlayer.com/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "alidns"
+    provider = "namesurfer"
   }
 }
 ```
@@ -48,16 +48,15 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `ALICLOUD_ACCESS_KEY` - Access key ID.
-* `ALICLOUD_RAM_ROLE` - Your instance RAM role (https://www.alibabacloud.com/help/en/ecs/user-guide/attach-an-instance-ram-role-to-an-ecs-instance).
-* `ALICLOUD_SECRET_KEY` - Access Key secret.
-* `ALICLOUD_SECURITY_TOKEN` - STS Security Token (optional).
+* `NAMESURFER_API_KEY` - API key name.
+* `NAMESURFER_API_SECRET` - API secret.
+* `NAMESURFER_BASE_URL` - The base URL of NameSurfer API (jsonrpc10) endpoint URL (e.g., https://foo.example.com:8443/API/NSService_10).
 
-* `ALICLOUD_HTTP_TIMEOUT` - API request timeout in seconds (Default: 10).
-* `ALICLOUD_LINE` - Line (Default: default).
-* `ALICLOUD_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `ALICLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `ALICLOUD_REGION_ID` - Region ID (Default: cn-hangzhou).
-* `ALICLOUD_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 600).
+* `NAMESURFER_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `NAMESURFER_INSECURE_SKIP_VERIFY` - Whether to verify the API certificate.
+* `NAMESURFER_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `NAMESURFER_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 120).
+* `NAMESURFER_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
+* `NAMESURFER_VIEW` - DNS view name (optional, default: empty string).
 
 
