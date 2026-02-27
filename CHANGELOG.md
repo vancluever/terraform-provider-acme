@@ -1,3 +1,7 @@
+## 2.45.2-pre (Unreleased)
+
+Bumped version for dev.
+
 ## 2.45.1 (February 27, 2026)
 
 This update contains fixes for
