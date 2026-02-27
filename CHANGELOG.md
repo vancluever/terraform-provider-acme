@@ -1,6 +1,8 @@
-## 2.45.1-pre (Unreleased)
+## 2.45.1 (Unreleased)
 
-Bumped version for dev.
+This update contains fixes for
+[CVE-2026-1229](https://github.com/advisories/GHSA-q9hv-hpm4-hj6x). No other
+changes are being made.
 
 ## 2.45.0 (February 19, 2026)
 
