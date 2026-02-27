@@ -32,7 +32,7 @@
         pkgs.mkShell {
           packages = with pkgs; [
             buf
-            go
+            go_1_26
             golangci-lint
             golangci-lint-langserver
             gopls
