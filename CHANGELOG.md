@@ -1,4 +1,4 @@
-## 2.45.1 (Unreleased)
+## 2.45.1 (February 27, 2026)
 
 This update contains fixes for
 [CVE-2026-1229](https://github.com/advisories/GHSA-q9hv-hpm4-hj6x). No other
