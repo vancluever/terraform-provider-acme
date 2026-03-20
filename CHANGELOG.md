@@ -1,6 +1,11 @@
-## 2.45.2-pre (Unreleased)
+## 2.46.0 (Unreleased)
 
-Bumped version for dev.
+LEGO UPDATE:
+
+[lego](https://github.com/go-acme/lego) has been updated to v4.33.0 See the
+lego [CHANGELOG.md](https://github.com/go-acme/lego/blob/v4.33.0/CHANGELOG.md)
+for more details on additions and changes to DNS providers, and other minor
+changes to the library.
 
 ## 2.45.1 (February 27, 2026)
 
