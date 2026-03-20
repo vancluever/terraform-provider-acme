@@ -1,5 +1,5 @@
 ---
-page_title: "safedns"
+page_title: "czechia"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# ANS SafeDNS DNS Challenge Provider
+# Czechia DNS Challenge Provider
 
-The `safedns` DNS challenge provider can be used to perform DNS challenges for
+The `czechia` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[ANS SafeDNS](https://www.ans.co.uk/).
+[Czechia](https://www.czechia.com/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "safedns"
+    provider = "czechia"
   }
 }
 ```
@@ -48,11 +48,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `SAFEDNS_AUTH_TOKEN` - Authentication token.
+* `CZECHIA_TOKEN` - Authorization token.
 
-* `SAFEDNS_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `SAFEDNS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `SAFEDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `SAFEDNS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
+* `CZECHIA_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `CZECHIA_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `CZECHIA_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `CZECHIA_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

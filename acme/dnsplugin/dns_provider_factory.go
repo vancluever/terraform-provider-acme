@@ -40,6 +40,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/constellix"
 	"github.com/go-acme/lego/v4/providers/dns/corenetworks"
 	"github.com/go-acme/lego/v4/providers/dns/cpanel"
+	"github.com/go-acme/lego/v4/providers/dns/czechia"
 	"github.com/go-acme/lego/v4/providers/dns/ddnss"
 	"github.com/go-acme/lego/v4/providers/dns/derak"
 	"github.com/go-acme/lego/v4/providers/dns/desec"
@@ -64,6 +65,8 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/edgeone"
 	"github.com/go-acme/lego/v4/providers/dns/efficientip"
 	"github.com/go-acme/lego/v4/providers/dns/epik"
+	"github.com/go-acme/lego/v4/providers/dns/eurodns"
+	"github.com/go-acme/lego/v4/providers/dns/excedo"
 	"github.com/go-acme/lego/v4/providers/dns/exec"
 	"github.com/go-acme/lego/v4/providers/dns/exoscale"
 	"github.com/go-acme/lego/v4/providers/dns/f5xc"
@@ -510,6 +513,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"czechia": func() (challenge.Provider, error) {
+		p, err := czechia.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"ddnss": func() (challenge.Provider, error) {
 		p, err := ddnss.NewDNSProvider()
 		if err != nil {
@@ -696,6 +707,22 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"epik": func() (challenge.Provider, error) {
 		p, err := epik.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"eurodns": func() (challenge.Provider, error) {
+		p, err := eurodns.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"excedo": func() (challenge.Provider, error) {
+		p, err := excedo.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

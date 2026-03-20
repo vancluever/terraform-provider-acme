@@ -1,5 +1,5 @@
 ---
-page_title: "safedns"
+page_title: "eurodns"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# ANS SafeDNS DNS Challenge Provider
+# EuroDNS DNS Challenge Provider
 
-The `safedns` DNS challenge provider can be used to perform DNS challenges for
+The `eurodns` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[ANS SafeDNS](https://www.ans.co.uk/).
+[EuroDNS](https://www.eurodns.com/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "safedns"
+    provider = "eurodns"
   }
 }
 ```
@@ -48,11 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `SAFEDNS_AUTH_TOKEN` - Authentication token.
+* `EURODNS_API_KEY` - API key.
+* `EURODNS_APP_ID` - Application ID.
 
-* `SAFEDNS_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `SAFEDNS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `SAFEDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `SAFEDNS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
+* `EURODNS_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `EURODNS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `EURODNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `EURODNS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 600).
 
 
