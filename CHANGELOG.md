@@ -1,4 +1,4 @@
-## 2.46.1 (Unreleased)
+## 2.46.1 (April 3, 2026)
 
 This update contains fixes for
 [CVE-2026-34986](https://github.com/advisories/GHSA-78h2-9frx-2jm8). No other
