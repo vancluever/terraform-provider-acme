@@ -1,6 +1,8 @@
-## 2.46.1-pre (Unreleased)
+## 2.46.1 (Unreleased)
 
-Bumped version for dev.
+This update contains fixes for
+[CVE-2026-34986](https://github.com/advisories/GHSA-78h2-9frx-2jm8). No other
+changes are being made.
 
 ## 2.46.0 (March 20, 2026)
 
