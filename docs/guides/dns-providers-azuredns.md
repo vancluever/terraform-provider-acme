@@ -75,6 +75,16 @@ configuration values:
 * `ARM_SUBSCRIPTION_ID` - alias for `AZURE_SUBSCRIPTION_ID`.
 * `ARM_TENANT_ID` - alias for `AZURE_TENANT_ID`.
 
+-> Note that these configuration aliases exist to provide a uniform experience
+between other major Terraform platform providers and the ACME DNS providers
+that work off of the same platform. If the aliased values exist in the
+environment, they will be used as if they were defined in `config`, possibly
+overriding any target variables you have set manually. To correct this, either
+use the aliased variable name versus the target variable name, or define both.
+Note that using a blank value in the aliased variable will not work, as the
+aliasing process will still consider the value defined, clearing out the target
+value as well.
+
 ## Description
 
 Several authentication methods can be used to authenticate against Azure DNS API.

@@ -3,10 +3,12 @@ package main
 
 import (
 	"bytes"
+	"embed"
 	"encoding/json"
 	"log"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -42,16 +44,30 @@ var providerURLs = map[string]string{
 	"httpreq": "",
 }
 
+// templateFS holds the templates as embedded content.
+//
+//go:embed templates/*
+var templateFS embed.FS
+
+func mustTemplateData(name string) string {
+	data, err := templateFS.ReadFile(path.Join("templates", strings.Join([]string{name, "tmpl"}, ".")))
+	if err != nil {
+		panic(err)
+	}
+
+	return string(data)
+}
+
 // dnsProviderGoTemplate is the template for
 // dnsProviderGoTemplateText.
 var dnsProviderGoTemplate = template.Must(
-	template.New("dns-provider-go-template").Parse(string(MustAsset("templates/dns-provider-go-template.tmpl"))),
+	template.New("dns-provider-go-template").Parse(mustTemplateData("dns-provider-go-template")),
 )
 
 // dnsProviderDocTemplate is the template for DNS provider
 // documentation.
 var dnsProviderDocTemplate = template.Must(
-	template.New("dns-provider-doc-template").Parse(string(MustAsset("templates/dns-provider-doc-template.tmpl"))),
+	template.New("dns-provider-doc-template").Parse(mustTemplateData("dns-provider-doc-template")),
 )
 
 // legoPkgPath is the root lego package path to use.
