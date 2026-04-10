@@ -1,4 +1,4 @@
-## 2.46.2 (Unreleased)
+## 2.46.2 (April 9, 2026)
 
 This update contains fixes for
 [GHSA-xmrv-pmrh-hhx2](https://github.com/advisories/GHSA-xmrv-pmrh-hhx2). No
