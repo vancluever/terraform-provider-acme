@@ -132,6 +132,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/neodigit"
 	"github.com/go-acme/lego/v4/providers/dns/netcup"
 	"github.com/go-acme/lego/v4/providers/dns/netlify"
+	"github.com/go-acme/lego/v4/providers/dns/netnod"
 	"github.com/go-acme/lego/v4/providers/dns/nicmanager"
 	"github.com/go-acme/lego/v4/providers/dns/nicru"
 	"github.com/go-acme/lego/v4/providers/dns/nifcloud"
@@ -139,6 +140,8 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/nodion"
 	"github.com/go-acme/lego/v4/providers/dns/ns1"
 	"github.com/go-acme/lego/v4/providers/dns/octenium"
+	"github.com/go-acme/lego/v4/providers/dns/onecloudru"
+	"github.com/go-acme/lego/v4/providers/dns/onlinenet"
 	"github.com/go-acme/lego/v4/providers/dns/oraclecloud"
 	"github.com/go-acme/lego/v4/providers/dns/otc"
 	"github.com/go-acme/lego/v4/providers/dns/ovh"
@@ -171,6 +174,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/timewebcloud"
 	"github.com/go-acme/lego/v4/providers/dns/todaynic"
 	"github.com/go-acme/lego/v4/providers/dns/transip"
+	"github.com/go-acme/lego/v4/providers/dns/ucloud"
 	"github.com/go-acme/lego/v4/providers/dns/ultradns"
 	"github.com/go-acme/lego/v4/providers/dns/uniteddomains"
 	"github.com/go-acme/lego/v4/providers/dns/variomedia"
@@ -1249,6 +1253,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"netnod": func() (challenge.Provider, error) {
+		p, err := netnod.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"nicmanager": func() (challenge.Provider, error) {
 		p, err := nicmanager.NewDNSProvider()
 		if err != nil {
@@ -1299,6 +1311,22 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"octenium": func() (challenge.Provider, error) {
 		p, err := octenium.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"onecloudru": func() (challenge.Provider, error) {
+		p, err := onecloudru.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"onlinenet": func() (challenge.Provider, error) {
+		p, err := onlinenet.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -1555,6 +1583,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"transip": func() (challenge.Provider, error) {
 		p, err := transip.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"ucloud": func() (challenge.Provider, error) {
+		p, err := ucloud.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}

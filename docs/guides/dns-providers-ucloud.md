@@ -1,5 +1,5 @@
 ---
-page_title: "bluecatv2"
+page_title: "ucloud"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Bluecat v2 DNS Challenge Provider
+# UCloud DNS Challenge Provider
 
-The `bluecatv2` DNS challenge provider can be used to perform DNS challenges for
+The `ucloud` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Bluecat v2](https://www.bluecatnetworks.com).
+[UCloud](https://www.ucloud.cn/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "bluecatv2"
+    provider = "ucloud"
   }
 }
 ```
@@ -48,16 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `BLUECATV2_CONFIG_NAME` - Configuration name.
-* `BLUECATV2_PASSWORD` - API password.
-* `BLUECATV2_SERVER_URL` - The server URL: it should have a scheme, hostname, and port (if required) of the authoritative Bluecat BAM serve.
-* `BLUECATV2_USERNAME` - API username.
-* `BLUECATV2_VIEW_NAME` - DNS View Name.
+* `UCLOUD_PRIVATE_KEY` - Private key.
+* `UCLOUD_PUBLIC_KEY` - Public key.
 
-* `BLUECATV2_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `BLUECATV2_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `BLUECATV2_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `BLUECATV2_SKIP_DEPLOY` - Skip quick deployements.
-* `BLUECATV2_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
+* `UCLOUD_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `UCLOUD_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `UCLOUD_PROJECT_ID` - Project ID.
+* `UCLOUD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `UCLOUD_REGION` - Region.
+* `UCLOUD_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 600).
 
 

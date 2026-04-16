@@ -49,16 +49,18 @@ supplied by supplying the argument with the `_FILE` suffix. See
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
 * `OCI_COMPARTMENT_OCID` - Compartment OCID.
-* `OCI_FINGERPRINT` - Public key fingerprint (ignored if `OCI_AUTH_TYPE=instance_principal`).
-* `OCI_PRIVATE_KEY_PASSWORD` - Private key password (ignored if `OCI_AUTH_TYPE=instance_principal`).
-* `OCI_PRIVATE_KEY_PATH` - Private key file (ignored if `OCI_AUTH_TYPE=instance_principal`).
-* `OCI_REGION` - Region (it can be empty if `OCI_AUTH_TYPE=instance_principal`)..
-* `OCI_TENANCY_OCID` - Tenancy OCID (ignored if `OCI_AUTH_TYPE=instance_principal`).
-* `OCI_USER_OCID` - User OCID (ignored if `OCI_AUTH_TYPE=instance_principal`).
+* `OCI_FINGERPRINT` - Public key fingerprint (ignored if `OCI_AUTH_TYPE` is not empty).
+* `OCI_PRIVATE_KEY_PASSWORD` - Private key password (ignored if `OCI_AUTH_TYPE` is not empty).
+* `OCI_PRIVATE_KEY_PATH` - Private key file (ignored if `OCI_AUTH_TYPE` is not empty).
+* `OCI_REGION` - Region (it can be empty if `OCI_AUTH_TYPE` is not empty)..
+* `OCI_TENANCY_OCID` - Tenancy OCID (ignored if `OCI_AUTH_TYPE` is not empty).
+* `OCI_USER_OCID` - User OCID (ignored if `OCI_AUTH_TYPE` is not empty).
 
-* `OCI_AUTH_TYPE` - Authorization type. Possible values: 'instance_principal', ''  (Default: '').
+* `OCI_AUTH_TYPE` - Authorization type. Possible values: 'instance_principal', 'user_principal', ''. (Default: '').
+* `OCI_CONFIG_FILE` - Path to the configuration file. (only for `OCI_AUTH_TYPE=user_principal`).
 * `OCI_HTTP_TIMEOUT` - API request timeout in seconds (Default: 60).
 * `OCI_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `OCI_PROFILE` - Profile name. (only for `OCI_AUTH_TYPE=user_principal`).
 * `OCI_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
 * `OCI_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 * `TF_VAR_fingerprint` - Alias on `OCI_FINGERPRINT`.
