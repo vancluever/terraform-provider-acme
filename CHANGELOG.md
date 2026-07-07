@@ -1,3 +1,7 @@
+## 2.48.3-pre (Unreleased)
+
+Bumped version for dev.
+
 ## 2.48.2 (July 7, 2026)
 
 This update contains fixes for
