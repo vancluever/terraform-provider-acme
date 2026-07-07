@@ -1,6 +1,8 @@
-## 2.48.2-pre (Unreleased)
+## 2.48.2 (Unreleased)
 
-Bumped version for dev.
+This update contains fixes for
+[CVE-2026-25680](https://github.com/advisories/GHSA-5cv4-jp36-h3mw). No other
+changes are being made.
 
 ## 2.48.1 (April 28, 2026)
 
