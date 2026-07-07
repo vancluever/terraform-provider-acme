@@ -1,4 +1,4 @@
-## 2.48.2 (Unreleased)
+## 2.48.2 (July 7, 2026)
 
 This update contains fixes for
 [CVE-2026-25680](https://github.com/advisories/GHSA-5cv4-jp36-h3mw). No other
