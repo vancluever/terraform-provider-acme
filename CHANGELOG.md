@@ -1,6 +1,9 @@
-## 2.48.3-pre (Unreleased)
+## 2.48.3 (Unreleased)
 
-Bumped version for dev.
+This update contains fixes for several security advisories associated with
+`golang.org/x/crypto` (see
+[#458](https://github.com/vancluever/terraform-provider-acme/pull/458). No
+other changes are being made.
 
 ## 2.48.2 (July 7, 2026)
 
