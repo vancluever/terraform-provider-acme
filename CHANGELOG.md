@@ -1,3 +1,7 @@
+## 2.48.4-pre (Unreleased)
+
+Bumped version for dev.
+
 ## 2.48.3 (July 10, 2026)
 
 This update contains fixes for several security advisories associated with
