@@ -32,7 +32,13 @@
         pkgs.mkShell {
           packages = with pkgs; [
             buf
-            go_1_26
+            (go_1_26.overrideAttrs rec {
+              version = "1.26.5";
+              src = fetchurl {
+                url = "https://go.dev/dl/go${version}.src.tar.gz";
+                hash = "sha256-SVvkvIcXasVnOS5bQRar2YRm0z17SdQedkzMaXay3EI=";
+              };
+            })
             golangci-lint
             golangci-lint-langserver
             gopls
