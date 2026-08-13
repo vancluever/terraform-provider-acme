@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/go-acme/lego/v4/challenge"
-	"github.com/go-acme/lego/v4/challenge/dns01"
+	"github.com/go-acme/lego/v5/challenge"
+	"github.com/go-acme/lego/v5/challenge/dns01"
 	"github.com/hashicorp/go-plugin"
 	dnspluginproto "github.com/vancluever/terraform-provider-acme/v2/proto/dnsplugin/v1"
 	"google.golang.org/grpc"
@@ -62,7 +62,10 @@ type DnsProviderServer struct {
 	provider challenge.Provider
 }
 
-func (s *DnsProviderServer) Configure(ctx context.Context, req *dnspluginproto.ConfigureRequest) (*dnspluginproto.ConfigureResponse, error) {
+func (s *DnsProviderServer) Configure(
+	ctx context.Context,
+	req *dnspluginproto.ConfigureRequest,
+) (*dnspluginproto.ConfigureResponse, error) {
 	providerFunc, ok := dnsProviderFactory[req.GetProviderName()]
 	if !ok {
 		return nil, fmt.Errorf("unknown provider name %q", req.GetProviderName())
@@ -72,9 +75,11 @@ func (s *DnsProviderServer) Configure(ctx context.Context, req *dnspluginproto.C
 		// Configure recursive nameservers in the dns01 package. Some providers use
 		// functionality in dns01 that depend on these and the changes made in the
 		// parent process will not propagate.
-		if err := dns01.AddRecursiveNameservers(req.GetRecursiveNameservers())(nil); err != nil {
-			return nil, fmt.Errorf("error setting recursive nameservers: %w", err)
+		options := dns01.Options{
+			RecursiveNameservers: req.GetRecursiveNameservers(),
 		}
+		client := dns01.NewClient(&options)
+		dns01.SetDefaultClient(client)
 	}
 
 	// Set env before configuring provider
@@ -91,15 +96,34 @@ func (s *DnsProviderServer) Configure(ctx context.Context, req *dnspluginproto.C
 	return &dnspluginproto.ConfigureResponse{}, nil
 }
 
-func (m *DnsProviderServer) Present(ctx context.Context, req *dnspluginproto.PresentRequest) (*dnspluginproto.PresentResponse, error) {
-	return &dnspluginproto.PresentResponse{}, m.provider.Present(req.GetDomain(), req.GetToken(), req.GetKeyAuth())
+func (m *DnsProviderServer) Present(
+	ctx context.Context,
+	req *dnspluginproto.PresentRequest,
+) (*dnspluginproto.PresentResponse, error) {
+	return &dnspluginproto.PresentResponse{}, m.provider.Present(
+		context.TODO(),
+		req.GetDomain(),
+		req.GetToken(),
+		req.GetKeyAuth(),
+	)
 }
 
-func (m *DnsProviderServer) CleanUp(ctx context.Context, req *dnspluginproto.CleanUpRequest) (*dnspluginproto.CleanUpResponse, error) {
-	return &dnspluginproto.CleanUpResponse{}, m.provider.CleanUp(req.GetDomain(), req.GetToken(), req.GetKeyAuth())
+func (m *DnsProviderServer) CleanUp(
+	ctx context.Context,
+	req *dnspluginproto.CleanUpRequest,
+) (*dnspluginproto.CleanUpResponse, error) {
+	return &dnspluginproto.CleanUpResponse{}, m.provider.CleanUp(
+		context.TODO(),
+		req.GetDomain(),
+		req.GetToken(),
+		req.GetKeyAuth(),
+	)
 }
 
-func (m *DnsProviderServer) Timeout(ctx context.Context, req *dnspluginproto.TimeoutRequest) (*dnspluginproto.TimeoutResponse, error) {
+func (m *DnsProviderServer) Timeout(
+	ctx context.Context,
+	req *dnspluginproto.TimeoutRequest,
+) (*dnspluginproto.TimeoutResponse, error) {
 	var timeout, interval time.Duration
 	if pt, ok := m.provider.(challenge.ProviderTimeout); ok {
 		timeout, interval = pt.Timeout()
@@ -116,7 +140,10 @@ type sequential interface {
 	Sequential() time.Duration
 }
 
-func (m *DnsProviderServer) IsSequential(ctx context.Context, req *dnspluginproto.IsSequentialRequest) (*dnspluginproto.IsSequentialResponse, error) {
+func (m *DnsProviderServer) IsSequential(
+	ctx context.Context,
+	req *dnspluginproto.IsSequentialRequest,
+) (*dnspluginproto.IsSequentialResponse, error) {
 	var seqOk bool
 	var interval time.Duration
 	if pt, ok := m.provider.(sequential); ok {

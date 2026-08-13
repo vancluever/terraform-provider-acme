@@ -48,13 +48,14 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `GIGAHOSTNO_PASSWORD` - Password.
-* `GIGAHOSTNO_USERNAME` - Username.
+* `GIGAHOSTNO_API_KEY` - API key (optionnal of GIGAHOSTNO_USERNAME and GIGAHOSTNO_PASSWORD are defined).
+* `GIGAHOSTNO_PASSWORD` - Password (optional if GIGAHOSTNO_API_KEY is defined).
+* `GIGAHOSTNO_USERNAME` - Username (optional if GIGAHOSTNO_API_KEY is defined).
 
 * `GIGAHOSTNO_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
 * `GIGAHOSTNO_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
 * `GIGAHOSTNO_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `GIGAHOSTNO_SECRET` - TOTP secret.
+* `GIGAHOSTNO_SECRET` - TOTP secret (Only usable with username/password).
 * `GIGAHOSTNO_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

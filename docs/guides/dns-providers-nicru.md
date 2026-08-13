@@ -51,7 +51,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `NICRU_PASSWORD` - Password for an account in RU CENTER.
 * `NICRU_SECRET` - Secret for application in DNS-hosting RU CENTER.
 * `NICRU_SERVICE_ID` - Service ID for application in DNS-hosting RU CENTER.
-* `NICRU_SERVICE_NAME` - Service Name for DNS-hosting RU CENTER.
 * `NICRU_USER` - Agreement for an account in RU CENTER.
 
 * `NICRU_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 60).

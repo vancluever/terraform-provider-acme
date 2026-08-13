@@ -1,5 +1,5 @@
 ---
-page_title: "iij"
+page_title: "hostup"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Internet Initiative Japan DNS Challenge Provider
+# HostUp DNS Challenge Provider
 
-The `iij` DNS challenge provider can be used to perform DNS challenges for
+The `hostup` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Internet Initiative Japan](https://www.iij.ad.jp/en/).
+[HostUp](https://hostup.se/en/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "iij"
+    provider = "hostup"
   }
 }
 ```
@@ -48,12 +48,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `IIJ_API_ACCESS_KEY` - API access key.
-* `IIJ_API_SECRET_KEY` - API secret key.
-* `IIJ_DO_SERVICE_CODE` - DO service code.
+* `HOSTUP_API_KEY` - API token (required scopes: read:dns, write:dns, read:domains).
 
-* `IIJ_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 4).
-* `IIJ_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 240).
-* `IIJ_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
+* `HOSTUP_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `HOSTUP_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `HOSTUP_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `HOSTUP_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

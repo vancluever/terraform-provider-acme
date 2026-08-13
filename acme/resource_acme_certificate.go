@@ -9,11 +9,12 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/go-acme/lego/v4/acme"
-	"github.com/go-acme/lego/v4/acme/api"
-	"github.com/go-acme/lego/v4/certificate"
-	"github.com/go-acme/lego/v4/challenge/dns01"
-	"github.com/go-acme/lego/v4/lego"
+	"github.com/go-acme/lego/v5/acme"
+	"github.com/go-acme/lego/v5/acme/api"
+	"github.com/go-acme/lego/v5/certcrypto"
+	"github.com/go-acme/lego/v5/certificate"
+	"github.com/go-acme/lego/v5/challenge/dns01"
+	"github.com/go-acme/lego/v5/lego"
 	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -37,9 +38,9 @@ const (
 // resourceACMECertificate returns the current version of the
 // acme_registration resource and needs to be updated when the schema
 // version is incremented.
-func resourceACMECertificate() *schema.Resource { return resourceACMECertificateV5() }
+func resourceACMECertificate() *schema.Resource { return resourceACMECertificateV6() }
 
-func resourceACMECertificateV5() *schema.Resource {
+func resourceACMECertificateV6() *schema.Resource {
 	return &schema.Resource{
 		Create:        resourceACMECertificateCreate,
 		Read:          resourceACMECertificateRead,
@@ -47,9 +48,9 @@ func resourceACMECertificateV5() *schema.Resource {
 		Update:        resourceACMECertificateUpdate,
 		Delete:        resourceACMECertificateDelete,
 		MigrateState:  resourceACMECertificateMigrateState,
-		SchemaVersion: 5,
+		SchemaVersion: 6,
 		StateUpgraders: []schema.StateUpgrader{
-			resourceACMECertificateStateUpgraderV4(),
+			resourceACMECertificateStateUpgraderV5(),
 		},
 		Schema: map[string]*schema.Schema{
 			"account_key_pem": {
@@ -78,7 +79,7 @@ func resourceACMECertificateV5() *schema.Resource {
 				Type:          schema.TypeString,
 				Optional:      true,
 				ForceNew:      true,
-				Default:       "2048",
+				Default:       "RSA2048",
 				ConflictsWith: []string{"certificate_request_pem"},
 				ValidateFunc:  validateKeyType,
 			},
@@ -445,11 +446,12 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta any) error {
 		if err != nil {
 			return err
 		}
-		cert, err = client.Certificate.ObtainForCSR(certificate.ObtainForCSRRequest{
+		cert, err = client.Certificate.ObtainForCSR(context.TODO(), certificate.ObtainForCSRRequest{
 			CSR:                            csr,
 			NotAfter:                       notAfter,
 			Bundle:                         true,
 			PreferredChain:                 d.Get("preferred_chain").(string),
+			EnableCommonName:               true,
 			Profile:                        d.Get("profile").(string),
 			AlwaysDeactivateAuthorizations: d.Get("deactivate_authorizations").(bool),
 		})
@@ -468,12 +470,14 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta any) error {
 			}
 		}
 
-		cert, err = client.Certificate.Obtain(certificate.ObtainRequest{
+		cert, err = client.Certificate.Obtain(context.TODO(), certificate.ObtainRequest{
 			Domains:                        domains,
+			KeyType:                        certcrypto.KeyType(d.Get("key_type").(string)),
 			NotAfter:                       notAfter,
 			Bundle:                         true,
 			MustStaple:                     d.Get("must_staple").(bool),
 			PreferredChain:                 d.Get("preferred_chain").(string),
+			EnableCommonName:               true,
 			Profile:                        d.Get("profile").(string),
 			AlwaysDeactivateAuthorizations: d.Get("deactivate_authorizations").(bool),
 		})
@@ -504,7 +508,7 @@ func resourceACMECertificateRead(d *schema.ResourceData, meta any) error {
 		// the certificate.
 		//
 		// Try to recover the certificate from the ACME API.
-		srcCR, err := client.Certificate.Get(d.Get("certificate_url").(string), true)
+		srcCR, err := client.Certificate.Get(context.TODO(), d.Get("certificate_url").(string), true)
 		if err != nil {
 			// There are probably some cases that we will want to just drop
 			// the resource if there's been an issue, but seeing as this is
@@ -712,9 +716,9 @@ func resourceACMECertificateDelete(d *schema.ResourceData, meta any) error {
 			if err != nil {
 				return err
 			}
-			return client.Certificate.RevokeWithReason(cert.Certificate, &reasonNum)
+			return client.Certificate.RevokeWithReason(context.TODO(), cert.Certificate, &reasonNum)
 		}
-		return client.Certificate.Revoke(cert.Certificate)
+		return client.Certificate.Revoke(context.TODO(), cert.Certificate)
 	}
 	return nil
 }
@@ -782,8 +786,8 @@ func resourceACMECertificatePreCheckDelay(delay int) dns01.WrapPreCheckFunc {
 		interval = 10
 	}
 
-	return func(domain, fqdn, value string, orig dns01.PreCheckFunc) (bool, error) {
-		stop, err := orig(fqdn, value)
+	return func(ctx context.Context, domain, fqdn, value string, orig dns01.PreCheckFunc) (bool, error) {
+		stop, err := orig(ctx, fqdn, value)
 		if stop && err == nil {
 			// Run the delay. TODO: Eventually make this interruptible.
 			var elapsed int
@@ -880,9 +884,7 @@ func resourceACMECertificateRenewalInfoRefresh(
 		return nil
 	}
 
-	renewalInfoResp, err := client.Certificate.GetRenewalInfo(certificate.RenewalInfoRequest{
-		Cert: cert,
-	})
+	renewalInfoResp, err := client.Certificate.GetRenewalInfo(context.TODO(), cert)
 	if err != nil {
 		if errors.Is(err, api.ErrNoARI) {
 			// No ARI detail, set blank values and return

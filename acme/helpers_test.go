@@ -1,5 +1,21 @@
 package acme
 
+// NOTE: These tests cover the various functions found in the helper_*.go
+// files. It used to be named "structure_test.go", providing coverage to the
+// "acme_structure.go" file, before that file was split into separate
+// categories itself.
+//
+// "_structure.go" is a very old Terraform provider development pattern that
+// described structure helpers for resource data, but as can be seen here and
+// the individual helper files, that pattern is very ambiguous and this
+// ultimately leaked into a catch-all helper style kind of thing.
+//
+// The value of these tests are debatable as the true valuable tests reside in
+// the provider acceptance tests, but given that they function, they are *not*
+// not valuable. As such, they reside here, given that this provider will
+// likely not see major development in a way that removes these helpers in
+// favor of unrolled functionality in the provider resources.
+
 import (
 	"crypto/ecdsa"
 	"crypto/ed25519"
@@ -11,7 +27,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-acme/lego/v4/certificate"
+	"github.com/go-acme/lego/v5/certificate"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -333,7 +349,7 @@ func TestACME_splitPEMBundle_singleCert(t *testing.T) {
 }
 
 func TestACME_validateKeyType(t *testing.T) {
-	s := "2048"
+	s := "RSA2048"
 
 	_, errs := validateKeyType(s, "key_type")
 	if len(errs) > 0 {

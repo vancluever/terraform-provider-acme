@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-acme/lego/v4/challenge/dns01"
+	"github.com/go-acme/lego/v5/challenge/dns01"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 

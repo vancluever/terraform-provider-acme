@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/go-acme/lego/v5/certcrypto"
 	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/mitchellh/copystructure"
@@ -40,6 +41,17 @@ func resourceACMERegistrationStateUpgraderV1Func(
 }
 
 // resourceACMECertificateStateUpgraderV4 returns the state upgrader
+// that handles migrations from version 5 to version 6 for
+// acme_certificate.
+func resourceACMECertificateStateUpgraderV5() schema.StateUpgrader {
+	return schema.StateUpgrader{
+		Version: 5,
+		Type:    resourceACMECertificateV5().CoreConfigSchema().ImpliedType(),
+		Upgrade: resourceACMECertificateStateUpgraderV5Func,
+	}
+}
+
+// resourceACMECertificateStateUpgraderV4 returns the state upgrader
 // that handles migrations from version 4 to version 5 for
 // acme_certificate.
 func resourceACMECertificateStateUpgraderV4() schema.StateUpgrader {
@@ -48,6 +60,35 @@ func resourceACMECertificateStateUpgraderV4() schema.StateUpgrader {
 		Type:    resourceACMECertificateV4().CoreConfigSchema().ImpliedType(),
 		Upgrade: resourceACMECertificateStateUpgraderV4Func,
 	}
+}
+
+// resourceACMECertificateStateUpgraderV5Func provides Terraform 0.12
+// state upgrade functionality from schema version 5 to schema
+// version 6 for acme_certificate.
+func resourceACMECertificateStateUpgraderV5Func(
+	_ context.Context,
+	rawState map[string]any,
+	meta any,
+) (map[string]any, error) {
+	z, err := copystructure.Copy(rawState)
+	if err != nil {
+		return nil, err
+	}
+	result := z.(map[string]any)
+
+	oldKeyType, ok := rawState["key_type"]
+	if ok {
+		switch oldKeyType.(string) {
+		case "2048":
+			result["key_type"] = certcrypto.RSA2048.String()
+		case "4096":
+			result["key_type"] = certcrypto.RSA4096.String()
+		case "8192":
+			result["key_type"] = certcrypto.RSA8192.String()
+		}
+	}
+
+	return result, nil
 }
 
 // resourceACMECertificateStateUpgraderV4Func provides Terraform 0.12

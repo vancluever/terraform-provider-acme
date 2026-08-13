@@ -1,5 +1,5 @@
 ---
-page_title: "cloudxns"
+page_title: "wannafind"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# CloudXNS (Deprecated) DNS Challenge Provider
+# Wannafind DNS Challenge Provider
 
-The `cloudxns` DNS challenge provider can be used to perform DNS challenges for
+The `wannafind` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[CloudXNS (Deprecated)](https://github.com/go-acme/lego/issues/2323).
+[Wannafind](https://www.wannafind.dk/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "cloudxns"
+    provider = "wannafind"
   }
 }
 ```
@@ -48,12 +48,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `CLOUDXNS_API_KEY` - The API key.
-* `CLOUDXNS_SECRET_KEY` - The API secret key.
+* `WANNAFIND_API_KEY` - API key.
 
-* `CLOUDXNS_HTTP_TIMEOUT` - API request timeout in seconds (Default: ).
-* `CLOUDXNS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: ).
-* `CLOUDXNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: ).
-* `CLOUDXNS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: ).
+* `WANNAFIND_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `WANNAFIND_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `WANNAFIND_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `WANNAFIND_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

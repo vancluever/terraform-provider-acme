@@ -1,5 +1,5 @@
 ---
-page_title: "rfc2136"
+page_title: "dnsupdate"
 subcategory: "DNS Providers"
 ---
 
@@ -10,7 +10,7 @@ apply to the Terraform provider as well.
 
 # DNS Update (RFC2136) DNS Challenge Provider
 
-The `rfc2136` DNS challenge provider can be used to perform DNS challenges for
+The `dnsupdate` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
 [DNS Update (RFC2136)](https://www.rfc-editor.org/rfc/rfc2136.html).
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "rfc2136"
+    provider = "dnsupdate"
   }
 }
 ```
@@ -84,7 +84,7 @@ DNSUPDATE_TSIG_ALGORITHM=gss-tsig. \
 DNSUPDATE_RFC3645_REALM=realm.example
 DNSUPDATE_RFC3645_USERNAME='xxx'
 DNSUPDATE_RFC3645_PASSWORD='yyy'
-lego --dns dnsupdate -d '*.example.com' -d example.com run
+lego run --dns dnsupdate -d '*.example.com' -d example.com
 ```
 
 ```bash
@@ -95,6 +95,6 @@ DNSUPDATE_TSIG_ALGORITHM=gss-tsig. \
 DNSUPDATE_RFC3645_REALM=realm.example \
 DNSUPDATE_RFC3645_USERNAME='xxx' \
 DNSUPDATE_RFC3645_KEYTAB_FILE="/path/to/my.keytab" \
-lego --dns dnsupdate -d '*.example.com' -d example.com run
+lego run --dns dnsupdate -d '*.example.com' -d example.com
 ```
 

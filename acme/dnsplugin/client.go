@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"time"
 
-	"github.com/go-acme/lego/v4/challenge"
+	"github.com/go-acme/lego/v5/challenge"
 	"github.com/hashicorp/go-plugin"
 	dnspluginproto "github.com/vancluever/terraform-provider-acme/v2/proto/dnsplugin/v1"
 )
@@ -99,8 +99,8 @@ func (m *DnsProviderClient) Configure(providerName string, config map[string]str
 	return err
 }
 
-func (m *DnsProviderClient) Present(domain, token, keyAuth string) error {
-	_, err := m.client.Present(context.Background(), &dnspluginproto.PresentRequest{
+func (m *DnsProviderClient) Present(ctx context.Context, domain, token, keyAuth string) error {
+	_, err := m.client.Present(ctx, &dnspluginproto.PresentRequest{
 		Domain:  domain,
 		Token:   token,
 		KeyAuth: keyAuth,
@@ -108,8 +108,8 @@ func (m *DnsProviderClient) Present(domain, token, keyAuth string) error {
 	return err
 }
 
-func (m *DnsProviderClient) CleanUp(domain, token, keyAuth string) error {
-	_, err := m.client.CleanUp(context.Background(), &dnspluginproto.CleanUpRequest{
+func (m *DnsProviderClient) CleanUp(ctx context.Context, domain, token, keyAuth string) error {
+	_, err := m.client.CleanUp(ctx, &dnspluginproto.CleanUpRequest{
 		Domain:  domain,
 		Token:   token,
 		KeyAuth: keyAuth,
