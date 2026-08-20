@@ -191,7 +191,7 @@ func expandDNSChallenge(m map[string]any, nameServers []string) (dnsplugin.NewCl
 func expandDNSChallengeOptions(d *schema.ResourceData) []dns01.ChallengeOption {
 	var opts []dns01.ChallengeOption
 
-	if d.Get("disable_complete_propagation").(bool) {
+	if d.Get("disable_authoritative_propagation").(bool) {
 		opts = append(opts, dns01.DisableAuthoritativeNssPropagationRequirement())
 	}
 

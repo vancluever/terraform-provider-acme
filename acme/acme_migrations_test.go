@@ -90,11 +90,13 @@ func testACMECertificateStateData012V6() map[string]any {
 			},
 		},
 		"recursive_nameservers": []any{"my.name.server"},
-		"must_staple":           "0",
-		"certificate_domain":    "foobar",
-		"private_key_pem":       "certkey",
-		"certificate_pem":       "certpem",
-		"certificate_url":       "certurl",
+		// NOTE: disable_complete_propagation added manually for v5 fixture in v5 -> v6 test
+		"disable_authoritative_propagation": "1",
+		"must_staple":                       "0",
+		"certificate_domain":                "foobar",
+		"private_key_pem":                   "certkey",
+		"certificate_pem":                   "certpem",
+		"certificate_url":                   "certurl",
 	}
 }
 
@@ -133,7 +135,9 @@ func testACMERegistrationStateData012V2() map[string]any {
 
 func TestResourceACMECertificateStateUpgraderV5Func(t *testing.T) {
 	expected := testACMECertificateStateData012V6()
-	actual, err := resourceACMECertificateStateUpgraderV5Func(context.TODO(), testACMECertificateStateData012V5(), nil)
+	v5State := testACMECertificateStateData012V5()
+	v5State["disable_complete_propagation"] = "1"
+	actual, err := resourceACMECertificateStateUpgraderV5Func(context.TODO(), v5State, nil)
 	if err != nil {
 		t.Fatalf("error migrating state: %s", err)
 	}

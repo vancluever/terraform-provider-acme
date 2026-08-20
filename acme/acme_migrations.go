@@ -76,8 +76,7 @@ func resourceACMECertificateStateUpgraderV5Func(
 	}
 	result := z.(map[string]any)
 
-	oldKeyType, ok := rawState["key_type"]
-	if ok {
+	if oldKeyType, ok := rawState["key_type"]; ok {
 		switch oldKeyType.(string) {
 		case "2048":
 			result["key_type"] = certcrypto.RSA2048.String()
@@ -86,6 +85,11 @@ func resourceACMECertificateStateUpgraderV5Func(
 		case "8192":
 			result["key_type"] = certcrypto.RSA8192.String()
 		}
+	}
+
+	if disableCompletePropagation, ok := rawState["disable_complete_propagation"]; ok {
+		result["disable_authoritative_propagation"] = disableCompletePropagation
+		delete(result, "disable_complete_propagation")
 	}
 
 	return result, nil

@@ -1376,7 +1376,7 @@ resource "acme_certificate" "certificate" {
   subject_alternative_names = ["www2.${var.domain}"]
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
 
   dns_challenge {
     provider = "exec"
@@ -1419,7 +1419,7 @@ resource "acme_certificate" "certificate" {
   subject_alternative_names = ["www2.${var.domain}"]
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
 
   revoke_certificate_reason = "superseded"
 
@@ -1476,7 +1476,7 @@ resource "acme_certificate" "certificate" {
   certificate_request_pem = "${tls_cert_request.req.cert_request_pem}"
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
 
   dns_challenge {
     provider = "exec"
@@ -1531,7 +1531,7 @@ resource "acme_certificate" "certificate" {
 	certificate_request_pem = "${tls_cert_request.req.cert_request_pem}"
 
   recursive_nameservers        = ["%s"]
-	disable_complete_propagation = true
+	disable_authoritative_propagation = true
 	preferred_chain = "%s"
 
   dns_challenge {
@@ -1586,7 +1586,7 @@ resource "acme_certificate" "certificate" {
   min_days_remaining      = 1
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
 
   dns_challenge {
     provider = "exec"
@@ -1629,7 +1629,7 @@ resource "acme_certificate" "certificate" {
   min_days_remaining = 18250
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
 
   dns_challenge {
     provider = "exec"
@@ -1671,7 +1671,7 @@ resource "acme_certificate" "certificate" {
   common_name     = "*.${var.domain}"
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
 
   dns_challenge {
     provider = "exec"
@@ -1719,7 +1719,7 @@ resource "acme_certificate" "certificate" {
   certificate_p12_password  = "${var.password}"
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
 
   dns_challenge {
     provider = "exec"
@@ -1763,7 +1763,7 @@ resource "acme_certificate" "certificate" {
   subject_alternative_names = ["www15.${var.domain}"]
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
   propagation_wait             = %d
 
   dns_challenge {
@@ -1808,7 +1808,7 @@ resource "acme_certificate" "certificate" {
   subject_alternative_names = ["www17.${var.domain}"]
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
   pre_check_delay              = %d
 
   dns_challenge {
@@ -1853,7 +1853,7 @@ resource "acme_certificate" "certificate" {
   subject_alternative_names = ["test-dupe.${var.domain}"]
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
 
   dns_challenge {
     provider = "exec"
@@ -1896,7 +1896,7 @@ resource "acme_certificate" "certificate" {
   subject_alternative_names = ["test-preferred2.${var.domain}"]
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
   preferred_chain = "%s"
 
   dns_challenge {
@@ -2149,7 +2149,7 @@ resource "acme_certificate" "certificate" {
   subject_alternative_names = ["test-no-revoke2.${var.domain}"]
 
   recursive_nameservers         = ["%s"]
-  disable_complete_propagation  = true
+  disable_authoritative_propagation  = true
   revoke_certificate_on_destroy = false
 
   dns_challenge {
@@ -2191,7 +2191,7 @@ resource "acme_certificate" "certificate" {
   account_key_pem           = "${acme_registration.reg.account_key_pem}"
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
 
   dns_challenge {
     provider = "exec"
@@ -2233,7 +2233,7 @@ resource "acme_certificate" "certificate" {
   subject_alternative_names = ["www.${var.domain}"]
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
 
   dns_challenge {
     provider = "exec"
@@ -2277,7 +2277,7 @@ resource "acme_certificate" "certificate" {
   min_days_remaining        = 1
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
 
   dns_challenge {
     provider = "exec"
@@ -2322,7 +2322,7 @@ resource "acme_certificate" "certificate" {
   min_days_remaining        = %d
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
 
   dns_challenge {
     provider = "exec"
@@ -2371,7 +2371,7 @@ resource "acme_certificate" "certificate" {
 
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
 
   dns_challenge {
     provider = "exec"
@@ -2420,7 +2420,7 @@ resource "acme_certificate" "certificate" {
 
 
   recursive_nameservers        = ["%s"]
-  disable_complete_propagation = true
+  disable_authoritative_propagation = true
 
   dns_challenge {
     provider = "exec"

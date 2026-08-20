@@ -129,12 +129,12 @@ case with the `classic` Let's Encrypt profile, the first domain defined in
   used to check for propagation of DNS challenge records, in addition to some
   in-provider checks such as zone detection. Defaults to your system-configured
   DNS resolvers.
-* `disable_complete_propagation` (Optional) - Disable the requirement for full
+* `disable_authoritative_propagation` (Optional) - Disable the requirement for authoritative
   propagation of the TXT challenge records before proceeding with validation.
   Defaults to `false`.
 
 -> See [About DNS propagation checks](#about-dns-propagation-checks) for details
-on the `recursive_nameservers`, `disable_complete_propagation`, and
+on the `recursive_nameservers`, `disable_authoritative_propagation`, and
 `propagation_wait` settings.
 
 * `pre_check_delay` (Optional) - Insert a delay after _every_ DNS challenge
@@ -152,7 +152,7 @@ configured (`common_name` + `subject_alternative_names`).
   wait).
 
 -> The wait is applied _per-domain_. When `propagation_wait` is set, propagation
-checks are skipped and `recursive_nameservers` / `disable_complete_propagation`
+checks are skipped and `recursive_nameservers` / `disable_authoritative_propagation`
 have no effect. `propagation_wait` conflicts with `pre_check_delay`.
 
 * `http_challenge` (Optional) - Defines an HTTP challenge to use in fulfilling
@@ -369,7 +369,7 @@ There are two parts to the DNS propagation check:
 -> The authoritative part of the DNS propagation check will almost always
 require access to the outside internet. Make sure you allow the required access
 accordingly, particularly in restricted networks. You can also use the
-`disable_complete_propagation` setting to bypass this check altogether (see
+`disable_authoritative_propagation` setting to bypass this check altogether (see
 below).
 
 The ACME provider will normally use your system-configured DNS resolvers to
@@ -397,7 +397,7 @@ resource "acme_certificate" "certificate" {
 
 Additionally, in air-gapped scenarios, internet access to DNS servers may not be
 available at all to the machine running Terraform. In this case, you can use
-`disable_complete_propagation` to bypass this authoritative DNS check, ensuring
+`disable_authoritative_propagation` to bypass this authoritative DNS check, ensuring
 that the only propagation check being done is on the system resolver or the
 resolver you configure with `recursive_nameservers`.
 
@@ -405,8 +405,8 @@ resolver you configure with `recursive_nameservers`.
 resource "acme_certificate" "certificate" {
   #...
 
-  recursive_nameservers        = ["8.8.8.8:53"]
-  disable_complete_propagation = true
+  recursive_nameservers             = ["8.8.8.8:53"]
+  disable_authoritative_propagation = true
 
   dns_challenge {
     provider = "route53"
@@ -416,7 +416,7 @@ resource "acme_certificate" "certificate" {
 }
 ```
 
-~> **NOTE:** When `disable_complete_propagation` is used, you can encounter
+~> **NOTE:** When `disable_authoritative_propagation` is used, you can encounter
 situations where the propagation check will pass before your platform has
 provisioned the DNS records on their name servers. Use this setting with care,
 such as in the aforementioned air-gapped scenario where the system running
