@@ -1,18 +1,20 @@
 package acme
 
 import (
+	"context"
 	"fmt"
+	"net"
 	"strconv"
 	"time"
 
-	"github.com/go-acme/lego/v4/challenge"
-	"github.com/go-acme/lego/v4/challenge/dns01"
-	"github.com/go-acme/lego/v4/challenge/http01"
-	"github.com/go-acme/lego/v4/challenge/tlsalpn01"
-	"github.com/go-acme/lego/v4/lego"
-	"github.com/go-acme/lego/v4/providers/http/memcached"
-	"github.com/go-acme/lego/v4/providers/http/s3"
-	"github.com/go-acme/lego/v4/providers/http/webroot"
+	"github.com/go-acme/lego/v5/challenge"
+	"github.com/go-acme/lego/v5/challenge/dns01"
+	"github.com/go-acme/lego/v5/challenge/http01"
+	"github.com/go-acme/lego/v5/challenge/tlsalpn01"
+	"github.com/go-acme/lego/v5/lego"
+	"github.com/go-acme/lego/v5/providers/http/memcached"
+	"github.com/go-acme/lego/v5/providers/http/s3"
+	"github.com/go-acme/lego/v5/providers/http/webroot"
 	"github.com/hashicorp/go-multierror"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/vancluever/terraform-provider-acme/v2/acme/dnsplugin"
@@ -47,15 +49,24 @@ func setCertificateChallengeProviders(client *lego.Client, d *schema.ResourceDat
 		); err != nil {
 			return dnsCloser, err
 		}
+
+		if nameservers := expandRecursiveNameservers(d); len(nameservers) > 0 {
+			dns01.SetDefaultClient(dns01.NewClient(&dns01.Options{
+				RecursiveNameservers: nameservers,
+			}))
+		}
 	}
 
 	// HTTP (server)
 	if provider, ok := d.GetOk("http_challenge"); ok {
-		opts := provider.([]any)[0].(map[string]any)
-		httpServerProvider := http01.NewProviderServer("", strconv.Itoa(opts["port"].(int)))
-		if proxyHeader, ok := opts["proxy_header"]; ok {
-			httpServerProvider.SetProxyHeader(proxyHeader.(string))
+		resourceOpts := provider.([]any)[0].(map[string]any)
+		providerServerOpts := http01.Options{
+			Address: net.JoinHostPort("", strconv.Itoa(resourceOpts["port"].(int))),
 		}
+		if proxyHeader, ok := resourceOpts["proxy_header"]; ok {
+			providerServerOpts.ProxyHeaderName = proxyHeader.(string)
+		}
+		httpServerProvider := http01.NewProviderServerWithOptions(providerServerOpts)
 
 		if err := client.Challenge.SetHTTP01Provider(httpServerProvider); err != nil {
 			return dnsCloser, err
@@ -179,15 +190,14 @@ func expandDNSChallenge(m map[string]any, nameServers []string) (dnsplugin.NewCl
 
 func expandDNSChallengeOptions(d *schema.ResourceData) []dns01.ChallengeOption {
 	var opts []dns01.ChallengeOption
-	if nameservers := expandRecursiveNameservers(d); len(nameservers) > 0 {
-		opts = append(opts, dns01.AddRecursiveNameservers(nameservers))
-	}
 
 	if d.Get("disable_complete_propagation").(bool) {
-		opts = append(opts, dns01.DisableCompletePropagationRequirement())
+		opts = append(opts, dns01.DisableAuthoritativeNssPropagationRequirement())
 	}
 
 	if propagationWait := d.Get("propagation_wait").(int); propagationWait > 0 {
+		opts = append(opts, dns01.DisableAuthoritativeNssPropagationRequirement())
+		opts = append(opts, dns01.DisableRecursiveNSsPropagationRequirement())
 		opts = append(opts, dns01.PropagationWait(time.Duration(propagationWait)*time.Second, true))
 	}
 
@@ -222,10 +232,10 @@ func NewDNSProviderWrapper() (*DNSProviderWrapper, error) {
 }
 
 // Present implements challenge.Provider for DNSProviderWrapper.
-func (d *DNSProviderWrapper) Present(domain, token, keyAuth string) error {
+func (d *DNSProviderWrapper) Present(ctx context.Context, domain, token, keyAuth string) error {
 	var err error
 	for _, p := range d.providers {
-		err = p.Present(domain, token, keyAuth)
+		err = p.Present(ctx, domain, token, keyAuth)
 		if err != nil {
 			err = multierror.Append(err, fmt.Errorf("error encountered while presenting token for DNS challenge: %s", err.Error()))
 		}
@@ -235,10 +245,10 @@ func (d *DNSProviderWrapper) Present(domain, token, keyAuth string) error {
 }
 
 // CleanUp implements challenge.Provider for DNSProviderWrapper.
-func (d *DNSProviderWrapper) CleanUp(domain, token, keyAuth string) error {
+func (d *DNSProviderWrapper) CleanUp(ctx context.Context, domain, token, keyAuth string) error {
 	var err error
 	for _, p := range d.providers {
-		err = p.CleanUp(domain, token, keyAuth)
+		err = p.CleanUp(ctx, domain, token, keyAuth)
 		if err != nil {
 			err = multierror.Append(err, fmt.Errorf("error encountered while cleaning token for DNS challenge: %s", err.Error()))
 		}

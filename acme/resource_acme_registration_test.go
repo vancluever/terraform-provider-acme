@@ -1,6 +1,7 @@
 package acme
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"regexp"
@@ -193,7 +194,7 @@ func TestAccACMERegistration_refreshDeactivated(t *testing.T) {
 						panic(err)
 					}
 
-					if err := client.Registration.DeleteRegistration(); err != nil {
+					if err := client.Registration.DeleteRegistration(context.TODO()); err != nil {
 						panic(err)
 					}
 				},
@@ -253,12 +254,12 @@ func testAccCheckACMERegistrationValid(n string, exists bool, acmeServerUrl stri
 			return fmt.Errorf("Could not build ACME client off reg: %s", err.Error())
 		}
 
-		reg, err := client.Registration.QueryRegistration()
+		reg, err := client.Registration.QueryRegistration(context.TODO())
 		if err != nil {
 			return fmt.Errorf("Error on reg query: %s", err.Error())
 		}
 
-		actual := reg.URI
+		actual := reg.Location
 		expected := rs.Primary.ID
 
 		if actual != expected {

@@ -1,8 +1,10 @@
 package acme
 
 import (
-	"github.com/go-acme/lego/v4/acme"
-	"github.com/go-acme/lego/v4/registration"
+	"context"
+
+	"github.com/go-acme/lego/v5/acme"
+	"github.com/go-acme/lego/v5/registration"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -125,19 +127,23 @@ func resourceACMERegistrationCreate(d *schema.ResourceData, meta any) error {
 		return err
 	}
 
-	var reg *registration.Resource
+	var reg *acme.ExtendedAccount
 	// If EAB was enabled, register using EAB.
 	if v, ok := d.GetOk("external_account_binding"); ok {
-		reg, err = client.Registration.RegisterWithExternalAccountBinding(registration.RegisterEABOptions{
-			TermsOfServiceAgreed: true,
-			Kid:                  v.([]any)[0].(map[string]any)["key_id"].(string),
-			HmacEncoded:          v.([]any)[0].(map[string]any)["hmac_base64"].(string),
-		})
+		reg, err = client.Registration.RegisterWithExternalAccountBinding(
+			context.TODO(),
+			registration.RegisterEABOptions{
+				TermsOfServiceAgreed: true,
+				Kid:                  v.([]any)[0].(map[string]any)["key_id"].(string),
+				HmacEncoded:          v.([]any)[0].(map[string]any)["hmac_base64"].(string),
+			})
 	} else {
 		// Normal registration.
-		reg, err = client.Registration.Register(registration.RegisterOptions{
-			TermsOfServiceAgreed: true,
-		})
+		reg, err = client.Registration.Register(
+			context.TODO(),
+			registration.RegisterOptions{
+				TermsOfServiceAgreed: true,
+			})
 	}
 
 	if err != nil {
@@ -150,7 +156,7 @@ func resourceACMERegistrationCreate(d *schema.ResourceData, meta any) error {
 	}
 
 	// save the reg
-	d.SetId(reg.URI)
+	d.SetId(reg.Location)
 	return saveACMERegistration(d, user.Registration)
 }
 
@@ -175,7 +181,7 @@ func resourceACMERegistrationDelete(d *schema.ResourceData, meta any) error {
 		return err
 	}
 
-	return client.Registration.DeleteRegistration()
+	return client.Registration.DeleteRegistration(context.TODO())
 }
 
 func regGone(err error) bool {

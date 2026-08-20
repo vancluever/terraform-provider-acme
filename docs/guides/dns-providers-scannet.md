@@ -1,5 +1,5 @@
 ---
-page_title: "acme-dns"
+page_title: "scannet"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Joohoi's ACME-DNS DNS Challenge Provider
+# ScanNet DNS Challenge Provider
 
-The `acme-dns` DNS challenge provider can be used to perform DNS challenges for
+The `scannet` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Joohoi's ACME-DNS](https://github.com/joohoi/acme-dns).
+[ScanNet](https://www.scannet.dk/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "acme-dns"
+    provider = "scannet"
   }
 }
 ```
@@ -48,10 +48,11 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `ACME_DNS_API_BASE` - The ACME-DNS API address.
-* `ACME_DNS_STORAGE_BASE_URL` - The ACME-DNS JSON account data server..
-* `ACME_DNS_STORAGE_PATH` - The ACME-DNS JSON account data file. A per-domain account will be registered/persisted to this file and used for TXT updates..
+* `SCANNET_API_KEY` - API key.
 
-* `ACME_DNS_ALLOWLIST` - Source networks using CIDR notation (multiple values should be separated with a comma)..
+* `SCANNET_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `SCANNET_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `SCANNET_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `SCANNET_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

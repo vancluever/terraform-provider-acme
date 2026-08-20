@@ -30,13 +30,16 @@
 package acme
 
 import (
+	"context"
 	"crypto"
 	"fmt"
+	"strings"
 	"time"
 
-	"github.com/go-acme/lego/v4/certcrypto"
-	"github.com/go-acme/lego/v4/certificate"
-	"github.com/go-acme/lego/v4/log"
+	"github.com/go-acme/lego/v5/acme/api"
+	"github.com/go-acme/lego/v5/certcrypto"
+	"github.com/go-acme/lego/v5/certificate"
+	"github.com/go-acme/lego/v5/log"
 )
 
 type localRenewOptions struct {
@@ -61,12 +64,19 @@ func renewWithOptions(
 
 	x509Cert := certificates[0]
 	if x509Cert.IsCA {
-		return nil, fmt.Errorf("[%s] Certificate bundle starts with a CA certificate", certRes.Domain)
+		return nil, fmt.Errorf(
+			"acme: Certificate bundle starts with a CA certificate, domains=%s",
+			strings.Join(certRes.Domains, ", "),
+		)
 	}
 
 	// This is just meant to be informal for the user.
 	timeLeft := x509Cert.NotAfter.Sub(time.Now().UTC())
-	log.Infof("[%s] acme: Trying renewal with %d hours remaining", certRes.Domain, int(timeLeft.Hours()))
+	log.Info(
+		"acme: Trying renewal",
+		log.DomainsAttr(certRes.Domains),
+		log.DurationAttr("time_remaining", timeLeft),
+	)
 
 	// We always need to request a new certificate to renew.
 	// Start by checking to see if the certificate was based off a CSR,
@@ -83,21 +93,22 @@ func renewWithOptions(
 		request.NotAfter = options.NotAfter
 		request.Bundle = options.Bundle
 		request.PreferredChain = options.PreferredChain
+		request.EnableCommonName = true
 		request.Profile = options.Profile
 		request.AlwaysDeactivateAuthorizations = options.AlwaysDeactivateAuthorizations
 
 		if options.UseARI {
 			var err error
-			request.ReplacesCertID, err = certificate.MakeARICertID(x509Cert)
+			request.ReplacesCertID, err = api.MakeARICertID(x509Cert)
 			if err != nil {
 				return nil, fmt.Errorf("error generating ARI cert ID: %w", err)
 			}
 		}
 
-		return c.ObtainForCSR(request)
+		return c.ObtainForCSR(context.TODO(), request)
 	}
 
-	var privateKey crypto.PrivateKey
+	var privateKey crypto.Signer
 	if certRes.PrivateKey != nil {
 		privateKey, err = certcrypto.ParsePEMPrivateKey(certRes.PrivateKey)
 		if err != nil {
@@ -115,17 +126,18 @@ func renewWithOptions(
 	request.NotAfter = options.NotAfter
 	request.Bundle = options.Bundle
 	request.PreferredChain = options.PreferredChain
+	request.EnableCommonName = true
 	request.EmailAddresses = options.EmailAddresses
 	request.Profile = options.Profile
 	request.AlwaysDeactivateAuthorizations = options.AlwaysDeactivateAuthorizations
 
 	if options.UseARI {
 		var err error
-		request.ReplacesCertID, err = certificate.MakeARICertID(x509Cert)
+		request.ReplacesCertID, err = api.MakeARICertID(x509Cert)
 		if err != nil {
 			return nil, fmt.Errorf("error generating ARI cert ID: %w", err)
 		}
 	}
 
-	return c.Obtain(request)
+	return c.Obtain(context.TODO(), request)
 }

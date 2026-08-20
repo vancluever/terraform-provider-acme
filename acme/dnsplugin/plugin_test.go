@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-acme/lego/v4/challenge"
-	"github.com/go-acme/lego/v4/challenge/dns01"
-	"github.com/go-acme/lego/v4/providers/dns/exec"
-	"github.com/go-acme/lego/v4/providers/dns/route53"
+	"github.com/go-acme/lego/v5/challenge"
+	"github.com/go-acme/lego/v5/challenge/dns01"
+	"github.com/go-acme/lego/v5/providers/dns/exec"
+	"github.com/go-acme/lego/v5/providers/dns/route53"
 	dnspluginproto "github.com/vancluever/terraform-provider-acme/v2/proto/dnsplugin/v1"
 )
 
@@ -35,8 +35,8 @@ func TestMapEnvironmentVariableValues(t *testing.T) {
 
 type testDummyProviderNoTimeout struct{}
 
-func (p *testDummyProviderNoTimeout) Present(_, _, _ string) error { return nil }
-func (p *testDummyProviderNoTimeout) CleanUp(_, _, _ string) error { return nil }
+func (p *testDummyProviderNoTimeout) Present(_ context.Context, _, _, _ string) error { return nil }
+func (p *testDummyProviderNoTimeout) CleanUp(_ context.Context, _, _, _ string) error { return nil }
 
 func TestDnsProviderServerTimeout(t *testing.T) {
 	testCases := []struct {

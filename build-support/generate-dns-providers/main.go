@@ -71,7 +71,7 @@ var dnsProviderDocTemplate = template.Must(
 )
 
 // legoPkgPath is the root lego package path to use.
-const legoPkgPath = "github.com/go-acme/lego/v4"
+const legoPkgPath = "github.com/go-acme/lego/v5"
 
 // Type from "go help mod edit"
 type pkgInfoGoMod struct {

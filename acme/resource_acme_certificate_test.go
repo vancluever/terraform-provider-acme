@@ -7,7 +7,6 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/base64"
-	"encoding/pem"
 	"errors"
 	"fmt"
 	"net/http"
@@ -933,9 +932,9 @@ func testAccCheckACMECertificateValid(n, cn, san string) resource.TestCheckFunc 
 			if err := testFindPEMInP12(
 				[]byte(rs.Primary.Attributes["certificate_p12"]),
 				rs.Primary.Attributes["certificate_p12_password"],
-				[]byte(cert),
-				[]byte(issuer),
-				[]byte(key),
+				x509Cert,
+				issuerCert,
+				privPub,
 			); err != nil {
 				return fmt.Errorf("error validating P12 certificates: %s", err)
 			}
@@ -1015,7 +1014,7 @@ func testAccCheckACMECertificateValid(n, cn, san string) resource.TestCheckFunc 
 
 // testFindPEMInP12 tries to find the supplied PEM blocks in the supplied
 // base64-encoded P12 content.
-func testFindPEMInP12(pfxB64 []byte, password string, expected ...[]byte) error {
+func testFindPEMInP12(pfxB64 []byte, password string, wantCert, wantIssuer *x509.Certificate, wantPubKey crypto.PublicKey) error {
 	pfxData := make([]byte, base64.StdEncoding.DecodedLen(len(pfxB64)))
 	nBytes, err := base64.StdEncoding.Decode(pfxData, pfxB64)
 	if err != nil {
@@ -1023,37 +1022,28 @@ func testFindPEMInP12(pfxB64 []byte, password string, expected ...[]byte) error 
 	}
 
 	// TODO: fix the ToPEM deprecation notice
-	actualBlocks, err := pkcs12.ToPEM(pfxData[:nBytes], password) //nolint:staticcheck
+	gotKeyRaw, gotCert, gotIssuers, err := pkcs12.DecodeChain(pfxData[:nBytes], password)
 	if err != nil {
-		return err
+		return fmt.Errorf("error decoding P12 chain: %w", err)
 	}
 
-	var expectedBlocks []*pem.Block
-	for i, data := range expected {
-		block, _ := pem.Decode(data)
-		if block == nil {
-			return fmt.Errorf("bad PEM data in expected block %d", i)
-		}
+	gotKey := gotKeyRaw.(crypto.Signer)
 
-		expectedBlocks = append(expectedBlocks, block)
+	if !wantCert.Equal(gotCert) {
+		return errors.New("certificate mismatch with one found in P12 bundle")
+	}
+	if !wantIssuer.Equal(gotIssuers[0]) {
+		return errors.New("issuer mismatch with one found in P12 bundle")
 	}
 
-	for i := 0; i < len(expectedBlocks); i++ {
-		expected := expectedBlocks[i]
-		for _, actual := range actualBlocks {
-			if reflect.DeepEqual(expected.Bytes, actual.Bytes) {
-				expectedBlocks = append(expectedBlocks[:i], expectedBlocks[i+1:]...)
-				i--
-			}
-		}
+	type comparableKey interface {
+		Equal(x crypto.PublicKey) bool
 	}
 
-	if len(expectedBlocks) > 0 {
-		return fmt.Errorf(
-			"not all expected blocks were found in the PFX archive (remaining: %d, %d in archive)",
-			len(expectedBlocks),
-			len(actualBlocks),
-		)
+	wantPubKeyComparable := wantPubKey.(comparableKey)
+
+	if !wantPubKeyComparable.Equal(gotKey.Public()) {
+		return errors.New("key mismatch with one found in P12 bundle")
 	}
 
 	return nil

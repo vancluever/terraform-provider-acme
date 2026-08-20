@@ -1,5 +1,5 @@
 ---
-page_title: "webnames"
+page_title: "pointdns"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# webnames.ru DNS Challenge Provider
+# PointDNS/PointHQ DNS Challenge Provider
 
-The `webnames` DNS challenge provider can be used to perform DNS challenges for
+The `pointdns` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[webnames.ru](https://www.webnames.ru/).
+[PointDNS/PointHQ](https://pointhq.com/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "webnames"
+    provider = "pointdns"
   }
 }
 ```
@@ -48,15 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `WEBNAMESRU_API_KEY` - Domain API key.
+* `POINTDNS_PASSWORD` - Password.
+* `POINTDNS_USERNAME` - Username.
 
-* `WEBNAMESRU_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `WEBNAMESRU_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `WEBNAMESRU_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `POINTDNS_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `POINTDNS_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `POINTDNS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `POINTDNS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
-## API Key
-
-To obtain the key, you need to change the DNS server to `*.nameself.com`: Personal account / My domains and services / Select the required domain / DNS servers
-
-The API key can be found: Personal account / My domains and services / Select the required domain / Zone management / acme.sh or certbot settings
 

@@ -1,5 +1,5 @@
 ---
-page_title: "dnspod"
+page_title: "tele3"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# DNSPod (deprecated) DNS Challenge Provider
+# Tele3 DNS Challenge Provider
 
-The `dnspod` DNS challenge provider can be used to perform DNS challenges for
+The `tele3` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[DNSPod (deprecated)](https://www.dnspod.com/).
+[Tele3](https://www.tele3.cz).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "dnspod"
+    provider = "tele3"
   }
 }
 ```
@@ -48,11 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `DNSPOD_API_KEY` - The user token.
+* `TELE3_KEY` - Key.
+* `TELE3_SECRET` - Secret.
 
-* `DNSPOD_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `DNSPOD_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `DNSPOD_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `DNSPOD_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 600).
+* `TELE3_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `TELE3_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `TELE3_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `TELE3_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

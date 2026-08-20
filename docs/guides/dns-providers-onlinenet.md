@@ -53,6 +53,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `ONLINENET_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
 * `ONLINENET_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 15).
 * `ONLINENET_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 240).
+* `ONLINENET_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 60).
 * `ONLINENET_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

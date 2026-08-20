@@ -50,6 +50,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 * `CIVO_TOKEN` - Authentication token.
 
+* `CIVO_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
 * `CIVO_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 30).
 * `CIVO_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 300).
 * `CIVO_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 600).

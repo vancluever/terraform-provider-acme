@@ -1,0 +1,62 @@
+---
+page_title: "webnamesru"
+subcategory: "DNS Providers"
+---
+
+-> The following documentation is auto-generated from the ACME
+provider's API library [lego](https://go-acme.github.io/lego/).  Some
+sections may refer to lego directly - in most cases, these sections
+apply to the Terraform provider as well.
+
+# webnames.ru DNS Challenge Provider
+
+The `webnamesru` DNS challenge provider can be used to perform DNS challenges for
+the [`acme_certificate`][resource-acme-certificate] resource with
+[webnames.ru](https://www.webnames.ru/).
+
+[resource-acme-certificate]: ../resources/certificate.md
+
+For complete information on how to use this provider with the `acme_certifiate`
+resource, see [here][resource-acme-certificate-dns-challenges].
+
+[resource-acme-certificate-dns-challenges]: ../resources/certificate.md#using-dns-challenges
+
+## Example
+
+```hcl
+resource "acme_certificate" "certificate" {
+  ...
+
+  dns_challenge {
+    provider = "webnamesru"
+  }
+}
+```
+## Argument Reference
+
+The following arguments can be either passed as environment variables, or
+directly through the `config` block in the
+[`dns_challenge`][resource-acme-certificate-dns-challenge-arg] argument in the
+[`acme_certificate`][resource-acme-certificate] resource. For more details, see
+[here][resource-acme-certificate-dns-challenges].
+
+[resource-acme-certificate-dns-challenge-arg]: ../resources/certificate.md#dns_challenge
+
+In addition, arguments can also be stored in a local file, with the path
+supplied by supplying the argument with the `_FILE` suffix. See
+[here][acme-certificate-file-arg-example] for more information.
+
+[acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
+
+* `WEBNAMESRU_API_KEY` - Domain API key.
+
+* `WEBNAMESRU_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `WEBNAMESRU_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `WEBNAMESRU_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+
+## API Key
+
+To obtain the key, you need to change the DNS server to `*.nameself.com`: Personal account / My domains and services / Select the required domain / DNS servers
+
+The API key can be found: Personal account / My domains and services / Select the required domain / Zone management / acme.sh or certbot settings
+

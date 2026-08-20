@@ -1,5 +1,5 @@
 ---
-page_title: "iwantmyname"
+page_title: "dnsservices"
 subcategory: "DNS Providers"
 ---
 
@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# iwantmyname (Deprecated) DNS Challenge Provider
+# DNS.services DNS Challenge Provider
 
-The `iwantmyname` DNS challenge provider can be used to perform DNS challenges for
+The `dnsservices` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[iwantmyname (Deprecated)](https://iwantmyname.com).
+[DNS.services](https://dns.services/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 
@@ -28,7 +28,7 @@ resource "acme_certificate" "certificate" {
   ...
 
   dns_challenge {
-    provider = "iwantmyname"
+    provider = "dnsservices"
   }
 }
 ```
@@ -48,12 +48,12 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `IWANTMYNAME_PASSWORD` - API password.
-* `IWANTMYNAME_USERNAME` - API username.
+* `DNSSERVICES_PASSWORD` - Password.
+* `DNSSERVICES_USERNAME` - Username.
 
-* `IWANTMYNAME_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
-* `IWANTMYNAME_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
-* `IWANTMYNAME_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
-* `IWANTMYNAME_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
+* `DNSSERVICES_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `DNSSERVICES_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).
+* `DNSSERVICES_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
+* `DNSSERVICES_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
 

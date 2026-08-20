@@ -61,7 +61,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 ## SVC mode
 
-In the SVC mode, username and passsword are not your email and account passwords, but those displayed in Joker.com domain dashboard when enabling Dynamic DNS.
+In the SVC mode, username and password are not your email and account passwords, but those displayed in Joker.com domain dashboard when enabling Dynamic DNS.
 
 As per [Joker.com documentation](https://joker.com/faq/content/6/496/en/let_s-encrypt-support.html):
 

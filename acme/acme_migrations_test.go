@@ -76,6 +76,28 @@ func testACMECertificateStateData012V5() map[string]any {
 	}
 }
 
+func testACMECertificateStateData012V6() map[string]any {
+	return map[string]any{
+		"account_key_pem":           "key",
+		"common_name":               "foobar",
+		"subject_alternative_names": []any{"barbar", "bazbar"},
+		"key_type":                  "RSA2048",
+		"certificate_request_pem":   "req",
+		"min_days_remaining":        "30",
+		"dns_challenge": []any{
+			map[string]any{
+				"provider": "route53",
+			},
+		},
+		"recursive_nameservers": []any{"my.name.server"},
+		"must_staple":           "0",
+		"certificate_domain":    "foobar",
+		"private_key_pem":       "certkey",
+		"certificate_pem":       "certpem",
+		"certificate_url":       "certurl",
+	}
+}
+
 func testACMERegistrationStateData012V1() map[string]any {
 	return map[string]any{
 		"account_key_pem": "key",
@@ -109,15 +131,19 @@ func testACMERegistrationStateData012V2() map[string]any {
 	}
 }
 
-func TestResourceACMECertificateStateUpgraderV3Func(t *testing.T) {
-	expected := testACMECertificateStateData012V4()
-	actual, err := resourceACMECertificateStateUpgraderV3Func(context.TODO(), testACMECertificateStateData012V3(), nil)
+func TestResourceACMECertificateStateUpgraderV5Func(t *testing.T) {
+	expected := testACMECertificateStateData012V6()
+	actual, err := resourceACMECertificateStateUpgraderV5Func(context.TODO(), testACMECertificateStateData012V5(), nil)
 	if err != nil {
 		t.Fatalf("error migrating state: %s", err)
 	}
 
-	if !reflect.DeepEqual(expected, actual) {
-		t.Fatalf("\n\nexpected:\n\n%s\n\ngot:\n\n%s\n\n", spew.Sdump(expected), spew.Sdump(actual))
+	ignore := cmpopts.IgnoreMapEntries(func(k string, _ any) bool {
+		return k == "id"
+	})
+
+	if diff := cmp.Diff(expected, actual, ignore); diff != "" {
+		t.Errorf("state migration v5 -> v6 mismatch (-want +got):\n%s", diff)
 	}
 }
 
@@ -138,6 +164,18 @@ func TestResourceACMECertificateStateUpgraderV4Func(t *testing.T) {
 
 	if id := actual["id"].(string); !uuidRegexp.MatchString(id) {
 		t.Errorf("expected UUID as ID, got %q", id)
+	}
+}
+
+func TestResourceACMECertificateStateUpgraderV3Func(t *testing.T) {
+	expected := testACMECertificateStateData012V4()
+	actual, err := resourceACMECertificateStateUpgraderV3Func(context.TODO(), testACMECertificateStateData012V3(), nil)
+	if err != nil {
+		t.Fatalf("error migrating state: %s", err)
+	}
+
+	if !reflect.DeepEqual(expected, actual) {
+		t.Fatalf("\n\nexpected:\n\n%s\n\ngot:\n\n%s\n\n", spew.Sdump(expected), spew.Sdump(actual))
 	}
 }
 
