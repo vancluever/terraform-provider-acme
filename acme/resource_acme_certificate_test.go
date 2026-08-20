@@ -841,6 +841,77 @@ func TestAccACMECertificate_validityDays_validation(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_matchDomains(t *testing.T) {
+	wantEnv := os.Environ()
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		CheckDestroy:      testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusRevoked),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigMatchDomains(configMatchDomainsTypeValid),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www", "www2"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusValid),
+					testAccCheckEnvironNotChanged(wantEnv),
+				),
+			},
+		},
+	})
+}
+
+func TestAccACMECertificate_matchDomains_split(t *testing.T) {
+	wantEnv := os.Environ()
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		CheckDestroy:      testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusRevoked),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigMatchDomainsSplit(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www", "www2"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusValid),
+					testAccCheckEnvironNotChanged(wantEnv),
+				),
+			},
+		},
+	})
+}
+
+func TestAccACMECertificate_matchDomains_noMatch(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccACMECertificateConfigMatchDomains(configMatchDomainsTypeNonMatching),
+				ExpectError: regexp.MustCompile("none of the configured match_domains matched the domain"),
+			},
+		},
+	})
+}
+
+func TestAccACMECertificate_matchDomains_invalidDomain(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		CheckDestroy:      testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusRevoked),
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccACMECertificateConfigMatchDomains(configMatchDomainsTypeInvalid),
+				ExpectError: regexp.MustCompile("invalid match_domains for DNS provider"),
+			},
+		},
+	})
+}
+
 type testAccCheckACMECertificateStandardOpts struct {
 	CommonName             string
 	SubjectAlternativeName string
@@ -2436,6 +2507,123 @@ resource "acme_certificate" "certificate" {
 		pebbleCertDomain,
 		validityDays,
 		pebbleChallTestDNSSrv,
+		pebbleChallTestDNSScriptPath,
+	)
+}
+
+type configMatchDomainsType int
+
+const (
+	configMatchDomainsTypeInvalid = iota
+	configMatchDomainsTypeValid
+	configMatchDomainsTypeNonMatching
+)
+
+func testAccACMECertificateConfigMatchDomains(valid configMatchDomainsType) string {
+	var matchDomainValue string
+	switch valid {
+	case configMatchDomainsTypeInvalid:
+		matchDomainValue = "com."
+	case configMatchDomainsTypeValid:
+		matchDomainValue = "${var.domain}"
+	case configMatchDomainsTypeNonMatching:
+		matchDomainValue = "this.should.never.be.used." + pebbleCertDomain
+	}
+
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "acme_registration" "reg" {
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "www.${var.domain}"
+  subject_alternative_names = ["www2.${var.domain}"]
+
+  recursive_nameservers             = ["%s"]
+  disable_authoritative_propagation = true
+
+  dns_challenge {
+    provider = "exec"
+    match_domains = ["%s"]
+    config = {
+      EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
+    }
+  }
+}
+`,
+		pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		pebbleChallTestDNSSrv,
+		matchDomainValue,
+		pebbleChallTestDNSScriptPath,
+	)
+}
+
+func testAccACMECertificateConfigMatchDomainsSplit() string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "acme_registration" "reg" {
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "www.${var.domain}"
+  subject_alternative_names = ["www2.${var.domain}"]
+
+  recursive_nameservers             = ["%s"]
+  disable_authoritative_propagation = true
+
+  dns_challenge {
+    provider = "exec"
+    match_domains = ["www.${var.domain}"]
+    config = {
+      EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
+    }
+  }
+
+  dns_challenge {
+    provider = "exec"
+    match_domains = ["www2.${var.domain}"]
+    config = {
+      EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
+    }
+  }
+}
+`,
+		pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		pebbleChallTestDNSSrv,
+		pebbleChallTestDNSScriptPath,
 		pebbleChallTestDNSScriptPath,
 	)
 }

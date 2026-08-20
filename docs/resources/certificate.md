@@ -334,6 +334,62 @@ resource "acme_certificate" "certificate" {
 }
 ```
 
+#### Restricting a challenge to specific domains
+
+You may use the `match_domains` argument within a `dns_challenge` block to
+restrict a challenge provider to a specific domain or set of domains only. This
+argument takes a list of strings, filtering domains presented to it with said
+list and only adding challenge records for matching domains.
+
+resource "acme_certificate" "certificate" {
+  common_name               = "example.com"
+  subject_alternative_names = ["one.foo.example.com", "two.foo.example.com"]
+
+  #...
+
+  dns_challenge {
+    provider = "route53"
+    match_domains = ["example.com"]
+
+    config = {
+      AWS_ACCESS_KEY_ID     = var.aws_access_key_main
+      AWS_SECRET_ACCESS_KEY = var.aws_secret_key_main
+      AWS_SESSION_TOKEN     = var.aws_security_token_main
+      #...
+    }
+  }
+
+  dns_challenge {
+    provider = "route53"
+    match_domains = ["foo.example.com"]
+
+    config = {
+      AWS_ACCESS_KEY_ID     = var.aws_access_key_foo
+      AWS_SECRET_ACCESS_KEY = var.aws_secret_key_foo
+      AWS_SESSION_TOKEN     = var.aws_security_token_foo
+      #...
+    }
+  }
+
+  #...
+}
+
+Note that the following rules apply to the `match_domains` argument: 
+
+* Domains must be valid domain name characters (letters, numbers, dashes, and
+  dots). Wildcard characters are not allowed (wildcard domains are matched as
+  if the `*` was the level above the matched domain, e.g., `example.com`
+  matches `*.example.com`).
+* Domains do not end in a period (`.`), e.g., all domains are considered fully
+  qualified without them.
+* Dots must correctly delimit subdomains, e.g., `exmaple..com` or `.com` are
+  invalid.
+* Any challenge providers with a `match_domains` argument must match at least
+  one domain in the certificate.
+* Providers with a match on a higher-level subdomain (e.g., `foo.example.com`
+  above) replace any match on a lower level, overriding matches on a lower
+  level.
+
 #### Using Variable Files for Provider Arguments
 
 Most provider arguments can be suffixed with `_FILE` to specify that you wish to

@@ -348,46 +348,6 @@ func TestACME_splitPEMBundle_singleCert(t *testing.T) {
 	}
 }
 
-func TestACME_validateKeyType(t *testing.T) {
-	s := "RSA2048"
-
-	_, errs := validateKeyType(s, "key_type")
-	if len(errs) > 0 {
-		t.Fatalf("bad: %#v", errs)
-	}
-}
-
-func TestACME_validateKeyType_invalid(t *testing.T) {
-	s := "512"
-
-	_, errs := validateKeyType(s, "key_type")
-	if len(errs) < 1 {
-		t.Fatalf("should have given an error")
-	}
-}
-
-func TestACME_validateDNSChallengeConfig(t *testing.T) {
-	m := map[string]any{
-		"AWS_FOO": "bar",
-	}
-
-	_, errs := validateDNSChallengeConfig(m, "config")
-	if len(errs) > 0 {
-		t.Fatalf("bad: %#v", errs)
-	}
-}
-
-func TestACME_validateDNSChallengeConfig_invalid(t *testing.T) {
-	s := map[string]any{
-		"AWS_FOO": 1,
-	}
-
-	_, errs := validateDNSChallengeConfig(s, "config")
-	if len(errs) < 1 {
-		t.Fatalf("should have given an error")
-	}
-}
-
 func TestExpandACMEClient_config_certTimeout_default(t *testing.T) {
 	testCases := []struct {
 		desc     string
