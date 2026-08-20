@@ -289,7 +289,7 @@ func resourceACMECertificateV6() *schema.Resource {
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			"disable_complete_propagation": {
+			"disable_authoritative_propagation": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
