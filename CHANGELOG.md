@@ -13,13 +13,18 @@ version 5.0.
 
 BREAKING CHANGES:
 
+* `resource/acme_certificate`: The resource no longer attempts to recover
+  missing certificates from the CA, but forces a new resource instead. Note
+  that this should not happen under normal operation of the provider and only
+  existed in its previous form to recover the state from a bug fixed in v1.3.2.
+  [#613](https://github.com/vancluever/terraform-provider-acme/pull/613).
 * `resource/acme_certificate`: Changed the `disable_complete_propagation` to
   `disable_authoritative_propagation`.
-  [#612](https://github.com/vancluever/terraform-provider-acme/pull/612),
+  [#612](https://github.com/vancluever/terraform-provider-acme/pull/612).
 * `resource/acme_certificate`: The `key_type` RSA options are now `RSA2048`,
   `RSA4096`, and `RSA8192`, changed from their earlier counterparts that had
   not `RSA` prefix.
-  [#611](https://github.com/vancluever/terraform-provider-acme/pull/612),
+  [#611](https://github.com/vancluever/terraform-provider-acme/pull/611).
 
 ## 2.48.3 (July 10, 2026)
 
