@@ -503,28 +503,13 @@ func resourceACMECertificateRead(d *schema.ResourceData, meta any) error {
 	}
 
 	if _, ok := d.GetOk("certificate_pem"); !ok {
-		// This is a workaround to correct issues with some versions of the
-		// resource prior to 1.3.2 where a renewal failure would possibly delete
-		// the certificate.
-		//
-		// Try to recover the certificate from the ACME API.
-		srcCR, err := client.Certificate.Get(context.TODO(), d.Get("certificate_url").(string), true)
-		if err != nil {
-			// There are probably some cases that we will want to just drop
-			// the resource if there's been an issue, but seeing as this is
-			// mainly being used to recover for a bug that will be gone in
-			// 1.3.2, this will probably be rare. If we start relying on
-			// this behavior on a more general level, we may need to
-			// investigate this more. Just error on everything for now.
-			return err
-		}
-
-		dstCR := expandCertificateResource(d)
-		dstCR.Certificate = srcCR.Certificate
-		password := d.Get("certificate_p12_password").(string)
-		if err := saveCertificateResource(d, dstCR, password); err != nil {
-			return err
-		}
+		// If we can't find the certificate, just force a new one. This used to
+		// recover from the API to correct an issue prior to v1.3.2. This is very
+		// old now and likely to not exist in current versions of the ACME
+		// provider. Additionally, we have no tests that covered this
+		// functionality.
+		d.SetId("")
+		return nil
 	}
 
 	if err := resourceACMECertificateRenewalInfoRefresh(d, client, time.Now()); err != nil {
