@@ -11,11 +11,15 @@ same, some providers have been removed as a part of this change. See the lego
 more details, making sure to follow changes all the way from the start of
 version 5.0.
 
-MISC CHANGES:
+BREAKING CHANGES:
 
 * `resource/acme_certificate`: Changed the `disable_complete_propagation` to
   `disable_authoritative_propagation`.
   [#612](https://github.com/vancluever/terraform-provider-acme/pull/612),
+* `resource/acme_certificate`: The `key_type` RSA options are now `RSA2048`,
+  `RSA4096`, and `RSA8192`, changed from their earlier counterparts that had
+  not `RSA` prefix.
+  [#611](https://github.com/vancluever/terraform-provider-acme/pull/612),
 
 ## 2.48.3 (July 10, 2026)
 
