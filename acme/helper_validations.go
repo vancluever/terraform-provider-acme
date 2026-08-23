@@ -1,9 +1,12 @@
 package acme
 
-import "fmt"
+import (
+	"fmt"
+	"regexp"
+)
 
 // validateKeyType validates a key_type resource parameter is correct.
-func validateKeyType(v any, k string) (ws []string, errors []error) {
+func validateKeyType(v any, _ string) (ws []string, errors []error) {
 	value := v.(string)
 	found := false
 	for _, w := range []string{"P256", "P384", "RSA2048", "RSA4096", "RSA8192"} {
@@ -21,7 +24,7 @@ func validateKeyType(v any, k string) (ws []string, errors []error) {
 // validateDNSChallengeConfig ensures that the values supplied to the
 // dns_challenge resource parameter in the acme_certificate resource
 // are string values only.
-func validateDNSChallengeConfig(v any, k string) (ws []string, errors []error) {
+func validateDNSChallengeConfig(v any, _ string) (ws []string, errors []error) {
 	value := v.(map[string]any)
 	bad := false
 	for _, w := range value {
@@ -39,11 +42,23 @@ func validateDNSChallengeConfig(v any, k string) (ws []string, errors []error) {
 	return
 }
 
-func validateRevocationReason(v any, k string) (ws []string, errors []error) {
+func validateRevocationReason(v any, _ string) (ws []string, errors []error) {
 	value := RevocationReason(v.(string))
 	_, err := GetRevocationReason(value)
 	if err != nil {
 		errors = append(errors, err)
+	}
+	return
+}
+
+func validateMatchDomains(v any, _ string) (ws []string, errors []error) {
+	domainRegexp := regexp.MustCompile(`^([-a-zA-Z0-9]+\.)*[-a-zA-Z0-9]+$`)
+	value := stringSlice(v.([]any))
+	for _, w := range value {
+		if domainRegexp.Match([]byte(w)) {
+			continue
+		}
+		errors = append(errors, fmt.Errorf("invalid match domain pattern: %s", w))
 	}
 	return
 }

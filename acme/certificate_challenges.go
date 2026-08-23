@@ -2,9 +2,11 @@ package acme
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-acme/lego/v5/challenge"
@@ -15,7 +17,6 @@ import (
 	"github.com/go-acme/lego/v5/providers/http/memcached"
 	"github.com/go-acme/lego/v5/providers/http/s3"
 	"github.com/go-acme/lego/v5/providers/http/webroot"
-	"github.com/hashicorp/go-multierror"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/vancluever/terraform-provider-acme/v2/acme/dnsplugin"
 )
@@ -146,6 +147,11 @@ func expandDNSChallengeWrapperProvider(
 			expandRecursiveNameservers(d),
 		); err == nil {
 			dnsProvider.providers = append(dnsProvider.providers, result.Provider)
+			if matchDomains, ok := providerRaw.(map[string]any)["match_domains"]; ok {
+				dnsProvider.matchDomains = append(dnsProvider.matchDomains, stringSlice(matchDomains.([]any)))
+			} else {
+				dnsProvider.matchDomains = append(dnsProvider.matchDomains, []string{})
+			}
 			dnsClosers = append(dnsClosers, result.Closer)
 			if result.IsSequential {
 				isSequential = true
@@ -222,7 +228,14 @@ func expandRecursiveNameservers(d *schema.ResourceData) []string {
 // DNSProviderWrapper is a multi-provider wrapper to support multiple
 // DNS challenges.
 type DNSProviderWrapper struct {
-	providers []challenge.ProviderTimeout
+	providers             []challenge.ProviderTimeout
+	matchDomains          [][]string
+	providerDomainMatches map[string]providerDomainMatchEntry
+}
+
+type providerDomainMatchEntry struct {
+	providerIndexes []int
+	level           int
 }
 
 // NewDNSProviderWrapper returns an freshly initialized
@@ -233,28 +246,108 @@ func NewDNSProviderWrapper() (*DNSProviderWrapper, error) {
 
 // Present implements challenge.Provider for DNSProviderWrapper.
 func (d *DNSProviderWrapper) Present(ctx context.Context, domain, token, keyAuth string) error {
-	var err error
-	for _, p := range d.providers {
-		err = p.Present(ctx, domain, token, keyAuth)
+	d.filterMatches(domain)
+
+	if len(d.providerDomainMatches[domain].providerIndexes) == 0 {
+		return errors.New("none of the configured match_domains matched the domain")
+	}
+
+	var errs []error
+	for _, idx := range d.providerDomainMatches[domain].providerIndexes {
+		p := d.providers[idx]
+		err := p.Present(ctx, domain, token, keyAuth)
 		if err != nil {
-			err = multierror.Append(err, fmt.Errorf("error encountered while presenting token for DNS challenge: %s", err.Error()))
+			errs = append(
+				errs,
+				fmt.Errorf("error encountered while presenting token for DNS challenge: %w", err),
+			)
 		}
 	}
 
-	return err
+	return errors.Join(errs...)
+}
+
+func (d *DNSProviderWrapper) filterMatches(domain string) {
+	matchEntry := providerDomainMatchEntry{
+		providerIndexes: []int{},
+		level:           -1,
+	}
+	for providerIdx, patterns := range d.matchDomains {
+		if len(patterns) > 0 {
+			matchLevel := -1
+			for _, pattern := range patterns {
+				if level, matched := matchDomain(pattern, domain); matched && level > matchLevel {
+					matchLevel = level
+				}
+			}
+
+			switch {
+			case matchLevel < 0:
+				// No matches
+				continue
+			case matchLevel > matchEntry.level:
+				matchEntry.providerIndexes = []int{}
+				matchEntry.level = matchLevel
+				fallthrough
+			case matchLevel == matchEntry.level:
+				matchEntry.providerIndexes = append(matchEntry.providerIndexes, providerIdx)
+			}
+		} else if matchEntry.level <= 0 {
+			matchEntry.providerIndexes = append(matchEntry.providerIndexes, providerIdx)
+			matchEntry.level = 0
+		}
+	}
+
+	if d.providerDomainMatches == nil {
+		d.providerDomainMatches = make(map[string]providerDomainMatchEntry)
+	}
+
+	d.providerDomainMatches[domain] = matchEntry
+}
+
+func matchDomain(pattern, domain string) (int, bool) {
+	matchParts := reverseParts(pattern)
+	domainParts := reverseParts(domain)
+
+	for i := range matchParts {
+		if i >= len(domainParts) {
+			return 0, false
+		}
+
+		if !strings.EqualFold(matchParts[i], domainParts[i]) {
+			return 0, false
+		}
+	}
+
+	return len(matchParts), true
+}
+
+func reverseParts(domain string) []string {
+	parts := strings.Split(domain, ".")
+	result := make([]string, len(parts))
+	for i := range parts {
+		result[i] = parts[len(parts)-(i+1)]
+	}
+
+	return result
 }
 
 // CleanUp implements challenge.Provider for DNSProviderWrapper.
 func (d *DNSProviderWrapper) CleanUp(ctx context.Context, domain, token, keyAuth string) error {
-	var err error
-	for _, p := range d.providers {
-		err = p.CleanUp(ctx, domain, token, keyAuth)
+	var errs []error
+	// The map here should never not be initialized (initialized on present)
+	for _, idx := range d.providerDomainMatches[domain].providerIndexes {
+		p := d.providers[idx]
+		err := p.CleanUp(ctx, domain, token, keyAuth)
 		if err != nil {
-			err = multierror.Append(err, fmt.Errorf("error encountered while cleaning token for DNS challenge: %s", err.Error()))
+			errs = append(
+				errs,
+				fmt.Errorf("error encountered while cleaning token for DNS challenge: %w", err),
+			)
 		}
 	}
 
-	return err
+	return errors.Join(errs...)
 }
 
 // Timeout implements challenge.ProviderTimeout for

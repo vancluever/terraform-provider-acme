@@ -140,6 +140,11 @@ func resourceACMECertificateV6() *schema.Resource {
 							Type:     schema.TypeString,
 							Required: true,
 						},
+						"match_domains": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem:     &schema.Schema{Type: schema.TypeString},
+						},
 						"config": {
 							Type:         schema.TypeMap,
 							Optional:     true,
@@ -522,17 +527,20 @@ func resourceACMECertificateRead(d *schema.ResourceData, meta any) error {
 // resourceACMECertificateCustomizeDiff checks the certificate for renewal and
 // flags it as NewComputed if it needs a renewal.
 func resourceACMECertificateCustomizeDiff(_ context.Context, d *schema.ResourceDiff, meta any) error {
-	// Ensure duplicate providers for dns_challenge are not provided.
-	providerMap := make(map[string]bool)
+	// Validate dns_challenge blocks (match_domains and ensuring that the
+	// "provider" key is defined)
 	for _, v := range d.Get("dns_challenge").([]any) {
 		m := v.(map[string]any)
 		if v, ok := m["provider"]; ok && v.(string) != "" {
 			provider := v.(string)
-			if _, ok := providerMap[provider]; ok {
-				return fmt.Errorf("duplicate dns_challenge providers: %s", provider)
+			_, errs := validateMatchDomains(m["match_domains"], "match_domains")
+			if len(errs) > 0 {
+				return fmt.Errorf(
+					"invalid match_domains for DNS provider %s: %w",
+					provider,
+					errors.Join(errs...),
+				)
 			}
-
-			providerMap[provider] = true
 		} else {
 			return fmt.Errorf("DNS challenge provider not defined")
 		}
