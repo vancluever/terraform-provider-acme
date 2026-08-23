@@ -11,6 +11,15 @@ same, some providers have been removed as a part of this change. See the lego
 more details, making sure to follow changes all the way from the start of
 version 5.0.
 
+ENHANCEMENTS:
+
+* `resource/acme_certificate`: DNS challenges can now be filtered through the
+  `match_domains` argument, supplied as a list of domains to match. See the DNS
+  challenge part of the`acme_certificate` resource documentation for more
+  details. Note that this change also has enabled the ability to have multiple
+  DNS challenges declared of the same provider type.
+  [#614](https://github.com/vancluever/terraform-provider-acme/pull/614)
+
 BREAKING CHANGES:
 
 * `resource/acme_certificate`: The resource no longer attempts to recover
