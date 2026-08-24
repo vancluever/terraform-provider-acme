@@ -2,12 +2,12 @@
 
 LEGO UPDATE:
 
-[lego](https://github.com/go-acme/lego) has been updated to v5.3.1 (from
+[lego](https://github.com/go-acme/lego) has been updated to v5.4.0 (from
 v4.35.2).
 
 This is a major change; while the Terraform provider functions generally the
 same, some providers have been removed as a part of this change. See the lego
-[CHANGELOG.md](https://github.com/go-acme/lego/blob/v5.3.1/CHANGELOG.md) for
+[CHANGELOG.md](https://github.com/go-acme/lego/blob/v5.4.0/CHANGELOG.md) for
 more details, making sure to follow changes all the way from the start of
 version 5.0.
 
