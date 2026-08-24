@@ -5,9 +5,8 @@ go 1.26.5
 require (
 	github.com/BurntSushi/toml v1.6.0
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
-	github.com/go-acme/lego/v5 v5.3.1
+	github.com/go-acme/lego/v5 v5.4.0
 	github.com/google/go-cmp v0.7.0
-	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hashicorp/go-plugin v1.8.0
 	github.com/hashicorp/go-uuid v1.0.3
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.40.1
@@ -115,6 +114,7 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-cty v1.5.0 // indirect
 	github.com/hashicorp/go-hclog v1.6.3 // indirect
+	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.8 // indirect
 	github.com/hashicorp/go-version v1.9.0 // indirect
 	github.com/hashicorp/hc-install v0.9.4 // indirect
