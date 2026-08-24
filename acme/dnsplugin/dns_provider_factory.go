@@ -144,6 +144,7 @@ import (
 	"github.com/go-acme/lego/v5/providers/dns/netcup"
 	"github.com/go-acme/lego/v5/providers/dns/netlify"
 	"github.com/go-acme/lego/v5/providers/dns/netnod"
+	"github.com/go-acme/lego/v5/providers/dns/nexdns"
 	"github.com/go-acme/lego/v5/providers/dns/ngenix"
 	"github.com/go-acme/lego/v5/providers/dns/nicmanager"
 	"github.com/go-acme/lego/v5/providers/dns/nicru"
@@ -1359,6 +1360,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"netnod": func() (challenge.Provider, error) {
 		p, err := netnod.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"nexdns": func() (challenge.Provider, error) {
+		p, err := nexdns.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
