@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
@@ -9,7 +10,9 @@ import (
 )
 
 func main() {
-	if len(os.Args) == 2 && os.Args[1] == dnsplugin.PluginArg {
+	if len(os.Args) == 2 && os.Args[1] == acme.VersionArg {
+		fmt.Fprintln(os.Stderr, acme.FormatUserAgentLong())
+	} else if len(os.Args) == 2 && os.Args[1] == dnsplugin.PluginArg {
 		// Start the plugin here
 		dnsplugin.Serve()
 	} else {
