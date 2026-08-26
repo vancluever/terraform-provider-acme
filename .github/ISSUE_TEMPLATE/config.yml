@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
+  - name: Long-Term Maintenance Notice
+    url: https://github.com/vancluever/terraform-provider-acme/blob/main/docs/long-term-maintenance.md
+    about: The ACME provider is in long-term maintenance, please read this document before submitting issues.
   - name: Submitting a lego Issue
     url: https://github.com/vancluever/terraform-provider-acme/blob/main/docs/lego.md
     about: Details on how to submit an issue for DNS provider-related issues and other lego-related problems.

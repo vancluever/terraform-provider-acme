@@ -15,6 +15,8 @@ Please read and consider the following before submitting your report.
 
 **Please do not use AI to open issues**. If you are using AI or an agent to understand an issue, take the time to comprehend the output and explain the issue **in your own words** before submitting.
 
+Note that this provider is in long-term maintenance; no new major features are being added. See [`docs/long-term-maintenance.md`](https://github.com/vancluever/terraform-provider-acme/blob/main/docs/long-term-maintenance.md) for more details.
+
 This provider integrates [lego](https://github.com/go-acme/lego) and ultimately uses its exported primitives in a Terraform context. A large number of the issues submitted to this repository are actually issues related to lego, particularly its DNS providers.
 
 Before you submit an issue:
