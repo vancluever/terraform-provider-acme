@@ -334,6 +334,42 @@ resource "acme_certificate" "certificate" {
 }
 ```
 
+#### Using multiple DNS providers
+
+Multiple DNS providers can be used in the event that you have your DNS located
+with more than one.
+
+```hcl
+resource "acme_certificate" "certificate" {
+  #...
+
+  dns_challenge {
+    provider = "azure"
+  }
+
+  dns_challenge {
+    provider = "gcloud"
+  }
+
+  dns_challenge {
+    provider = "route53"
+  }
+
+  #...
+}
+```
+
+Multiple providers of the same type are also permitted.
+
+Note that DNS propagation checks are conducted once per domain (the union of
+`common_name` and `subject_alternative_names`), using the highest configured or
+default propagation timeout (`*_PROPAGATION_TIMEOUT`) and polling interval
+(`*_POLLING_INTERVAL`) settings.
+
+If the domains in the certificate happen to have their authority with different
+DNS providers in your list, consider using the `match_domains` setting,
+discussed in the next section.
+
 #### Restricting a challenge to specific domains
 
 You may use the `match_domains` argument within a `dns_challenge` block to
@@ -485,40 +521,6 @@ fixed delay (in seconds). This skips all propagation checks and waits the
 specified time before validation, so pick a value that matches your DNS
 provider's typical propagation behavior. The wait is applied per domain.
 
-#### Using multiple primary DNS providers
-
-The ACME provider will allow you to configure multiple DNS challenges in the
-event that you have more than one primary DNS provider.
-
-```hcl
-resource "acme_certificate" "certificate" {
-  #...
-
-  dns_challenge {
-    provider = "azure"
-  }
-
-  dns_challenge {
-    provider = "gcloud"
-  }
-
-  dns_challenge {
-    provider = "route53"
-  }
-
-  #...
-}
-```
-
-Some considerations need to be kept in mind when using multiple providers:
-
-* You cannot use more than one provider of the same type at once.
-* Your NS records must be correctly configured so that each DNS challenge
-  provider can correctly discover the appropriate zone to update.
-* DNS propagation checks are conducted once per configured common name and
-  subject alternative name, using the highest configured or default propagation
-  timeout (`*_PROPAGATION_TIMEOUT`) and polling interval (`*_POLLING_INTERVAL`)
-  settings.
 
 #### Relation to Terraform provider configuration
 
