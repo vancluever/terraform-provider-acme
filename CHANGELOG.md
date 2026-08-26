@@ -13,12 +13,6 @@ version 5.0.
 
 ENHANCEMENTS:
 
-* `resource/acme_certificate`: Requests for ARI information no longer go
-  through the main lego client. This is not a user-facing change, but in
-  addition to this, users will see additional User-Agent information sent from
-  the provider which will now identify requests as coming from the ACME
-  provider itself (not just lego).
-  [#617](https://github.com/vancluever/terraform-provider-acme/pull/617)
 * `resource/acme_certificate`: DNS challenges can now be filtered through the
   `match_domains` argument, supplied as a list of domains to match. See the DNS
   challenge part of the`acme_certificate` resource documentation for more
