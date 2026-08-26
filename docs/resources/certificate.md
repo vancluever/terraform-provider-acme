@@ -361,6 +361,14 @@ resource "acme_certificate" "certificate" {
 
 Multiple providers of the same type are also permitted.
 
+~> Be careful when using multiple providers of the same type! Domains using the
+same account under multiple instances of the same challenge provider will
+produce undefined behavior, including but not limited to possible issues with
+cleanup and dangling records. Ensure that providers of the same type are
+configured using credentials that correctly direct them to different accounts,
+and also consider using the `match_doamins` setting described in the next
+section.
+
 Note that DNS propagation checks are conducted once per domain (the union of
 `common_name` and `subject_alternative_names`), using the highest configured or
 default propagation timeout (`*_PROPAGATION_TIMEOUT`) and polling interval
