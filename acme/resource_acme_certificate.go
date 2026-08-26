@@ -14,6 +14,7 @@ import (
 	"github.com/go-acme/lego/v5/certcrypto"
 	"github.com/go-acme/lego/v5/certificate"
 	"github.com/go-acme/lego/v5/challenge/dns01"
+	"github.com/go-acme/lego/v5/lego"
 	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -501,6 +502,11 @@ func resourceACMECertificateCreate(d *schema.ResourceData, meta any) error {
 }
 
 func resourceACMECertificateRead(d *schema.ResourceData, meta any) error {
+	client, _, err := expandACMEClient(d, meta, true)
+	if err != nil {
+		return err
+	}
+
 	if _, ok := d.GetOk("certificate_pem"); !ok {
 		// If we can't find the certificate, just force a new one. This used to
 		// recover from the API to correct an issue prior to v1.3.2. This is very
@@ -511,8 +517,7 @@ func resourceACMECertificateRead(d *schema.ResourceData, meta any) error {
 		return nil
 	}
 
-	dirURL := meta.(*Config).ServerURL
-	if err := resourceACMECertificateRenewalInfoRefresh(d, dirURL, time.Now()); err != nil {
+	if err := resourceACMECertificateRenewalInfoRefresh(d, client, time.Now()); err != nil {
 		return err
 	}
 
@@ -834,7 +839,7 @@ func GetRevocationReason(reason RevocationReason) (uint, error) {
 
 func resourceACMECertificateRenewalInfoRefresh(
 	d *schema.ResourceData,
-	dirURL string,
+	client *lego.Client,
 	now time.Time,
 ) error {
 	// Check to see if we have a retry-after response, if we do, honor it
@@ -872,7 +877,7 @@ func resourceACMECertificateRenewalInfoRefresh(
 		return nil
 	}
 
-	renewalInfoResp, err := getCertificateARIRenewalInfo(dirURL, cert)
+	renewalInfoResp, err := client.Certificate.GetRenewalInfo(context.TODO(), cert)
 	if err != nil {
 		if errors.Is(err, api.ErrNoARI) {
 			// No ARI detail, set blank values and return

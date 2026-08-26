@@ -4,8 +4,6 @@ import (
 	"context"
 	"crypto"
 	"fmt"
-	"runtime"
-	"strings"
 	"time"
 
 	"github.com/go-acme/lego/v5/acme"
@@ -88,7 +86,6 @@ func expandACMEClient(d *schema.ResourceData, meta any, loadReg bool) (*lego.Cli
 func expandACMEClient_config(d *schema.ResourceData, meta any, user registration.User) *lego.Config {
 	config := lego.NewConfig(user)
 	config.CADirURL = meta.(*Config).ServerURL
-	config.UserAgent = formatUserAgentShort()
 
 	// Note this function is used by both the registration and certificate
 	// resources, but cert timeout is not necessary during registration, so it's
@@ -98,14 +95,4 @@ func expandACMEClient_config(d *schema.ResourceData, meta any, user registration
 	}
 
 	return config
-}
-
-func formatUserAgentShort() string {
-	return "terraform-provider-acme" + "/" + ReleaseVersion
-}
-
-// FormatUserAgentLong returns a agent for use in client requests, we also use
-// it in the -version command for the plugin.
-func FormatUserAgentLong() string {
-	return strings.TrimSpace(fmt.Sprintf("%s (%s; %s)", formatUserAgentShort(), runtime.GOOS, runtime.GOARCH))
 }

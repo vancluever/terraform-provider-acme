@@ -65,17 +65,13 @@ fi
 
 set -e
 
-# update acme/version.go if needed
-message begin "==> Update release version generated code (if needed) <=="
-./build-support/scripts/write-releaseversion.sh
-
 # Timestamp and update version in changelog
 message begin "==> Timetsamping current release in CHANGELOG.md <=="
 current_date="$(date "+%B %e, %Y" | sed -E -e 's/  / /')"
 echo -e "## ${release} (${current_date})\n$(tail -n +2 CHANGELOG.md)" > CHANGELOG.md
 
-message begin "==> Committing release <=="
-git add CHANGELOG.md acme/version.go
+message begin "==> Committing CHANGELOG.md <=="
+git add CHANGELOG.md
 git commit -m "$(echo -e "Release v${release}\n\nSee CHANGELOG.md for more details.")"
 
 message begin "==> Tagging Release v${release} <=="
@@ -91,10 +87,9 @@ new_prerelease="${semver[0]}.${semver[1]}.$((semver[2]+1))-pre"
 
 message begin "==> Bumping CHANGELOG.md to Release v${new_prerelease} <=="
 echo -e "## ${new_prerelease} (Unreleased)\n\nBumped version for dev.\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
-./build-support/scripts/write-releaseversion.sh
 
-git add CHANGELOG.md acme/version.go
-git commit -m "Bump version to v${new_prerelease}"
+git add CHANGELOG.md
+git commit -m "Bump CHANGELOG.md to v${new_prerelease}"
 
 message begin "==> Pushing Commits and Tags <=="
 git push origin "$(git ls-remote --symref origin HEAD | head -n1 | awk '{print $2}')"
