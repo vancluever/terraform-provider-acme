@@ -10,7 +10,7 @@ import (
 func TestACME_validateKeyType(t *testing.T) {
 	s := "RSA2048"
 
-	_, errs := validateKeyType(s, "key_type")
+	_, errs := validateKeyTypeV3Old(s, "key_type")
 	if len(errs) > 0 {
 		t.Fatalf("bad: %#v", errs)
 	}
@@ -19,7 +19,7 @@ func TestACME_validateKeyType(t *testing.T) {
 func TestACME_validateKeyType_invalid(t *testing.T) {
 	s := "512"
 
-	_, errs := validateKeyType(s, "key_type")
+	_, errs := validateKeyTypeV3Old(s, "key_type")
 	if len(errs) < 1 {
 		t.Fatalf("should have given an error")
 	}

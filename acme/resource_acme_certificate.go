@@ -40,7 +40,7 @@ const (
 // version is incremented.
 func resourceACMECertificate() *schema.Resource { return resourceACMECertificateV6() }
 
-func resourceACMECertificateV6() *schema.Resource {
+func resourceACMECertificateV7() *schema.Resource {
 	return &schema.Resource{
 		Create:        resourceACMECertificateCreate,
 		Read:          resourceACMECertificateRead,
@@ -48,9 +48,9 @@ func resourceACMECertificateV6() *schema.Resource {
 		Update:        resourceACMECertificateUpdate,
 		Delete:        resourceACMECertificateDelete,
 		MigrateState:  resourceACMECertificateMigrateState,
-		SchemaVersion: 6,
+		SchemaVersion: 7,
 		StateUpgraders: []schema.StateUpgrader{
-			resourceACMECertificateStateUpgraderV5(),
+			resourceACMECertificateStateUpgraderV6(),
 		},
 		Schema: map[string]*schema.Schema{
 			"account_key_pem": {
@@ -81,7 +81,7 @@ func resourceACMECertificateV6() *schema.Resource {
 				ForceNew:      true,
 				Default:       "RSA2048",
 				ConflictsWith: []string{"certificate_request_pem"},
-				ValidateFunc:  validateKeyType,
+				ValidateFunc:  validation.StringInSlice(validKeyTypes(), false),
 			},
 			"certificate_request_pem": {
 				Type:          schema.TypeString,

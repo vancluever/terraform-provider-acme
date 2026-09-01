@@ -43,6 +43,17 @@ func resourceACMERegistrationStateUpgraderV1Func(
 // resourceACMECertificateStateUpgraderV4 returns the state upgrader
 // that handles migrations from version 5 to version 6 for
 // acme_certificate.
+func resourceACMECertificateStateUpgraderV6() schema.StateUpgrader {
+	return schema.StateUpgrader{
+		Version: 6,
+		Type:    resourceACMECertificateV6().CoreConfigSchema().ImpliedType(),
+		Upgrade: resourceACMECertificateStateUpgraderV6Func,
+	}
+}
+
+// resourceACMECertificateStateUpgraderV4 returns the state upgrader
+// that handles migrations from version 5 to version 6 for
+// acme_certificate.
 func resourceACMECertificateStateUpgraderV5() schema.StateUpgrader {
 	return schema.StateUpgrader{
 		Version: 5,
@@ -60,6 +71,37 @@ func resourceACMECertificateStateUpgraderV4() schema.StateUpgrader {
 		Type:    resourceACMECertificateV4().CoreConfigSchema().ImpliedType(),
 		Upgrade: resourceACMECertificateStateUpgraderV4Func,
 	}
+}
+
+// resourceACMECertificateStateUpgraderV6Func provides Terraform 0.12
+// state upgrade functionality from schema version 6 to schema
+// version 7 for acme_certificate.
+func resourceACMECertificateStateUpgraderV6Func(
+	_ context.Context,
+	rawState map[string]any,
+	meta any,
+) (map[string]any, error) {
+	z, err := copystructure.Copy(rawState)
+	if err != nil {
+		return nil, err
+	}
+	result := z.(map[string]any)
+
+	if oldKeyType, ok := rawState["key_type"]; ok {
+		switch oldKeyType.(string) {
+		case "P256":
+			result["key_type"] = certcrypto.EC256.String()
+		case "P384":
+			result["key_type"] = certcrypto.EC384.String()
+		}
+	}
+
+	if disableCompletePropagation, ok := rawState["disable_complete_propagation"]; ok {
+		result["disable_authoritative_propagation"] = disableCompletePropagation
+		delete(result, "disable_complete_propagation")
+	}
+
+	return result, nil
 }
 
 // resourceACMECertificateStateUpgraderV5Func provides Terraform 0.12

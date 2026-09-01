@@ -100,6 +100,54 @@ func testACMECertificateStateData012V6() map[string]any {
 	}
 }
 
+func testACMECertificateStateData012V6P256() map[string]any {
+	return map[string]any{
+		"account_key_pem":           "key",
+		"common_name":               "foobar",
+		"subject_alternative_names": []any{"barbar", "bazbar"},
+		"key_type":                  "P256",
+		"certificate_request_pem":   "req",
+		"min_days_remaining":        "30",
+		"dns_challenge": []any{
+			map[string]any{
+				"provider": "route53",
+			},
+		},
+		"recursive_nameservers": []any{"my.name.server"},
+		// NOTE: disable_complete_propagation added manually for v5 fixture in v5 -> v6 test
+		"disable_authoritative_propagation": "1",
+		"must_staple":                       "0",
+		"certificate_domain":                "foobar",
+		"private_key_pem":                   "certkey",
+		"certificate_pem":                   "certpem",
+		"certificate_url":                   "certurl",
+	}
+}
+
+func testACMECertificateStateData012V7() map[string]any {
+	return map[string]any{
+		"account_key_pem":           "key",
+		"common_name":               "foobar",
+		"subject_alternative_names": []any{"barbar", "bazbar"},
+		"key_type":                  "EC256",
+		"certificate_request_pem":   "req",
+		"min_days_remaining":        "30",
+		"dns_challenge": []any{
+			map[string]any{
+				"provider": "route53",
+			},
+		},
+		"recursive_nameservers": []any{"my.name.server"},
+		// NOTE: disable_complete_propagation added manually for v5 fixture in v5 -> v6 test
+		"disable_authoritative_propagation": "1",
+		"must_staple":                       "0",
+		"certificate_domain":                "foobar",
+		"private_key_pem":                   "certkey",
+		"certificate_pem":                   "certpem",
+		"certificate_url":                   "certurl",
+	}
+}
+
 func testACMERegistrationStateData012V1() map[string]any {
 	return map[string]any{
 		"account_key_pem": "key",
@@ -130,6 +178,24 @@ func testACMERegistrationStateData012V2() map[string]any {
 		},
 		"id":               "id",
 		"registration_url": "regurl",
+	}
+}
+
+func TestResourceACMECertificateStateUpgraderV6Func(t *testing.T) {
+	expected := testACMECertificateStateData012V7()
+	v6State := testACMECertificateStateData012V6P256()
+	v6State["disable_complete_propagation"] = "1"
+	actual, err := resourceACMECertificateStateUpgraderV6Func(context.TODO(), v6State, nil)
+	if err != nil {
+		t.Fatalf("error migrating state: %s", err)
+	}
+
+	ignore := cmpopts.IgnoreMapEntries(func(k string, _ any) bool {
+		return k == "id"
+	})
+
+	if diff := cmp.Diff(expected, actual, ignore); diff != "" {
+		t.Errorf("state migration v6 -> v7 mismatch (-want +got):\n%s", diff)
 	}
 }
 

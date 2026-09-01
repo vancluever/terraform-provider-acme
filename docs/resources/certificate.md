@@ -106,10 +106,10 @@ be specified. It's recommended you use `dns_challenge` whenever possible).
   domains that this certificate will also be recognized for. Forces a new
   resource when changed.
 * `key_type` - The key type for the certificate's private key. Can be one of:
-  `P256` and `P384` (for ECDSA keys of respective length) or `RSA2048`,
-  `RSA4096`, and `RSA8192` (for RSA keys of respective length). Required when
-  not specifying a CSR. The default is `RSA2048` (RSA key of 2048 bits). Forces
-  a new resource when changed.
+  `EC256` and `EC384` (for ECDSA keys of respective length) or `RSA2048`,
+  `RSA3072`, `RSA4096`, and `RSA8192` (for RSA keys of respective length).
+  Required when not specifying a CSR. The default is `RSA2048` (RSA key of 2048
+  bits). Forces a new resource when changed.
 * `certificate_request_pem` - A pre-created certificate request, such as one
   from [`tls_cert_request`][tls-cert-request], or one from an external source,
   in PEM format. Forces a new resource when changed.
