@@ -1,6 +1,11 @@
-## 3.0.1-pre (Unreleased)
+## 3.0.1 (Unreleased)
 
-Bumped version for dev.
+BUG FIXES:
+
+* `resource/acme_certificate`: Corrected the use of ECDSA key types with the
+  resource; how these were specified were changed, similar to the RSA types,
+  but they were missed. Additionally, RSA3072 has now been added.
+  [#623](https://github.com/vancluever/terraform-provider-acme/pull/623)
 
 ## 3.0.0 (August 26, 2026)
 
