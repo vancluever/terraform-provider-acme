@@ -3,10 +3,24 @@ package acme
 import (
 	"fmt"
 	"regexp"
+
+	"github.com/go-acme/lego/v5/certcrypto"
 )
 
-// validateKeyType validates a key_type resource parameter is correct.
-func validateKeyType(v any, _ string) (ws []string, errors []error) {
+// validKeyTypes returns all the valid key types as a string slice.
+func validKeyTypes() []string {
+	result := make([]string, 0, len(certcrypto.AllKeyTypes()))
+	for _, kt := range certcrypto.AllKeyTypes() {
+		result = append(result, kt.String())
+	}
+
+	return result
+}
+
+// validateKeyTypeV3Old validates a key_type resource parameter is correct.
+//
+// Deprecated: Do not use anymore.
+func validateKeyTypeV3Old(v any, _ string) (ws []string, errors []error) {
 	value := v.(string)
 	found := false
 	for _, w := range []string{"P256", "P384", "RSA2048", "RSA4096", "RSA8192"} {
@@ -17,6 +31,24 @@ func validateKeyType(v any, _ string) (ws []string, errors []error) {
 	if !found {
 		errors = append(errors, fmt.Errorf(
 			"certificate key type must be one of P256, P384, RSA2048, RSA4096, or RSA8192"))
+	}
+	return
+}
+
+// validateKeyType validates a key_type resource parameter is correct.
+//
+// Deprecated: Do not use anymore.
+func validateKeyType(v any, k string) (ws []string, errors []error) {
+	value := v.(string)
+	found := false
+	for _, w := range []string{"P256", "P384", "2048", "4096", "8192"} {
+		if value == w {
+			found = true
+		}
+	}
+	if !found {
+		errors = append(errors, fmt.Errorf(
+			"certificate key type must be one of P256, P384, 2048, 4096, or 8192"))
 	}
 	return
 }
