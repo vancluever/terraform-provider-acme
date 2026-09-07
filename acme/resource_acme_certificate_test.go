@@ -1503,22 +1503,22 @@ variable "domain" {
 }
 
 resource "acme_registration" "reg" {
-  email_address   = "${var.email_address}"
+  email_address = var.email_address
 }
 
 resource "acme_certificate" "certificate" {
-  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  account_key_pem           = acme_registration.reg.account_key_pem
   common_name               = "www.${var.domain}"
-	key_type                  = "%s"
+  key_type                  = "%s"
   subject_alternative_names = ["www2.${var.domain}"]
 
-  recursive_nameservers        = ["%s"]
+  recursive_nameservers             = ["%s"]
   disable_authoritative_propagation = true
 
   dns_challenge {
     provider = "exec"
     config = {
-      EXEC_PATH = "%s"
+      EXEC_PATH              = "%s"
       EXEC_SEQUENCE_INTERVAL = "5"
     }
   }
