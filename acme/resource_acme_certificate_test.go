@@ -54,6 +54,28 @@ func TestAccACMECertificate_basic(t *testing.T) {
 	})
 }
 
+func TestAccACMECertificate_basic_EC256(t *testing.T) {
+	wantEnv := os.Environ()
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviders,
+		ExternalProviders: testAccExternalProviders,
+		CheckDestroy:      testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusRevoked),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccACMECertificateConfigWithKeyType("EC256"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "id", uuidRegexp),
+					resource.TestMatchResourceAttr("acme_certificate.certificate", "certificate_url", certURLRegexp),
+					testAccCheckACMECertificateValid("acme_certificate.certificate", "www", "www2"),
+					testAccCheckACMECertificateIntermediateEqual("acme_certificate.certificate", getPebbleCertificate(mainIntermediateURL)),
+					testAccCheckACMECertificateStatus("acme_certificate.certificate", certificateStatusValid),
+					testAccCheckEnvironNotChanged(wantEnv),
+				),
+			},
+		},
+	})
+}
+
 func TestAccACMECertificate_basic_revoke_reason(t *testing.T) {
 	wantEnv := os.Environ()
 	resource.Test(t, resource.TestCase{
@@ -1461,6 +1483,51 @@ resource "acme_certificate" "certificate" {
 		pebbleDirBasic,
 		pebbleCertDomain,
 		pebbleCertDomain,
+		pebbleChallTestDNSSrv,
+		pebbleChallTestDNSScriptPath,
+	)
+}
+
+func testAccACMECertificateConfigWithKeyType(keyType string) string {
+	return fmt.Sprintf(`
+provider "acme" {
+  server_url = "%s"
+}
+
+variable "email_address" {
+  default = "nobody@%s"
+}
+
+variable "domain" {
+  default = "%s"
+}
+
+resource "acme_registration" "reg" {
+  email_address   = "${var.email_address}"
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  common_name               = "www.${var.domain}"
+	key_type                  = "%s"
+  subject_alternative_names = ["www2.${var.domain}"]
+
+  recursive_nameservers        = ["%s"]
+  disable_authoritative_propagation = true
+
+  dns_challenge {
+    provider = "exec"
+    config = {
+      EXEC_PATH = "%s"
+      EXEC_SEQUENCE_INTERVAL = "5"
+    }
+  }
+}
+`,
+		pebbleDirBasic,
+		pebbleCertDomain,
+		pebbleCertDomain,
+		keyType,
 		pebbleChallTestDNSSrv,
 		pebbleChallTestDNSScriptPath,
 	)
