@@ -1,4 +1,4 @@
-## 3.1.1-pre (Unreleased)
+## 3.1.1 (Unreleased)
 
 BUG FIXES:
 
