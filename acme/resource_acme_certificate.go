@@ -38,7 +38,7 @@ const (
 // resourceACMECertificate returns the current version of the
 // acme_registration resource and needs to be updated when the schema
 // version is incremented.
-func resourceACMECertificate() *schema.Resource { return resourceACMECertificateV6() }
+func resourceACMECertificate() *schema.Resource { return resourceACMECertificateV7() }
 
 func resourceACMECertificateV7() *schema.Resource {
 	return &schema.Resource{
