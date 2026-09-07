@@ -1,3 +1,7 @@
+## 3.1.2-pre (Unreleased)
+
+Bumped version for dev.
+
 ## 3.1.1 (September 7, 2026)
 
 BUG FIXES:
