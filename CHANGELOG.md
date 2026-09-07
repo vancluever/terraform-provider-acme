@@ -1,4 +1,4 @@
-## 3.1.1 (Unreleased)
+## 3.1.1 (September 7, 2026)
 
 BUG FIXES:
 
