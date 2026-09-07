@@ -5,6 +5,7 @@ BUG FIXES:
 The bug fix that was a part of 3.0.1, which was effectively not enabled due to
 the new schema not being activated in the resource, should now be effected in
 this version. See the notes for 3.0.1 for more details.
+[#625](https://github.com/vancluever/terraform-provider-acme/pull/625)
 
 ## 3.1.0 (September 4, 2026)
 
