@@ -10,7 +10,7 @@ import (
 	"github.com/go-acme/lego/v5/challenge/dns01"
 	"github.com/go-acme/lego/v5/providers/dns/exec"
 	"github.com/go-acme/lego/v5/providers/dns/route53"
-	dnspluginproto "github.com/vancluever/terraform-provider-acme/v2/proto/dnsplugin/v1"
+	dnspluginproto "github.com/vancluever/terraform-provider-acme/v3/proto/dnsplugin/v1"
 )
 
 var _ = challenge.ProviderTimeout((*DnsProviderClient)(nil))

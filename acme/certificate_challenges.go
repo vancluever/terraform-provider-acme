@@ -18,7 +18,7 @@ import (
 	"github.com/go-acme/lego/v5/providers/http/s3"
 	"github.com/go-acme/lego/v5/providers/http/webroot"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/vancluever/terraform-provider-acme/v2/acme/dnsplugin"
+	"github.com/vancluever/terraform-provider-acme/v3/acme/dnsplugin"
 )
 
 // setCertificateChallengeProviders sets all of the challenge providers in the

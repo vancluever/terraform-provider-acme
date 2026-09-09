@@ -1,4 +1,4 @@
-module github.com/vancluever/terraform-provider-acme/v2
+module github.com/vancluever/terraform-provider-acme/v3
 
 go 1.26.5
 

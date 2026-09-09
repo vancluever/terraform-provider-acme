@@ -16,7 +16,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/vancluever/terraform-provider-acme/v2/acme/dnsplugin"
+	"github.com/vancluever/terraform-provider-acme/v3/acme/dnsplugin"
 )
 
 func testAccProviderAcme() *schema.Provider {

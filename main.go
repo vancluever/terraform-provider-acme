@@ -4,8 +4,8 @@ import (
 	"os"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
-	"github.com/vancluever/terraform-provider-acme/v2/acme"
-	"github.com/vancluever/terraform-provider-acme/v2/acme/dnsplugin"
+	"github.com/vancluever/terraform-provider-acme/v3/acme"
+	"github.com/vancluever/terraform-provider-acme/v3/acme/dnsplugin"
 )
 
 func main() {

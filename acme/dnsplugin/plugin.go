@@ -11,7 +11,7 @@ import (
 	"github.com/go-acme/lego/v5/challenge"
 	"github.com/go-acme/lego/v5/challenge/dns01"
 	"github.com/hashicorp/go-plugin"
-	dnspluginproto "github.com/vancluever/terraform-provider-acme/v2/proto/dnsplugin/v1"
+	dnspluginproto "github.com/vancluever/terraform-provider-acme/v3/proto/dnsplugin/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/durationpb"
 )

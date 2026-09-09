@@ -1,6 +1,8 @@
-## 3.1.2-pre (Unreleased)
+## 3.1.2 (Unreleased)
 
-Bumped version for dev.
+This update bumps the Go module version of this provider to v3. This only
+affects consumers of the Go code in this repository, not users of the actual
+Terraform provider published on the registry. No other changes are being made.
 
 ## 3.1.1 (September 7, 2026)
 
