@@ -1,4 +1,4 @@
-## 3.1.2 (Unreleased)
+## 3.1.2 (September 9, 2026)
 
 This update bumps the Go module version of this provider to v3. This only
 affects consumers of the Go code in this repository, not users of the actual
