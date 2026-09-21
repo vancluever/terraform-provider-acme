@@ -53,6 +53,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `GCE_SERVICE_ACCOUNT` - Account.
 * `GCE_SERVICE_ACCOUNT_FILE` - Account file path.
 
+* `GCE_ACCESS_TOKEN` - The OAuth2 access token used by the client to authenticate against the Google Cloud API..
 * `GCE_ALLOW_PRIVATE_ZONE` - Allows requested domain to be in private DNS zone, works only with a private ACME server (by default: false).
 * `GCE_IMPERSONATE_SERVICE_ACCOUNT` - Service account email to impersonate.
 * `GCE_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 5).

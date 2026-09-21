@@ -56,6 +56,7 @@ import (
 	"github.com/go-acme/lego/v5/providers/dns/dnsimple"
 	"github.com/go-acme/lego/v5/providers/dns/dnsla"
 	"github.com/go-acme/lego/v5/providers/dns/dnsmadeeasy"
+	"github.com/go-acme/lego/v5/providers/dns/dnsmint"
 	"github.com/go-acme/lego/v5/providers/dns/dnsservices"
 	"github.com/go-acme/lego/v5/providers/dns/dnsupdate"
 	"github.com/go-acme/lego/v5/providers/dns/dode"
@@ -78,6 +79,7 @@ import (
 	"github.com/go-acme/lego/v5/providers/dns/exec"
 	"github.com/go-acme/lego/v5/providers/dns/exoscale"
 	"github.com/go-acme/lego/v5/providers/dns/f5xc"
+	"github.com/go-acme/lego/v5/providers/dns/feno"
 	"github.com/go-acme/lego/v5/providers/dns/fornex"
 	"github.com/go-acme/lego/v5/providers/dns/freemyip"
 	"github.com/go-acme/lego/v5/providers/dns/gandi"
@@ -133,6 +135,7 @@ import (
 	"github.com/go-acme/lego/v5/providers/dns/mittwald"
 	"github.com/go-acme/lego/v5/providers/dns/myaddr"
 	"github.com/go-acme/lego/v5/providers/dns/mydnsjp"
+	"github.com/go-acme/lego/v5/providers/dns/myra"
 	"github.com/go-acme/lego/v5/providers/dns/mythicbeasts"
 	"github.com/go-acme/lego/v5/providers/dns/namecheap"
 	"github.com/go-acme/lego/v5/providers/dns/namedotcom"
@@ -209,6 +212,7 @@ import (
 	"github.com/go-acme/lego/v5/providers/dns/vscale"
 	"github.com/go-acme/lego/v5/providers/dns/vultr"
 	"github.com/go-acme/lego/v5/providers/dns/wannafind"
+	"github.com/go-acme/lego/v5/providers/dns/webglobe"
 	"github.com/go-acme/lego/v5/providers/dns/webnamesca"
 	"github.com/go-acme/lego/v5/providers/dns/webnamesru"
 	"github.com/go-acme/lego/v5/providers/dns/websupport"
@@ -662,6 +666,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"dnsmint": func() (challenge.Provider, error) {
+		p, err := dnsmint.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"dnsservices": func() (challenge.Provider, error) {
 		p, err := dnsservices.NewDNSProvider()
 		if err != nil {
@@ -832,6 +844,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"f5xc": func() (challenge.Provider, error) {
 		p, err := f5xc.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"feno": func() (challenge.Provider, error) {
+		p, err := feno.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -1272,6 +1292,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"mydnsjp": func() (challenge.Provider, error) {
 		p, err := mydnsjp.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"myra": func() (challenge.Provider, error) {
+		p, err := myra.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -1880,6 +1908,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"wannafind": func() (challenge.Provider, error) {
 		p, err := wannafind.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"webglobe": func() (challenge.Provider, error) {
+		p, err := webglobe.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
