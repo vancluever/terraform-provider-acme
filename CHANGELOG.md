@@ -7,6 +7,15 @@ lego [CHANGELOG.md](https://github.com/go-acme/lego/blob/v5.5.1/CHANGELOG.md)
 for more details on additions and changes to DNS providers, and other minor
 changes to the library.
 
+SECURITY:
+
+This update contains fixes for
+[GHSA-2v4p-qf9q-27wj](https://github.com/grpc/grpc-go/security/advisories/GHSA-2v4p-qf9q-27wj).
+To the best of our knowledge, the affected component (xDS) is not used in
+[go-plugin](https://github.com/hashicorp/go-plugin), the primary consumer of
+gRPC in the ACME provider. As such, for this project, this advisory and fix an
+informational and proactive one.
+
 ## 3.1.2 (September 9, 2026)
 
 This update bumps the Go module version of this provider to v3. This only
