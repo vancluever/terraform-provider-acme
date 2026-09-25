@@ -8,7 +8,7 @@ require (
 	github.com/go-acme/lego/v5 v5.5.1
 	github.com/google/go-cmp v0.7.0
 	github.com/hashicorp/go-plugin v1.8.0
-	github.com/hashicorp/go-uuid v1.0.3
+	github.com/hashicorp/go-uuid v1.0.4
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.40.1
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/rainycape/memcache v0.0.0-20150622160815-1031fa0ce2f2
