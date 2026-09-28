@@ -32,20 +32,14 @@
         pkgs.mkShell {
           packages = with pkgs; [
             buf
-            (go_1_26.overrideAttrs rec {
-              version = "1.26.5";
-              src = fetchurl {
-                url = "https://go.dev/dl/go${version}.src.tar.gz";
-                hash = "sha256-SVvkvIcXasVnOS5bQRar2YRm0z17SdQedkzMaXay3EI=";
-              };
-            })
+            go_1_27
             golangci-lint
             golangci-lint-langserver
             gopls
+            goreleaser
+            gotestsum
             protoc-gen-go
             protoc-gen-go-grpc
-            gotestsum
-            goreleaser
             terraform
           ];
 
