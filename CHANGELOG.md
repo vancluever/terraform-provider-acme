@@ -1,4 +1,4 @@
-## 3.2.1 (Unreleased)
+## 3.2.1 (September 28, 2026)
 
 LEGO UPDATE:
 
