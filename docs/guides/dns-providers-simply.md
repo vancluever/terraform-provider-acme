@@ -48,7 +48,6 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `SIMPLY_ACCOUNT_NAME` - Account name.
 * `SIMPLY_API_KEY` - API key.
 
 * `SIMPLY_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).

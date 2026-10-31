@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# SelfHost.(de|eu) DNS Challenge Provider
+# SelfHost.(de|eu) (DEPRECATED) DNS Challenge Provider
 
 The `selfhostde` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[SelfHost.(de|eu)](https://www.selfhost.de).
+[SelfHost.(de|eu) (DEPRECATED)](https://www.selfhost.de).
 
 [resource-acme-certificate]: ../resources/certificate.md
 

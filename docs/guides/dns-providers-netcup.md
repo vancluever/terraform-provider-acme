@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Netcup DNS Challenge Provider
+# Netcup (Legacy API) DNS Challenge Provider
 
 The `netcup` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Netcup](https://www.netcup.eu/).
+[Netcup (Legacy API)](https://www.netcup.eu/).
 
 [resource-acme-certificate]: ../resources/certificate.md
 

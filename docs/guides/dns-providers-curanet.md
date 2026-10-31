@@ -48,7 +48,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `CURANET_API_KEY` - API key.
+* `CURANET_CLIENT_ID` - Client ID.
+* `CURANET_CLIENT_SECRET` - Client secret.
 
 * `CURANET_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
 * `CURANET_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).

@@ -1,0 +1,96 @@
+---
+page_title: "selfhostdev2"
+subcategory: "DNS Providers"
+---
+
+-> The following documentation is auto-generated from the ACME
+provider's API library [lego](https://go-acme.github.io/lego/).  Some
+sections may refer to lego directly - in most cases, these sections
+apply to the Terraform provider as well.
+
+# SelfHost.(de|eu) DNS Challenge Provider
+
+The `selfhostdev2` DNS challenge provider can be used to perform DNS challenges for
+the [`acme_certificate`][resource-acme-certificate] resource with
+[SelfHost.(de|eu)](https://www.selfhost.de).
+
+[resource-acme-certificate]: ../resources/certificate.md
+
+For complete information on how to use this provider with the `acme_certifiate`
+resource, see [here][resource-acme-certificate-dns-challenges].
+
+[resource-acme-certificate-dns-challenges]: ../resources/certificate.md#using-dns-challenges
+
+## Example
+
+```hcl
+resource "acme_certificate" "certificate" {
+  ...
+
+  dns_challenge {
+    provider = "selfhostdev2"
+  }
+}
+```
+## Argument Reference
+
+The following arguments can be either passed as environment variables, or
+directly through the `config` block in the
+[`dns_challenge`][resource-acme-certificate-dns-challenge-arg] argument in the
+[`acme_certificate`][resource-acme-certificate] resource. For more details, see
+[here][resource-acme-certificate-dns-challenges].
+
+[resource-acme-certificate-dns-challenge-arg]: ../resources/certificate.md#dns_challenge
+
+In addition, arguments can also be stored in a local file, with the path
+supplied by supplying the argument with the `_FILE` suffix. See
+[here][acme-certificate-file-arg-example] for more information.
+
+[acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
+
+* `SELFHOSTDEV2_API_KEYS` - API keys mapping with domains (ex: example.com:xx.yy,example.org:ww.zz)..
+* `SELFHOSTDEV2_RECORDS_MAPPING` - Record IDs mapping with domains (ex: example.com:123:456,example.org:789,foo.example.com:147)..
+
+* `SELFHOSTDEV2_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
+* `SELFHOSTDEV2_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 30).
+* `SELFHOSTDEV2_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 240).
+* `SELFHOSTDEV2_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
+
+SelfHost.de has a complex API to create or delete TXT records:
+
+before using lego to request a certificate for a given domain or wildcard (such as `my.example.org` or `*.my.example.org`),
+you must create:
+
+- one TXT record named `_acme-challenge.my.example.org` if you are **not** using wildcard for this domain.
+- two TXT records named `_acme-challenge.my.example.org` if you are using wildcard for this domain.
+
+After that you must edit the TXT record(s) to get the ID(s).
+
+You then must prepare the `SELFHOSTDE_RECORDS_MAPPING` environment variable with the following format:
+
+```
+<domain_A>:<record_id_A1>:<record_id_A2>,<domain_B>:<record_id_B1>:<record_id_B2>,<domain_C>:<record_id_C1>:<record_id_C2>
+```
+
+where each group of domain + record ID(s) is separated with a comma (`,`),
+and the domain and record ID(s) are separated with a colon (`:`).
+
+For example, if you want to create or renew a certificate for `my.example.org`, `*.my.example.org`, and `other.example.org`,
+you would need:
+
+- two separate records for `_acme-challenge.my.example.org`
+- and another separate record for `_acme-challenge.other.example.org`
+
+The resulting environment variable would then be: `SELFHOSTDE_RECORDS_MAPPING=my.example.com:123:456,other.example.com:789`
+
+Also, the API keys are per domain.
+
+You must prepare the `SELFHOSTDE_API_KEYS` environment variable with the following format:
+
+```
+<domain_X>:<API_key_1>,<domain_Y>:<API_key_2>,<domain_Z>:<API_key_3>
+```
+
+The API key format is `<key_id>.<secret>`, where `key_id` is numeric (no leading zero), `secret` is lowercase hex characters.
+
+

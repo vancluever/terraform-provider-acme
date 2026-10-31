@@ -8,11 +8,11 @@ provider's API library [lego](https://go-acme.github.io/lego/).  Some
 sections may refer to lego directly - in most cases, these sections
 apply to the Terraform provider as well.
 
-# Go Daddy DNS Challenge Provider
+# Go Daddy (DEPRECATED) DNS Challenge Provider
 
 The `godaddy` DNS challenge provider can be used to perform DNS challenges for
 the [`acme_certificate`][resource-acme-certificate] resource with
-[Go Daddy](https://godaddy.com).
+[Go Daddy (DEPRECATED)](https://godaddy.com).
 
 [resource-acme-certificate]: ../resources/certificate.md
 

@@ -48,7 +48,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `SCANNET_API_KEY` - API key.
+* `SCANNET_CLIENT_ID` - Client ID.
+* `SCANNET_CLIENT_SECRET` - Client secret.
 
 * `SCANNET_HTTP_TIMEOUT` - API request timeout in seconds (Default: 30).
 * `SCANNET_POLLING_INTERVAL` - Time between DNS propagation check in seconds (Default: 2).

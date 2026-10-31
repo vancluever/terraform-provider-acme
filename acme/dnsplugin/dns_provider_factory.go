@@ -31,6 +31,7 @@ import (
 	"github.com/go-acme/lego/v5/providers/dns/clouddns"
 	"github.com/go-acme/lego/v5/providers/dns/cloudflare"
 	"github.com/go-acme/lego/v5/providers/dns/cloudns"
+	"github.com/go-acme/lego/v5/providers/dns/cloudpress"
 	"github.com/go-acme/lego/v5/providers/dns/cloudru"
 	"github.com/go-acme/lego/v5/providers/dns/com35"
 	"github.com/go-acme/lego/v5/providers/dns/connbyte"
@@ -91,6 +92,7 @@ import (
 	"github.com/go-acme/lego/v5/providers/dns/glesys"
 	"github.com/go-acme/lego/v5/providers/dns/gname"
 	"github.com/go-acme/lego/v5/providers/dns/godaddy"
+	"github.com/go-acme/lego/v5/providers/dns/godaddyv3"
 	"github.com/go-acme/lego/v5/providers/dns/gravity"
 	"github.com/go-acme/lego/v5/providers/dns/hetzner"
 	"github.com/go-acme/lego/v5/providers/dns/hostingde"
@@ -145,6 +147,7 @@ import (
 	"github.com/go-acme/lego/v5/providers/dns/nederhost"
 	"github.com/go-acme/lego/v5/providers/dns/neodigit"
 	"github.com/go-acme/lego/v5/providers/dns/netcup"
+	"github.com/go-acme/lego/v5/providers/dns/netcupv1"
 	"github.com/go-acme/lego/v5/providers/dns/netlify"
 	"github.com/go-acme/lego/v5/providers/dns/netnod"
 	"github.com/go-acme/lego/v5/providers/dns/nexdns"
@@ -154,6 +157,7 @@ import (
 	"github.com/go-acme/lego/v5/providers/dns/nifcloud"
 	"github.com/go-acme/lego/v5/providers/dns/njalla"
 	"github.com/go-acme/lego/v5/providers/dns/nodion"
+	"github.com/go-acme/lego/v5/providers/dns/nordname"
 	"github.com/go-acme/lego/v5/providers/dns/ns1"
 	"github.com/go-acme/lego/v5/providers/dns/octenium"
 	"github.com/go-acme/lego/v5/providers/dns/omglol"
@@ -169,6 +173,7 @@ import (
 	"github.com/go-acme/lego/v5/providers/dns/pointdns"
 	"github.com/go-acme/lego/v5/providers/dns/porkbun"
 	"github.com/go-acme/lego/v5/providers/dns/poweradmin"
+	"github.com/go-acme/lego/v5/providers/dns/primedns"
 	"github.com/go-acme/lego/v5/providers/dns/rackspace"
 	"github.com/go-acme/lego/v5/providers/dns/rage4"
 	"github.com/go-acme/lego/v5/providers/dns/rainyun"
@@ -184,6 +189,7 @@ import (
 	"github.com/go-acme/lego/v5/providers/dns/selectel"
 	"github.com/go-acme/lego/v5/providers/dns/selectelv2"
 	"github.com/go-acme/lego/v5/providers/dns/selfhostde"
+	"github.com/go-acme/lego/v5/providers/dns/selfhostdev2"
 	"github.com/go-acme/lego/v5/providers/dns/servercow"
 	"github.com/go-acme/lego/v5/providers/dns/shellrent"
 	"github.com/go-acme/lego/v5/providers/dns/simply"
@@ -460,6 +466,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"cloudns": func() (challenge.Provider, error) {
 		p, err := cloudns.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"cloudpress": func() (challenge.Provider, error) {
+		p, err := cloudpress.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -946,6 +960,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"godaddyv3": func() (challenge.Provider, error) {
+		p, err := godaddyv3.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"gravity": func() (challenge.Provider, error) {
 		p, err := gravity.NewDNSProvider()
 		if err != nil {
@@ -1378,6 +1400,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"netcupv1": func() (challenge.Provider, error) {
+		p, err := netcupv1.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"netlify": func() (challenge.Provider, error) {
 		p, err := netlify.NewDNSProvider()
 		if err != nil {
@@ -1444,6 +1474,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"nodion": func() (challenge.Provider, error) {
 		p, err := nodion.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"nordname": func() (challenge.Provider, error) {
+		p, err := nordname.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
@@ -1570,6 +1608,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 
 		return p, nil
 	},
+	"primedns": func() (challenge.Provider, error) {
+		p, err := primedns.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
 	"rackspace": func() (challenge.Provider, error) {
 		p, err := rackspace.NewDNSProvider()
 		if err != nil {
@@ -1684,6 +1730,14 @@ var dnsProviderFactory = map[string]dnsProviderFactoryFunc{
 	},
 	"selfhostde": func() (challenge.Provider, error) {
 		p, err := selfhostde.NewDNSProvider()
+		if err != nil {
+			return nil, err
+		}
+
+		return p, nil
+	},
+	"selfhostdev2": func() (challenge.Provider, error) {
+		p, err := selfhostdev2.NewDNSProvider()
 		if err != nil {
 			return nil, err
 		}
