@@ -1,4 +1,4 @@
-## 3.2.2 (Unreleased)
+## 3.2.2 (October 31, 2026)
 
 This update contains fixes for
 [CVE-2026-116587](https://github.com/advisories/GHSA-mgcc-cww5-fp2q). No other
