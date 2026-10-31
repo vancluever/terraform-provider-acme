@@ -1,3 +1,7 @@
+## 3.2.3-pre (Unreleased)
+
+Bumped version for dev.
+
 ## 3.2.2 (October 31, 2026)
 
 This update contains fixes for
