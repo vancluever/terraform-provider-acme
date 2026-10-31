@@ -1,6 +1,8 @@
-## 3.2.2-pre (Unreleased)
+## 3.2.2 (Unreleased)
 
-Bumped version for dev.
+This update contains fixes for
+[CVE-2026-116587](https://github.com/advisories/GHSA-mgcc-cww5-fp2q). No other
+changes are being made.
 
 ## 3.2.1 (September 28, 2026)
 
