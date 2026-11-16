@@ -1,4 +1,4 @@
-## 3.3.1 (Unreleased)
+## 3.3.1 (November 16, 2026)
 
 This update contains fixes for
 [CVE-2026-128085](https://github.com/advisories/GHSA-q7gw-24fr-5p69). No other
