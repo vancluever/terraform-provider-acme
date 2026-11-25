@@ -48,8 +48,8 @@ supplied by supplying the argument with the `_FILE` suffix. See
 
 [acme-certificate-file-arg-example]: ../resources/certificate.md#using-variable-files-for-provider-arguments
 
-* `MYTHICBEASTS_PASSWORD` - Password.
-* `MYTHICBEASTS_USERNAME` - User name.
+* `MYTHICBEASTS_CLIENT_ID` - Client ID/Username.
+* `MYTHICBEASTS_CLIENT_SECRET` - Client secret/Password.
 
 * `MYTHICBEASTS_API_ENDPOINT` - The endpoint for the API (must implement v2).
 * `MYTHICBEASTS_AUTH_API_ENDPOINT` - The endpoint for Mythic Beasts' Authentication.
@@ -58,7 +58,7 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `MYTHICBEASTS_PROPAGATION_TIMEOUT` - Maximum waiting time for DNS propagation in seconds (Default: 60).
 * `MYTHICBEASTS_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 120).
 
-If you are using specific API keys, then the username is the API ID for your API key, and the password is the API secret.
+If you are using specific API keys, then the client ID is the API ID for your API key, and the client secret is the API secret.
 
 Your API key name is not needed to operate lego.
 

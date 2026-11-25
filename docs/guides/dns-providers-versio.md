@@ -58,5 +58,4 @@ supplied by supplying the argument with the `_FILE` suffix. See
 * `VERSIO_SEQUENCE_INTERVAL` - Time between sequential requests in seconds (Default: 60).
 * `VERSIO_TTL` - The TTL of the TXT record used for the DNS challenge in seconds (Default: 300).
 
-To test with the sandbox environment set ```VERSIO_ENDPOINT=https://www.versio.nl/testapi/v1/```
 
